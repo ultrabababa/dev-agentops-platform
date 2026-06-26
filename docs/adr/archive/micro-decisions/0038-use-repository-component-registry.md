@@ -1,0 +1,3 @@
+# Use a Repository Component Registry
+
+V1 will freeze behavior-affecting components through a repository-managed component registry rather than GitHub Releases or a package registry. The registry will record only frozen component versions, manifest paths, fingerprints, timestamps, and notes, grouped by component type so each manifest schema can be validated independently. Formal evaluation uses this registry to validate component identity while keeping prompt, tool, retrieval, skill, sandbox, and MCP iteration lightweight; draft components remain outside the registry and are limited to debug workflows.

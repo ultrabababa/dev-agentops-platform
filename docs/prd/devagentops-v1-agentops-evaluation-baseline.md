@@ -1,0 +1,156 @@
+# PRD: DevAgentOps V1 AgentOps Evaluation Baseline
+
+## Problem Statement
+
+The user needs DevAgentOps V1 to be more than a one-off agent demo. They need a developer-focused CI/Test Failure Triage AgentOps system where triage runs are traceable, evaluable, repeatable, and governable, so runtime changes, prompt changes, retrieval changes, model changes, and tool policy changes can be compared fairly.
+
+Without this V1 baseline, the project cannot answer whether a self-built ReAct runtime improves over a fixed pipeline baseline, whether retrieval helps, whether a badcase was fixed without causing regressions, or whether a future framework runtime, MCP integration, skill package, sandbox upgrade, or multi-agent runtime is actually better.
+
+## Solution
+
+Build the V1 AgentOps evaluation baseline for DevAgentOps.
+
+The system will provide a fixed pipeline baseline and a self-built single-agent ReAct runtime, both evaluated through the same formal evaluation pipeline. Formal evaluation will run repository-defined evaluation matrix conditions against immutable evaluation suite versions, validate component and case fingerprints, produce run traces and structured triage reports, score metric vectors, update metric-specific leaderboards, and create badcases for review.
+
+V1 will keep scope disciplined: it will support local offline case packages, a versioned tool registry, lightweight hybrid retrieval, structured evidence references, tool policy sandboxing, SQLite persistence, CLI-driven evaluation, ignored report artifacts, and a read-and-review dashboard. It will defer real MCP servers, full skill packaging, multi-agent triage, cross-run agent memory, OS-level sandboxing, interactive human confirmation, external CI integrations, and Langfuse-backed evaluation.
+
+## User Stories
+
+1. As a project builder, I want a fixed pipeline baseline, so that I can compare agentic runtimes against a stable non-agentic workflow.
+2. As a project builder, I want a self-built ReAct runtime, so that I can demonstrate core agent loop control, tool use, trace capture, and report submission.
+3. As a project builder, I want runtime variants to be explicit, so that V1, future framework runtimes, and future multi-agent runtimes can be compared without copying the whole project.
+4. As a project builder, I want an evaluation matrix, so that formal evaluation runs are selected from a controlled set of anchor, ablation, and candidate conditions.
+5. As a project builder, I want matrix defaults, so that common evaluation method, suite, model, and budget settings are not duplicated across conditions.
+6. As a project builder, I want one-level condition extension, so that ablation conditions can clearly show which variable changed.
+7. As a project builder, I want every formal run to store its effective evaluation condition, so that historical runs remain understandable even if matrix files change later.
+8. As a project builder, I want condition fingerprints, so that the system can detect when a condition identifier has silently changed meaning.
+9. As a project builder, I want formal leaderboards to compare only matching evaluation method, suite, model configuration, and condition fingerprint contexts, so that rankings are fair.
+10. As a project builder, I want model changes to be tested as ablations, so that model capability is not confused with runtime or retrieval quality.
+11. As a project builder, I want formal evaluation to use low-randomness model settings, so that comparison noise is reduced.
+12. As a project builder, I want repeated runs to be available for selected conditions, so that I can estimate stability without multiplying cost for every condition.
+13. As a project builder, I want canonical runs separated from stability samples, so that ordinary leaderboards are not silently averaged.
+14. As a project builder, I want run manifests, so that each run records code revision, component versions, component fingerprints, model configuration, and effective condition.
+15. As a project builder, I want a repository component registry, so that frozen prompts, tool manifests, retriever configs, sandbox policies, and MCP server sets can be validated.
+16. As a project builder, I want draft components and frozen components to be separate, so that local iteration stays fast while formal evaluation stays reproducible.
+17. As a project builder, I want component fingerprints based on canonical behavior-affecting manifest fields, so that formatting and notes do not create false version changes.
+18. As a project builder, I want formal evaluation to fail fast on component version pollution, so that leaderboard results are not produced from mutated frozen versions.
+19. As a project builder, I want a small balanced V1 evaluation suite, so that the first implementation can cover core failure types without building a large benchmark first.
+20. As a project builder, I want immutable evaluation suite versions, so that case set, expected answers, and case weights cannot change underneath historical results.
+21. As a project builder, I want explicit suite manifests, so that formal suites are not changed by draft cases or directory scanning.
+22. As a project builder, I want case fingerprints and suite fingerprints, so that evaluation data drift can be detected before formal runs.
+23. As a project builder, I want offline case packages to include frozen raw logs, preprocessed log chunks, repository evidence snapshots, and expected answers, so that formal evaluation is reproducible.
+24. As a project builder, I want every offline case to record provenance and sanitization status, so that the dataset is safe to inspect, publish, and demo.
+25. As a project builder, I want eval doctor, so that matrix, component, suite, case, fingerprint, and leakage problems are caught before model cost is incurred.
+26. As a developer running formal evaluation, I want the eval runner to run eval doctor first, so that invalid inputs cannot produce leaderboard or badcase results.
+27. As a developer debugging behavior, I want case subset debug runs, so that I can iterate on a few cases or previous badcases without running the full suite.
+28. As a developer debugging behavior, I want debug runs to show quality gate previews, so that I can estimate readiness before formal evaluation.
+29. As a developer debugging behavior, I want debug results excluded from leaderboards, so that exploratory runs do not pollute formal comparisons.
+30. As a reviewer, I want run traces with structured trace events, so that I can inspect what the triage agent did without reading raw logs or hidden chain-of-thought.
+31. As a reviewer, I want model call metadata in traces, so that I can understand token usage, latency, finish reasons, visible outputs, and tool calls.
+32. As a reviewer, I want tool call events in traces, so that I can inspect selected tools, arguments, observations, and policy outcomes.
+33. As a reviewer, I want final reports to be structured, so that report completeness, failure type accuracy, and evidence use can be validated consistently.
+34. As a reviewer, I want structured reports to cite stable evidence identifiers, so that evidence claims are traceable.
+35. As a reviewer, I want invalid evidence references to fail validation, so that hallucinated citations cannot pass evidence scoring.
+36. As a reviewer, I want retrieval evidence hits separated from report evidence hits, so that I can tell whether a failure came from search or report synthesis.
+37. As a reviewer, I want expected answers to distinguish required key evidence from optional evidence, so that reports are judged on essential support without over-penalizing missing secondary details.
+38. As a reviewer, I want expected answers to allow reviewed acceptable failure types for ambiguous cases, so that classification scoring is fair without inflating exact accuracy.
+39. As a reviewer, I want metric vectors instead of one composite score, so that trade-offs between classification, evidence, completeness, and tool path behavior remain visible.
+40. As a reviewer, I want per-failure-type score breakdowns, so that weak spots such as flaky failures or dependency failures are not hidden by aggregate metrics.
+41. As a reviewer, I want quality metrics separated from operational metrics, so that low cost does not compensate for poor triage quality.
+42. As a reviewer, I want quality gates to be formal qualification statuses, so that low-quality runs still produce useful reports and badcases.
+43. As a reviewer, I want metric-specific leaderboards, so that I can rank conditions by the quality dimension I am investigating.
+44. As a reviewer, I want operational metrics such as cost, latency, token usage, step count, and tool call count, so that I can evaluate efficiency after quality is acceptable.
+45. As a reviewer, I want badcases derived from formal evaluation, so that regression analysis is based on reproducible conditions.
+46. As a reviewer, I want badcase reasons to be structured with primary and secondary reasons, so that improvement work can be prioritized.
+47. As a reviewer, I want scorer-suggested badcase reasons and human-reviewed reasons stored separately, so that automation can be useful without replacing trusted review.
+48. As a reviewer, I want minimal badcase review in the dashboard, so that I can inspect traces, reports, expected answers, reasons, and reviewer notes.
+49. As a reviewer, I want badcase carryover, so that I can see resolved badcases, persistent badcases, and new regressions across condition versions.
+50. As a safety reviewer, I want mutation actions forbidden for V1 triage, so that diagnostic workflows do not edit code, rerun CI, open PRs, or deploy.
+51. As a safety reviewer, I want tool policy sandboxing enforced before execution and checked after execution, so that governance violations are both prevented and visible.
+52. As a safety reviewer, I want submit report classified as report-write, so that it is distinguished from read-only inspection and external mutation.
+53. As a dashboard user, I want to view traces, reports, leaderboards, badcases, and badcase review, so that I can inspect AgentOps results without running jobs from the UI.
+54. As a CLI user, I want formal evaluation driven by commands, so that evaluations are scriptable and reproducible.
+55. As a CLI user, I want generated evaluation reports written to ignored artifacts by default, so that local runs do not create noisy source changes.
+56. As a portfolio builder, I want optional milestone report export, so that selected formal evaluation results can be turned into shareable documentation.
+57. As a future implementer, I want MCP, skill packages, multi-agent triage, memory, OS sandboxing, and Langfuse integration represented as future variants or ablations, so that V1 does not block later platform growth.
+
+## Implementation Decisions
+
+- Build V1 around two runtime variants: a fixed pipeline baseline and a self-built single-agent ReAct runtime.
+- Define evaluation matrix loading as the top-level formal evaluation configuration boundary.
+- Support matrix defaults and one-level condition extension, then resolve every condition into a complete effective condition before execution.
+- Compute and persist condition fingerprints from effective conditions.
+- Require direct leaderboard comparison to use the same evaluation method version, evaluation suite version, model configuration, and condition fingerprint.
+- Treat repeated runs as explicit matrix configuration, with one canonical run and optional stability samples.
+- Persist run manifests with code revision, effective condition, component versions, component fingerprints, model configuration, tool call protocol, report schema version, and relevant fingerprints.
+- Build a repository-managed component registry for frozen behavior-affecting components.
+- Separate draft components from frozen components; formal evaluation may reference only frozen components.
+- Implement component freezing as manifest validation, canonical fingerprint computation, and registry insertion.
+- Validate component manifests at freeze time and again before formal evaluation.
+- Record model configuration in conditions and run manifests, but keep it outside the component registry.
+- Implement a V1 offline evaluation suite using explicit suite manifests and roughly 20 balanced cases across the core failure types.
+- Treat suite versions, case packages, expected answers, raw logs, preprocessed log chunks, repository evidence snapshots, and relevant fingerprints as immutable for formal comparison.
+- Require case provenance and sanitization metadata before a case can enter formal evaluation.
+- Implement eval doctor as the preflight integrity checker for formal evaluation.
+- Make the formal eval runner call eval doctor before executing any agent or scorer work.
+- Implement debug run and case subset debug flows that can compute metric previews without updating formal leaderboards.
+- Implement structured triage report validation with required fields, enum validation, non-empty required content, confidence bounds, minimal action specificity, and valid evidence references.
+- Version the structured triage report schema as an evaluation and product contract, not as a component registry item.
+- Define stable evidence identifiers in case packages and retrieval corpora.
+- Allow derived evidence only when it preserves provenance to stable evidence identifiers or source spans.
+- Score evidence hit rate as final report citation of expected required evidence.
+- Report retrieval evidence hit separately from report evidence hit.
+- Allow expected answers to list required key evidence, optional evidence, primary expected failure type, rare acceptable failure types, and multiple reasonable tool paths.
+- Score tool path validity by tool categories and evidence-gathering behavior rather than exact micro-trajectory.
+- Treat forbidden mutation actions as hard failures for tool path validity.
+- Implement V1 tool policy sandboxing as tool allowlists, risk levels, and human confirmation metadata, without OS-level isolation.
+- Classify tools as read-only, report-write, or mutation.
+- Default to provider-native tool calling when the configured OpenAI-compatible provider supports it, with strict JSON action fallback available for compatibility.
+- Capture structured run traces with lifecycle events, model call metadata, tool calls, observations, selected evidence, report submission, evaluation, and failures.
+- Do not store full hidden chain-of-thought.
+- Store formal evaluation data in SQLite and write human-readable and machine-readable report artifacts to ignored generated output.
+- Keep the dashboard read-and-review focused for V1; do not trigger formal or debug runs from the dashboard.
+- Provide views for traces, reports, metric-specific leaderboards, badcases, and minimal badcase review.
+- Defer real MCP server integration, full skill packaging, multi-agent triage, cross-run agent memory, OS-level sandboxing, interactive human confirmation, external CI provider integration, auth/RBAC, Langfuse-backed evaluation, and composite scoring.
+
+## Testing Decisions
+
+- Use CLI-level tests as the highest seam for formal evaluation behavior. A good test invokes the evaluation commands against fixture matrix and case data, then asserts observable outputs such as validation results, persisted run records, generated reports, and leaderboard updates.
+- Use eval doctor tests as the highest seam for configuration integrity. A good test feeds invalid matrices, polluted fingerprints, missing provenance, missing sanitization, unknown schema versions, and forbidden retrieval sources, then asserts clear validation failures before any model call.
+- Use fake model providers and fake tool implementations for runtime tests, so tests validate runtime orchestration, tool call handling, trace emission, and report submission without depending on live LLM behavior.
+- Use scorer contract tests against fixture reports and expected answers. A good test asserts quality metric outputs, acceptable failure type handling, required versus optional evidence behavior, invalid evidence reference handling, and badcase reason generation.
+- Use component registry tests to validate draft versus frozen behavior, manifest schema validation, canonical fingerprint stability, version pollution detection, and freeze command behavior.
+- Use suite and case loader tests to validate explicit suite manifests, case schema versions, case fingerprints, suite fingerprints, provenance metadata, sanitization metadata, and frozen log chunk usage.
+- Use run manifest tests to assert that resolved effective conditions, component fingerprints, condition fingerprints, model configuration, report schema version, and code revision are captured.
+- Use trace tests to assert external behavior: trace events are emitted and persisted for run lifecycle, model calls, tool calls, observations, report submission, scoring, and failures.
+- Use tool policy tests to assert that forbidden mutation actions are blocked by policy and also scored as invalid if they appear in a trace.
+- Use leaderboard tests to assert that only formal evaluation runs can update leaderboards, debug runs are excluded, and direct comparison partitions by evaluation method, suite, model configuration, and condition fingerprint.
+- Use badcase tests to assert that formal evaluation failures create structured badcases, suggested and reviewed reasons are stored separately, and carryover identifies resolved, persistent, and new regressions.
+- Use dashboard/API tests at the read seam. A good test loads seeded persisted evaluation data and asserts the dashboard/API can retrieve traces, reports, leaderboard rows, badcases, and badcase review data without requiring UI-triggered jobs.
+- Avoid tests that assert implementation details such as internal parser helper calls, private class structure, or exact intermediate data layout when CLI/API behavior is sufficient.
+- Keep live-provider tests optional and excluded from default local test runs. Formal correctness should be covered by deterministic fake providers and fixture data.
+
+## Out of Scope
+
+- Real MCP server integration.
+- Full skill packaging, skill marketplace, skill dependency management, or skill docs bundling.
+- Multi-agent triage.
+- Cross-run agent memory.
+- OS-level sandboxing such as containers, seccomp, or microVMs.
+- Interactive blocking human confirmation flow.
+- External live CI provider integrations.
+- Automated remediation, code edits, rerunning CI, pull request creation, or deployment actions.
+- Auth, login, RBAC, and multi-user workflow.
+- Langfuse, LangSmith, or other external observability/evaluation backends as the V1 source of truth.
+- Composite overall scoring and one global winner leaderboard.
+- Dashboard-triggered formal or debug runs.
+- Large-scale benchmark construction beyond the initial balanced V1 evaluation suite.
+- Semantic leakage detection beyond path and configuration checks.
+- Full issue workflow for badcases, including assignment, comment threads, approval states, or permissions.
+
+## Further Notes
+
+- The primary test seams are CLI commands, matrix/suite/component validation, fake-provider runtime execution, scorer contracts, persistence/API reads, and dashboard read views.
+- The accepted ADR baseline is the source of architectural truth for this PRD.
+- The first implementation slice should start with the evaluation matrix, effective condition resolution, component registry, suite/case artifact loading, and eval doctor, because those define the formal evaluation boundary before model execution.
+- V1 should optimize for reproducibility, diagnosability, and honest comparison before cost optimization or feature breadth.

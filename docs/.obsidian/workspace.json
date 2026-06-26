@@ -1,0 +1,218 @@
+{
+  "main": {
+    "id": "d44c463d0eb4cb8c",
+    "type": "split",
+    "children": [
+      {
+        "id": "52d5483df8f83fce",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ea0c14387c94df89",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "issues-notes/Issue-2 failure-type-taxonomy-and-case-policy.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Issue-2 failure-type-taxonomy-and-case-policy"
+            }
+          }
+        ]
+      },
+      {
+        "id": "c04a2c865b54c8ba",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "485f3e61efe3df85",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "prd/devagentops-v1-agentops-evaluation-baseline.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "devagentops-v1-agentops-evaluation-baseline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "9ee2584f84e4c69a",
+    "type": "split",
+    "children": [
+      {
+        "id": "29ae9264c5bec424",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "68aedc8e06fcb191",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "b9dc26db589bbe38",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "16b1460192765305",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "58bdff9f5a68ec9f",
+    "type": "split",
+    "children": [
+      {
+        "id": "fc97641ba8cd0d6d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d2b24c5aeb744607",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "issues-notes/Issue-2 failure-type-taxonomy-and-case-policy.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Issue-2 failure-type-taxonomy-and-case-policy 的反向链接列表"
+            }
+          },
+          {
+            "id": "4212b7e7442e509c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "issues-notes/Issue-2 failure-type-taxonomy-and-case-policy.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Issue-2 failure-type-taxonomy-and-case-policy 的出链列表"
+            }
+          },
+          {
+            "id": "fbbeed873ca85dd8",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "adc45113e7953f32",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "de2b55abc3dc76dd",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "issues-notes/Issue-2 failure-type-taxonomy-and-case-policy.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Issue-2 failure-type-taxonomy-and-case-policy 的大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false
+    }
+  },
+  "active": "68aedc8e06fcb191",
+  "lastOpenFiles": [
+    "issues-notes/0-项目定位.md",
+    "未命名.base",
+    "adr/0005-minimal-run-trace-first.md",
+    "prd/devagentops-v1-agentops-evaluation-baseline.md",
+    "issues-notes/README.md",
+    "issues-notes/Issue-2 failure-type-taxonomy-and-case-policy.md",
+    "issues-notes/ISSUE_NOTE_TEMPLATE.md",
+    "issues-notes/Issue-1 PRD-Evaluation_Baseline.md",
+    "issues-notes"
+  ]
+}
