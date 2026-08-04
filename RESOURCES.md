@@ -18,6 +18,12 @@
   pytest 的断言、测试发现和失败报告入门。用于把需求转成可执行反馈，而不是靠手工点测。
 - [Python Packaging Entry Points 规范](https://packaging.python.org/en/latest/specifications/entry-points/)
   PyPA 对 console script 包装器、对象引用和退出码传播的权威说明。用于理解 `[project.scripts]` 如何把终端命令连接到 Python 函数。
+- [FastAPI 官方 First Steps](https://fastapi.tiangolo.com/tutorial/first-steps/)
+  FastAPI app、GET path operation、decorator、JSON response 和 OpenAPI 的官方入门说明。
+- [FastAPI 官方 Testing](https://fastapi.tiangolo.com/tutorial/testing/)
+  使用 `TestClient` 与 pytest 在不启动真实服务器的情况下验证 endpoint。当前网页仍以 HTTPX 讲解；实际安装的 Starlette 1.3 已优先使用 HTTPX2。
+- [HTTPX2 PyPI](https://pypi.org/project/httpx2/)
+  Starlette 1.3 TestClient 当前优先使用的 HTTP client；由 Pydantic 维护，是 HTTPX 的延续项目。
 
 ## Wisdom (Communities)
 
