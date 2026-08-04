@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第一课：实现不会创建数据库的 status</title>
+  <style>
+    :root { --ink:#182234; --muted:#637083; --paper:#f5f3ed; --card:#fff; --accent:#1e6674; --warm:#b55b32; --line:#d7dde3; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.7 ui-sans-serif,system-ui,-apple-system,"PingFang SC",sans-serif; }
+    main { max-width:880px; margin:auto; padding:48px 24px 80px; }
+    h1 { margin:0; font:700 2.35rem/1.15 ui-serif,Georgia,serif; letter-spacing:-.02em; }
+    h2 { margin-top:38px; font-size:1.28rem; }
+    .eyebrow { color:var(--accent); font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    .lede { color:var(--muted); font-size:1.08rem; max-width:720px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px 22px; margin:18px 0; box-shadow:0 6px 24px rgba(30,45,65,.05); }
+    .warning { border-left:5px solid var(--warm); }
+    pre { overflow:auto; background:#172232; color:#f2f4f7; padding:16px 18px; border-radius:10px; line-height:1.5; }
+    code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+    p code, li code { background:#e6ecee; padding:.12em .38em; border-radius:4px; color:#174c57; }
+    .steps { counter-reset:step; list-style:none; padding:0; }
+    .steps li { position:relative; padding:0 0 22px 50px; }
+    .steps li::before { counter-increment:step; content:counter(step); position:absolute; left:0; top:1px; width:32px; height:32px; display:grid; place-items:center; border-radius:50%; background:var(--accent); color:#fff; font-weight:700; }
+    details { background:#edf2f3; border-radius:10px; padding:12px 16px; margin:14px 0; }
+    summary { cursor:pointer; font-weight:700; }
+    a { color:var(--accent); }
+    @media print { body{background:#fff} main{padding:0}.card{box-shadow:none} }
+  </style>
+</head>
+<body><main>
+  <div class="eyebrow">DevAgentOps · Lesson 0001 · 35–50 min</div>
+  <h1>实现不会创建数据库的 <code>status</code></h1>
+  <p class="lede">这一课只学一个工程不变量：<strong>观察状态不应该改变状态</strong>。完成后，你会亲手实现一个只读 SQLite 检查器，并用测试证明它不会制造数据库文件。</p>
+
+  <div class="card warning"><strong>学习规则：</strong>第一次测试通过前，不打开 <code>src/devagentops/storage.py</code>。现成实现是课后的对照答案，不是起点。</div>
+
+  <h2>1. 先预测，不运行</h2>
+  <p>数据库路径是 <code>/tmp/demo/missing.db</code>，目录和文件都不存在。下面两种实现有何不同？</p>
+  <pre><code># A
+sqlite3.connect(path)
+
+# B
+if not path.exists():
+    return {"exists": False}</code></pre>
+  <p>在纸上写下：哪一个可能改变文件系统？为什么这会让 <code>status</code> 变成不可靠的观察工具？</p>
+  <details><summary>完成预测后再展开</summary><p><code>sqlite3.connect(path)</code> 默认会在父目录存在时创建数据库文件。实现 B 先处理“文件不存在”的状态，可以在连接前返回，因此保持只读。</p></details>
+
+  <h2>2. 你的实现任务</h2>
+  <ol class="steps">
+    <li>打开 <code>learning_exercises/lesson_0001_read_only_status.py</code>。</li>
+    <li>只根据函数 Docstring 实现三个要求，不查看生产代码。</li>
+    <li>读取已有数据库时，使用 SQLite URI 的 <code>mode=ro</code>；查询 <code>sqlite_master</code> 获得表名。</li>
+    <li>运行测试，根据第一个失败逐步修改，不要一次猜完整答案。</li>
+  </ol>
+  <pre><code>cd /private/tmp/dev-agentops-platform-issue3-20260804
+.venv/bin/python -m unittest -v \
+  learning_exercises.test_lesson_0001_read_only_status</code></pre>
+
+  <h2>3. 卡住时只看一级提示</h2>
+  <details><summary>提示 1：安全的控制流</summary><pre><code>resolve path
+→ exists?
+→ is file?
+→ open read-only
+→ query tables
+→ close connection</code></pre></details>
+  <details><summary>提示 2：只读 URI 形状</summary><p>先用 <code>Path.as_uri()</code> 得到 file URI，再附加 <code>?mode=ro</code>，并向 <code>sqlite3.connect(..., uri=True)</code> 明确启用 URI。</p></details>
+  <details><summary>提示 3：表名查询</summary><pre><code>SELECT name
+FROM sqlite_master
+WHERE type = 'table'
+ORDER BY name</code></pre></details>
+
+  <h2>4. 通过后必须回答</h2>
+  <div class="card">
+    <ol>
+      <li>为什么不能先连接，再判断数据库是否存在？</li>
+      <li><code>Path.resolve(strict=False)</code> 在这里解决什么问题？</li>
+      <li>测试为什么同时检查文件和父目录都不存在？</li>
+      <li>生产实现为什么还要使用 SQLAlchemy 与 Alembic，而练习只用 <code>sqlite3</code>？</li>
+    </ol>
+  </div>
+  <p>把四个回答发给我。我会逐条反馈；确认你真正掌握后，才写第一条 learning record，并进入第二课“幂等 Migration”。</p>
+
+  <h2>5. 权威资料</h2>
+  <ul>
+    <li><a href="https://docs.python.org/3/library/sqlite3.html">Python sqlite3 官方文档</a></li>
+    <li><a href="https://docs.python.org/3/library/pathlib.html">Python pathlib 官方文档</a></li>
+    <li><a href="../reference/cli-sqlite-mental-model.html">本课程速查：CLI + SQLite 心智模型</a></li>
+  </ul>
+  <p><strong>有任何不清楚的地方，直接问我；不要靠猜测跳过。</strong></p>
+</main></body></html>

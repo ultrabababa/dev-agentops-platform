@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "devagentops"
+version = "0.1.0"
+description = "An evaluable CI/Test Failure Triage system prototype"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "alembic>=1.13,<2",
+    "fastapi>=0.141,<1",
+    "SQLAlchemy>=2.0,<3",
+    "uvicorn>=0.52,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "httpx2>=2,<3",
+    "pytest>=8.3,<10",
+]
+
+[project.scripts]
+devagentops = "devagentops.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

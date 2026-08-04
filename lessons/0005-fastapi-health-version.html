@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第五课：FastAPI health/version</title>
+  <style>
+    :root { --ink:#182234; --muted:#637083; --paper:#f5f3ed; --card:#fff; --accent:#1e6674; --warm:#b55b32; --line:#d7dde3; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.7 ui-sans-serif,system-ui,-apple-system,"PingFang SC",sans-serif; }
+    main { max-width:880px; margin:auto; padding:48px 24px 80px; }
+    h1 { margin:0; font:700 2.35rem/1.15 ui-serif,Georgia,serif; letter-spacing:-.02em; }
+    h2 { margin-top:38px; font-size:1.28rem; }
+    .eyebrow { color:var(--accent); font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    .lede { color:var(--muted); font-size:1.08rem; max-width:720px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px 22px; margin:18px 0; box-shadow:0 6px 24px rgba(30,45,65,.05); }
+    .warning { border-left:5px solid var(--warm); }
+    pre { overflow:auto; background:#172232; color:#f2f4f7; padding:16px 18px; border-radius:10px; line-height:1.5; }
+    code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+    p code, li code { background:#e6ecee; padding:.12em .38em; border-radius:4px; color:#174c57; }
+    .steps { counter-reset:step; list-style:none; padding:0; }
+    .steps li { position:relative; padding:0 0 22px 50px; }
+    .steps li::before { counter-increment:step; content:counter(step); position:absolute; left:0; top:1px; width:32px; height:32px; display:grid; place-items:center; border-radius:50%; background:var(--accent); color:#fff; font-weight:700; }
+    details { background:#edf2f3; border-radius:10px; padding:12px 16px; margin:14px 0; }
+    summary { cursor:pointer; font-weight:700; }
+    a { color:var(--accent); }
+    @media print { body{background:#fff} main{padding:0}.card{box-shadow:none} }
+  </style>
+</head>
+<body><main>
+  <div class="eyebrow">DevAgentOps · Lesson 0005 · 25–40 min</div>
+  <h1>让同一个系统通过 HTTP 报告 health/version</h1>
+  <p class="lede">CLI 根据参数列表选择函数；FastAPI 根据 HTTP method 与 URL path 选择函数。两者只是输入适配器不同，返回的仍是结构化、可测试的数据。</p>
+
+  <h2>1. 对照两种入口</h2>
+  <pre><code>CLI:  ["status", "--database", "demo.db"] → argparse → function
+HTTP: GET /health                           → FastAPI  → function</code></pre>
+  <p><code>GET</code> 表示读取；<code>/health</code> 是 path，也叫 endpoint 或 route。FastAPI 官方把 <code>@app.get("/health")</code> 称为 path operation decorator：它把下面的函数登记为该请求的处理者。</p>
+
+  <h2>2. 最小路由形状</h2>
+  <pre><code>@app.get("/health")
+def health():
+    return {"status": "ok"}</code></pre>
+  <p>请求到来时 FastAPI 调用 <code>health()</code>，并把 Python <code>dict</code> 编码为 JSON response。当前函数没有等待网络或异步数据库操作，所以先使用普通 <code>def</code>，不引入 <code>async</code>。</p>
+
+  <h2>3. 为什么先不接 SQLite</h2>
+  <div class="card"><code>/health</code> 只回答“HTTP 应用是否能处理请求”，<code>/version</code> 只暴露当前软件版本。它们不应该因为本地数据库尚未初始化就失败。数据库状态会在下一课作为独立 read endpoint 接入。</div>
+
+  <h2>4. 实现任务</h2>
+  <ol class="steps">
+    <li>在 <code>pyproject.toml</code> 的运行依赖中加入 <code>fastapi&gt;=0.141,&lt;1</code>，开发依赖加入 <code>httpx2&gt;=2,&lt;3</code>。Starlette 1.3 的 TestClient 已优先使用 HTTPX2。</li>
+    <li>重新执行 editable install：<code>.venv/bin/python -m pip install -e '.[dev]'</code>。</li>
+    <li>打开 <code>learning_exercises/lesson_0005_health_version.py</code>，完成两个 TODO。</li>
+    <li>用 TestClient 运行测试，不启动真实服务器。</li>
+  </ol>
+  <pre><code>.venv/bin/python -m pytest -q \
+  learning_exercises/test_lesson_0005_health_version.py</code></pre>
+
+  <h2>5. 通过后回答</h2>
+  <ol>
+    <li><code>@app.get("/health")</code> 在这里登记了哪两个匹配条件？</li>
+    <li>为什么 endpoint 返回 Python dict，客户端收到的却是 JSON？</li>
+    <li>TestClient 为什么不需要真的监听一个网络端口？</li>
+    <li>为什么 health 不应该依赖 SQLite 是否已初始化？</li>
+  </ol>
+
+  <h2>6. 权威资料</h2>
+  <ul>
+    <li><a href="https://fastapi.tiangolo.com/tutorial/first-steps/">FastAPI 官方 First Steps</a></li>
+    <li><a href="https://fastapi.tiangolo.com/tutorial/testing/">FastAPI 官方 Testing</a></li>
+    <li><a href="https://pypi.org/project/httpx2/">HTTPX2 PyPI</a></li>
+    <li><a href="0004-console-entrypoint-smoke-test.html">上一课：console entrypoint smoke test</a></li>
+  </ul>
+  <p><strong>先回答下面的预测题，再修改依赖和代码；卡住时把第一个错误发给我。</strong></p>
+</main></body></html>
