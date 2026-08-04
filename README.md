@@ -13,7 +13,7 @@ DevAgentOps 是一个用于秋招展示和系统研究的、可评测的 CI/Test
 - 首版 20 个等权 Case 的平衡目标；
 - Failure Type、failure stage、因果分析和 inconclusive 状态的边界。
 
-当前实施主线是 GitHub Issue #3：建立 CLI、SQLite、FastAPI 和 React/Vite 的最小 smoke path。本分支只实现其中第一个纵向切片：本地 CLI 与 SQLite 初始化/状态检查。
+当前实施主线是 GitHub Issue #3：建立 CLI、SQLite、FastAPI 和 React/Vite 的最小 smoke path。当前切片已经打通本地存储初始化、只读 API 状态和 React 状态展示；它只证明应用骨架可运行，不包含正式评测行为。
 
 ## V1 承诺
 
@@ -75,7 +75,7 @@ DevAgentOps 的长期价值不是停留在 Agent 应用外壳，而是作为一�
 - 多 Runtime 实验设计、Badcase 分析与回归评测；
 - 可靠性、安全边界和人类治理意识。
 
-## CLI + SQLite smoke path
+## 本地 application smoke path
 
 要求 Python 3.11 或更高版本。
 
@@ -88,6 +88,33 @@ python3 -m venv .venv
 ```
 
 `db init` 可以重复执行；它只初始化本地 SQLite Schema。`status` 是只读操作，在数据库不存在时不会创建文件。命令不需要模型 API、网络服务或外部数据库。
+
+启动只读 FastAPI：
+
+```bash
+.venv/bin/python -m uvicorn devagentops.api:app --host 127.0.0.1 --port 8000
+```
+
+在另一个终端启动 React/Vite dashboard：
+
+```bash
+cd frontend
+npm ci
+npm run dev
+```
+
+浏览器打开 `http://127.0.0.1:5173`。Vite 在本地把 `/api/*` 请求代理到 `127.0.0.1:8000`；页面只读取 health、version 和 SQLite 状态，不初始化数据库，也不触发 Agent 或 Eval。
+
+不要直接双击 `frontend/index.html` 或使用 `file://` 打开它。该文件是 Vite 应用入口，必须由 `npm run dev` 提供模块和样式资源；直接打开时页面会显示启动提示，而不是 dashboard。
+
+运行后端与前端测试及前端生产构建：
+
+```bash
+.venv/bin/python -m pytest -q -p no:cacheprovider
+cd frontend
+npm test
+npm run build
+```
 
 ## 当前执行顺序
 

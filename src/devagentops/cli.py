@@ -6,10 +6,8 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
+from devagentops.config import DEFAULT_DATABASE_PATH
 from devagentops.storage import StorageError, initialize_database, inspect_database
-
-
-DEFAULT_DATABASE_PATH = Path(".devagentops/devagentops.db")
 
 
 def _database_path(value: str) -> Path:
