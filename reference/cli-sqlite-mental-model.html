@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLI + SQLite 心智模型</title>
+  <style>
+    :root { color-scheme: light; --ink:#172033; --muted:#5d6778; --paper:#f7f5ef; --card:#fff; --accent:#295f98; --line:#d7dce3; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.65 ui-sans-serif,system-ui,-apple-system,"PingFang SC",sans-serif; }
+    main { max-width:900px; margin:auto; padding:48px 24px 72px; }
+    h1 { font:700 2.2rem/1.15 ui-serif,Georgia,serif; margin:0 0 8px; }
+    h2 { margin-top:34px; font-size:1.2rem; }
+    .sub { color:var(--muted); }
+    .flow { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin:28px 0; }
+    .flow div { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px; text-align:center; }
+    .rule { background:var(--card); border-left:4px solid var(--accent); padding:16px 18px; margin:16px 0; }
+    code { background:#e9edf2; border-radius:4px; padding:.1em .35em; }
+    table { width:100%; border-collapse:collapse; background:var(--card); }
+    th,td { padding:10px 12px; border:1px solid var(--line); text-align:left; vertical-align:top; }
+    @media(max-width:700px){ .flow { grid-template-columns:1fr; } }
+    @media print { body{background:#fff} main{padding:0} }
+  </style>
+</head>
+<body><main>
+  <h1>CLI + SQLite 心智模型</h1>
+  <p class="sub">DevAgentOps Issue #3 · 快速复习卡</p>
+  <div class="flow">
+    <div>argv<br><small>字符串输入</small></div><div>argparse<br><small>命令契约</small></div><div>Path<br><small>边界验证</small></div><div>Storage<br><small>迁移/检查</small></div><div>JSON + exit code<br><small>稳定输出</small></div>
+  </div>
+  <h2>两个命令，两种副作用</h2>
+  <table><thead><tr><th>命令</th><th>允许</th><th>禁止</th></tr></thead><tbody>
+    <tr><td><code>status</code></td><td>检查文件、打开已有数据库、查询表</td><td>创建目录、创建数据库、执行 Migration</td></tr>
+    <tr><td><code>db init</code></td><td>创建父目录、创建数据库、升级到 Migration Head</td><td>重复插入元数据、依赖外部服务</td></tr>
+  </tbody></table>
+  <div class="rule"><strong>核心不变量：</strong>观察状态不应改变状态；初始化可以改变状态，但必须幂等。</div>
+  <h2>为什么需要三层</h2>
+  <ul>
+    <li><strong>CLI：</strong>负责解析输入和把错误变成 exit code，不写数据库规则。</li>
+    <li><strong>Storage：</strong>负责路径、连接、状态查询和错误语义，不关心终端展示。</li>
+    <li><strong>Migration：</strong>负责 Schema 如何从旧版本演进到新版本。</li>
+  </ul>
+  <h2>测试的真正问题</h2>
+  <ul>
+    <li>缺失数据库执行 <code>status</code> 后，文件是否仍然不存在？</li>
+    <li><code>db init</code> 执行两次，表和元数据是否保持一致？</li>
+    <li>数据库路径其实是目录时，错误是否明确且退出码非零？</li>
+    <li>空 SQLite 文件是否会被误报为“已初始化”？</li>
+  </ul>
+</main></body></html>

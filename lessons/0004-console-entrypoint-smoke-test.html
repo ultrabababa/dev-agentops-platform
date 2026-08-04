@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第四课：从终端命令到 Python main</title>
+  <style>
+    :root { --ink:#182234; --muted:#637083; --paper:#f5f3ed; --card:#fff; --accent:#1e6674; --warm:#b55b32; --line:#d7dde3; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.7 ui-sans-serif,system-ui,-apple-system,"PingFang SC",sans-serif; }
+    main { max-width:880px; margin:auto; padding:48px 24px 80px; }
+    h1 { margin:0; font:700 2.35rem/1.15 ui-serif,Georgia,serif; letter-spacing:-.02em; }
+    h2 { margin-top:38px; font-size:1.28rem; }
+    .eyebrow { color:var(--accent); font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    .lede { color:var(--muted); font-size:1.08rem; max-width:720px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px 22px; margin:18px 0; box-shadow:0 6px 24px rgba(30,45,65,.05); }
+    .warning { border-left:5px solid var(--warm); }
+    pre { overflow:auto; background:#172232; color:#f2f4f7; padding:16px 18px; border-radius:10px; line-height:1.5; }
+    code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+    p code, li code { background:#e6ecee; padding:.12em .38em; border-radius:4px; color:#174c57; }
+    .steps { counter-reset:step; list-style:none; padding:0; }
+    .steps li { position:relative; padding:0 0 22px 50px; }
+    .steps li::before { counter-increment:step; content:counter(step); position:absolute; left:0; top:1px; width:32px; height:32px; display:grid; place-items:center; border-radius:50%; background:var(--accent); color:#fff; font-weight:700; }
+    details { background:#edf2f3; border-radius:10px; padding:12px 16px; margin:14px 0; }
+    summary { cursor:pointer; font-weight:700; }
+    a { color:var(--accent); }
+    @media print { body{background:#fff} main{padding:0}.card{box-shadow:none} }
+  </style>
+</head>
+<body><main>
+  <div class="eyebrow">DevAgentOps · Lesson 0004 · 20–30 min</div>
+  <h1>从终端命令走到 Python <code>main()</code></h1>
+  <p class="lede">这一课把上一课写出的进程契约放回真实世界：理解安装器如何生成 <code>devagentops</code> 命令，并亲手观察一次完整 smoke path。</p>
+
+  <h2>1. 读懂入口声明</h2>
+  <pre><code>[project.scripts]
+devagentops = "devagentops.cli:main"</code></pre>
+  <div class="card">
+    <p><code>devagentops</code>：安装后暴露给 shell 的命令名。</p>
+    <p><code>devagentops.cli</code>：需要导入的 Python 模块。</p>
+    <p><code>:main</code>：在该模块中调用的函数。</p>
+  </div>
+  <p>安装器大致生成这样的包装器：</p>
+  <pre><code>from devagentops.cli import main
+sys.exit(main())</code></pre>
+  <p>所以 <code>main()</code> 返回的 <code>0</code> 或 <code>2</code> 最终会成为真实进程退出码。</p>
+
+  <h2>2. 先预测四步状态</h2>
+  <ol>
+    <li>对不存在的路径运行 <code>status</code>：会不会创建文件？</li>
+    <li>运行第一次 <code>db init</code>：数据库会变成什么状态？</li>
+    <li>再次运行 <code>status</code>：输出应与 init 有什么关系？</li>
+    <li>把目录当数据库文件初始化：stdout、stderr 和退出码各是什么？</li>
+  </ol>
+
+  <h2>3. 亲手运行 smoke path</h2>
+  <ol class="steps">
+    <li>进入隔离 worktree，并创建一次性临时目录。</li>
+    <li>先 status，确认观察不存在的数据库不会创建它。</li>
+    <li>init 后再 status，比较两个 JSON。</li>
+    <li>故意传入目录作为非法数据库路径，观察错误通道和退出码。</li>
+  </ol>
+  <pre><code>cd /private/tmp/dev-agentops-platform-issue3-20260804
+LESSON_DIR="$(mktemp -d)"
+LESSON_DB="$LESSON_DIR/devagentops.db"
+
+.venv/bin/devagentops status --database "$LESSON_DB"
+echo "exit=$?"
+
+.venv/bin/devagentops db init --database "$LESSON_DB"
+echo "exit=$?"
+
+.venv/bin/devagentops status --database "$LESSON_DB"
+echo "exit=$?"
+
+.venv/bin/devagentops db init --database "$LESSON_DIR"
+echo "exit=$?"</code></pre>
+
+  <h2>4. 运行后回答</h2>
+  <div class="card">
+    <ol>
+      <li>为什么终端执行命令时是 <code>main()</code>，测试却可以调用 <code>main([...])</code>？</li>
+      <li><code>sys.exit(main())</code> 怎样把 Python 返回值变成进程退出码？</li>
+      <li>为什么 smoke test 仍不能替代 pytest 自动化测试？</li>
+    </ol>
+  </div>
+
+  <h2>5. 权威资料</h2>
+  <ul>
+    <li><a href="https://packaging.python.org/en/latest/specifications/entry-points/">PyPA Entry Points 规范</a></li>
+    <li><a href="https://packaging.python.org/en/latest/specifications/pyproject-toml/">PyPA pyproject.toml 规范</a></li>
+    <li><a href="0003-cli-process-contract.html">上一课：CLI 进程契约</a></li>
+  </ul>
+  <p><strong>把四组 JSON 和退出码发给我；任何结果和预测不一致都值得停下来解释。</strong></p>
+</main></body></html>

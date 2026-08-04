@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第二课：用测试证明重复初始化不丢数据</title>
+  <style>
+    :root { --ink:#182234; --muted:#637083; --paper:#f5f3ed; --card:#fff; --accent:#1e6674; --warm:#b55b32; --line:#d7dde3; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.7 ui-sans-serif,system-ui,-apple-system,"PingFang SC",sans-serif; }
+    main { max-width:880px; margin:auto; padding:48px 24px 80px; }
+    h1 { margin:0; font:700 2.35rem/1.15 ui-serif,Georgia,serif; letter-spacing:-.02em; }
+    h2 { margin-top:38px; font-size:1.28rem; }
+    .eyebrow { color:var(--accent); font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    .lede { color:var(--muted); font-size:1.08rem; max-width:720px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px 22px; margin:18px 0; box-shadow:0 6px 24px rgba(30,45,65,.05); }
+    .warning { border-left:5px solid var(--warm); }
+    pre { overflow:auto; background:#172232; color:#f2f4f7; padding:16px 18px; border-radius:10px; line-height:1.5; }
+    code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+    p code, li code { background:#e6ecee; padding:.12em .38em; border-radius:4px; color:#174c57; }
+    .steps { counter-reset:step; list-style:none; padding:0; }
+    .steps li { position:relative; padding:0 0 22px 50px; }
+    .steps li::before { counter-increment:step; content:counter(step); position:absolute; left:0; top:1px; width:32px; height:32px; display:grid; place-items:center; border-radius:50%; background:var(--accent); color:#fff; font-weight:700; }
+    details { background:#edf2f3; border-radius:10px; padding:12px 16px; margin:14px 0; }
+    summary { cursor:pointer; font-weight:700; }
+    a { color:var(--accent); }
+    @media print { body{background:#fff} main{padding:0}.card{box-shadow:none} }
+  </style>
+</head>
+<body><main>
+  <div class="eyebrow">DevAgentOps · Lesson 0002 · 25–40 min</div>
+  <h1>用测试证明重复初始化不丢数据</h1>
+  <p class="lede">你已经能解释幂等 Migration。现在把它变成一条回归测试：只要未来有人把初始化改成“删除并重建”，测试必须立刻失败。</p>
+
+  <div class="card warning"><strong>学习规则：</strong>第一次尝试完成前，不打开 <code>tests/test_issue_3_cli_sqlite.py</code>。你要从安全不变量推导测试，而不是复制现成断言。</div>
+
+  <h2>1. 先写测试故事</h2>
+  <pre><code>Given  数据库完成第一次初始化，并写入一条用户数据
+When   对同一路径再次执行初始化
+Then   用户数据仍然存在，迁移版本仍是 0001</code></pre>
+  <p>这里的 marker row 代替未来真实的 Run 数据。测试关心的不是它有什么业务意义，而是初始化不得删除调用者已经保存的状态。</p>
+
+  <h2>2. 完成五个 TODO</h2>
+  <ol class="steps">
+    <li>打开 <code>learning_exercises/test_lesson_0002_idempotent_init.py</code>。</li>
+    <li>第一次调用 <code>initialize_database(database_path)</code>。</li>
+    <li>用 <code>sqlite3</code> 向 <code>devagentops_metadata</code> 插入 marker，并确保事务提交。</li>
+    <li>再次调用相同的初始化函数。</li>
+    <li>查询 marker 和 <code>alembic_version.version_num</code>，完成两个断言。</li>
+  </ol>
+  <pre><code>cd /private/tmp/dev-agentops-platform-issue3-20260804
+.venv/bin/python -m pytest -q \
+  learning_exercises/test_lesson_0002_idempotent_init.py</code></pre>
+
+  <h2>3. 卡住时逐级展开</h2>
+  <details><summary>提示 1：测试的 Arrange / Act / Assert</summary><pre><code>Arrange: init → insert marker
+Act:     init again
+Assert:  select marker → select revision</code></pre></details>
+  <details><summary>提示 2：marker 的 SQL</summary><pre><code>INSERT INTO devagentops_metadata (key, value)
+VALUES (?, ?)</code></pre></details>
+  <details><summary>提示 3：为什么要 commit</summary><p>如果写入事务没有提交，连接关闭后可能回滚。那时 marker 消失不能证明第二次初始化清空了数据，只能证明测试自己没有保存数据。</p></details>
+  <details><summary>提示 4：读取 Alembic revision</summary><pre><code>SELECT version_num FROM alembic_version</code></pre></details>
+
+  <h2>4. 通过后回答</h2>
+  <div class="card">
+    <ol>
+      <li>只断言两次返回的 <code>StorageStatus</code> 相等，为什么不能证明数据没有被清空？</li>
+      <li>marker 为什么必须在第一次和第二次初始化之间写入？</li>
+      <li>如果第二次初始化抛出异常，<code>inspect_database()</code> 会不会执行？为什么？</li>
+    </ol>
+  </div>
+  <p>测试通过后，把代码和三个回答发给我。我会检查你的测试是否真的能抓住“重建数据库”的回归。</p>
+
+  <h2>5. 权威资料</h2>
+  <ul>
+    <li><a href="https://alembic.sqlalchemy.org/en/latest/api/commands.html">Alembic Commands API：upgrade</a></li>
+    <li><a href="https://docs.python.org/3/library/sqlite3.html#transaction-control">Python sqlite3：事务控制</a></li>
+    <li><a href="0001-read-only-sqlite-status.html">上一课：只读 SQLite status</a></li>
+    <li><a href="../reference/cli-sqlite-mental-model.html">速查：CLI + SQLite 心智模型</a></li>
+  </ul>
+  <p><strong>遇到第一个失败就把失败信息发给我，不要一次修改很多地方。</strong></p>
+</main></body></html>
