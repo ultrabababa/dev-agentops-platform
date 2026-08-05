@@ -5,6 +5,10 @@ agent components. Draft manifests may live anywhere outside `components/frozen/`
 The freeze command validates a draft, copies it into `components/frozen/`, and
 adds its immutable version and canonical fingerprint to `registry.json`.
 
+For the Evaluation Matrix rules, the two-layer identity model, and the exact
+boundary between structural and formal validation, see
+[`docs/evaluation/evaluation-matrix-and-component-registry.md`](../docs/evaluation/evaluation-matrix-and-component-registry.md).
+
 V1 supports these component types:
 
 - `prompt`: required `template`; optional `variables`.
@@ -62,3 +66,8 @@ With `--registry`, `eval doctor` rejects draft and missing versions, reloads eve
 registered frozen manifest, recomputes its fingerprint, and fails on version
 pollution. The normal command requires `--registry`; legacy, non-formal matrix
 structure checks must opt in explicitly with `--structural-only`.
+
+The validated component fingerprints become part of the formal condition
+fingerprint. Matrix key `retriever` maps to registry type `retriever_config` for
+Issue #4 compatibility; a condition cannot declare both aliases. Model
+configuration remains a Matrix field and is not stored in this registry.

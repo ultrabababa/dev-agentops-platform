@@ -30,6 +30,10 @@ Formal evaluation can fail fast when component identity is polluted. Developers 
 - Component registry stores only frozen components.
 - Model configuration is recorded in conditions and run manifests, but not in the component registry.
 
+## Implementation Guide
+
+See [Evaluation Matrix 与 Component Registry](../evaluation/evaluation-matrix-and-component-registry.md) for the currently implemented manifest schemas, freeze workflow, Matrix integration, validation failures, and boundaries.
+
 ## Consolidates
 
 Micro ADRs: `0018`, `0019`, `0020`, `0021`, `0022`, `0038`, `0040`, `0041`, `0042`, `0043`, `0044`.
