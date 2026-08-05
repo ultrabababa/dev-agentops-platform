@@ -1,0 +1,11 @@
+{
+  "components": {
+    "mcp_server_set": {},
+    "prompt": {},
+    "retriever_config": {},
+    "skill_registry": {},
+    "tool_policy": {},
+    "tool_registry": {}
+  },
+  "schema_version": "1"
+}

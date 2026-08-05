@@ -13,7 +13,7 @@ DevAgentOps 是一个用于秋招展示和系统研究的、可评测的 CI/Test
 - 首版 20 个等权 Case 的平衡目标；
 - Failure Type、failure stage、因果分析和 inconclusive 状态的边界。
 
-当前实施主线是 GitHub Issue #3：建立 CLI、SQLite、FastAPI 和 React/Vite 的最小 smoke path。当前切片已经打通本地存储初始化、只读 API 状态和 React 状态展示；它只证明应用骨架可运行，不包含正式评测行为。
+当前实施主线已经推进到 Evaluation Matrix 与 Component Registry：CLI 可以解析有效评测条件、计算 condition fingerprint，并校验和冻结行为相关组件。组件完整性检查仍是正式评测的前置能力；当前尚不执行 Agent、模型调用或评分流程。
 
 ## V1 承诺
 
@@ -107,6 +107,23 @@ npm run dev
 
 不要直接双击 `frontend/index.html` 或使用 `file://` 打开它。该文件是 Vite 应用入口，必须由 `npm run dev` 提供模块和样式资源；直接打开时页面会显示启动提示，而不是 dashboard。
 
+## Component Registry
+
+组件清单把行为相关字段放在 `behavior`，把作者、说明和时间等审阅信息放在 `metadata`。canonical fingerprint 只覆盖规范化后的 behavior；格式化、字段顺序和 metadata 变化不会改变指纹，behavior 变化必须使用新的 component version。
+
+```bash
+.venv/bin/devagentops component validate --manifest path/to/draft.json
+.venv/bin/devagentops component freeze \
+  --manifest path/to/draft.json \
+  --registry components/registry.json \
+  --version component-v1
+.venv/bin/devagentops eval doctor \
+  --matrix path/to/evaluation-matrix.json \
+  --registry components/registry.json
+```
+
+完整清单格式、六类组件和 draft/frozen 边界见 [components/README.md](components/README.md)。
+
 运行后端与前端测试及前端生产构建：
 
 ```bash
@@ -120,9 +137,9 @@ npm run build
 
 ```text
 #2 V1 taxonomy 与 Offline Case policy（已完成）
-→ #3 应用 smoke path（当前）
-→ #4 Evaluation Matrix
-→ #5 Component Registry
+→ #3 应用 smoke path（已完成）
+→ #4 Evaluation Matrix（已完成）
+→ #5 Component Registry（当前）
 → #6 Offline Case Package / Evaluation Suite
 ```
 

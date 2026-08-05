@@ -41,7 +41,7 @@ def test_eval_doctor_prints_effective_condition_with_stable_fingerprint(
         encoding="utf-8",
     )
 
-    assert main(["eval", "doctor", "--matrix", str(matrix_path)]) == 0
+    assert main(["eval", "doctor", "--structural-only", "--matrix", str(matrix_path)]) == 0
 
     payload = json.loads(capsys.readouterr().out)
     assert payload["matrix_id"] == "v1-baseline"
@@ -86,7 +86,7 @@ def test_eval_doctor_prints_effective_condition_with_stable_fingerprint(
         ),
         encoding="utf-8",
     )
-    assert main(["eval", "doctor", "--matrix", str(formatted_path)]) == 0
+    assert main(["eval", "doctor", "--structural-only", "--matrix", str(formatted_path)]) == 0
     formatted_payload = json.loads(capsys.readouterr().out)
     assert formatted_payload["conditions"][0]["condition_fingerprint"] == fingerprint
 
@@ -127,7 +127,7 @@ def test_eval_doctor_resolves_defaults_into_each_effective_condition(
         encoding="utf-8",
     )
 
-    assert main(["eval", "doctor", "--matrix", str(matrix_path)]) == 0
+    assert main(["eval", "doctor", "--structural-only", "--matrix", str(matrix_path)]) == 0
 
     payload = json.loads(capsys.readouterr().out)
     assert payload["conditions"][0]["effective_condition"] == {
@@ -186,7 +186,7 @@ def test_eval_doctor_resolves_one_level_condition_extension(
         encoding="utf-8",
     )
 
-    assert main(["eval", "doctor", "--matrix", str(matrix_path)]) == 0
+    assert main(["eval", "doctor", "--structural-only", "--matrix", str(matrix_path)]) == 0
 
     payload = json.loads(capsys.readouterr().out)
     assert payload["conditions"][1]["effective_condition"] == {
@@ -227,7 +227,7 @@ def test_eval_doctor_rejects_missing_extension_reference(
         encoding="utf-8",
     )
 
-    assert main(["eval", "doctor", "--matrix", str(matrix_path)]) == 2
+    assert main(["eval", "doctor", "--structural-only", "--matrix", str(matrix_path)]) == 2
 
     captured = capsys.readouterr()
     assert captured.out == ""
@@ -263,7 +263,7 @@ def test_eval_doctor_rejects_deeper_condition_extension(
         encoding="utf-8",
     )
 
-    assert main(["eval", "doctor", "--matrix", str(matrix_path)]) == 2
+    assert main(["eval", "doctor", "--structural-only", "--matrix", str(matrix_path)]) == 2
 
     error = json.loads(capsys.readouterr().err)["error"]
     assert "one level" in error
@@ -298,7 +298,7 @@ def test_eval_doctor_rejects_condition_extension_cycle(
         encoding="utf-8",
     )
 
-    assert main(["eval", "doctor", "--matrix", str(matrix_path)]) == 2
+    assert main(["eval", "doctor", "--structural-only", "--matrix", str(matrix_path)]) == 2
 
     error = json.loads(capsys.readouterr().err)["error"]
     assert "cycle" in error
@@ -329,7 +329,7 @@ def test_eval_doctor_rejects_unknown_condition_field(
         encoding="utf-8",
     )
 
-    assert main(["eval", "doctor", "--matrix", str(matrix_path)]) == 2
+    assert main(["eval", "doctor", "--structural-only", "--matrix", str(matrix_path)]) == 2
 
     error = json.loads(capsys.readouterr().err)["error"]
     assert "unknown field" in error
@@ -359,7 +359,7 @@ def test_eval_doctor_rejects_unknown_condition_type(
         encoding="utf-8",
     )
 
-    assert main(["eval", "doctor", "--matrix", str(matrix_path)]) == 2
+    assert main(["eval", "doctor", "--structural-only", "--matrix", str(matrix_path)]) == 2
 
     error = json.loads(capsys.readouterr().err)["error"]
     assert "condition type" in error
@@ -394,7 +394,7 @@ def test_eval_doctor_rejects_incomplete_effective_condition(
         encoding="utf-8",
     )
 
-    assert main(["eval", "doctor", "--matrix", str(matrix_path)]) == 2
+    assert main(["eval", "doctor", "--structural-only", "--matrix", str(matrix_path)]) == 2
 
     error = json.loads(capsys.readouterr().err)["error"]
     assert "missing required field" in error
@@ -419,7 +419,7 @@ def test_eval_doctor_rejects_unknown_matrix_field(
         encoding="utf-8",
     )
 
-    assert main(["eval", "doctor", "--matrix", str(matrix_path)]) == 2
+    assert main(["eval", "doctor", "--structural-only", "--matrix", str(matrix_path)]) == 2
 
     error = json.loads(capsys.readouterr().err)["error"]
     assert "unknown field" in error
@@ -444,7 +444,7 @@ def test_eval_doctor_rejects_unknown_defaults_field(
         encoding="utf-8",
     )
 
-    assert main(["eval", "doctor", "--matrix", str(matrix_path)]) == 2
+    assert main(["eval", "doctor", "--structural-only", "--matrix", str(matrix_path)]) == 2
 
     error = json.loads(capsys.readouterr().err)["error"]
     assert "unknown field" in error
@@ -467,7 +467,7 @@ def test_eval_doctor_reports_missing_matrix_metadata(
         encoding="utf-8",
     )
 
-    assert main(["eval", "doctor", "--matrix", str(matrix_path)]) == 2
+    assert main(["eval", "doctor", "--structural-only", "--matrix", str(matrix_path)]) == 2
 
     error = json.loads(capsys.readouterr().err)["error"]
     assert "missing required field" in error
@@ -481,7 +481,7 @@ def test_eval_doctor_reports_invalid_json(
     matrix_path = tmp_path / "evaluation-matrix.json"
     matrix_path.write_text("{not-json", encoding="utf-8")
 
-    assert main(["eval", "doctor", "--matrix", str(matrix_path)]) == 2
+    assert main(["eval", "doctor", "--structural-only", "--matrix", str(matrix_path)]) == 2
 
     error = json.loads(capsys.readouterr().err)["error"]
     assert "invalid JSON" in error
@@ -516,7 +516,7 @@ def test_eval_doctor_rejects_duplicate_condition_ids(
         encoding="utf-8",
     )
 
-    assert main(["eval", "doctor", "--matrix", str(matrix_path)]) == 2
+    assert main(["eval", "doctor", "--structural-only", "--matrix", str(matrix_path)]) == 2
 
     error = json.loads(capsys.readouterr().err)["error"]
     assert "duplicate condition id" in error

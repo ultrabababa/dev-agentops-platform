@@ -6,6 +6,11 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
+from devagentops.component_registry import (
+    ComponentRegistryError,
+    freeze_component,
+    load_component_manifest,
+)
 from devagentops.config import DEFAULT_DATABASE_PATH
 from devagentops.evaluation_matrix import (
     EvaluationMatrixError,
@@ -67,6 +72,56 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="Path to a repository-defined evaluation matrix JSON file.",
     )
+    doctor_parser.add_argument(
+        "--registry",
+        type=Path,
+        help="Path to the repository component registry used for formal validation.",
+    )
+    doctor_parser.add_argument(
+        "--structural-only",
+        action="store_true",
+        help="Run legacy matrix structure checks without formal component validation.",
+    )
+
+    component_parser = subcommands.add_parser(
+        "component",
+        help="Validate and freeze behavior-affecting agent components.",
+    )
+    component_subcommands = component_parser.add_subparsers(
+        dest="component_command",
+        required=True,
+    )
+    validate_parser = component_subcommands.add_parser(
+        "validate",
+        help="Validate a draft component manifest and print its canonical fingerprint.",
+    )
+    validate_parser.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+        help="Path to a draft component manifest JSON file.",
+    )
+    freeze_parser = component_subcommands.add_parser(
+        "freeze",
+        help="Freeze a validated manifest as an immutable component version.",
+    )
+    freeze_parser.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+        help="Path to a draft component manifest JSON file.",
+    )
+    freeze_parser.add_argument(
+        "--registry",
+        type=Path,
+        required=True,
+        help="Path to the repository component registry JSON file.",
+    )
+    freeze_parser.add_argument(
+        "--version",
+        required=True,
+        help="New immutable component version.",
+    )
     return parser
 
 
@@ -80,12 +135,26 @@ def main(argv: Sequence[str] | None = None) -> int:
         elif args.command == "status":
             status = inspect_database(args.database)
         elif args.command == "eval" and args.eval_command == "doctor":
-            status = load_evaluation_matrix(args.matrix)
+            if args.registry is None and not args.structural_only:
+                raise EvaluationMatrixError(
+                    "eval doctor requires --registry for formal component validation; "
+                    "use --structural-only only for non-formal matrix structure checks"
+                )
+            if args.registry is not None and args.structural_only:
+                raise EvaluationMatrixError(
+                    "eval doctor accepts either --registry or --structural-only, not both"
+                )
+            status = load_evaluation_matrix(args.matrix, args.registry)
+        elif args.command == "component" and args.component_command == "validate":
+            status = load_component_manifest(args.manifest).validation_result()
+        elif args.command == "component" and args.component_command == "freeze":
+            status = freeze_component(args.manifest, args.registry, args.version)
         else:  # pragma: no cover - argparse prevents this state.
             parser.error("unsupported command")
-    except (EvaluationMatrixError, StorageError) as exc:
+    except (ComponentRegistryError, EvaluationMatrixError, StorageError) as exc:
         print(json.dumps({"error": str(exc)}, ensure_ascii=False), file=sys.stderr)
         return 2
 
-    print(json.dumps(status.as_dict(), ensure_ascii=False, sort_keys=True))
+    payload = status if isinstance(status, dict) else status.as_dict()
+    print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
     return 0

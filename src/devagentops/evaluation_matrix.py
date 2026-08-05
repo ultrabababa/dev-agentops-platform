@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from devagentops.component_registry import validate_component_references
+
 
 class EvaluationMatrixError(RuntimeError):
     pass
@@ -73,13 +75,22 @@ def _merge(
 class ResolvedCondition:
     condition_id: str
     effective_condition: dict[str, Any]
+    component_fingerprints: dict[str, str] | None = None
 
     def as_dict(self) -> dict[str, Any]:
-        return {
+        fingerprint_input = self.effective_condition
+        result: dict[str, Any] = {
             "condition_id": self.condition_id,
             "effective_condition": self.effective_condition,
-            "condition_fingerprint": _fingerprint(self.effective_condition),
         }
+        if self.component_fingerprints is not None:
+            result["component_fingerprints"] = self.component_fingerprints
+            fingerprint_input = {
+                **self.effective_condition,
+                "component_fingerprints": self.component_fingerprints,
+            }
+        result["condition_fingerprint"] = _fingerprint(fingerprint_input)
+        return result
 
 
 @dataclass(frozen=True)
@@ -98,7 +109,10 @@ class EvaluationMatrix:
         }
 
 
-def load_evaluation_matrix(path: Path) -> EvaluationMatrix:
+def load_evaluation_matrix(
+    path: Path,
+    component_registry_path: Path | None = None,
+) -> EvaluationMatrix:
     try:
         document = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
@@ -215,6 +229,19 @@ def load_evaluation_matrix(path: Path) -> EvaluationMatrix:
         )
         for condition in raw_conditions
     )
+    if component_registry_path is not None:
+        conditions = tuple(
+            ResolvedCondition(
+                condition_id=condition.condition_id,
+                effective_condition=condition.effective_condition,
+                component_fingerprints=validate_component_references(
+                    condition.effective_condition["components"],
+                    component_registry_path,
+                    condition_id=condition.condition_id,
+                ),
+            )
+            for condition in conditions
+        )
     return EvaluationMatrix(
         matrix_id=document["matrix_id"],
         matrix_version=document["matrix_version"],
