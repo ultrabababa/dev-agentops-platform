@@ -16,6 +16,11 @@ from devagentops.evaluation_matrix import (
     EvaluationMatrixError,
     load_evaluation_matrix,
 )
+from devagentops.evaluation_suite import (
+    EvaluationSuiteError,
+    load_evaluation_suite,
+    validate_matrix_suite_references,
+)
 from devagentops.storage import StorageError, initialize_database, inspect_database
 
 
@@ -75,7 +80,12 @@ def build_parser() -> argparse.ArgumentParser:
     doctor_parser.add_argument(
         "--registry",
         type=Path,
-        help="Path to the repository component registry used for formal validation.",
+        help="Path to the repository component registry used for formal preflight.",
+    )
+    doctor_parser.add_argument(
+        "--suite",
+        type=Path,
+        help="Path to the explicit evaluation suite manifest used for formal preflight.",
     )
     doctor_parser.add_argument(
         "--structural-only",
@@ -135,23 +145,42 @@ def main(argv: Sequence[str] | None = None) -> int:
         elif args.command == "status":
             status = inspect_database(args.database)
         elif args.command == "eval" and args.eval_command == "doctor":
-            if args.registry is None and not args.structural_only:
+            if args.structural_only and (
+                args.registry is not None or args.suite is not None
+            ):
                 raise EvaluationMatrixError(
-                    "eval doctor requires --registry for formal component validation; "
-                    "use --structural-only only for non-formal matrix structure checks"
+                    "eval doctor --structural-only validates only the Evaluation Matrix "
+                    "and cannot be combined with --registry or --suite"
                 )
-            if args.registry is not None and args.structural_only:
+            if not args.structural_only and (
+                args.registry is None or args.suite is None
+            ):
                 raise EvaluationMatrixError(
-                    "eval doctor accepts either --registry or --structural-only, not both"
+                    "formal eval doctor requires both --registry and --suite; "
+                    "use --structural-only only for Matrix structure validation"
                 )
-            status = load_evaluation_matrix(args.matrix, args.registry)
+            if args.structural_only:
+                status = load_evaluation_matrix(args.matrix)
+            else:
+                matrix = load_evaluation_matrix(args.matrix, args.registry)
+                suite = load_evaluation_suite(args.suite)
+                validate_matrix_suite_references(matrix, suite)
+                status = {
+                    **matrix.as_dict(),
+                    "evaluation_suite": suite.as_dict(),
+                }
         elif args.command == "component" and args.component_command == "validate":
             status = load_component_manifest(args.manifest).validation_result()
         elif args.command == "component" and args.component_command == "freeze":
             status = freeze_component(args.manifest, args.registry, args.version)
         else:  # pragma: no cover - argparse prevents this state.
             parser.error("unsupported command")
-    except (ComponentRegistryError, EvaluationMatrixError, StorageError) as exc:
+    except (
+        ComponentRegistryError,
+        EvaluationMatrixError,
+        EvaluationSuiteError,
+        StorageError,
+    ) as exc:
         print(json.dumps({"error": str(exc)}, ensure_ascii=False), file=sys.stderr)
         return 2
 

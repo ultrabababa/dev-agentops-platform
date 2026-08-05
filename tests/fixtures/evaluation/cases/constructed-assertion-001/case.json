@@ -1,0 +1,22 @@
+{
+  "case_schema_version": "1",
+  "case_id": "constructed-assertion-001",
+  "raw_log": "raw.log",
+  "frozen_log_chunks": "log-chunks.json",
+  "frozen_log_chunks_fingerprint": "ac145d479a0b21241ab5e181cb89dcb29bfae7eb698d779dc5f4aadf25806d13",
+  "repository_evidence": "repository-evidence.json",
+  "expected_answer": "expected-answer.json",
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "source_type": "constructed",
+  "source_url_or_construction_note": "Constructed from synthetic pytest output and a synthetic repository snapshot for loader tests.",
+  "license_or_permission": "project_constructed",
+  "created_by": "DevAgentOps maintainers",
+  "reviewed_by": "DevAgentOps fixture reviewer",
+  "sanitization_status": "reviewed_sanitized",
+  "case_fingerprint": "7b558672825cc69d1fdf329375be41dd5b7fc1c2dcb7642be953bf5c5a2e2388"
+}

@@ -21,6 +21,9 @@ DEFAULT_BEHAVIOR = {
     "mcp_server_set": {"servers": []},
     "skill_registry": {"skills": []},
 }
+TINY_SUITE_PATH = (
+    Path(__file__).parent / "fixtures" / "evaluation" / "tiny-suite.json"
+)
 
 
 def _write_manifest(
@@ -59,7 +62,7 @@ def _write_matrix_with_components(path: Path, components: dict[str, str]) -> Non
                         "id": "pipeline-anchor-v1",
                         "type": "anchor",
                         "runtime_variant": "pipeline",
-                        "suite": "triage-v1",
+                        "suite": "tiny-loader-fixture-v1",
                         "evaluation_method": "triage-method-v1",
                         "model": {"provider": "test", "name": "model-v1"},
                         "components": components,
@@ -264,6 +267,8 @@ def test_eval_doctor_validates_frozen_component_references(
         str(matrix_path),
         "--registry",
         str(registry_path),
+        "--suite",
+        str(TINY_SUITE_PATH),
     ]
     _write_matrix(matrix_path, "triage-prompt-v1")
     assert main(doctor_command) == 0
@@ -318,7 +323,7 @@ def test_eval_doctor_requires_explicit_formal_or_structural_mode(
     assert main(["eval", "doctor", "--matrix", str(matrix_path)]) == 2
 
     error = json.loads(capsys.readouterr().err)["error"]
-    assert "requires --registry" in error
+    assert "requires both --registry and --suite" in error
     assert "structural-only" in error
 
 
@@ -384,6 +389,8 @@ def test_eval_doctor_resolves_all_six_component_types(
                 str(matrix_path),
                 "--registry",
                 str(registry_path),
+                "--suite",
+                str(TINY_SUITE_PATH),
             ]
         )
         == 0
@@ -415,6 +422,8 @@ def test_eval_doctor_rejects_retriever_alias_collision(tmp_path: Path, capsys):
                 str(matrix_path),
                 "--registry",
                 str(registry_path),
+                "--suite",
+                str(TINY_SUITE_PATH),
             ]
         )
         == 2

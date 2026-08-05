@@ -1,0 +1,15 @@
+{
+  "schema_version": "1",
+  "items": [
+    {
+      "evidence_id": "repo:calculate-total",
+      "path": "src/example/calculator.py",
+      "content": "def calculate_total(left, right):\n    return left * right\n"
+    },
+    {
+      "evidence_id": "repo:test-total",
+      "path": "tests/test_total.py",
+      "content": "def test_total():\n    assert calculate_total(2, 3) == 5\n"
+    }
+  ]
+}

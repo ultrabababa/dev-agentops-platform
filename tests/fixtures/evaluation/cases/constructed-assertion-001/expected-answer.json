@@ -1,0 +1,15 @@
+{
+  "schema_version": "1",
+  "primary_failure_type": "test_assertion_failure",
+  "acceptable_failure_types": [],
+  "required_evidence_ids": [
+    "log:assertion-mismatch",
+    "repo:calculate-total"
+  ],
+  "optional_evidence_ids": [
+    "repo:test-total"
+  ],
+  "summary": "The calculation assertion failed with a stable observed value mismatch.",
+  "root_cause": "calculate_total multiplies its inputs instead of adding them.",
+  "recommended_action": "Review the calculate_total implementation against its addition contract."
+}
