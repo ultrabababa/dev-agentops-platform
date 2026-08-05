@@ -14,6 +14,10 @@ _Avoid_: Generic coding assistant, chatbot, Codex clone
 The project domain for making automated build and test failure diagnosis traceable, evaluable, repeatable, and governable.
 _Avoid_: Generic CI/CD diagnosis, general coding agent, generic AgentOps platform
 
+**Evaluation and Badcase Driven Development (EBDD)**:
+An internal development method for improving DevAgentOps by using formal evaluation results, metric vectors, formal badcases, and badcase carryover to decide what to change next. EBDD complements TDD: TDD verifies deterministic software behavior, while EBDD guides agent behavior iteration.
+_Avoid_: Product category, external positioning, replacement for CI/Test Failure Triage AgentOps, test-driven development synonym
+
 ### **CI/Test Failure Triage**:
 
 A developer workflow for classifying and explaining automated build or test failures using logs, changed code, project knowledge, and historical incidents. It ends with a diagnostic report rather than applying code changes or rerunning CI.
