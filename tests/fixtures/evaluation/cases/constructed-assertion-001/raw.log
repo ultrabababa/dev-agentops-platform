@@ -1,0 +1,8 @@
+============================= test session starts ==============================
+collected 1 item
+
+tests/test_total.py F                                                    [100%]
+
+E       assert calculate_total(2, 3) == 5
+E       assert 6 == 5
+============================== 1 failed in 0.04s ===============================

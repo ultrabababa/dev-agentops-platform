@@ -122,10 +122,11 @@ Issue #4 与 #5 共同定义了可复现的正式评测配置：Matrix 解析 De
   --version component-v1
 .venv/bin/devagentops eval doctor \
   --matrix path/to/evaluation-matrix.json \
-  --registry components/registry.json
+  --registry components/registry.json \
+  --suite path/to/suite.json
 ```
 
-完整规则、示例、失败条件和当前边界见 [Evaluation Matrix 与 Component Registry](docs/evaluation/evaluation-matrix-and-component-registry.md)。具体 Manifest 字段和 Freeze 命令也可查阅 [components/README.md](components/README.md)。
+完整规则、Schema、Fingerprint 覆盖范围、失败条件和当前边界统一见 [Evaluation Matrix、Component Registry 与 Offline Evaluation Suite](docs/evaluation/evaluation-matrix-and-component-registry.md)。具体 Component Manifest 字段和 Freeze 命令也可查阅 [components/README.md](components/README.md)。
 
 运行后端与前端测试及前端生产构建：
 
@@ -143,7 +144,7 @@ npm run build
 → #3 应用 smoke path（已完成）
 → #4 Evaluation Matrix（已完成）
 → #5 Component Registry（已完成）
-→ #6 Offline Case Package / Evaluation Suite（下一步）
+→ #6 Offline Case Package / Evaluation Suite Loader（已完成本地实现）
 ```
 
 《AI Agent Book》及其实验按当前 Issue 的具体问题穿插使用，不作为项目开工前置课程。

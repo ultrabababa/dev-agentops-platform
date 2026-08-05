@@ -1,18 +1,21 @@
-# Evaluation Matrix 与 Component Registry
+# Evaluation Matrix、Component Registry 与 Offline Evaluation Suite
 
-本文说明 DevAgentOps 当前已经实现的正式评测配置规则，对应：
+本文统一说明 DevAgentOps 当前已经实现的正式评测配置与离线评测数据契约，对应：
 
 - Issue #4：Evaluation Matrix；
-- Issue #5：Component Registry。
+- Issue #5：Component Registry；
+- Issue #6：Offline Case Package 与 Evaluation Suite Manifest Loader。
 
-它们解决的是同一类可复现问题的两个层次：
+它们共同解决正式评测的可复现性问题：
 
 | 层次 | 要回答的问题 | 当前实现 |
 |------|--------------|----------|
 | Evaluation Matrix | 一次实验实际使用了什么配置？ | 解析完整 Effective Condition，并计算 Condition Fingerprint |
 | Component Registry | 配置中引用的组件版本是否仍代表原来的行为内容？ | 冻结 Component Manifest，并校验 Component Fingerprint |
+| Offline Case Package | 单个评测 Case 的输入、评分语义、证据和正式资格是否完整且未漂移？ | 校验 Case Schema、Artifact、Evidence、Provenance、Sanitization 与 Case Fingerprint |
+| Evaluation Suite Manifest | 正式评测明确包含哪些 Case 和权重？ | 按 Manifest 显式加载 Case，并校验 Suite Fingerprint，不扫描目录 |
 
-因此，Issue #5 不只是增加了一个组件管理工具。它补上了正式评测配置的第二层身份校验：Issue #4 防止 Condition ID 背后的实验配置静默变化，Issue #5 防止 Component Version 背后的 Prompt、Tool、Retriever 或 Policy 行为静默变化。
+Issue #4 防止 Condition ID 背后的实验配置静默变化，Issue #5 防止 Component Version 背后的 Prompt、Tool、Retriever 或 Policy 行为静默变化，Issue #6 则防止 Suite ID 或 Case ID 背后的评测数据和评分语义静默变化。
 
 ## 完整校验链
 
@@ -22,9 +25,15 @@ flowchart LR
     B --> C["Effective Condition"]
     C --> D["Resolve component versions through Registry"]
     D --> E["Recompute Component Fingerprints"]
-    C --> F["Condition Fingerprint"]
-    E --> F
-    F --> G["Validated formal evaluation configuration"]
+    C --> F["Load the explicitly referenced Suite Manifest"]
+    F --> G["Load every listed Offline Case Package"]
+    G --> H["Validate artifacts, evidence, provenance, and sanitization"]
+    H --> I["Recompute Case and Suite Fingerprints"]
+    C --> J["Condition Fingerprint"]
+    E --> J
+    E --> K["Validated formal preflight"]
+    I --> K
+    J --> K
 ```
 
 这条链当前只验证配置，不执行 Agent、模型或 Scorer。通过校验意味着“这份配置具有稳定、可检查的身份”，不意味着正式评测运行已经发生。
@@ -328,68 +337,227 @@ Matrix Component Key 与 Registry Component Type 的映射是：
 - Registry Version 与 Manifest Version 不一致；
 - 保存的 Fingerprint 与重新计算的 Fingerprint 不一致。
 
-## 4. Eval Doctor 的两个模式
+## 4. Offline Case Package 规则
 
-`eval doctor` 当前必须显式选择模式：
+Issue #6 实现的是本地离线评测的数据完整性边界：在调用模型或 Scorer 之前，先证明 Case 的输入、证据、Expected Answer、正式资格和内容身份都有效。
 
-| 命令 | 用途 | Component 校验 | Condition Fingerprint 输入 |
-|------|------|----------------|-----------------------------|
-| `eval doctor --structural-only --matrix ...` | Issue #4 的非正式结构检查 | 不执行 | Effective Condition |
-| `eval doctor --matrix ... --registry ...` | Issue #4 + #5 的正式组件完整性检查 | 执行 | Effective Condition + Component Fingerprints |
+它不运行 Agent，不连接在线 CI，也不执行评分。
+
+### 4.1 Case Manifest Schema Version 1
+
+每个 Case 目录包含一个 `case.json`：
+
+```json
+{
+  "case_schema_version": "1",
+  "case_id": "constructed-assertion-001",
+  "raw_log": "raw.log",
+  "frozen_log_chunks": "log-chunks.json",
+  "frozen_log_chunks_fingerprint": "<64-character sha256>",
+  "repository_evidence": "repository-evidence.json",
+  "expected_answer": "expected-answer.json",
+  "forbidden_actions": ["edit_code", "rerun_ci"],
+  "source_type": "constructed",
+  "source_url_or_construction_note": "为 Loader 测试构造的独立合成 Case。",
+  "license_or_permission": "project_constructed",
+  "created_by": "case author",
+  "reviewed_by": "human reviewer",
+  "sanitization_status": "reviewed_sanitized",
+  "case_fingerprint": "<64-character sha256>"
+}
+```
+
+Manifest 使用严格字段集合，未知字段和缺失字段都会被拒绝。当前只接受 `case_schema_version: "1"`。
+
+### 4.2 Case Artifact 契约
+
+| Artifact | Schema 与要求 |
+|----------|---------------|
+| `raw_log` | 非空 UTF-8 文本，保存冻结的原始 CI/Test 日志 |
+| `frozen_log_chunks` | Schema Version 1 JSON；包含非空 `chunks` 列表，每个 Chunk 有唯一稳定的 `evidence_id` 和非空 `text` |
+| `repository_evidence` | Schema Version 1 JSON；包含非空 `items` 列表，每项有唯一稳定的 `evidence_id`、规范化快照 `path` 和非空 `content` |
+| `expected_answer` | Schema Version 1 JSON；包含 Primary/Acceptable Failure Type、Required/Optional Evidence ID、Summary、Root Cause 与 Recommended Action |
+| `forbidden_actions` | 非空且不重复的禁止操作列表，用于声明该 Case 不允许的 Mutation 行为 |
+
+Expected Answer 中的所有 Evidence Reference 必须指向冻结 Log Chunk 或 Repository Evidence Snapshot 中真实存在的稳定 Evidence ID。两个 Artifact 之间也不能出现重复 Evidence ID。
+
+### 4.3 Provenance 与 Sanitization
+
+Formal V1 Case 的 `source_type` 只接受：
+
+- `constructed`：为 DevAgentOps 有意构造或安全改写的独立 Case；
+- `public_permitted_source`：来自公开且许可当前用途的来源。
+
+构造 Case 必须使用 `license_or_permission: "project_constructed"`。所有正式 Case 都必须记录非空的创建者、人工 Reviewer、来源 URL 或构造说明，并使用：
+
+```json
+"sanitization_status": "reviewed_sanitized"
+```
+
+未记录 Provenance、未完成 Sanitization、包含私有生产日志或来源许可不明的 Case 不能进入正式评测。
+
+### 4.4 受控相对路径
+
+Case Artifact 和 Suite Case Manifest 的文件引用必须使用 POSIX 相对路径。Loader 会：
+
+- 拒绝绝对路径；
+- 拒绝 `..` 路径逃逸；
+- 拒绝反斜杠路径分隔符；
+- 解析 Symlink，并拒绝最终目标逃出所属 Case 或 Suite 目录；
+- 在计算 Fingerprint 前，把 `./raw.log` 之类等价写法规范化为 `raw.log`。
+
+Repository Evidence Snapshot 的 `path` 也使用相同的规范化相对路径语法，但 Loader 读取的是 Snapshot JSON 中已冻结的 `content`，不会读取当前 Working Tree。
+
+## 5. Evaluation Suite Manifest 规则
+
+Suite Manifest 显式声明每个 Case 及其权重：
+
+```json
+{
+  "schema_version": "1",
+  "suite_id": "triage-suite-v1",
+  "suite_version": "1",
+  "cases": [
+    {
+      "case_id": "constructed-assertion-001",
+      "manifest": "cases/constructed-assertion-001/case.json",
+      "weight": 1
+    }
+  ],
+  "suite_fingerprint": "<64-character sha256>"
+}
+```
+
+Loader 不扫描 Case 目录。未被 Manifest 列出的 Draft、临时文件或新 Case 不会静默进入正式 Suite。
+
+Suite 校验要求：
+
+- 当前只接受 `schema_version: "1"`；
+- Case 列表非空，Case ID 唯一；
+- Suite Entry 的 Case ID 与被引用 Case Manifest 的 ID 一致；
+- Weight 是正数且有限；
+- V1 Formal Suite 使用等权 Case；
+- Matrix 中每个 Effective Condition 的 `suite` 必须等于已加载 Suite 的 `suite_id`。
+
+## 6. Fingerprint Chain 与覆盖范围
+
+所有 Fingerprint 都使用规范化 UTF-8 JSON：Object Key 排序、紧凑分隔符，再计算 SHA-256。
+
+### 6.1 Case Fingerprint
+
+声明的 `case_fingerprint` 不参与自身计算。Case Fingerprint 覆盖：
+
+- Case Schema、Case ID 和规范化后的 Artifact Path；
+- Frozen Log Chunks Fingerprint；
+- Forbidden Actions；
+- Provenance、Reviewer 与 Sanitization Status；
+- 完整 Raw Log 文本；
+- 解析后的 Frozen Log Chunks、Repository Evidence Snapshot 与 Expected Answer。
+
+这些内容涵盖正式评测的输入、评分语义和进入 Formal Evaluation 的资格。
+
+### 6.2 Suite Fingerprint
+
+声明的 `suite_fingerprint` 不参与自身计算。Suite Fingerprint 覆盖：
+
+- Suite Schema、ID 和 Version；
+- 显式且有顺序的 Case 列表；
+- 规范化 Case Manifest Path 和 Weight；
+- 每个 Case 重新计算并与声明值验证一致后的实际 Case Fingerprint。
+
+因此，Suite Fingerprint 不会继续信任一个过期或伪造的 Case Fingerprint 字符串。
+
+### 6.3 哪些变化会改变 Fingerprint
+
+| 变更 | 结果 |
+|------|------|
+| 只改 JSON 缩进或 Object Key 顺序 | Fingerprint 不变 |
+| 把 `./raw.log` 改成等价的 `raw.log` | Fingerprint 不变 |
+| 修改 Raw Log、Chunk、Repository Evidence 或 Expected Answer | Case 与 Suite Fingerprint 改变 |
+| 修改 Forbidden Actions、Provenance、Reviewer 或 Sanitization | Case 与 Suite Fingerprint 改变 |
+| 修改 Case 顺序、Weight、Manifest Path 或 Case 内容 | Suite Fingerprint 改变 |
+| 只修改声明的 `case_fingerprint` 或 `suite_fingerprint` | 实际计算值不变，但完整校验会报告声明值不一致 |
+
+## 7. Eval Doctor 的两个模式
+
+`eval doctor` 必须显式选择以下两种模式之一：
+
+| 命令 | 用途 | 校验范围 | Condition Fingerprint 输入 |
+|------|------|----------|-----------------------------|
+| `eval doctor --structural-only --matrix ...` | 非正式 Matrix 结构检查 | 只验证 Evaluation Matrix，不访问 Registry、Suite 或 Case | Effective Condition |
+| `eval doctor --matrix ... --registry ... --suite ...` | 正式完整预检 | Matrix + Frozen Components + Suite + Cases + Fingerprint Chain | Effective Condition + Component Fingerprints |
 
 正式模式：
 
 ```bash
 devagentops eval doctor \
   --matrix path/to/evaluation-matrix.json \
-  --registry components/registry.json
+  --registry components/registry.json \
+  --suite path/to/suite.json
 ```
 
-`--structural-only` 与 `--registry` 不能同时使用。省略两者也会失败，避免调用者无意中跳过组件完整性校验。
+`--structural-only` 不能与 `--registry` 或 `--suite` 同时使用。正式模式必须同时提供 `--registry` 与 `--suite`；只提供其中一个会失败，避免调用者把不完整检查误认为正式验证。
 
-## 5. 变更时应遵守的规则
+## 8. Test Fixture 与未来 Formal Suite 的边界
+
+`tests/fixtures/evaluation/` 目前只包含一个刻意保持极小的构造 Case，用于：
+
+- Loader 与 Validator 契约测试；
+- CLI 参数模式和结构化错误测试；
+- Fingerprint Chain 与 Drift Detection 测试；
+- 相对路径、路径逃逸和 Symlink 越界测试。
+
+它不是 Formal Evaluation Suite，不能用于 Runtime 对比、Leaderboard 或质量声明。
+
+未来 Formal Evaluation Suite 是另一套经过单独审阅和冻结的 Artifact，目标是大约 20 个 Case，均衡覆盖五类 V1 Failure Type。
+
+## 9. 变更时应遵守的规则
 
 | 变更 | 正确做法 | 身份结果 |
 |------|----------|----------|
-| 只改 Matrix 排版 | 不需要新 Component Version | Fingerprint 不变 |
+| 只改 Matrix 排版 | 不需要新 Component Version | Condition Fingerprint 不变 |
 | 只改 Component Metadata | 可以保留 Version | Component Fingerprint 不变 |
 | 改 Prompt、Tool、Retriever 或 Policy Behavior | Freeze 新 Component Version，并更新 Matrix | Component 与 Condition Fingerprint 改变 |
 | 改 Runtime、Model、Budget、Repeat、Suite 或 Method 引用 | 更新 Matrix Condition | Condition Fingerprint 改变 |
 | 修改已冻结 Manifest 的 Behavior | 禁止 | Formal Doctor 报 Version Pollution |
-| 同一 Effective Condition 仅改 Condition ID | 不改变实验内容身份 | Fingerprint 不变 |
+| 修改已冻结 Case 或 Suite 内容 | 创建新的 Case/Suite Version，并更新声明 Fingerprint | Case/Suite Fingerprint 改变 |
+| 同一 Effective Condition 仅改 Condition ID | 不改变实验内容身份 | Condition Fingerprint 不变 |
 
-Condition Fingerprint 负责说明“实际实验配置是否变化”，Condition ID 和 Component Version 负责提供人类可读的名称。名称不能代替内容身份。
+ID 和 Version 负责提供人类可读名称，Fingerprint 负责提供内容身份；名称不能代替内容身份。
 
-## 6. 当前边界
+## 10. 当前边界
 
 当前已经实现：
 
-- Matrix JSON 字段校验；
-- Defaults 与一层 `extends` 解析；
-- Effective Condition 输出；
-- 结构与正式 Condition Fingerprint；
-- 六类 Component Manifest 校验；
-- Component Validate、Freeze 与 Registry 写入；
+- Matrix JSON 字段校验、Defaults 与一层 `extends` 解析；
+- Effective Condition 和 Condition Fingerprint；
+- 六类 Component Manifest 校验、Validate、Freeze 与 Registry；
 - Draft、Missing、Alias 和 Version Pollution 检测；
-- 正式 Doctor 输出 Component Fingerprints。
+- 显式 Suite Manifest 与 Offline Case Package 加载；
+- Stable Evidence Reference、Provenance 与 Sanitization 校验；
+- 受控相对路径和 Symlink 越界保护；
+- Case/Suite Fingerprint Chain；
+- Matrix-only 与 Formal Complete Preflight 两种 `eval doctor` 模式。
 
 当前尚未实现：
 
 - Agent 或模型调用；
 - Formal Evaluation Runner；
-- Suite 与 Case Artifact 的完整 Preflight；
 - Run Manifest 持久化；
 - Scorer、Metric、Quality Gate、Leaderboard 和 Badcase；
-- ADR 0113 中 Leaderboard 分区与重跑规则的运行时执行；
-- 真实 MCP Server 或完整 Skill Packaging。
+- Evaluation Artifact Leakage 和完整 Model Configuration 预检；
+- 真实 MCP Server、外部 CI Provider 或完整 Skill Packaging。
 
-所以，当前 `eval doctor --registry` 是“Matrix + Component 完整性检查”，还不是 PRD 中未来覆盖 Suite、Case、Leakage 和 Model Completeness 的完整 Formal Eval Doctor。
+所以，当前正式 `eval doctor --registry --suite` 只证明 Matrix、Component、Suite 与 Case 的完整性，不表示正式评测运行已经发生。
 
-## 7. 相关来源
+## 11. 相关来源与实现
 
 - [ADR 0113: Evaluation Comparison Model](../adr/0113-evaluation-comparison-model.md)
 - [ADR 0114: Component Versioning and Run Manifests](../adr/0114-component-versioning-and-run-manifests.md)
+- [ADR 0115: Evaluation Suite and Case Artifacts](../adr/0115-evaluation-suite-and-case-artifacts.md)
+- [ADR 0123: Case Provenance and Sanitization](../adr/0123-case-provenance-and-sanitization.md)
+- [V1 Failure Type Taxonomy 与 Offline Case Policy](v1-failure-type-taxonomy-and-case-policy.md)
 - [V1 PRD](../prd/devagentops-v1-agentops-evaluation-baseline.md)
 - [Component Manifest 与命令参考](../../components/README.md)
-- 实现：`src/devagentops/evaluation_matrix.py`、`src/devagentops/component_registry.py`、`src/devagentops/cli.py`
-- 契约测试：`tests/test_issue_4_evaluation_matrix.py`、`tests/test_issue_5_component_registry.py`
+- 实现：`src/devagentops/evaluation_matrix.py`、`src/devagentops/component_registry.py`、`src/devagentops/evaluation_suite.py`、`src/devagentops/cli.py`
+- 契约测试：`tests/test_issue_4_evaluation_matrix.py`、`tests/test_issue_5_component_registry.py`、`tests/test_issue_6_evaluation_suite.py`
