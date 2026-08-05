@@ -31,6 +31,10 @@ Comparison becomes explicit and reproducible. Matrix changes only require rerunn
 - Model changes are tested only through ablation conditions.
 - Repeated runs are configured in the matrix and reported as stability analysis, not silently averaged into ordinary leaderboard rows.
 
+## Implementation Guide
+
+See [Evaluation Matrix 与 Component Registry](../evaluation/evaluation-matrix-and-component-registry.md) for the currently implemented Matrix schema, resolution rules, fingerprints, CLI modes, and boundaries.
+
 ## Consolidates
 
 Micro ADRs: `0014`, `0015`, `0016`, `0017`, `0023`, `0044`, `0045`, `0046`, `0047`, `0048`, `0049`, `0050`, `0051`, `0052`, `0053`, `0054`, `0055`, `0056`, `0057`, `0058`.

@@ -11,9 +11,12 @@ DevAgentOps 是一个用于秋招展示和系统研究的、可评测的 CI/Test
 - V1 Failure Type taxonomy；
 - Offline Case 来源、权限和脱敏策略；
 - 首版 20 个等权 Case 的平衡目标；
-- Failure Type、failure stage、因果分析和 inconclusive 状态的边界。
+- Failure Type、failure stage、因果分析和 inconclusive 状态的边界；
+- CLI、SQLite、FastAPI 与 React/Vite 的只读 application smoke path；
+- Evaluation Matrix 的 Defaults、一层继承、Effective Condition 与 Fingerprint；
+- 六类 Component Manifest 的校验、Freeze、Registry 与 Version Pollution 检测。
 
-当前实施主线已经推进到 Evaluation Matrix 与 Component Registry：CLI 可以解析有效评测条件、计算 condition fingerprint，并校验和冻结行为相关组件。组件完整性检查仍是正式评测的前置能力；当前尚不执行 Agent、模型调用或评分流程。
+Evaluation Matrix 与 Component Registry 已形成正式评测配置的两层身份边界：前者定义一次实验实际使用的完整配置，后者证明配置引用的组件版本仍对应原来的行为内容。它们仍是正式评测的前置能力；当前尚不执行 Agent、模型调用或评分流程。下一实施主线是 Offline Case Package / Evaluation Suite。
 
 ## V1 承诺
 
@@ -107,9 +110,9 @@ npm run dev
 
 不要直接双击 `frontend/index.html` 或使用 `file://` 打开它。该文件是 Vite 应用入口，必须由 `npm run dev` 提供模块和样式资源；直接打开时页面会显示启动提示，而不是 dashboard。
 
-## Component Registry
+## Formal Evaluation Configuration
 
-组件清单把行为相关字段放在 `behavior`，把作者、说明和时间等审阅信息放在 `metadata`。canonical fingerprint 只覆盖规范化后的 behavior；格式化、字段顺序和 metadata 变化不会改变指纹，behavior 变化必须使用新的 component version。
+Issue #4 与 #5 共同定义了可复现的正式评测配置：Matrix 解析 Defaults 和一层继承，生成 Effective Condition；Registry 把 Component Version 解析到 Frozen Manifest 并重算 Fingerprint；正式 Condition Fingerprint 同时覆盖 Effective Condition 与已验证的 Component Fingerprints。
 
 ```bash
 .venv/bin/devagentops component validate --manifest path/to/draft.json
@@ -122,7 +125,7 @@ npm run dev
   --registry components/registry.json
 ```
 
-完整清单格式、六类组件和 draft/frozen 边界见 [components/README.md](components/README.md)。
+完整规则、示例、失败条件和当前边界见 [Evaluation Matrix 与 Component Registry](docs/evaluation/evaluation-matrix-and-component-registry.md)。具体 Manifest 字段和 Freeze 命令也可查阅 [components/README.md](components/README.md)。
 
 运行后端与前端测试及前端生产构建：
 
@@ -139,8 +142,8 @@ npm run build
 #2 V1 taxonomy 与 Offline Case policy（已完成）
 → #3 应用 smoke path（已完成）
 → #4 Evaluation Matrix（已完成）
-→ #5 Component Registry（当前）
-→ #6 Offline Case Package / Evaluation Suite
+→ #5 Component Registry（已完成）
+→ #6 Offline Case Package / Evaluation Suite（下一步）
 ```
 
 《AI Agent Book》及其实验按当前 Issue 的具体问题穿插使用，不作为项目开工前置课程。
