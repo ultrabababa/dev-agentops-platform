@@ -15,8 +15,10 @@ DevAgentOps 是一个用于秋招展示和系统研究的、可评测的 CI/Test
 - CLI、SQLite、FastAPI 与 React/Vite 的只读 application smoke path；
 - Evaluation Matrix 的 Defaults、一层继承、Effective Condition 与 Fingerprint；
 - 六类 Component Manifest 的校验、Freeze、Registry 与 Version Pollution 检测。
+- 显式 Offline Case Package / Evaluation Suite Loader 与 Case/Suite Fingerprint；
+- Structured Triage Report Schema V1 校验与确定性单 Case Metric Vector。
 
-Evaluation Matrix 与 Component Registry 已形成正式评测配置的两层身份边界：前者定义一次实验实际使用的完整配置，后者证明配置引用的组件版本仍对应原来的行为内容。它们仍是正式评测的前置能力；当前尚不执行 Agent、模型调用或评分流程。下一实施主线是 Offline Case Package / Evaluation Suite。
+Evaluation Matrix、Component Registry 与 Offline Evaluation Suite 已形成正式评测配置和数据的身份链；Structured Triage Report Scorer 可以对候选报告执行单 Case 确定性评分。当前仍不执行 Agent、模型调用、Suite 聚合、Quality Gate、Leaderboard 或 Badcase。
 
 ## V1 承诺
 
@@ -124,9 +126,12 @@ Issue #4 与 #5 共同定义了可复现的正式评测配置：Matrix 解析 De
   --matrix path/to/evaluation-matrix.json \
   --registry components/registry.json \
   --suite path/to/suite.json
+.venv/bin/devagentops eval score \
+  --case path/to/case.json \
+  --report path/to/report.json
 ```
 
-完整规则、Schema、Fingerprint 覆盖范围、失败条件和当前边界统一见 [Evaluation Matrix、Component Registry 与 Offline Evaluation Suite](docs/evaluation/evaluation-matrix-and-component-registry.md)。具体 Component Manifest 字段和 Freeze 命令也可查阅 [components/README.md](components/README.md)。
+配置、数据和 Fingerprint 规则见 [Evaluation Matrix、Component Registry 与 Offline Evaluation Suite](docs/evaluation/evaluation-matrix-and-component-registry.md)；报告校验、单 Case 指标、CLI 和信任边界见 [Structured Triage Report 校验与单 Case 确定性评分](docs/evaluation/structured-triage-report-and-per-case-scoring.md)。具体 Component Manifest 字段和 Freeze 命令也可查阅 [components/README.md](components/README.md)。
 
 运行后端与前端测试及前端生产构建：
 
@@ -144,7 +149,8 @@ npm run build
 → #3 应用 smoke path（已完成）
 → #4 Evaluation Matrix（已完成）
 → #5 Component Registry（已完成）
-→ #6 Offline Case Package / Evaluation Suite Loader（已完成本地实现）
+→ #6 Offline Case Package / Evaluation Suite Loader（已完成）
+→ #14 Structured Triage Report 校验与单 Case Scoring（本 PR）
 ```
 
 《AI Agent Book》及其实验按当前 Issue 的具体问题穿插使用，不作为项目开工前置课程。

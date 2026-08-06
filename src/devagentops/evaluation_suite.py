@@ -65,12 +65,37 @@ FINGERPRINT_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 
 
 @dataclass(frozen=True)
+class ExpectedAnswer:
+    schema_version: str
+    primary_failure_type: str
+    acceptable_failure_types: tuple[str, ...]
+    required_evidence_ids: tuple[str, ...]
+    optional_evidence_ids: tuple[str, ...]
+    summary: str
+    root_cause: str
+    recommended_action: str
+
+    def fingerprint_input(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "primary_failure_type": self.primary_failure_type,
+            "acceptable_failure_types": list(self.acceptable_failure_types),
+            "required_evidence_ids": list(self.required_evidence_ids),
+            "optional_evidence_ids": list(self.optional_evidence_ids),
+            "summary": self.summary,
+            "root_cause": self.root_cause,
+            "recommended_action": self.recommended_action,
+        }
+
+
+@dataclass(frozen=True)
 class OfflineCasePackage:
     case_id: str
     case_schema_version: str
     manifest_path: Path
     case_fingerprint: str
     evidence_ids: tuple[str, ...]
+    expected_answer: ExpectedAnswer
     fingerprint_input: dict[str, Any]
 
     def as_dict(self) -> dict[str, Any]:
@@ -132,6 +157,10 @@ def _read_json(path: Path, description: str) -> Any:
         return json.loads(path.read_text(encoding="utf-8"))
     except FileNotFoundError as exc:
         raise EvaluationSuiteError(f"{description} does not exist: {path}") from exc
+    except OSError as exc:
+        raise EvaluationSuiteError(
+            f"{description} cannot be read: {path}: {exc}"
+        ) from exc
     except UnicodeDecodeError as exc:
         raise EvaluationSuiteError(f"{description} is not valid UTF-8: {path}") from exc
     except json.JSONDecodeError as exc:
@@ -301,7 +330,7 @@ def _load_repository_evidence(
     return document, tuple(evidence_ids)
 
 
-def _load_expected_answer(path: Path, evidence_ids: set[str]) -> dict[str, Any]:
+def _load_expected_answer(path: Path, evidence_ids: set[str]) -> ExpectedAnswer:
     document = _validate_fields(
         _read_json(path, "expected answer"),
         EXPECTED_ANSWER_FIELDS,
@@ -331,6 +360,11 @@ def _load_expected_answer(path: Path, evidence_ids: set[str]) -> dict[str, Any]:
             "expected answer has unsupported acceptable failure type "
             f"{sorted(unsupported)[0]!r}"
         )
+    if primary_failure_type in acceptable:
+        raise EvaluationSuiteError(
+            "expected answer primary_failure_type must not appear in "
+            "acceptable_failure_types"
+        )
     required = _string_list(
         document["required_evidence_ids"],
         "expected answer required_evidence_ids",
@@ -353,7 +387,16 @@ def _load_expected_answer(path: Path, evidence_ids: set[str]) -> dict[str, Any]:
         )
     for field in ("summary", "root_cause", "recommended_action"):
         _non_empty_string(document[field], f"expected answer {field}")
-    return document
+    return ExpectedAnswer(
+        schema_version=document["schema_version"],
+        primary_failure_type=primary_failure_type,
+        acceptable_failure_types=tuple(acceptable),
+        required_evidence_ids=tuple(required),
+        optional_evidence_ids=tuple(optional),
+        summary=document["summary"],
+        root_cause=document["root_cause"],
+        recommended_action=document["recommended_action"],
+    )
 
 
 def _load_case_package(
@@ -395,6 +438,10 @@ def _load_case_package(
     }
     try:
         raw_log = artifact_paths["raw_log"].read_text(encoding="utf-8")
+    except OSError as exc:
+        raise EvaluationSuiteError(
+            f"case {case_id!r} raw log cannot be read: {exc}"
+        ) from exc
     except UnicodeDecodeError as exc:
         raise EvaluationSuiteError(f"case {case_id!r} raw log is not valid UTF-8") from exc
     if not raw_log:
@@ -475,7 +522,7 @@ def _load_case_package(
             "raw_log": raw_log,
             "frozen_log_chunks": log_chunks,
             "repository_evidence": repository_evidence,
-            "expected_answer": expected_answer,
+            "expected_answer": expected_answer.fingerprint_input(),
         },
     }
     actual_case_fingerprint = _canonical_fingerprint(fingerprint_input)
@@ -490,6 +537,7 @@ def _load_case_package(
         manifest_path=manifest_path,
         case_fingerprint=actual_case_fingerprint,
         evidence_ids=tuple(sorted(all_evidence_ids)),
+        expected_answer=expected_answer,
         fingerprint_input=fingerprint_input,
     )
 

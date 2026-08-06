@@ -18,10 +18,13 @@ from devagentops.evaluation_matrix import (
 )
 from devagentops.evaluation_suite import (
     EvaluationSuiteError,
+    load_case_package,
     load_evaluation_suite,
     validate_matrix_suite_references,
 )
+from devagentops.scoring import evaluate_case_report
 from devagentops.storage import StorageError, initialize_database, inspect_database
+from devagentops.structured_report import ReportInputError, load_candidate_report_json
 
 
 def _database_path(value: str) -> Path:
@@ -91,6 +94,22 @@ def build_parser() -> argparse.ArgumentParser:
         "--structural-only",
         action="store_true",
         help="Run legacy matrix structure checks without formal component validation.",
+    )
+    score_parser = eval_subcommands.add_parser(
+        "score",
+        help="Validate and deterministically score one candidate report against a case.",
+    )
+    score_parser.add_argument(
+        "--case",
+        type=Path,
+        required=True,
+        help="Path to a verified Offline Case Package manifest.",
+    )
+    score_parser.add_argument(
+        "--report",
+        type=Path,
+        required=True,
+        help="Path to a candidate Structured Triage Report JSON file.",
     )
 
     component_parser = subcommands.add_parser(
@@ -169,6 +188,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                     **matrix.as_dict(),
                     "evaluation_suite": suite.as_dict(),
                 }
+        elif args.command == "eval" and args.eval_command == "score":
+            package = load_case_package(args.case)
+            raw_report = load_candidate_report_json(args.report)
+            status = evaluate_case_report(raw_report, package)
         elif args.command == "component" and args.component_command == "validate":
             status = load_component_manifest(args.manifest).validation_result()
         elif args.command == "component" and args.component_command == "freeze":
@@ -179,6 +202,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         ComponentRegistryError,
         EvaluationMatrixError,
         EvaluationSuiteError,
+        ReportInputError,
         StorageError,
     ) as exc:
         print(json.dumps({"error": str(exc)}, ensure_ascii=False), file=sys.stderr)
