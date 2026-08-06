@@ -30,6 +30,8 @@ Evidence scoring becomes deterministic and diagnosable. Invalid evidence IDs are
 - Derived evidence is allowed only with provenance back to stable evidence IDs or source spans.
 - Retrieval evidence hits and report evidence hits are both reported; primary evidence hit rate is report citation hit.
 - Invalid evidence IDs fail evidence-related scoring and produce hallucinated-evidence badcases.
+- Expected Answers and deterministic scorers belong only to the trusted Evaluator boundary. They must not be exposed to the evaluated Agent through prompts, tools, retrieval corpora, validation errors, or public scoring output.
+- Public evidence diagnostics expose counts only. `unknown_evidence_count` is the number of distinct unknown Evidence IDs, not the number of unknown reference occurrences; required or optional Evidence ID sets and missed required IDs remain private.
 
 ## Consolidates
 

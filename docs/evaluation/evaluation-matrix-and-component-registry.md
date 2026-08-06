@@ -538,13 +538,14 @@ ID 和 Version 负责提供人类可读名称，Fingerprint 负责提供内容�
 - 受控相对路径和 Symlink 越界保护；
 - Case/Suite Fingerprint Chain；
 - Matrix-only 与 Formal Complete Preflight 两种 `eval doctor` 模式。
+- Structured Triage Report Schema V1 校验与确定性单 Case 评分；具体见 [Structured Triage Report 校验与单 Case 确定性评分](structured-triage-report-and-per-case-scoring.md)。
 
 当前尚未实现：
 
 - Agent 或模型调用；
 - Formal Evaluation Runner；
 - Run Manifest 持久化；
-- Scorer、Metric、Quality Gate、Leaderboard 和 Badcase；
+- Suite 指标聚合、Quality Gate、Leaderboard 和 Badcase；
 - Evaluation Artifact Leakage 和完整 Model Configuration 预检；
 - 真实 MCP Server、外部 CI Provider 或完整 Skill Packaging。
 
