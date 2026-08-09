@@ -4,7 +4,7 @@
 
 > 当经过 Human Review 的正确证据已经放到固定模型面前时，这个模型能否按相同的诊断与报告契约完成当前 Case？
 
-该设计已经接受，但当前仓库尚未实现 Oracle Runner、Matrix Schema、配对校验或 Gap Report。它属于未来独立的 [Issue #19](https://github.com/ultrabababa/dev-agentops-platform/issues/19)，不增加第三个 V1 Product Runtime。Issue #15 仍不承担 Oracle Runtime，但其 Formal Case construction/freeze 必须先等待 Offline Case Schema V2 实现。
+该设计已经接受，但当前仓库尚未实现 Oracle Runner、Matrix Schema、配对校验或 Gap Report。它属于未来独立的 [Issue #19](https://github.com/ultrabababa/dev-agentops-platform/issues/19)，不增加第三个 V1 Product Runtime。Issue #15 仍不承担 Oracle Runtime；Schema V2 已实现，B04 已通过 V2 Human Review，进一步 Formal Case construction 先等待共享 Canonicalization Profile calibration/freeze。
 
 ## 1. 研究问题与能力边界
 
@@ -90,11 +90,11 @@ Required Evidence 必须是 source-faithful 的日志、配置、源码或测试
 |------|----------------------|----------------|
 | A. Oracle Evidence | 直接提供 Human-reviewed Minimal Sufficient Evidence Set | 移除发现难度后，固定模型能否完成诊断？ |
 | B. Fixed Pipeline | Deterministic fixed flow、heuristic 或 fixed selection | 固定 Workflow 能兑现多少诊断能力？ |
-| C. Retrieval | 在 Canonical Evidence corpus 上 static query/top-k augmentation | Retrieval 本身带来多少 uplift？ |
+| C. Retrieval | 对 Physical Artifacts 使用 independently versioned Runtime Retrieval Chunker，static retrieval physical spans，再映射到 overlapping Canonical Evidence IDs | Retrieval 本身带来多少 uplift？ |
 | D. ReAct Agent | Agent 自主 adaptive search/open、选择 Tool 与 Evidence | Agentic Investigation 能否超过 static retrieval？ |
 | E. Improved Agent | Retrieval、Context、Tool Policy、Verifier 或 Planning 等明确版本化的受控改进 | Agent-system Engineering 带来哪些按 Case 可解释的增益？ |
 
-E 不是一个永久、可变的“最佳系统”标签。每个 Improved Agent 必须是 Matrix 中明确版本化、可复现的 Candidate 或 Ablation Condition。各条件共享的 Evidence Universe、Canonical Evidence coordinates 与 access semantics 由 [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](formal-evaluation-methodology.md) 定义。
+E 不是一个永久、可变的“最佳系统”标签。每个 Improved Agent 必须是 Matrix 中明确版本化、可复现的 Candidate 或 Ablation Condition。各条件共享 Evidence Universe 与 Canonical measurement/identity/citation coordinates；Canonical Units 不是 mandatory Retrieval chunks。详细 access semantics 由 [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](formal-evaluation-methodology.md) 定义。
 
 ## 5. Agent-System Realization Gap
 
@@ -146,7 +146,7 @@ PASS/FAIL 必须来自相同 Evaluation Method 中版本化的 Diagnosis Pass Pr
 - Model Runner、Pair Validator、Diagnosis Pass Predicate；
 - Per-Case/Per-Failure-Type Gap Report 与 Variance Audit。
 
-未来 Oracle Runtime 实现由 [Issue #19](https://github.com/ultrabababa/dev-agentops-platform/issues/19) 承担，并在 Formal Runner 与真实 Model Condition 具备后接入。Issue #15 仍只负责平衡 Formal Suite 的 Case/Evidence Ground Truth/Expected Answer/Provenance/Sanitization Curation，但必须等 Schema V2 Loader 与验证契约落地后再继续构建和 Human-freeze：现有五个 Batch-1 V1 packages 仅是 calibration drafts，剩余十五个不得按 V1 扩展，V2 落地后先重建 B04。Issue #16 继续只负责 deterministic Pipeline Baseline tracer bullet；它们都不承担 Oracle Runtime 或 Gap Analysis。
+未来 Oracle Runtime 实现由 [Issue #19](https://github.com/ultrabababa/dev-agentops-platform/issues/19) 承担，并在 Formal Runner 与真实 Model Condition 具备后接入。Issue #15 仍只负责平衡 Formal Suite 的 Case/Evidence Ground Truth/Expected Answer/Provenance/Sanitization Curation：现有五个 Batch-1 V1 packages 仅是 calibration drafts，剩余 Cases 不得按 V1 扩展；B04 已通过 V2 Human Review，进一步 construction 先等待共享 Canonicalization Profile calibration/freeze。Issue #16 继续只负责 deterministic Pipeline Baseline tracer bullet；它们都不承担 Oracle Runtime 或 Gap Analysis。
 
 ## 9. 相关来源
 

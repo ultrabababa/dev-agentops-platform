@@ -325,13 +325,13 @@ report_evidence_hit_rate = 1.0
 
 ### 6.2.1 Retrieval Hit 与 Report Hit 不合并
 
-当前实现的 `report_evidence_hit_rate` 只观察最终报告是否通过合法 Evidence Reference 引用了 Required Canonical Evidence Unit。未来 Retrieval Evidence Hit 应从 Run Trace 判断 Runtime/Agent 是否实际 retrieved 或 inspected 同一 required unit。二者必须保持分离：
+当前实现的 `report_evidence_hit_rate` 只观察最终报告是否通过合法 Evidence Reference 引用了 Required Canonical Evidence Unit。未来 Retrieval Evidence Hit 必须从 Run Trace 的实际 physical observation spans 判断 Runtime/Agent 是否真正观察到 Required causal facts；span 与 overlapping Canonical IDs 的映射不是自动 full hit。二者必须保持分离：
 
 - Retrieval miss + Report miss：没有找到；
 - Retrieval hit + Report miss：找到了但没有在最终报告中使用；
 - Retrieval hit + Report hit：找到并正确引用。
 
-当前 Scorer 没有实现 Retrieval Evidence Hit；本说明不改变现有公式或 CLI 输出。Canonical Evidence Unit 与不同 Runtime 的 access semantics 见 [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](formal-evaluation-methodology.md)。
+当前 Scorer 没有实现 Retrieval Evidence Hit；本说明不改变现有公式或 CLI 输出。Partial-overlap、跨 unit causal fact 与 Required-ID-only Ground Truth 的充分性将在 Canonicalization Profile calibration 中审阅；若无法无歧义表达，必须作为 limitation/follow-up decision，而不是默认 `any overlap = hit`。Canonical Evidence Unit 与不同 Runtime 的 access semantics 见 [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](formal-evaluation-methodology.md)。
 
 ### 6.3 Case ID 绑定
 

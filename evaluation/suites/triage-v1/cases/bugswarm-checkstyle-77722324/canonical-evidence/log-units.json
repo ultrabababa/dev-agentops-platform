@@ -1,0 +1,71 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "log:ci-lines-0001-0067:system-info",
+      "source": "physical-artifacts/raw.log",
+      "span": {"type": "line_range", "start_line": 1, "end_line": 67},
+      "content_sha256": "2124e89f9f7e3f8cafd2ab4496e9d1eba1e11e4bccc528bc2177d146d16caaf9"
+    },
+    {
+      "evidence_id": "log:ci-lines-0068-0362:git-checkout",
+      "source": "physical-artifacts/raw.log",
+      "span": {"type": "line_range", "start_line": 68, "end_line": 362},
+      "content_sha256": "6ec64cabd85797bbf7d4e1baff238852ff577ee362d6fa520ce2f124a32c2e29"
+    },
+    {
+      "evidence_id": "log:ci-lines-0363-0400:job-setup",
+      "source": "physical-artifacts/raw.log",
+      "span": {"type": "line_range", "start_line": 363, "end_line": 400},
+      "content_sha256": "0ed1314308c04364eb51b812d2f1a9aec841ac8216925df1c2209dcfffafb433"
+    },
+    {
+      "evidence_id": "log:ci-lines-0401-0439:maven-preamble",
+      "source": "physical-artifacts/raw.log",
+      "span": {"type": "line_range", "start_line": 401, "end_line": 439},
+      "content_sha256": "defab930455dbe638528ad7909ade10964f722a3fe4abb5ed741d7a310580d39"
+    },
+    {
+      "evidence_id": "log:ci-lines-0440-0504:maven-generate",
+      "source": "physical-artifacts/raw.log",
+      "span": {"type": "line_range", "start_line": 440, "end_line": 504},
+      "content_sha256": "d2c816288fca8e495517c849195c0109bc947ef8dfc9bf8fca0a8464bb52c827"
+    },
+    {
+      "evidence_id": "log:ci-lines-0505-0529:maven-compile",
+      "source": "physical-artifacts/raw.log",
+      "span": {"type": "line_range", "start_line": 505, "end_line": 529},
+      "content_sha256": "a203b19587a745885b6a92954078e812f751ec92e81e4b19dc84363c3eff0ac9"
+    },
+    {
+      "evidence_id": "log:ci-lines-0530-0542:ant-compile",
+      "source": "physical-artifacts/raw.log",
+      "span": {"type": "line_range", "start_line": 530, "end_line": 542},
+      "content_sha256": "78a2710f1beaf731292de2a5b2a1cc292dfb9e5f2eea1d108dfaedadca2c2828"
+    },
+    {
+      "evidence_id": "log:ci-lines-0543-0554:test-compile",
+      "source": "physical-artifacts/raw.log",
+      "span": {"type": "line_range", "start_line": 543, "end_line": 554},
+      "content_sha256": "f7757db57e98da3e514c7e2ea5224a1a5d7bb0c50cf59e8b737c64c0d77d4c71"
+    },
+    {
+      "evidence_id": "log:ci-lines-0555-0571:test-package",
+      "source": "physical-artifacts/raw.log",
+      "span": {"type": "line_range", "start_line": 555, "end_line": 571},
+      "content_sha256": "62da0bc4d627a87b098a454c62e2074f01d5f4e01f7d4c861296bd3c99ddf489"
+    },
+    {
+      "evidence_id": "log:ci-lines-0572-0601:maven-antrun-verify",
+      "source": "physical-artifacts/raw.log",
+      "span": {"type": "line_range", "start_line": 572, "end_line": 601},
+      "content_sha256": "a9e10200e570691d588bff06f9a6609eb82c183ac19bd130439c52c8f0c4f9b2"
+    },
+    {
+      "evidence_id": "log:ci-lines-0602-0619:post-failure-cache",
+      "source": "physical-artifacts/raw.log",
+      "span": {"type": "line_range", "start_line": 602, "end_line": 619},
+      "content_sha256": "2a4215e12e9ed3cf96e92852c9e2a6fd36c2c7acfa38ab5aa44790dba884976a"
+    }
+  ]
+}

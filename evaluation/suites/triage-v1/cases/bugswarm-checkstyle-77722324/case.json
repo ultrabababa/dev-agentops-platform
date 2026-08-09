@@ -1,0 +1,41 @@
+{
+  "case_schema_version": "2",
+  "case_id": "bugswarm-checkstyle-77722324",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "BugSwarm historical failed job 77722324: https://www.bugswarm.org/artifact-logs/77722324/raw/ ; upstream exact revision: https://github.com/checkstyle/checkstyle/commit/da6ebe6de41b7a5afc6f6746ff0c2382c2a4be0f",
+    "license_or_permission": "Public-source attribution: BugSwarm historical failed job 77722324; exact-revision Checkstyle repository snapshot at da6ebe6de41b7a5afc6f6746ff0c2382c2a4be0f; upstream Checkstyle license family LGPL-2.1-or-later."
+  },
+  "curation": {
+    "created_by": "OpenAI Codex under the Human-approved Issue #15 B04 construction plan",
+    "review_status": "human_reviewed",
+    "reviewed_by": "Issue #15 B04 Schema V2 calibration-package Human Review"
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 B04 Schema V2 calibration-package Human Review",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "Removed ANSI CSI terminal escape sequences while preserving all 619 lines, their order, and the historical failure semantics.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "89a8f9a08f0dcb263733b21e85b5355b43dfe4cbf817a3130548379e13fc3bd7"
+}

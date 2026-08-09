@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "lint_or_type_failure",
+  "acceptable_failure_types": [],
+  "summary": "Maven verify fails in the Checkstyle-backed ant-phase-verify stage after RedundantModifier reports one violation in EqualsAvoidNullCheck.java.",
+  "root_cause": "The private static nested FieldFrame class declares its constructor public. The constructor cannot meaningfully be more accessible than its private enclosing class, so the public modifier is redundant and the enabled Checkstyle rule rejects it.",
+  "recommended_action": "Remove the redundant public modifier, or otherwise align the constructor visibility with the enclosing class, then rerun the Checkstyle verification stage."
+}

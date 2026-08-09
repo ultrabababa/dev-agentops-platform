@@ -1,0 +1,203 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:travis.yml:lines-0001-0100",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {"type": "line_range", "start_line": 1, "end_line": 100},
+      "content_sha256": "982b7b077272bae5bb8df2e236b40d4ab0f451316c03e368814a3adeecab80f6"
+    },
+    {
+      "evidence_id": "repo:travis.yml:lines-0101-0200",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {"type": "line_range", "start_line": 101, "end_line": 200},
+      "content_sha256": "60ada60f8c8717b7d35f178f7d93e7d0eaad7f3cfd37c6a488a24b014f0406f2"
+    },
+    {
+      "evidence_id": "repo:travis.yml:lines-0201-0221",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {"type": "line_range", "start_line": 201, "end_line": 221},
+      "content_sha256": "909539a3098b712549249b6ec9b5082d6900affa708495f1757b4565e2a3b9fe"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 1, "end_line": 100},
+      "content_sha256": "1183a9233aee6c100f9bafab63580a980425cc93b31ecce7029cd38d1be58ffb"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-0101-0200",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 101, "end_line": 200},
+      "content_sha256": "470646fddf1d19b8f6a370b147837cea449043d3ec79988e531d3c6336942160"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-0201-0300",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 201, "end_line": 300},
+      "content_sha256": "8b1faef7ed49db1c71174a794b42e09ac4d846ace3ae5fd7183a57af98df104a"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-0301-0400",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 301, "end_line": 400},
+      "content_sha256": "8449ce93a406c0b44f72baba131dc1b4520a87155ef933ee82ceed1ef5bd1d57"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-0401-0500",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 401, "end_line": 500},
+      "content_sha256": "0781eed8740378b3c5f3e46960e7c5bfd84caae124c13340585c2892e9c99e26"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-0501-0600",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 501, "end_line": 600},
+      "content_sha256": "2105ac827c397c6975c3d285ba2f2097a127ce04503a760c2de3d21ef248144d"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-0601-0700",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 601, "end_line": 700},
+      "content_sha256": "96dce262db6cda2b266201f20765e746044ef2d02bee34071a4a6e8bb3283058"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-0701-0800",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 701, "end_line": 800},
+      "content_sha256": "4f8b397200d84a4061754411eb4a7dcee7154dab3682387d8a32d6fe1523e03d"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-0801-0900",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 801, "end_line": 900},
+      "content_sha256": "2b4f5aa0eaf54287c94a0af7777a4fffc418f6e28eca7c024bf03cabcf548331"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-0901-1000",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 901, "end_line": 1000},
+      "content_sha256": "e321120d957220bfb3de68135632cbde02cdc22c0da99c6b9b3a38b9a313344d"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-1001-1100",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 1001, "end_line": 1100},
+      "content_sha256": "1c5b6bc5fe8d0cbd646823a83da8695546402e7419f15650f31cf406449e8a15"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-1101-1200",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 1101, "end_line": 1200},
+      "content_sha256": "51d8875339f342af63485655674e1de00cc18b2b87095a303077a6d6d94e3f2a"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-1201-1300",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 1201, "end_line": 1300},
+      "content_sha256": "4c894779bc8095e8ac71fc3f2af69bc53f8b89577b116d26a344dfadee873d4b"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-1301-1400",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 1301, "end_line": 1400},
+      "content_sha256": "626ea4971d8253c74c1d82a73bd9e652d96d266e0b6b94ab17d56d85788c80a3"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-1401-1500",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 1401, "end_line": 1500},
+      "content_sha256": "931086b960686ab9b0a0b42ed00f9c4b25b5640754356b2c168d5665e3ca192e"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-1501-1600",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 1501, "end_line": 1600},
+      "content_sha256": "769c737929736ec3c7eac9ca172dd4809a125a49abe419875f211950c411a7b2"
+    },
+    {
+      "evidence_id": "repo:pom.xml:lines-1601-1673",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {"type": "line_range", "start_line": 1601, "end_line": 1673},
+      "content_sha256": "176c8c5e61433f2276368c4313e0b9803d1625364f046f7262edfb3310ae32c2"
+    },
+    {
+      "evidence_id": "repo:ant-phase-verify.xml:lines-0001-0052",
+      "source": "physical-artifacts/repository/config/ant-phase-verify.xml",
+      "span": {"type": "line_range", "start_line": 1, "end_line": 52},
+      "content_sha256": "e6480610e64b9f902033963ae4c2324f30d2dcb9d94ff043894eae26017e1c12"
+    },
+    {
+      "evidence_id": "repo:checkstyle-checks.xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/config/checkstyle_checks.xml",
+      "span": {"type": "line_range", "start_line": 1, "end_line": 100},
+      "content_sha256": "d611529e5233b4148339f4d3c3c7dc4df021840b917796276191ea4516ab911b"
+    },
+    {
+      "evidence_id": "repo:checkstyle-checks.xml:lines-0101-0200",
+      "source": "physical-artifacts/repository/config/checkstyle_checks.xml",
+      "span": {"type": "line_range", "start_line": 101, "end_line": 200},
+      "content_sha256": "0df81926b12a8242dbbe0f3675d07d1c2af9f0f8bfa7ae43cf809852509bc228"
+    },
+    {
+      "evidence_id": "repo:checkstyle-checks.xml:lines-0201-0300",
+      "source": "physical-artifacts/repository/config/checkstyle_checks.xml",
+      "span": {"type": "line_range", "start_line": 201, "end_line": 300},
+      "content_sha256": "b6ea040f56dcbd6d4d19e4615a39848e26fd63c65058420d14544666f5bd7b92"
+    },
+    {
+      "evidence_id": "repo:checkstyle-checks.xml:lines-0301-0356",
+      "source": "physical-artifacts/repository/config/checkstyle_checks.xml",
+      "span": {"type": "line_range", "start_line": 301, "end_line": 356},
+      "content_sha256": "d73e7e1fbdbe0cf80f2203890bd15cff304af35c5970e1cbfe702787e26ef614"
+    },
+    {
+      "evidence_id": "repo:equals-avoid-null-check.java:lines-0001-0100",
+      "source": "physical-artifacts/repository/src/main/java/com/puppycrawl/tools/checkstyle/checks/coding/EqualsAvoidNullCheck.java",
+      "span": {"type": "line_range", "start_line": 1, "end_line": 100},
+      "content_sha256": "9325275b90cd05c1d52908995757823ca25b546c26504ef85c003862fffec503"
+    },
+    {
+      "evidence_id": "repo:equals-avoid-null-check.java:lines-0101-0200",
+      "source": "physical-artifacts/repository/src/main/java/com/puppycrawl/tools/checkstyle/checks/coding/EqualsAvoidNullCheck.java",
+      "span": {"type": "line_range", "start_line": 101, "end_line": 200},
+      "content_sha256": "ed0a6e76bcc5189c64ee0767345b86d61e488ba07b09380cc080f67ab73edf46"
+    },
+    {
+      "evidence_id": "repo:equals-avoid-null-check.java:lines-0201-0300",
+      "source": "physical-artifacts/repository/src/main/java/com/puppycrawl/tools/checkstyle/checks/coding/EqualsAvoidNullCheck.java",
+      "span": {"type": "line_range", "start_line": 201, "end_line": 300},
+      "content_sha256": "1f311614973e45b9a0103890ae9470395bac6dfe37c2ea76472894102464f5de"
+    },
+    {
+      "evidence_id": "repo:equals-avoid-null-check.java:lines-0301-0400",
+      "source": "physical-artifacts/repository/src/main/java/com/puppycrawl/tools/checkstyle/checks/coding/EqualsAvoidNullCheck.java",
+      "span": {"type": "line_range", "start_line": 301, "end_line": 400},
+      "content_sha256": "4312d7fc6e34ce84d3b894d9f0f0122001bc6ebef40d02937345cec876d0099f"
+    },
+    {
+      "evidence_id": "repo:equals-avoid-null-check.java:lines-0401-0500",
+      "source": "physical-artifacts/repository/src/main/java/com/puppycrawl/tools/checkstyle/checks/coding/EqualsAvoidNullCheck.java",
+      "span": {"type": "line_range", "start_line": 401, "end_line": 500},
+      "content_sha256": "c5d1f25e1fc4f0deb9b7dd41cf996ba88a7f0b464ec71abc1387773b213be568"
+    },
+    {
+      "evidence_id": "repo:equals-avoid-null-check.java:lines-0501-0596",
+      "source": "physical-artifacts/repository/src/main/java/com/puppycrawl/tools/checkstyle/checks/coding/EqualsAvoidNullCheck.java",
+      "span": {"type": "line_range", "start_line": 501, "end_line": 596},
+      "content_sha256": "14322549f19caf94a74297b2feaf8a0818aa1d66c8f7a11ed6370a59c2e2544d"
+    },
+    {
+      "evidence_id": "repo:equals-avoid-null-check-test.java:lines-0001-0100",
+      "source": "physical-artifacts/repository/src/test/java/com/puppycrawl/tools/checkstyle/checks/coding/EqualsAvoidNullCheckTest.java",
+      "span": {"type": "line_range", "start_line": 1, "end_line": 100},
+      "content_sha256": "6e4c8dde134d90a0e2843765970a2b8c548fef8bcf67e0caec9615a353d15700"
+    },
+    {
+      "evidence_id": "repo:equals-avoid-null-check-test.java:lines-0101-0152",
+      "source": "physical-artifacts/repository/src/test/java/com/puppycrawl/tools/checkstyle/checks/coding/EqualsAvoidNullCheckTest.java",
+      "span": {"type": "line_range", "start_line": 101, "end_line": 152},
+      "content_sha256": "9f5e8e4af0dcc6270ea4ab3f28b1560a3f920c221d9ab06a5692519d689efae6"
+    }
+  ]
+}
