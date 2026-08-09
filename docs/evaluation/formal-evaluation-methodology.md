@@ -5,7 +5,7 @@
 1. Curator 不得在评测前把 Normal Agent corpus 裁成 minimal required evidence；
 2. Physical Investigation Workspace 不得与 Canonical Evidence coordinates 或 Evaluator Ground Truth 混为同一份 Artifact。
 
-本方法论与 Schema V2 三层设计已经接受，但当前仓库尚未实现 Schema V2 Loader、Runtime、Retriever、Tool、Index 或 Oracle Runner。Issue #15 的 Formal Case freeze 必须等待 V2 implementation；本 docs-only 工作不修改任何 Case Package。
+本方法论与 Schema V2 三层设计已经接受，Schema V2 Loader、Fingerprint、Doctor、Scorer split 和 public leakage boundary 已实现。Runtime、Retriever、Tool、Index 与 Oracle Runner 仍未实现。Issue #15 下一步先重建 B04 V2 并完成 Human Review；Issue #22 不修改其现有 drafts。
 
 ## 1. 证据与信任模型
 
@@ -110,7 +110,7 @@ Normal Investigation Workspace >> Hidden Required Evidence subset
 
 ## 2. Offline Case Schema V2 三层目录
 
-推荐布局如下；严格字段由 Schema V2 implementation Issue 冻结，但三层语义不得合并：
+已实现的严格布局如下，三层语义不得合并：
 
 ```text
 <case-id>/
@@ -195,7 +195,7 @@ Not every runtime gets identical access. Whether a condition has fixed selection
 | ReAct Agent | 通过 search/open/list 工具 adaptive multi-step 调查 Physical Investigation Workspace | 是 | 自主 investigation 是否提供额外价值？ |
 | Oracle Evidence | Trusted Builder 直接解析 Required Evidence，绕过 normal discovery | 否；这是 diagnostic intervention | 关键证据已知时，固定模型能否完成诊断？ |
 
-当前 Matrix Schema 尚无可执行的通用 Evidence Acquisition/Delivery 字段。这些语义是未来 Condition 与 Run Manifest 必须显式 version 和 fingerprint 的 accepted design，不表示四种条件或 Schema V2 已经实现。
+当前 Matrix Schema 尚无可执行的通用 Evidence Acquisition/Delivery 字段。这些语义是未来 Condition 与 Run Manifest 必须显式 version 和 fingerprint 的 accepted design；Offline Case Schema V2 已实现，但四种 Runtime Condition 尚未实现。
 
 ## 5. Oracle Evidence 是 Derived Runtime Input
 
@@ -223,7 +223,7 @@ Oracle model 可以看到 resolved source-faithful content 与 normal Stable Evi
 | Retrieval Evidence Hit | Run Trace 证明 Runtime/Agent 实际 retrieved 或 inspected Required Canonical Unit | 找到了吗？ |
 | Report Evidence Hit | 最终 Structured Triage Report 合法引用 Required Canonical Unit | 报告使用了吗？ |
 
-这可以区分没找到、找到但未使用、找到并引用。当前代码只实现 Schema V1 的 `report_evidence_hit_rate`；Retrieval Evidence Hit 和 Schema V2 Evidence Ground Truth split 尚未实现。本设计不声称已经改变 Scorer 行为。
+这可以区分没找到、找到但未使用、找到并引用。当前代码已让 `report_evidence_hit_rate` 从 V2 `EvidenceGroundTruth.required_evidence_ids` 读取分母，评分公式保持不变；Retrieval Evidence Hit 尚未实现。
 
 ## 7. 条件结果解释
 
@@ -236,19 +236,19 @@ Oracle model 可以看到 resolved source-faithful content 与 normal Stable Evi
 
 目标不是预设 ReAct 一定优于 Pipeline，而是测量 `Pipeline -> Retrieval -> ReAct -> Improved Agent` 每一步产生多少 uplift，以及 uplift 来自哪里。完整 Oracle Pairing 与 Realization Gap 解释见 [Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap](oracle-evidence-diagnostic-condition.md)。
 
-## 8. Schema V1、Schema V2 与 Issue #15
+## 8. Schema V2 与 Issue #15
 
-Schema V1 已实现，并继续支持当前 loader、scorer 和 tiny backward-compatibility fixtures。它不是最终 Formal Case data model：repository physical workspace 与 Canonical Repository Evidence 混在同一 `repository-evidence.json`，Required Evidence 也与 Diagnosis Ground Truth 混在 Expected Answer 中。
+Offline Case Loader 现在只支持 Schema V2。Schema V1 已有意识地退役，不保留 backward-compatible loader、mixed-schema Suite 或 migration framework；tiny fixture 已迁移到 V2。V2 把 repository Physical Artifact 与 Canonical Repository Evidence 分开，并把 Required Evidence 从 Diagnosis Ground Truth 中拆出。
 
-Schema V2 是 accepted design、尚未实现；工程实现由 [Issue #22](https://github.com/ultrabababa/dev-agentops-platform/issues/22) 跟踪。它必须在 Issue #15 的 20 个 Formal Packages Human-freeze 前落地：
+Issue #15 的后续顺序保持：
 
 - 当前 5 个 Batch-1 Schema V1 Packages 只作为 calibration drafts；
 - 不 Human-freeze 这些 V1 Packages；
 - 不按 V1 继续构造剩余 15 个 Packages；
-- Schema V2 implementation lands 后，先用 V2 重建 B04 作为 calibration Case；
+- 先用 V2 重建 B04 作为 calibration Case；
 - B04 的 V2 construction/review 通过后，再扩展到其余 Cases。
 
-本 docs branch 不修改任何 Issue #15 Package 或 fixture。
+Issue #22 不修改任何 Issue #15 Package；现有五个 V1 drafts 根据既有 research/provenance/root-cause knowledge 重新构建，而不是自动转换。
 
 ## 9. V2 Formal Case Review Checklist
 

@@ -92,7 +92,7 @@ def test_reviewed_acceptable_match_is_separate_and_mutually_exclusive(
     tmp_path: Path,
 ):
     case_path = _copy_case(tmp_path)
-    expected_path = case_path.parent / "expected-answer.json"
+    expected_path = case_path.parent / "evaluator/expected-answer.json"
     expected = _read_json(expected_path)
     expected["acceptable_failure_types"] = ["config_or_environment_failure"]
     _write_json(expected_path, expected)
@@ -107,7 +107,7 @@ def test_reviewed_acceptable_match_is_separate_and_mutually_exclusive(
 
 def test_expected_answer_rejects_primary_as_reviewed_acceptable(tmp_path: Path):
     case_path = _copy_case(tmp_path)
-    expected_path = case_path.parent / "expected-answer.json"
+    expected_path = case_path.parent / "evaluator/expected-answer.json"
     expected = _read_json(expected_path)
     expected["acceptable_failure_types"] = [expected["primary_failure_type"]]
     _write_json(expected_path, expected)
@@ -485,14 +485,16 @@ def test_validation_error_order_is_stable():
     ]
 
 
-def test_expected_answer_refactor_preserves_fixture_fingerprint_and_public_shape():
+def test_ground_truth_split_preserves_verified_fixture_and_public_shape():
     package = load_case_package(FIXTURE_CASE)
     declared = _read_json(FIXTURE_CASE)["case_fingerprint"]
 
     assert package.case_fingerprint == declared
     assert calculate_case_fingerprint(FIXTURE_CASE) == declared
-    assert "expected_answer" not in package.as_dict()
-    assert "expected_answer" not in json.dumps(package.as_dict())
+    public_payload = package.public_view().as_dict()
+    assert "expected_answer" not in public_payload
+    assert "expected_answer" not in json.dumps(public_payload)
+    assert "evidence_ground_truth" not in public_payload
 
 
 def test_public_result_contains_only_issue_14_outputs_and_no_expected_labels():

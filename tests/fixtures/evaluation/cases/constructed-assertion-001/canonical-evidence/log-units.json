@@ -1,0 +1,15 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "log:assertion-mismatch",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 6,
+        "end_line": 7
+      },
+      "content_sha256": "94c3becab1126741ac4f4b93113ac4b935724ec9235f68328947a68439755e7b"
+    }
+  ]
+}

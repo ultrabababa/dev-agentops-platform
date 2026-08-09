@@ -8,24 +8,26 @@
 |------|--------------|----------|
 | Structured Triage Report Schema V1 | Agent 输出是否具有可检查的固定结构？ | 校验版本、Case 绑定、分类、必填内容、置信度、行动建议和 Evidence Reference |
 | Report Validation Result | 非法 Agent 输出具体违反了哪些报告契约？ | 返回稳定、结构化且顺序确定的错误对象，不因报告质量问题中断评分 |
-| Schema V1 Expected Answer | 当前 Case 的人工审核评分标签是什么？ | 当前实现把 Primary/Acceptable Failure Type 与 Required/Optional Evidence 保存在同一可信 Evaluator Artifact |
+| Schema V2 Ground Truth | 当前 Case 的人工审核评分标签是什么？ | `ExpectedAnswer` 保存 Diagnosis Ground Truth，`EvidenceGroundTruth` 独立保存 Required/Optional Evidence IDs |
 | Per-Case Scorer | 当前报告在分类、证据和完整性维度表现如何？ | 输出四项单 Case Quality Metric，不合成为单一总分 |
 
 本切片覆盖 PRD User Story 33–35、37–38，并开始 User Story 39。它不实现 Retrieval Evidence Hit、Tool Path Validity、Suite 聚合、Quality Gate、Leaderboard 或 Badcase。
 
-ADR 0126 已接受但尚未实现 Offline Case Schema V2：未来 `evaluator/required-evidence.json` 单独保存 Evidence Ground Truth，`evaluator/expected-answer.json` 只保存 Diagnosis Ground Truth。本文凡描述 Expected Answer 含 Required/Optional IDs 的段落，均是当前 Schema V1 Loader/Scorer 行为，不是 Formal Suite 的目标包结构；现有评分公式与指标语义不因该 docs-only 决策改变。
+Offline Case Schema V2 已实现：`evaluator/required-evidence.json` 单独保存 Evidence Ground Truth，`evaluator/expected-answer.json` 只保存 Diagnosis Ground Truth。Scorer 从前者读取 Required IDs、从后者读取 Failure Type labels，现有评分公式与指标语义不变。Structured Triage Report 仍是 Schema V1。
 
 ## 完整校验与评分链
 
 ```mermaid
 flowchart LR
-    A["Verified Offline Case Package"] --> B["Trusted Expected Answer"]
+    A["Verified Offline Case Package"] --> B["Trusted Diagnosis Ground Truth"]
+    A --> L["Trusted Evidence Ground Truth"]
     A --> C["Stable Case Evidence IDs"]
     D["Raw Report JSON"] --> E["Candidate Report Analysis"]
     C --> E
     E --> F["Report Validation Result"]
     E --> G["Per-Case Metric Vector"]
     B --> G
+    L --> G
     F --> H{"validation.valid"}
     H -->|true| I["Structured Triage Report"]
     H -->|false| J["No legal report object"]
@@ -53,7 +55,7 @@ Issue #14 的评分链分为被测 Agent 侧和可信 Evaluator 侧：
 
 Evidence Ground Truth、Expected Answer 和确定性 Scorer 只能存在于可信 Evaluator 侧。以下公共边界不得泄露评分标签：
 
-- `OfflineCasePackage.as_dict()`；
+- `OfflineCasePackage.public_view()` / `PublicCaseView.as_dict()`；
 - `eval doctor`；
 - `eval score`；
 - Validation Error；
@@ -165,7 +167,7 @@ Schema V1 的 Evidence Reference 只允许：
 - 重复引用 validation 失败，但评分时按集合去重；
 - 不存在的 ID 属于 hallucinated Evidence。
 
-当前 Schema V1 Expected Answer 将 Evidence 分成：
+Schema V2 `EvidenceGroundTruth` 将 Evidence 分成：
 
 - `required_evidence_ids`：正式 Evidence Hit 的分母；
 - `optional_evidence_ids`：可增强报告，但缺失时不扣分。
@@ -369,23 +371,22 @@ duplicate_evidence_reference_count = 1
 
 Diagnostics 中的 matched count 只用于解释。只要 unknown count 大于零，正式 `report_evidence_hit_rate` 仍然是 `0.0`。
 
-## 8. 当前 Schema V1 Expected Answer 与 Fingerprint
+## 8. Schema V2 Ground Truth 与 Fingerprint
 
-Expected Answer 在 Loader 内部表示为只读类型，包含：
+Diagnosis Ground Truth 在 Loader 内部继续以只读 `ExpectedAnswer` 表示，包含：
 
 - Schema Version；
 - Primary Failure Type；
 - Acceptable Failure Types；
-- Required/Optional Evidence IDs；
 - Summary、Root Cause、Recommended Action。
 
-它挂在 `OfflineCasePackage` 上供可信 Scorer 使用，但不会进入 `OfflineCasePackage.as_dict()`。
+Evidence Ground Truth 独立以只读 `EvidenceGroundTruth` 表示，包含 Required/Optional Evidence IDs。两者挂在内部 `OfflineCasePackage` 上供可信 Scorer 使用，但显式 `public_view()` 产生的 `PublicCaseView` 不包含任一 Evaluator Artifact。
 
-类型化重构保持原有 Case Fingerprint 输入不变：Expected Answer 仍按原来的 JSON 字段和列表形式进入 Canonical Serialization。因此，只改变 Python 内部表示不会改变 Case Fingerprint；真正修改 Expected Answer 内容仍会改变 Case 和 Suite Fingerprint。
+两份 Ground Truth 均进入 domain-separated V2 Case Fingerprint。真正修改任一 Ground Truth 会改变 Case 和 Suite Fingerprint；语义为 set 的 ID/Failure-Type list 会先 canonical sort，所以仅调整输入顺序不会改变身份。
 
 ### 8.1 Required Evidence 的 Minimal Sufficient 原则
 
-Case Evidence Ground Truth 的 Human Review 应把 `required_evidence_ids` 视为 inclusion-minimal 的充分事实集合：整体包含固定诊断契约下推导 Expected Diagnosis 所需的来源事实；逐项移除会使至少一个必要事实或消歧依据不可用。当前 Schema V1 暂时把该字段存入 Expected Answer；Schema V2 将其迁移到 `required-evidence.json`。它不表示“越短越好”，也不以某次模型 PASS 作为充分性的循环证明。
+Case Evidence Ground Truth 的 Human Review 应把 `required_evidence_ids` 视为 inclusion-minimal 的充分事实集合：整体包含固定诊断契约下推导 Expected Diagnosis 所需的来源事实；逐项移除会使至少一个必要事实或消歧依据不可用。它存放于 `required-evidence.json`，不表示“越短越好”，也不以某次模型 PASS 作为充分性的循环证明。
 
 Required Evidence 必须引用可解析回 Physical Artifact source span 的 Canonical Evidence Unit，不能由 Curator 改写为 Failure Type、Root Cause、Fix 或 Tool Path 结论。Evidence Ground Truth、Expected Answer 的答案字段与 Reviewer 选择理由都属于 Trusted Evaluator 数据。
 
@@ -449,7 +450,6 @@ CLI 输出不包含 Expected Answer，也不包含 Retrieval、Tool Path、Aggre
 - Leaderboard；
 - Badcase 生成和审阅；
 - Agent Runtime、模型调用或真实 CI 执行；
-- Schema V2 Evaluator Artifact 拆分及对应 Loader/Scorer 适配；
 - Oracle 派生 Evidence Delivery、配对运行或 Agent-System Realization Gap；
 - 自动修复、代码修改或 CI 重跑。
 

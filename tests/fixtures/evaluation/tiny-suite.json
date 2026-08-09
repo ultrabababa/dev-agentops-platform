@@ -1,7 +1,7 @@
 {
   "schema_version": "1",
-  "suite_id": "tiny-loader-fixture-v1",
-  "suite_version": "1",
+  "suite_id": "tiny-loader-fixture-v2",
+  "suite_version": "2",
   "cases": [
     {
       "case_id": "constructed-assertion-001",
@@ -9,5 +9,5 @@
       "weight": 1
     }
   ],
-  "suite_fingerprint": "0e1597214edb00b5b051db103c0bdf4f1d11dd4d5ce1594737fb4b902a3be7fe"
+  "suite_fingerprint": "7d8e14b2df3411a3de97dbb889539ade4c0542df7cd4fbfc6c467489f3f01ef1"
 }

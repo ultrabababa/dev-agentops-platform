@@ -343,73 +343,94 @@ Matrix Component Key 与 Registry Component Type 的映射是：
 
 ## 4. Offline Case Package 规则
 
-Issue #6 实现的是 Schema V1 的本地离线评测数据完整性边界：在调用模型或 Scorer 之前，先证明 Case 的输入、证据、Expected Answer、正式资格和内容身份都有效。
+Issue #22 把本地离线评测数据完整性边界升级为 Schema V2：在调用模型或 Scorer 之前，先证明 Case 的 Physical Artifacts、Canonical Evidence、Evaluator Ground Truth、正式资格和内容身份都有效。
 
 它不运行 Agent，不连接在线 CI，也不执行评分。
 
-### 4.1 Case Manifest Schema Version 1
+### 4.1 Case Manifest Schema Version 2
 
 每个 Case 目录包含一个 `case.json`：
 
 ```json
 {
-  "case_schema_version": "1",
+  "case_schema_version": "2",
   "case_id": "constructed-assertion-001",
-  "raw_log": "raw.log",
-  "frozen_log_chunks": "log-chunks.json",
-  "frozen_log_chunks_fingerprint": "<64-character sha256>",
-  "repository_evidence": "repository-evidence.json",
-  "expected_answer": "expected-answer.json",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
   "forbidden_actions": ["edit_code", "rerun_ci"],
-  "source_type": "constructed",
-  "source_url_or_construction_note": "为 Loader 测试构造的独立合成 Case。",
-  "license_or_permission": "project_constructed",
-  "created_by": "case author",
-  "reviewed_by": "human reviewer",
-  "sanitization_status": "reviewed_sanitized",
+  "provenance": {
+    "source_type": "constructed",
+    "source_url_or_construction_note": "为 Loader 测试构造的独立合成 Case。",
+    "license_or_permission": "project_constructed"
+  },
+  "curation": {
+    "created_by": "case author",
+    "review_status": "human_reviewed",
+    "reviewed_by": "human reviewer"
+  },
+  "sanitization": {
+    "status": "reviewed_no_changes",
+    "reviewed_by": "human reviewer",
+    "transformations": []
+  },
   "case_fingerprint": "<64-character sha256>"
 }
 ```
 
-Manifest 使用严格字段集合，未知字段和缺失字段都会被拒绝。当前只接受 `case_schema_version: "1"`。
+Manifest 使用严格字段集合，未知字段和缺失字段都会被拒绝。Loader 只接受 `case_schema_version: "2"`：字段缺失或类型错误是 `invalid_case_manifest`，显式旧/未知版本是 `unsupported_case_schema_version`。Schema V1 不再兼容。
 
 ### 4.2 Case Artifact 契约
 
 | Artifact | Schema 与要求 |
 |----------|---------------|
-| `raw_log` | 非空 UTF-8 文本，保存冻结的原始 CI/Test 日志 |
-| `frozen_log_chunks` | Schema Version 1 JSON；包含非空 `chunks` 列表，每个 Chunk 有唯一稳定的 `evidence_id` 和非空 `text` |
-| `repository_evidence` | Schema Version 1 JSON；包含非空 `items` 列表，每项有唯一稳定的 `evidence_id`、规范化快照 `path` 和非空 `content` |
-| `expected_answer` | Schema Version 1 JSON；包含 Primary/Acceptable Failure Type、Required/Optional Evidence ID、Summary、Root Cause 与 Recommended Action |
+| `physical-artifacts/raw.log` | 非空 UTF-8 bytes，保存冻结的原始 CI/Test 日志 |
+| `physical-artifacts/repository-manifest.json` | upstream identity、`git_commit` 或 `constructed_snapshot` exact revision，以及每个冻结成员的规范化 path、SHA-256、byte size |
+| `physical-artifacts/repository/` | Manifest-driven bounded snapshot；拒绝缺失、额外、重复、hash/size 不符或任何 symlink member |
+| `canonical-evidence/*-units.json` | 只保存 answer-neutral Evidence ID、physical source、1-based inclusive line range 与 exact selected bytes SHA-256，不复制 evidence body |
+| `evaluator/required-evidence.json` | 独立 Evidence Ground Truth；Required 非空，Optional 可空，均唯一、互斥且必须引用 Canonical ID |
+| `evaluator/expected-answer.json` | Diagnosis Ground Truth；只含 Primary/Acceptable Failure Type、Summary、Root Cause 与 Recommended Action |
 | `forbidden_actions` | 非空且不重复的禁止操作列表，用于声明该 Case 不允许的 Mutation 行为 |
 
-Expected Answer 中的所有 Evidence Reference 必须指向冻结 Log Chunk 或 Repository Evidence Snapshot 中真实存在的稳定 Evidence ID。两个 Artifact 之间也不能出现重复 Evidence ID。
+Log Unit 的 `source` 必须严格等于 manifest 的 `raw_log`。Repository Unit 的 `source` 必须位于 declared `repository_root` 且对应 repository manifest 中的 frozen member。Line terminator 属于 resolved bytes；CRLF 不 normalize；最后一行没有 LF 仍有效；空 span 与越过 EOF 的 span 均拒绝。
 
-### 4.3 当前 Schema V1 的边界与已接受的 Schema V2 目标
+### 4.3 三层信任边界
 
-当前已实现的 Schema V1 把 `raw_log`、`frozen_log_chunks`、`repository_evidence.items` 与包含 `required_evidence_ids` 的 `expected_answer` 装入同一 Case 契约。上文 4.1、4.2 及第 6 节只说明现有 Loader、Fingerprint 和 `eval doctor` 的真实行为；它们不是 Formal 20-Case Suite 的目标数据模型。
-
-ADR 0126 已接受 Offline Case Schema V2，并要求在 Issue #15 继续构建和 Human-freeze Formal Cases 前先实现。目标包明确分为：
+实现明确分为：
 
 - `physical-artifacts/`：唯一事实源，包括 `raw.log`、`repository-manifest.json` 和 manifest 声明的 `repository/*`；
 - `canonical-evidence/`：`log-units.json` 与 `repository-units.json`，每个稳定 ID 只记录 source artifact/path、source span 和 resolved content hash，不保存独立可漂移的内容副本；
 - `evaluator/`：`required-evidence.json` 保存 Evidence Ground Truth，`expected-answer.json` 只保存 Diagnosis Ground Truth。
 
-Schema V2 必须把 Physical Artifact、Canonical Coordinate、Evaluator Artifact 和 Manifest 的变化纳入 Case/Suite Fingerprint，并在 Agent-boundary leakage 检查中拒绝 evaluator-only 数据。具体字段、Loader、Fingerprint 和兼容策略尚未实现，不能用当前 V1 `eval doctor` 声称满足 V2。
+内部 `OfflineCasePackage` 可供可信 Scorer 持有完整 Ground Truth；只有显式 `public_view()` 产生的 `PublicCaseView` 可进入 public/model-safe serialization。`eval doctor` 只序列化 Suite/Case identity，`eval score` 只输出 metrics/count diagnostics；Case CLI validation errors 返回稳定 code 与通用 message，不回显 evaluator-only 值。本 Issue 不定义未来 Runtime 的 Investigation Workspace 或 Evidence Acquisition API。
 
 Evidence Universe、Investigation Workspace 与 Pipeline/Retrieval/ReAct/Oracle 访问语义详见 [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](formal-evaluation-methodology.md)。
 
 ### 4.4 Provenance 与 Sanitization
 
-Formal V1 Case 的 `source_type` 只接受：
+Formal V2 Case 的 `provenance.source_type` 只接受：
 
 - `constructed`：为 DevAgentOps 有意构造或安全改写的独立 Case；
 - `public_permitted_source`：来自公开且许可当前用途的来源。
 
-构造 Case 必须使用 `license_or_permission: "project_constructed"`。所有正式 Case 都必须记录非空的创建者、人工 Reviewer、来源 URL 或构造说明，并使用：
+构造 Case 必须使用 `license_or_permission: "project_constructed"`。所有正式 Case 都必须记录非空的创建者、人工 Reviewer、来源 URL 或构造说明。Sanitization 使用最小可扩展结构：
 
 ```json
-"sanitization_status": "reviewed_sanitized"
+"sanitization": {
+  "status": "reviewed_sanitized",
+  "reviewed_by": "human reviewer",
+  "transformations": [{
+    "artifact_path": "physical-artifacts/raw.log",
+    "description": "what changed",
+    "semantics_preserving": true
+  }]
+}
 ```
 
 未记录 Provenance、未完成 Sanitization、包含私有生产日志或来源许可不明的 Case 不能进入正式评测。
@@ -424,7 +445,7 @@ Case Artifact 和 Suite Case Manifest 的文件引用必须使用 POSIX 相对�
 - 解析 Symlink，并拒绝最终目标逃出所属 Case 或 Suite 目录；
 - 在计算 Fingerprint 前，把 `./raw.log` 之类等价写法规范化为 `raw.log`。
 
-Repository Evidence Snapshot 的 `path` 也使用相同的规范化相对路径语法，但 Loader 读取的是 Snapshot JSON 中已冻结的 `content`，不会读取当前 Working Tree。
+Repository manifest member path 和 Canonical Unit source 使用相同规则。Repository member 不允许 symlink；Loader 可遍历 snapshot 仅用于比较实际文件集合与 manifest-declared membership，不能通过扫描推导被接受的成员。
 
 ## 5. Evaluation Suite Manifest 规则
 
@@ -454,7 +475,7 @@ Suite 校验要求：
 - Case 列表非空，Case ID 唯一；
 - Suite Entry 的 Case ID 与被引用 Case Manifest 的 ID 一致；
 - Weight 是正数且有限；
-- V1 Formal Suite 使用等权 Case；
+- Formal Suite 的所有 Case 必须通过 V2-only Case Loader；不支持 mixed-schema Suite；
 - Matrix 中每个 Effective Condition 的 `suite` 必须等于已加载 Suite 的 `suite_id`。
 
 ## 6. Fingerprint Chain 与覆盖范围
@@ -465,14 +486,14 @@ Suite 校验要求：
 
 声明的 `case_fingerprint` 不参与自身计算。Case Fingerprint 覆盖：
 
-- Case Schema、Case ID 和规范化后的 Artifact Path；
-- Frozen Log Chunks Fingerprint；
-- Forbidden Actions；
-- Provenance、Reviewer 与 Sanitization Status；
-- 完整 Raw Log 文本；
-- 解析后的 Frozen Log Chunks、Repository Evidence Snapshot 与 Expected Answer。
+- domain separator `devagentops.case-fingerprint.v2`；
+- normalized V2 manifest、Artifact paths、Forbidden Actions、Provenance、Curation、Sanitization；
+- raw log path、byte size 与 SHA-256；
+- upstream repository/revision identity、排序后的 frozen member path/hash/size（实际 bytes 已先校验）；
+- 排序后的 Canonical Unit definitions 与 exact resolved-content hashes；
+- 排序后的 Evidence Ground Truth 与 Diagnosis Ground Truth。
 
-这些内容涵盖当前 Schema V1 实现所识别的输入、评分语义和进入 Formal Evaluation 的资格。Schema V2 将改用三层 Artifact 的完整指纹链；本节不提前声明尚未实现的计算公式。
+语义为 set 的列表验证 uniqueness 后按 deterministic canonical order 进入 fingerprint；输入 JSON 的 list order 本身不影响身份。Object 使用 sorted-key compact UTF-8 JSON。一定程度的 hash redundancy 是有意的，用于同时覆盖声明和已验证内容。
 
 ### 6.2 Suite Fingerprint
 
@@ -491,7 +512,7 @@ Suite 校验要求：
 |------|------|
 | 只改 JSON 缩进或 Object Key 顺序 | Fingerprint 不变 |
 | 把 `./raw.log` 改成等价的 `raw.log` | Fingerprint 不变 |
-| 修改 Raw Log、Chunk、Repository Evidence 或 Expected Answer | Case 与 Suite Fingerprint 改变 |
+| 修改 Raw Log、Repository Snapshot、Canonical Unit 或任一 Ground Truth | Case 与 Suite Fingerprint 改变 |
 | 修改 Forbidden Actions、Provenance、Reviewer 或 Sanitization | Case 与 Suite Fingerprint 改变 |
 | 修改 Case 顺序、Weight、Manifest Path 或 Case 内容 | Suite Fingerprint 改变 |
 | 只修改声明的 `case_fingerprint` 或 `suite_fingerprint` | 实际计算值不变，但完整校验会报告声明值不一致 |
@@ -557,10 +578,10 @@ ID 和 Version 负责提供人类可读名称，Fingerprint 负责提供内容�
 - Case/Suite Fingerprint Chain；
 - Matrix-only 与 Formal Complete Preflight 两种 `eval doctor` 模式。
 - Structured Triage Report Schema V1 校验与确定性单 Case 评分；具体见 [Structured Triage Report 校验与单 Case 确定性评分](structured-triage-report-and-per-case-scoring.md)。
+- Offline Case Schema V2 三层 Artifact Loader、exact source-span/hash resolution、V2-only Suite composition 与 public leakage guard。
 
 当前尚未实现：
 
-- Offline Case Schema V2 Manifest、三层 Artifact Loader、source-span/hash resolution、V2 Fingerprint Chain 与 evaluator leakage guard；
 - Agent 或模型调用；
 - Formal Evaluation Runner；
 - Run Manifest 持久化；
@@ -586,5 +607,5 @@ ID 和 Version 负责提供人类可读名称，Fingerprint 负责提供内容�
 - [V1 Failure Type Taxonomy 与 Offline Case Policy](v1-failure-type-taxonomy-and-case-policy.md)
 - [V1 PRD](../prd/devagentops-v1-agentops-evaluation-baseline.md)
 - [Component Manifest 与命令参考](../../components/README.md)
-- 实现：`src/devagentops/evaluation_matrix.py`、`src/devagentops/component_registry.py`、`src/devagentops/evaluation_suite.py`、`src/devagentops/cli.py`
-- 契约测试：`tests/test_issue_4_evaluation_matrix.py`、`tests/test_issue_5_component_registry.py`、`tests/test_issue_6_evaluation_suite.py`
+- 实现：`src/devagentops/evaluation_matrix.py`、`src/devagentops/component_registry.py`、`src/devagentops/evaluation_suite.py`、`src/devagentops/scoring.py`、`src/devagentops/cli.py`
+- 契约测试：`tests/test_issue_4_evaluation_matrix.py`、`tests/test_issue_5_component_registry.py`、`tests/test_issue_6_evaluation_suite.py`、`tests/test_issue_14_structured_report_scoring.py`、`tests/test_issue_22_case_schema_v2.py`
