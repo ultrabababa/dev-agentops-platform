@@ -18,7 +18,7 @@ DevAgentOps 是一个用于秋招展示和系统研究的、可评测的 CI/Test
 - 显式 Offline Case Package / Evaluation Suite Loader 与 Case/Suite Fingerprint；
 - Structured Triage Report Schema V1 校验与确定性单 Case Metric Vector。
 
-Evaluation Matrix、Component Registry 与 Offline Evaluation Suite 已形成正式评测配置和数据的身份链；Structured Triage Report Scorer 可以对候选报告执行单 Case 确定性评分。当前仍不执行 Agent、模型调用、Suite 聚合、Quality Gate、Leaderboard 或 Badcase。
+Evaluation Matrix、Component Registry 与当前 Offline Case Schema V1 Loader 已形成评测配置和数据的身份链；Structured Triage Report Scorer 可以对候选报告执行单 Case 确定性评分。Formal Case 的 Schema V2 三层数据模型已经通过 ADR 接受，但 [Issue #22](https://github.com/ultrabababa/dev-agentops-platform/issues/22) 跟踪的 Loader、Fingerprint、Leakage Guard 与 fixture 尚未实现，因此当前五个 Batch-1 V1 packages 只作 calibration drafts，不能 Human-freeze 或继续扩展为 20-Case Formal Suite。当前仍不执行 Agent、模型调用、Suite 聚合、Quality Gate、Leaderboard 或 Badcase。
 
 ## V1 承诺
 
@@ -54,7 +54,9 @@ V1 明确不做：
 
 ## Evaluation Methodology
 
-V1 评测方法增加 Oracle Evidence Diagnostic Condition：在保持 Suite、Model、诊断 Prompt、Report Contract、Scorer 与 Inference Settings 尽量一致的配对实验中，绕过普通 Evidence Discovery，只向模型提供经过 Human Review 的 Minimal Sufficient Evidence Set。它用于估计“正确证据已经在上下文中时，固定模型能否完成诊断”，不会提供 Expected Answer、Failure Type Label、答案文本、Tool Path、Scorer Label 或 Curator Reasoning。
+每个 Formal Case V2 定义一个 authentic、frozen、offline、bounded-but-realistic Evidence Universe，只包含完整或自然有界的 raw log 与 bounded exact-revision repository snapshot。Package 分为唯一事实源 `physical-artifacts/`、以 source span 和 resolved hash 指回事实源的 `canonical-evidence/`、以及只对可信 Evaluator 可见的 `evaluator/`；Project Knowledge 不属于当前 Case Universe，可在未来作为独立 Runtime/Retrieval ablation 输入。`required-evidence.json` 是唯一 Evidence Ground Truth，`expected-answer.json` 只保存 Diagnosis Ground Truth。Pipeline、Retrieval、ReAct 与 Oracle 如何观察同一世界由各自 Evidence Acquisition Condition 决定，详见 [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](docs/evaluation/formal-evaluation-methodology.md)和 [ADR 0126](docs/adr/0126-offline-case-schema-v2-physical-artifacts-and-canonical-evidence.md)。
+
+V1 评测方法增加 Oracle Evidence Diagnostic Condition：在保持 Suite、Model、诊断 Prompt、Report Contract、Scorer 与 Inference Settings 尽量一致的配对实验中，绕过普通 Evidence Discovery，只向模型提供经过 Human Review 的 Minimal Sufficient Evidence Set。Oracle input 在运行时由 Required Evidence IDs 经 Canonical Coordinates 解析 Physical Artifacts，不冻结独立 `oracle-evidence.json`；它不会提供 Evidence Ground Truth、Expected Answer、Failure Type Label、答案文本、Tool Path、Scorer Label 或 Curator Reasoning。
 
 Oracle 与正常 Agent 的差异按 Case、Metric 和 Failure Type 报告为 Agent-System Realization Gap，不合成为单一能力分，也不作为普通 Leaderboard 的同 Fingerprint 直接排名。该方法当前仅完成文档与 ADR 设计，尚未实现 Matrix Schema、Runner、Leakage Guard 或 Gap Report；详见 [Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap](docs/evaluation/oracle-evidence-diagnostic-condition.md)。
 
@@ -137,7 +139,7 @@ Issue #4 与 #5 共同定义了可复现的正式评测配置：Matrix 解析 De
   --report path/to/report.json
 ```
 
-配置、数据和 Fingerprint 规则见 [Evaluation Matrix、Component Registry 与 Offline Evaluation Suite](docs/evaluation/evaluation-matrix-and-component-registry.md)；报告校验、单 Case 指标、CLI 和信任边界见 [Structured Triage Report 校验与单 Case 确定性评分](docs/evaluation/structured-triage-report-and-per-case-scoring.md)；Oracle 配对条件与 Gap 解释见 [Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap](docs/evaluation/oracle-evidence-diagnostic-condition.md)。具体 Component Manifest 字段和 Freeze 命令也可查阅 [components/README.md](components/README.md)。
+配置、数据和 Fingerprint 规则见 [Evaluation Matrix、Component Registry 与 Offline Evaluation Suite](docs/evaluation/evaluation-matrix-and-component-registry.md)；Evidence Universe、Canonical Evidence 与条件访问语义见 [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](docs/evaluation/formal-evaluation-methodology.md)；报告校验、单 Case 指标、CLI 和信任边界见 [Structured Triage Report 校验与单 Case 确定性评分](docs/evaluation/structured-triage-report-and-per-case-scoring.md)；Oracle 配对条件与 Gap 解释见 [Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap](docs/evaluation/oracle-evidence-diagnostic-condition.md)。具体 Component Manifest 字段和 Freeze 命令也可查阅 [components/README.md](components/README.md)。
 
 运行后端与前端测试及前端生产构建：
 
@@ -151,12 +153,15 @@ npm run build
 ## 当前执行顺序
 
 ```text
-#2 V1 taxonomy 与 Offline Case policy（已完成）
-→ #3 应用 smoke path（已完成）
+#2 V1 taxonomy / Case Policy（已完成）
+→ #3 Application smoke path（已完成）
 → #4 Evaluation Matrix（已完成）
 → #5 Component Registry（已完成）
-→ #6 Offline Case Package / Evaluation Suite Loader（已完成）
-→ #14 Structured Triage Report 校验与单 Case Scoring（本 PR）
+→ #6 Offline Case Schema V1 Loader（已完成）
+→ #14 Structured Report / Per-Case Scoring（已完成）
+→ #21 Evidence Methodology + Schema V2 architecture（已完成）
+→ #22 Offline Case Schema V2 implementation（当前下一步）
+→ #15 Formal Suite Case Construction / Human freeze（等待 #22）
 ```
 
 《AI Agent Book》及其实验按当前 Issue 的具体问题穿插使用，不作为项目开工前置课程。
