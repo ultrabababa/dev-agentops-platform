@@ -53,9 +53,15 @@ For the first Formal Suite, the Case Evidence Universe contains only the physica
 
 ### Canonical Evidence
 
-Canonical Log and Repository Units are coordinates over the frozen Physical Artifacts in the Case Package, not independent copies of source truth. Every unit has a stable answer-neutral Evidence ID, a controlled source path, a machine-readable source span, and a hash of the resolved frozen content. Loaders resolve the span from the Case artifact actually investigated by the Agent/Runtime and reject missing, escaping, invalid, or hash-mismatched units.
+Canonical Log and Repository Units are coordinates over the frozen Physical Artifacts in the Case Package, not independent copies of source truth or a curator-selected high-value subset. Every unit has a stable answer-neutral Evidence ID, a controlled source path, a machine-readable source span, and a hash of the resolved frozen content.
 
-Chunk size, unit count, repository file count, noise ratio, and line-window size are not globally fixed. Segmentation must be deterministic and source-faithful for each reviewed Case.
+The current Schema V2 Loader enforces only the declared-unit integrity boundary: controlled source paths, manifest-declared repository membership, valid positive in-bounds line spans, kind/ID shape and uniqueness, exact resolved-content hashes, and Ground Truth references to known Canonical IDs. It does **not** currently prove that the declared units cover every physical line, have no gaps/overlaps, or comply with a suite-shared Canonicalization Profile.
+
+Complete Formal text coverage, no gaps/overlaps, answer-neutral boundaries, and independence from failure lines, fixes, Required Evidence labels, or curator conclusions are Case Construction/Human Review invariants. Before bulk Formal Case construction, a deterministic Canonicalization Profile generator/validator or equivalent machine validation must enforce those invariants and Profile compliance. This requirement does not reopen or expand Issue #22 in the current documentation/calibration phase.
+
+Formal Cases will use a shared versioned `Canonicalization Profile v1`. Its repository-text candidate starts at line 1 and uses contiguous, non-overlapping fixed-`N` windows with a possibly shorter final unit and 100% coverage. B04 currently uses `N=100`, but one calibration Case is insufficient to freeze that parameter for the Suite. Profile calibration must precede bulk Case construction.
+
+Canonicalization does not define Runtime Retrieval Chunking. A Retrieval Runtime may independently chunk the Physical Artifacts using versioned size, overlap, embedding, index, top-k, and reranking parameters, then map retrieved physical spans to overlapping Canonical Evidence IDs. Canonical Units remain stable identity, citation, and measurement coordinates; they are not mandatory Retrieval index chunks.
 
 ### Trusted Evaluator Artifacts
 
@@ -89,6 +95,7 @@ Positive consequences:
 - Retrieval, traces, citations, scoring, and Oracle use the same source-resolved coordinates.
 - Evidence and Diagnosis Ground Truth have one source of truth each.
 - Physical, canonical, and evaluator-only integrity can be validated and fingerprinted independently.
+- Runtime chunking experiments can vary without changing Case identity or evaluator coordinates.
 
 Tradeoffs:
 
@@ -96,14 +103,15 @@ Tradeoffs:
 - Case construction and review become more explicit.
 - Existing Batch-1 Schema V1 packages remain calibration drafts and must not be Human-frozen as Formal Packages.
 
-Issue #15 must not construct the remaining 15 packages under Schema V1. After Schema V2 implementation lands, B04 should be rebuilt first as the V2 calibration Case before construction scales to the remaining Cases.
+Issue #15 must not construct the remaining 15 packages under Schema V1. B04 has been rebuilt under Schema V2 and passed Human Review. Before construction scales, 2–3 already-selected structurally different Cases must calibrate `Canonicalization Profile v1`; if the frozen parameters differ from B04's current local rule, B04 Canonical coordinates and dependent Evidence IDs/fingerprint must be rebuilt uniformly while its Physical Artifacts remain unchanged.
 
 Schema V1 Loader 已明确退役：缺失或类型错误的 `case_schema_version` 是 `invalid_case_manifest`，显式非 `"2"` 版本是 `unsupported_case_schema_version`。Tiny fixture 已原地迁移到 V2；不提供双版本分派、mixed-schema Suite 或 V1 migration framework。Issue #15 的五个 V1 calibration drafts 不在 Issue #22 中迁移。
 
 ## Non-Decisions
 
 - Runtime、retrieval、tools 与 Oracle Runner 仍不属于本 ADR/Issue #22；V2 Loader、Doctor、scorer integration 与 public leakage boundary 已实现。
-- It does not define a universal chunking rule or corpus-size threshold.
+- It does not freeze `Canonicalization Profile v1`, `N=100`, or a corpus-size threshold; calibration and a separate Human decision are required.
+- It does not define Runtime Retrieval Chunking or require Runtime chunks to equal Canonical Units.
 - It does not add Project Knowledge to Schema V2.
 - It does not require a migration framework unless implementation proves one necessary.
 - It does not modify the five Failure Types, scoring formulas, or diagnosis-only product boundary.

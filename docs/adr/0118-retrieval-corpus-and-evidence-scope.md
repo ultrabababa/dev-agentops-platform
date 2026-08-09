@@ -10,7 +10,7 @@ Retrieval affects triage quality, but formal evaluation must avoid answer leakag
 
 ## Decision
 
-V1 will version retriever behavior separately from retrieval corpus content. Formal evaluation may retrieve log evidence, repository evidence, and project knowledge, but not expected answers, leaderboard results, badcase reviews, debug findings, or previous evaluation reports. Repository evidence comes from frozen case or corpus snapshots, not the current working tree.
+V1 will version retriever behavior separately from retrieval corpus content. For a Formal Case, an independently versioned Runtime Retrieval Chunker derives index chunks from allowed Physical Artifacts; static retrieval returns physical source spans, which are mapped to overlapping Canonical Evidence IDs for identity, citation, and measurement. Canonical Units are not mandatory Retrieval chunks. Formal evaluation may also retrieve separately controlled project knowledge, but not expected answers, leaderboard results, badcase reviews, debug findings, or previous evaluation reports. Repository evidence comes from frozen Case or corpus snapshots, not the current working tree.
 
 ## Alternatives Considered
 
@@ -24,9 +24,10 @@ Retrieval improvements are attributable to strategy, corpus, or evidence changes
 
 ## Implementation Notes
 
-- `retriever_version` covers algorithm and configuration.
-- `retrieval_corpus_version` covers indexed project knowledge and repository evidence snapshots.
+- `retriever_version` covers chunking, algorithm, index/query, top-k/reranking, and other behavior-affecting configuration.
+- `retrieval_corpus_version` covers the allowed Physical Artifact snapshot or separately controlled project-knowledge content from which Runtime chunks are derived.
 - V1 defaults to per-case repository evidence snapshots, with future support for shared corpus references.
+- Runtime traces preserve retrieved physical spans and overlapping Canonical IDs; the formal Evidence Hit attribution rule is calibrated separately and cannot default to arbitrary overlap.
 - Project knowledge may include SOPs, runbooks, architecture notes, dependency policy, and testing conventions.
 - `eval doctor` checks path/configuration-level leakage from evaluation artifacts.
 

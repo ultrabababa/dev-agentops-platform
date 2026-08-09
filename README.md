@@ -18,7 +18,7 @@ DevAgentOps 是一个用于秋招展示和系统研究的、可评测的 CI/Test
 - 显式 Offline Case Package / Evaluation Suite Loader 与 Case/Suite Fingerprint；
 - Structured Triage Report Schema V1 校验与确定性单 Case Metric Vector。
 
-Evaluation Matrix、Component Registry 与 Offline Case Schema V2 Loader 已形成评测配置和数据的身份链；Structured Triage Report Scorer 可以对候选报告执行单 Case 确定性评分。Schema V2 Loader 会验证 Physical Artifact membership/integrity、Canonical source span、Evidence/Diagnosis Ground Truth split、Provenance、Sanitization、Case/Suite Fingerprint，并通过 `PublicCaseView` 与公共 CLI 错误阻断 Evaluator 数据泄漏。Schema V1 已退役，不再提供兼容 Loader；当前五个 Batch-1 V1 packages 仍只作 calibration drafts，Issue #15 将先按 V2 重建 B04，不由本 Issue 迁移。当前仍不执行 Agent、模型调用、Suite 聚合、Quality Gate、Leaderboard 或 Badcase。
+Evaluation Matrix、Component Registry 与 Offline Case Schema V2 Loader 已形成评测配置和数据的身份链；Structured Triage Report Scorer 可以对候选报告执行单 Case 确定性评分。Schema V2 Loader 会验证 Physical Artifact membership/integrity、Canonical source span、Evidence/Diagnosis Ground Truth split、Provenance、Sanitization、Case/Suite Fingerprint，并通过 `PublicCaseView` 与公共 CLI 错误阻断 Evaluator 数据泄漏。Schema V1 已退役，不再提供兼容 Loader；当前五个 Batch-1 V1 packages 仍只作 calibration drafts，Issue #15 的 B04 V2 calibration 已通过 Human Review，下一步先校准共享 Canonicalization Profile，再扩展 Formal Case construction。当前仍不执行 Agent、模型调用、Suite 聚合、Quality Gate、Leaderboard 或 Badcase。
 
 ## V1 承诺
 
@@ -161,7 +161,9 @@ npm run build
 → #14 Structured Report / Per-Case Scoring（已完成）
 → #21 Evidence Methodology + Schema V2 architecture（已完成）
 → #22 Offline Case Schema V2 implementation（已完成）
-→ #15 Formal Suite Case Construction / Human freeze（下一步先重建 B04 V2）
+→ #15 B04 V2 Human Review（已通过）
+→ #15 shared Canonicalization Profile v1 calibration / Human freeze（下一步）
+→ #15 Formal Suite Case Construction / Human freeze
 ```
 
 《AI Agent Book》及其实验按当前 Issue 的具体问题穿插使用，不作为项目开工前置课程。

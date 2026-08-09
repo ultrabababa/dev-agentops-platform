@@ -116,11 +116,11 @@ The runtime-facing view through which an Evidence Acquisition Condition can obse
 _Avoid_: One-shot prompt context, Expected Answer, curator-selected required evidence pack
 
 **Log Evidence**:
-Frozen CI or test output content represented as Canonical Evidence Units so a runtime can inspect and cite specific source-faithful portions of the Case log.
+Frozen CI or test output content in the Case Physical Artifacts. Canonical Evidence Units provide stable coordinates for observed/cited source-faithful portions; a Runtime may inspect or retrieve independently chunked physical spans.
 _Avoid_: Curator-authored answer summary, prompt context
 
 **Repository Evidence**:
-Frozen source, configuration, dependency, test, or build content from the Case's bounded exact-revision repository snapshot, represented as Canonical Evidence Units for investigation and citation.
+Frozen source, configuration, dependency, test, or build content from the Case's bounded exact-revision repository snapshot. Canonical Evidence Units address this content for identity, measurement, and citation without defining Runtime retrieval chunks.
 _Avoid_: Current working tree, unbounded codebase dump, curator-authored answer summary
 
 **Evidence Reference**:
@@ -128,12 +128,12 @@ A structured citation in a triage report that points to a specific log, reposito
 _Avoid_: Vague evidence summary, unsupported claim
 
 **Stable Evidence ID**:
-A deterministic, answer-neutral identifier defined by a case package or retrieval corpus so runtimes, traces, expected answers, reports, and scorers can refer to the same Canonical Evidence Unit.
+A deterministic, answer-neutral identifier defined by a Case package's Canonicalization Profile so runtimes, traces, expected answers, reports, and scorers can refer to the same Physical Artifact coordinate.
 _Avoid_: Runtime-only evidence label, generated display number, root-cause hint
 
 **Canonical Evidence Unit**:
-A deterministic, answer-neutral source-span coordinate over one Physical Artifact, with a resolved content hash used to verify source faithfulness. It is the common coordinate for indexing, tool results, trace observations, citations, evidence-hit signals, and Oracle derivation; it does not duplicate an independently editable evidence copy. One physical log or repository file may map to multiple units.
-_Avoid_: Duplicated evidence text, physical file count, curator-selected answer evidence, universally fixed chunk size
+A deterministic, answer-neutral source-span coordinate over one Physical Artifact, with a resolved content hash used to verify source faithfulness. It is the common coordinate for observation identity, tool results, traces, citations, evidence-attribution signals, and Oracle derivation; it does not duplicate an independently editable evidence copy and is not a mandatory Retrieval chunk. One physical log or repository file may map to multiple units under the suite-shared Human-frozen Canonicalization Profile for that artifact class.
+_Avoid_: Duplicated evidence text, physical file count, curator-selected answer evidence, arbitrary per-Case windows, uncalibrated universal parameters, Retrieval index chunk
 
 **Derived Evidence**:
 An evidence item created during runtime by retrieval, extraction, or summarization that preserves provenance back to stable evidence or source spans.
@@ -152,11 +152,11 @@ A local evidence source available to the triage agent, limited in V1 to log evid
 _Avoid_: Live issue tracker, team chat, external wiki
 
 **Log Preprocessing**:
-The deterministic preparation of raw CI or test output into retrievable Canonical Evidence Units before agent triage, without preselecting only the hidden Required Evidence.
+The deterministic, semantics-preserving normalization of raw CI or test output before Canonical coordinates and Runtime-specific retrieval views are derived, without preselecting only the hidden Required Evidence.
 _Avoid_: Full-log prompting, curator-performed evidence localization, answer summary
 
 **Retrieval Corpus**:
-The versioned set of project knowledge and repository evidence indexed for retrieval during triage.
+The versioned Runtime-specific chunks derived from allowed Physical Artifacts or separately controlled Project Knowledge and indexed for retrieval during triage. Retrieved physical spans map back to overlapping Canonical Evidence IDs; the Canonical Unit set itself is not the mandatory corpus chunking.
 _Avoid_: Retriever, evaluation suite, expected answer, badcase history
 
 **Triage Tool**:
