@@ -1,0 +1,40 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "https://github.com/checkstyle/checkstyle",
+    "revision_kind": "git_commit",
+    "exact_revision": "da6ebe6de41b7a5afc6f6746ff0c2382c2a4be0f"
+  },
+  "files": [
+    {
+      "path": ".travis.yml",
+      "sha256": "a730639406a8ac2391383dfb189cbb922f32f2a31d2a42c8de16dd7785700023",
+      "size_bytes": 11985
+    },
+    {
+      "path": "config/ant-phase-verify.xml",
+      "sha256": "e6480610e64b9f902033963ae4c2324f30d2dcb9d94ff043894eae26017e1c12",
+      "size_bytes": 2055
+    },
+    {
+      "path": "config/checkstyle_checks.xml",
+      "sha256": "d02f7a94e9616d46d8611a7889aaed0f280100d581cc35053645042551c839ed",
+      "size_bytes": 12654
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "c337e53482070b0b1212f5b67651416f8a35587fbc1cde5cc38f0edd735eb8cb",
+      "size_bytes": 62843
+    },
+    {
+      "path": "src/main/java/com/puppycrawl/tools/checkstyle/checks/coding/EqualsAvoidNullCheck.java",
+      "sha256": "3f8af7921fbbf5f23fc2a3374220b4e719ca7cfca0e1d06d7d634916d519d9ee",
+      "size_bytes": 20086
+    },
+    {
+      "path": "src/test/java/com/puppycrawl/tools/checkstyle/checks/coding/EqualsAvoidNullCheckTest.java",
+      "sha256": "9dba5616163b2a5037a15be222d43cb80b9ede29b9e075dc9c9554b36cafe9d9",
+      "size_bytes": 8606
+    }
+  ]
+}
