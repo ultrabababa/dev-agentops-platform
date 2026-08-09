@@ -8,10 +8,12 @@
 |------|--------------|----------|
 | Structured Triage Report Schema V1 | Agent 输出是否具有可检查的固定结构？ | 校验版本、Case 绑定、分类、必填内容、置信度、行动建议和 Evidence Reference |
 | Report Validation Result | 非法 Agent 输出具体违反了哪些报告契约？ | 返回稳定、结构化且顺序确定的错误对象，不因报告质量问题中断评分 |
-| Expected Answer | 当前 Case 的人工审核评分标签是什么？ | 保存 Primary/Acceptable Failure Type 与 Required/Optional Evidence，且只存在于可信 Evaluator 侧 |
+| Schema V1 Expected Answer | 当前 Case 的人工审核评分标签是什么？ | 当前实现把 Primary/Acceptable Failure Type 与 Required/Optional Evidence 保存在同一可信 Evaluator Artifact |
 | Per-Case Scorer | 当前报告在分类、证据和完整性维度表现如何？ | 输出四项单 Case Quality Metric，不合成为单一总分 |
 
 本切片覆盖 PRD User Story 33–35、37–38，并开始 User Story 39。它不实现 Retrieval Evidence Hit、Tool Path Validity、Suite 聚合、Quality Gate、Leaderboard 或 Badcase。
+
+ADR 0126 已接受但尚未实现 Offline Case Schema V2：未来 `evaluator/required-evidence.json` 单独保存 Evidence Ground Truth，`evaluator/expected-answer.json` 只保存 Diagnosis Ground Truth。本文凡描述 Expected Answer 含 Required/Optional IDs 的段落，均是当前 Schema V1 Loader/Scorer 行为，不是 Formal Suite 的目标包结构；现有评分公式与指标语义不因该 docs-only 决策改变。
 
 ## 完整校验与评分链
 
@@ -44,12 +46,12 @@ Issue #14 的评分链分为被测 Agent 侧和可信 Evaluator 侧：
 
 | 边界 | 可以访问 | 不可以访问 |
 |------|----------|------------|
-| Evaluated Agent | Case 输入、允许的 Evidence、报告 Schema、可用工具 | Expected Answer、Scorer 内部标签、Required/Optional Evidence 集合 |
-| Trusted Evaluator | Candidate Report、Case Package、Expected Answer、Scorer | 不应把评分标签重新注入 Agent 的 Prompt、Tool、Retriever 或 Project Knowledge |
+| Evaluated Agent | Case 输入、允许的 Evidence、报告 Schema、可用工具 | Evidence Ground Truth、Expected Answer、Scorer 内部标签、Required/Optional Evidence 集合 |
+| Trusted Evaluator | Candidate Report、Case Package、Evidence Ground Truth、Expected Answer、Scorer | 不应把评分标签重新注入 Agent 的 Prompt、Tool 或 Retriever |
 
-上表描述普通 Agent Condition。未来 Oracle Evidence Diagnostic Condition 是一个显式、版本化的 Evidence Delivery 例外：Trusted Evaluator 可以在边界内用 `required_evidence_ids` 选择来源 Evidence，但模型侧只能接收对应的 Frozen Evidence Content 与正常 Stable Evidence ID，不能接收 Required/Optional 标签、Expected Answer、答案文本、Scorer Label 或 Curator Reasoning。该例外不改变普通 Agent、公共 CLI 或 Scorer Output 的信任边界。
+上表描述普通 Agent Condition。未来 Oracle Evidence Diagnostic Condition 是一个显式、版本化的 Evidence Delivery 例外：Trusted Evaluator 可以在边界内从 Evidence Ground Truth 读取 `required_evidence_ids`，再经 Canonical Evidence source spans 解析 Physical Artifacts。模型侧只能接收正常 Stable Evidence ID 与 resolved source content，不能接收 Required/Optional 标签、Evidence Ground Truth、Expected Answer、答案文本、Scorer Label 或 Curator Reasoning。该派生输入不保存成独立 `oracle-evidence.json`，也不改变普通 Agent、公共 CLI 或 Scorer Output 的信任边界。
 
-Expected Answer 和确定性 Scorer 只能存在于可信 Evaluator 侧。以下公共边界不得泄露评分标签：
+Evidence Ground Truth、Expected Answer 和确定性 Scorer 只能存在于可信 Evaluator 侧。以下公共边界不得泄露评分标签：
 
 - `OfflineCasePackage.as_dict()`；
 - `eval doctor`；
@@ -163,7 +165,7 @@ Schema V1 的 Evidence Reference 只允许：
 - 重复引用 validation 失败，但评分时按集合去重；
 - 不存在的 ID 属于 hallucinated Evidence。
 
-Expected Answer 将 Evidence 分成：
+当前 Schema V1 Expected Answer 将 Evidence 分成：
 
 - `required_evidence_ids`：正式 Evidence Hit 的分母；
 - `optional_evidence_ids`：可增强报告，但缺失时不扣分。
@@ -319,6 +321,16 @@ report_evidence_hit_rate = 1.0
 
 这是为了保留不同评分维度的诊断价值。只有 hallucinated ID 使用正式 Evidence 硬惩罚。
 
+### 6.2.1 Retrieval Hit 与 Report Hit 不合并
+
+当前实现的 `report_evidence_hit_rate` 只观察最终报告是否通过合法 Evidence Reference 引用了 Required Canonical Evidence Unit。未来 Retrieval Evidence Hit 应从 Run Trace 判断 Runtime/Agent 是否实际 retrieved 或 inspected 同一 required unit。二者必须保持分离：
+
+- Retrieval miss + Report miss：没有找到；
+- Retrieval hit + Report miss：找到了但没有在最终报告中使用；
+- Retrieval hit + Report hit：找到并正确引用。
+
+当前 Scorer 没有实现 Retrieval Evidence Hit；本说明不改变现有公式或 CLI 输出。Canonical Evidence Unit 与不同 Runtime 的 access semantics 见 [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](formal-evaluation-methodology.md)。
+
 ### 6.3 Case ID 绑定
 
 报告必须满足：
@@ -357,7 +369,7 @@ duplicate_evidence_reference_count = 1
 
 Diagnostics 中的 matched count 只用于解释。只要 unknown count 大于零，正式 `report_evidence_hit_rate` 仍然是 `0.0`。
 
-## 8. Expected Answer 与 Fingerprint
+## 8. 当前 Schema V1 Expected Answer 与 Fingerprint
 
 Expected Answer 在 Loader 内部表示为只读类型，包含：
 
@@ -373,9 +385,9 @@ Expected Answer 在 Loader 内部表示为只读类型，包含：
 
 ### 8.1 Required Evidence 的 Minimal Sufficient 原则
 
-Case/Expected Answer 的 Human Review 应把 `required_evidence_ids` 视为 inclusion-minimal 的充分事实集合：整体包含固定诊断契约下推导 Expected Diagnosis 所需的来源事实；逐项移除会使至少一个必要事实或消歧依据不可用。它不表示“越短越好”，也不以某次模型 PASS 作为充分性的循环证明。
+Case Evidence Ground Truth 的 Human Review 应把 `required_evidence_ids` 视为 inclusion-minimal 的充分事实集合：整体包含固定诊断契约下推导 Expected Diagnosis 所需的来源事实；逐项移除会使至少一个必要事实或消歧依据不可用。当前 Schema V1 暂时把该字段存入 Expected Answer；Schema V2 将其迁移到 `required-evidence.json`。它不表示“越短越好”，也不以某次模型 PASS 作为充分性的循环证明。
 
-Required Evidence 必须引用 Frozen Log Chunk 或 Repository Evidence Snapshot 的 source-faithful 内容，不能由 Curator 改写为 Failure Type、Root Cause、Fix 或 Tool Path 结论。Expected Answer 的答案字段、Required/Optional 标签与 Reviewer 选择理由仍属于 Trusted Evaluator 数据。
+Required Evidence 必须引用可解析回 Physical Artifact source span 的 Canonical Evidence Unit，不能由 Curator 改写为 Failure Type、Root Cause、Fix 或 Tool Path 结论。Evidence Ground Truth、Expected Answer 的答案字段与 Reviewer 选择理由都属于 Trusted Evaluator 数据。
 
 当前 Loader 只校验 Required/Optional ID 的非空、去重、互斥和 Referential Integrity；“Minimal”“Sufficient”“不编码答案”仍是 Human Review 质量契约，尚无自动语义验证。
 
@@ -437,7 +449,8 @@ CLI 输出不包含 Expected Answer，也不包含 Retrieval、Tool Path、Aggre
 - Leaderboard；
 - Badcase 生成和审阅；
 - Agent Runtime、模型调用或真实 CI 执行；
-- Oracle Evidence Pack、配对运行或 Agent-System Realization Gap；
+- Schema V2 Evaluator Artifact 拆分及对应 Loader/Scorer 适配；
+- Oracle 派生 Evidence Delivery、配对运行或 Agent-System Realization Gap；
 - 自动修复、代码修改或 CI 重跑。
 
 通过 `eval score` 只表示“这个候选报告已经按当前 Case 的冻结评分契约产生了确定性结果”，不表示完整 Formal Evaluation Run 已经执行。
@@ -452,6 +465,9 @@ CLI 输出不包含 Expected Answer，也不包含 Retrieval、Tool Path、Aggre
 - `docs/adr/0116-metrics-quality-gate-and-leaderboard.md`；
 - `docs/adr/0122-structured-report-and-evidence-contract.md`；
 - `docs/adr/0124-oracle-evidence-diagnostic-condition.md`；
+- `docs/adr/0125-formal-evaluation-evidence-universe-and-access.md`；
+- `docs/adr/0126-offline-case-schema-v2-physical-artifacts-and-canonical-evidence.md`；
+- `docs/evaluation/formal-evaluation-methodology.md`；
 - `docs/evaluation/oracle-evidence-diagnostic-condition.md`；
 - `docs/evaluation/v1-failure-type-taxonomy-and-case-policy.md`。
 

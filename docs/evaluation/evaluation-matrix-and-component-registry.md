@@ -343,7 +343,7 @@ Matrix Component Key 与 Registry Component Type 的映射是：
 
 ## 4. Offline Case Package 规则
 
-Issue #6 实现的是本地离线评测的数据完整性边界：在调用模型或 Scorer 之前，先证明 Case 的输入、证据、Expected Answer、正式资格和内容身份都有效。
+Issue #6 实现的是 Schema V1 的本地离线评测数据完整性边界：在调用模型或 Scorer 之前，先证明 Case 的输入、证据、Expected Answer、正式资格和内容身份都有效。
 
 它不运行 Agent，不连接在线 CI，也不执行评分。
 
@@ -385,7 +385,21 @@ Manifest 使用严格字段集合，未知字段和缺失字段都会被拒绝�
 
 Expected Answer 中的所有 Evidence Reference 必须指向冻结 Log Chunk 或 Repository Evidence Snapshot 中真实存在的稳定 Evidence ID。两个 Artifact 之间也不能出现重复 Evidence ID。
 
-### 4.3 Provenance 与 Sanitization
+### 4.3 当前 Schema V1 的边界与已接受的 Schema V2 目标
+
+当前已实现的 Schema V1 把 `raw_log`、`frozen_log_chunks`、`repository_evidence.items` 与包含 `required_evidence_ids` 的 `expected_answer` 装入同一 Case 契约。上文 4.1、4.2 及第 6 节只说明现有 Loader、Fingerprint 和 `eval doctor` 的真实行为；它们不是 Formal 20-Case Suite 的目标数据模型。
+
+ADR 0126 已接受 Offline Case Schema V2，并要求在 Issue #15 继续构建和 Human-freeze Formal Cases 前先实现。目标包明确分为：
+
+- `physical-artifacts/`：唯一事实源，包括 `raw.log`、`repository-manifest.json` 和 manifest 声明的 `repository/*`；
+- `canonical-evidence/`：`log-units.json` 与 `repository-units.json`，每个稳定 ID 只记录 source artifact/path、source span 和 resolved content hash，不保存独立可漂移的内容副本；
+- `evaluator/`：`required-evidence.json` 保存 Evidence Ground Truth，`expected-answer.json` 只保存 Diagnosis Ground Truth。
+
+Schema V2 必须把 Physical Artifact、Canonical Coordinate、Evaluator Artifact 和 Manifest 的变化纳入 Case/Suite Fingerprint，并在 Agent-boundary leakage 检查中拒绝 evaluator-only 数据。具体字段、Loader、Fingerprint 和兼容策略尚未实现，不能用当前 V1 `eval doctor` 声称满足 V2。
+
+Evidence Universe、Investigation Workspace 与 Pipeline/Retrieval/ReAct/Oracle 访问语义详见 [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](formal-evaluation-methodology.md)。
+
+### 4.4 Provenance 与 Sanitization
 
 Formal V1 Case 的 `source_type` 只接受：
 
@@ -400,7 +414,7 @@ Formal V1 Case 的 `source_type` 只接受：
 
 未记录 Provenance、未完成 Sanitization、包含私有生产日志或来源许可不明的 Case 不能进入正式评测。
 
-### 4.4 受控相对路径
+### 4.5 受控相对路径
 
 Case Artifact 和 Suite Case Manifest 的文件引用必须使用 POSIX 相对路径。Loader 会：
 
@@ -458,7 +472,7 @@ Suite 校验要求：
 - 完整 Raw Log 文本；
 - 解析后的 Frozen Log Chunks、Repository Evidence Snapshot 与 Expected Answer。
 
-这些内容涵盖正式评测的输入、评分语义和进入 Formal Evaluation 的资格。
+这些内容涵盖当前 Schema V1 实现所识别的输入、评分语义和进入 Formal Evaluation 的资格。Schema V2 将改用三层 Artifact 的完整指纹链；本节不提前声明尚未实现的计算公式。
 
 ### 6.2 Suite Fingerprint
 
@@ -546,12 +560,14 @@ ID 和 Version 负责提供人类可读名称，Fingerprint 负责提供内容�
 
 当前尚未实现：
 
+- Offline Case Schema V2 Manifest、三层 Artifact Loader、source-span/hash resolution、V2 Fingerprint Chain 与 evaluator leakage guard；
 - Agent 或模型调用；
 - Formal Evaluation Runner；
 - Run Manifest 持久化；
 - Suite 指标聚合、Quality Gate、Leaderboard 和 Badcase；
 - Evaluation Artifact Leakage 和完整 Model Configuration 预检；
 - Oracle Evidence Delivery、Pair Validator 与 Agent-System Realization Gap；
+- searchable Investigation Workspace、显式 Evidence Acquisition Condition 与 Retrieval Evidence Hit；
 - 真实 MCP Server、外部 CI Provider 或完整 Skill Packaging。
 
 所以，当前正式 `eval doctor --registry --suite` 只证明 Matrix、Component、Suite 与 Case 的完整性，不表示正式评测运行已经发生。
@@ -563,6 +579,9 @@ ID 和 Version 负责提供人类可读名称，Fingerprint 负责提供内容�
 - [ADR 0115: Evaluation Suite and Case Artifacts](../adr/0115-evaluation-suite-and-case-artifacts.md)
 - [ADR 0123: Case Provenance and Sanitization](../adr/0123-case-provenance-and-sanitization.md)
 - [ADR 0124: Oracle Evidence Diagnostic Condition](../adr/0124-oracle-evidence-diagnostic-condition.md)
+- [ADR 0125: Formal Evaluation Evidence Universe and Access](../adr/0125-formal-evaluation-evidence-universe-and-access.md)
+- [ADR 0126: Offline Case Schema V2 Physical Artifacts and Canonical Evidence](../adr/0126-offline-case-schema-v2-physical-artifacts-and-canonical-evidence.md)
+- [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](formal-evaluation-methodology.md)
 - [Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap](oracle-evidence-diagnostic-condition.md)
 - [V1 Failure Type Taxonomy 与 Offline Case Policy](v1-failure-type-taxonomy-and-case-policy.md)
 - [V1 PRD](../prd/devagentops-v1-agentops-evaluation-baseline.md)

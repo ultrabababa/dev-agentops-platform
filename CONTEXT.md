@@ -95,33 +95,53 @@ _Avoid_: Raw production dump, unreviewed log sample
 The versioned file format contract for an offline case package and its manifest.
 _Avoid_: Evaluation suite version, expected answer
 
+**Physical Artifact**:
+A source-of-fact file frozen inside an Offline Case Schema V2 package, limited for the current Formal Suite to the raw log and the bounded exact-revision repository snapshot declared by its manifest.
+_Avoid_: Canonical evidence copy, evaluator label, current working tree
+
+**Repository Snapshot Manifest**:
+The Schema V2 inventory that binds every repository artifact in the bounded Case snapshot to its revision, normalized path, content hash, and size. Files outside the manifest are not part of the Case Evidence Universe.
+_Avoid_: Repository index, current checkout, unbounded directory scan
+
 **Case Fingerprint**:
-A stable content identity for an offline case package, used to detect whether its evidence, expected answer, or scoring-relevant manifest fields changed.
+A stable content identity for an offline case package, used to detect whether its physical artifacts, canonical coordinates, evaluator ground truth, or scoring-relevant manifest fields changed.
 _Avoid_: Case name, suite fingerprint
 
+**Evidence Universe**:
+The authentic, frozen, offline, bounded-but-realistic information space defined by a Formal Case. For Offline Case Schema V2 it consists only of the complete or naturally bounded historical raw log and the bounded exact-revision repository snapshot declared by the Case. It preserves natural neighboring information and distractors instead of being reduced to the curator-known answer region.
+_Avoid_: Minimal required evidence set, whole unbounded upstream repository, synthetic noise corpus
+
+**Investigation Workspace**:
+The runtime-facing view through which an Evidence Acquisition Condition can observe and investigate a Case's physical log and repository artifacts. It may expose searchable or openable artifacts without placing the complete corpus into the initial model context.
+_Avoid_: One-shot prompt context, Expected Answer, curator-selected required evidence pack
+
 **Log Evidence**:
-The relevant CI or test output fragments used to support a triage judgment.
-_Avoid_: Full raw log, prompt context
+Frozen CI or test output content represented as Canonical Evidence Units so a runtime can inspect and cite specific source-faithful portions of the Case log.
+_Avoid_: Curator-authored answer summary, prompt context
 
 **Repository Evidence**:
-The relevant source, configuration, dependency, or test files used to support a triage judgment.
-_Avoid_: Full repository context, codebase dump
+Frozen source, configuration, dependency, test, or build content from the Case's bounded exact-revision repository snapshot, represented as Canonical Evidence Units for investigation and citation.
+_Avoid_: Current working tree, unbounded codebase dump, curator-authored answer summary
 
 **Evidence Reference**:
 A structured citation in a triage report that points to a specific log, repository, or project-knowledge evidence item.
 _Avoid_: Vague evidence summary, unsupported claim
 
 **Stable Evidence ID**:
-A deterministic evidence identifier defined by a case package or retrieval corpus so expected answers, reports, and scorers can refer to the same evidence item.
-_Avoid_: Runtime-only evidence label, generated display number
+A deterministic, answer-neutral identifier defined by a case package or retrieval corpus so runtimes, traces, expected answers, reports, and scorers can refer to the same Canonical Evidence Unit.
+_Avoid_: Runtime-only evidence label, generated display number, root-cause hint
+
+**Canonical Evidence Unit**:
+A deterministic, answer-neutral source-span coordinate over one Physical Artifact, with a resolved content hash used to verify source faithfulness. It is the common coordinate for indexing, tool results, trace observations, citations, evidence-hit signals, and Oracle derivation; it does not duplicate an independently editable evidence copy. One physical log or repository file may map to multiple units.
+_Avoid_: Duplicated evidence text, physical file count, curator-selected answer evidence, universally fixed chunk size
 
 **Derived Evidence**:
 An evidence item created during runtime by retrieval, extraction, or summarization that preserves provenance back to stable evidence or source spans.
 _Avoid_: Stable evidence source, unsupported summary
 
 **Project Knowledge**:
-The SOPs, runbooks, documentation, and project notes used to interpret or respond to failure cases.
-_Avoid_: Chat history, external issue tracker
+The versioned SOPs, runbooks, documentation, and project notes that may be supplied as a general runtime capability or future independent ablation. It is not a Physical Artifact in the current Formal Case Schema V2 Evidence Universe.
+_Avoid_: Current Formal Case evidence, chat history, external issue tracker
 
 **Agent Memory**:
 Cross-run information made available to an agent from previous interactions, runs, or learned experience.
@@ -132,8 +152,8 @@ A local evidence source available to the triage agent, limited in V1 to log evid
 _Avoid_: Live issue tracker, team chat, external wiki
 
 **Log Preprocessing**:
-The preparation of raw CI or test output into concise summaries and retrievable evidence fragments before agent triage.
-_Avoid_: Full-log prompting, manual log reading
+The deterministic preparation of raw CI or test output into retrievable Canonical Evidence Units before agent triage, without preselecting only the hidden Required Evidence.
+_Avoid_: Full-log prompting, curator-performed evidence localization, answer summary
 
 **Retrieval Corpus**:
 The versioned set of project knowledge and repository evidence indexed for retrieval during triage.
@@ -184,8 +204,12 @@ A triage approach that splits responsibility across multiple collaborating agent
 _Avoid_: V1 runtime, required architecture
 
 **Expected Answer**:
-The human-reviewed reference judgment for an offline case, including the expected failure type, key evidence, required report fields, and reasonable tool path.
-_Avoid_: Model answer, generated label, unverified ground truth
+The human-reviewed Diagnosis Ground Truth for an offline case, containing the expected diagnostic judgment and diagnosis-scoring fields but not the Required Evidence selection.
+_Avoid_: Evidence Ground Truth, model answer, generated label, unverified ground truth
+
+**Evidence Ground Truth**:
+The trusted-evaluator artifact that records the hidden Required and Optional Evidence IDs used for evidence scoring and Oracle derivation, separately from the Expected Answer.
+_Avoid_: Agent-visible corpus, Diagnosis Ground Truth, stored Oracle pack
 
 **Expected Diagnosis**:
 The diagnostic conclusion represented by an Expected Answer, including the preferred Failure Type and the essential causal and next-action claims that the Case evidence must support.
@@ -279,8 +303,12 @@ _Avoid_: Badcase, leaderboard regression
 The complete, named set of runtime, model, prompt, tool, retrieval, skill, policy, and budget settings used for one reproducible evaluation run.
 _Avoid_: Runtime name only, project version only
 
+**Evidence Acquisition Condition**:
+The versioned experimental contract that defines how a runtime may observe and investigate a Case's Evidence Universe, such as deterministic Pipeline selection, static Retrieval, adaptive ReAct investigation, or Oracle Evidence delivery.
+_Avoid_: Case contents, Runtime Variant alone, requirement that every condition has identical tools
+
 **Oracle Evidence Diagnostic Condition**:
-A controlled diagnostic evaluation condition that bypasses ordinary evidence discovery and supplies only the Human-reviewed Minimal Sufficient Evidence Set to a fixed model while withholding Expected Answer labels, answer text, tool paths, scorer labels, and curator reasoning. It estimates conditional diagnosis performance when evidence acquisition difficulty is removed.
+A controlled diagnostic evaluation condition that bypasses ordinary evidence discovery and supplies only the Human-reviewed Minimal Sufficient Evidence Set to a fixed model while withholding Evidence Ground Truth labels, Expected Answer, answer text, tool paths, scorer labels, and curator reasoning. Its runtime input is derived from Required Evidence IDs through Canonical Evidence Units back to Physical Artifacts; no independent Oracle Evidence artifact is frozen. It estimates conditional diagnosis performance when evidence acquisition difficulty is removed.
 _Avoid_: Third V1 runtime, answer-key prompting, model capability proof, product candidate
 
 **Effective Evaluation Condition**:
@@ -347,8 +375,8 @@ _Avoid_: Report evidence citation, final answer correctness
 An evaluation signal indicating that the final structured triage report cited expected key evidence through valid evidence references.
 _Avoid_: Retrieval-only hit, vague evidence mention
 
-**Required Key Evidence**:
-Human-reviewed source evidence that must be cited for a case to satisfy the evidence quality requirement and that participates in the Case's Minimal Sufficient Evidence Set. It must contain necessary facts without evaluator-authored answer text or reasoning.
+**Required Evidence**:
+Human-reviewed Canonical Evidence Units referenced by hidden `required_evidence_ids` in Evidence Ground Truth that must be cited for a Case to satisfy the evidence quality requirement and together form its Minimal Sufficient Evidence Set. Existing scoring documentation may call this Required Key Evidence. It contains necessary facts without evaluator-authored answer text or reasoning.
 _Avoid_: Optional evidence, supporting detail, answer annotation
 
 **Minimal Sufficient Evidence Set**:

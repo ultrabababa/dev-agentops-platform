@@ -24,7 +24,7 @@ When populated, the `structured_triage_report.failure_type` field must use one o
 
 The `expected_answer.primary_failure_type` field stores the single preferred V1 failure type ID for scoring failure type exact accuracy. The `expected_answer.acceptable_failure_types` field may list rare reviewer-approved alternatives for ambiguous cases; these alternatives are not synonyms and should be used only when the case evidence reasonably supports more than one taxonomy category.
 
-The `expected_answer.required_evidence_ids` field must identify a Human-reviewed Minimal Sufficient Evidence Set. The complete set contains the source facts needed to derive the Expected Diagnosis under the fixed diagnosis contract, while removing any item makes at least one necessary fact or disambiguation unavailable. Required Evidence must remain source-faithful and must not encode the Failure Type, Root Cause, Fix, Tool Path, scorer label, or curator reasoning as evaluator-authored annotations. This principle strengthens Expected Answer review; it does not add Oracle execution or Gap Analysis to the Formal Suite curation scope.
+In Offline Case Schema V2, `evaluator/required-evidence.json` is the sole Evidence Ground Truth and its `required_evidence_ids` must identify a Human-reviewed Minimal Sufficient Evidence Set. `evaluator/expected-answer.json` remains Diagnosis Ground Truth and must not duplicate the evidence selection. The complete required set contains the source facts needed to derive the Expected Diagnosis under the fixed diagnosis contract, while removing any item makes at least one necessary fact or disambiguation unavailable. Required Evidence must resolve through Canonical Evidence source spans to source-faithful Physical Artifacts and must not encode the Failure Type, Root Cause, Fix, Tool Path, scorer label, or curator reasoning as evaluator-authored annotations. This principle strengthens Case review; it does not add Oracle execution or Gap Analysis to the Formal Suite curation scope. The current Schema V1 Loader still stores these IDs in Expected Answer until the separate Schema V2 implementation lands.
 
 ## Classification and Causal Analysis
 
@@ -54,6 +54,10 @@ V1 formal evaluation uses Offline Case Packages only. A case can enter a formal 
 
 Raw production logs, private CI outputs, private repository snapshots, customer data, internal-only URLs, and copied third-party artifacts without permission are not accepted for V1 formal suites.
 
+Formal Case construction must preserve an authentic, frozen, bounded-but-realistic Evidence Universe rather than reducing the Agent-visible corpus to the curator-known Required Evidence subset. Natural neighboring information and distractors are allowed and often necessary to measure evidence localization. Constructed Cases remain valid, but curators must not append synthetic irrelevant noise solely to manufacture difficulty. Detailed universe, canonical-unit, and runtime-access semantics are defined in [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](formal-evaluation-methodology.md).
+
+For the first Formal Suite, that Evidence Universe contains only the complete or naturally bounded raw log and the bounded exact-revision repository snapshot declared by Schema V2. Project Knowledge remains a general or future independently controlled runtime/retrieval input, not a Case Physical Artifact. The current five Batch-1 Schema V1 packages are calibration drafts only: do not Human-freeze them, do not construct the remaining fifteen Cases on V1, and rebuild B04 first under V2 before scaling.
+
 Each offline case manifest must include:
 
 | Manifest field | Requirement |
@@ -68,7 +72,7 @@ Each offline case manifest must include:
 | `sanitization_status` | Must be `reviewed_sanitized` before formal evaluation. |
 | `case_fingerprint` | Stable content identity for the frozen case package. |
 
-Sanitization review covers logs, repository evidence snapshots, project knowledge excerpts, and expected answers. Review must remove or replace secrets, tokens, personal data, private hostnames, private repository names, customer identifiers, and internal-only URLs.
+Sanitization review covers raw logs, the manifest-declared repository snapshot, Canonical Evidence coordinates, Evidence Ground Truth, and Expected Answers. Review must remove or replace secrets, tokens, personal data, private hostnames, private repository names, customer identifiers, and internal-only URLs.
 
 ## Initial Balanced Suite Composition Target
 
