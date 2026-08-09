@@ -62,7 +62,7 @@ def _write_matrix_with_components(path: Path, components: dict[str, str]) -> Non
                         "id": "pipeline-anchor-v1",
                         "type": "anchor",
                         "runtime_variant": "pipeline",
-                        "suite": "tiny-loader-fixture-v1",
+                        "suite": "tiny-loader-fixture-v2",
                         "evaluation_method": "triage-method-v1",
                         "model": {"provider": "test", "name": "model-v1"},
                         "components": components,

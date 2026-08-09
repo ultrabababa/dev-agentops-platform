@@ -36,7 +36,7 @@ def _write_json(path: Path, document: dict) -> None:
     )
 
 
-def _write_matrix(path: Path, *, suite_id: str = "tiny-loader-fixture-v1") -> None:
+def _write_matrix(path: Path, *, suite_id: str = "tiny-loader-fixture-v2") -> None:
     _write_json(
         path,
         {
@@ -99,8 +99,8 @@ def test_loads_tiny_explicit_fixture_suite_without_directory_scanning(tmp_path: 
 
     suite = load_evaluation_suite(suite_path)
 
-    assert suite.suite_id == "tiny-loader-fixture-v1"
-    assert suite.suite_version == "1"
+    assert suite.suite_id == "tiny-loader-fixture-v2"
+    assert suite.suite_version == "2"
     assert len(suite.cases) == 1
     assert suite.cases[0].case_id == "constructed-assertion-001"
     assert suite.cases[0].weight == 1
@@ -116,16 +116,16 @@ def test_json_formatting_and_normalized_relative_paths_do_not_change_fingerprint
     original = load_evaluation_suite(suite_path)
     case_path = suite_path.parent / CASE_RELATIVE_PATH
     case_document = _read_json(case_path)
-    case_document["raw_log"] = "./raw.log"
+    case_document["artifacts"]["raw_log"] = "./physical-artifacts/raw.log"
     _write_json(case_path, case_document)
     suite_document = _read_json(suite_path)
     suite_document["cases"][0]["manifest"] = (
         "./cases/constructed-assertion-001/case.json"
     )
     _write_json(suite_path, suite_document)
-    evidence_path = case_path.parent / "repository-evidence.json"
+    evidence_path = case_path.parent / "physical-artifacts/repository-manifest.json"
     evidence_document = _read_json(evidence_path)
-    evidence_document["items"][0]["path"] = "./src/example/calculator.py"
+    evidence_document["files"][0]["path"] = "./tests/test_total.py"
     _write_json(evidence_path, evidence_document)
     for json_path in suite_path.parent.rglob("*.json"):
         document = _read_json(json_path)
@@ -166,9 +166,12 @@ def test_declared_case_and_suite_fingerprints_do_not_participate_in_own_calculat
 @pytest.mark.parametrize(
     ("relative_path", "mutate"),
     [
-        (Path("cases/constructed-assertion-001/raw.log"), lambda text: text + "drift\n"),
         (
-            Path("cases/constructed-assertion-001/expected-answer.json"),
+            Path("cases/constructed-assertion-001/physical-artifacts/raw.log"),
+            lambda text: text + "drift\n",
+        ),
+        (
+            Path("cases/constructed-assertion-001/evaluator/expected-answer.json"),
             lambda document: {**document, "summary": "Changed scoring semantics."},
         ),
         (
@@ -182,7 +185,10 @@ def test_declared_case_and_suite_fingerprints_do_not_participate_in_own_calculat
             CASE_RELATIVE_PATH,
             lambda document: {
                 **document,
-                "source_url_or_construction_note": "Changed construction provenance.",
+                "provenance": {
+                    **document["provenance"],
+                    "source_url_or_construction_note": "Changed construction provenance.",
+                },
             },
         ),
     ],
@@ -210,7 +216,7 @@ def test_suite_fingerprint_uses_recomputed_verified_case_fingerprint(tmp_path: P
     suite_path = _copy_fixture(tmp_path)
     original = load_evaluation_suite(suite_path)
     case_path = suite_path.parent / CASE_RELATIVE_PATH
-    raw_log_path = case_path.parent / "raw.log"
+    raw_log_path = case_path.parent / "physical-artifacts/raw.log"
     raw_log_path.write_text(
         raw_log_path.read_text(encoding="utf-8") + "changed input\n",
         encoding="utf-8",
@@ -234,7 +240,7 @@ def test_case_artifact_paths_reject_absolute_or_escape_paths(
     suite_path = _copy_fixture(tmp_path)
     case_path = suite_path.parent / CASE_RELATIVE_PATH
     case_document = _read_json(case_path)
-    case_document["raw_log"] = unsafe_path
+    case_document["artifacts"]["raw_log"] = unsafe_path
     _write_json(case_path, case_document)
 
     with pytest.raises(EvaluationSuiteError, match="relative path|POSIX"):
@@ -260,7 +266,7 @@ def test_suite_case_paths_reject_absolute_or_escape_paths(
 def test_case_artifact_symlink_cannot_escape_package(tmp_path: Path):
     suite_path = _copy_fixture(tmp_path)
     case_path = suite_path.parent / CASE_RELATIVE_PATH
-    raw_log_path = case_path.parent / "raw.log"
+    raw_log_path = case_path.parent / "physical-artifacts/raw.log"
     outside_log = tmp_path / "outside.log"
     outside_log.write_text("outside package", encoding="utf-8")
     raw_log_path.unlink()
@@ -274,10 +280,10 @@ def test_loader_rejects_missing_provenance(tmp_path: Path):
     suite_path = _copy_fixture(tmp_path)
     case_path = suite_path.parent / CASE_RELATIVE_PATH
     case_document = _read_json(case_path)
-    del case_document["source_type"]
+    del case_document["provenance"]
     _write_json(case_path, case_document)
 
-    with pytest.raises(EvaluationSuiteError, match="source_type"):
+    with pytest.raises(EvaluationSuiteError, match="provenance"):
         load_evaluation_suite(suite_path)
 
 
@@ -285,10 +291,10 @@ def test_loader_rejects_unsanitized_case(tmp_path: Path):
     suite_path = _copy_fixture(tmp_path)
     case_path = suite_path.parent / CASE_RELATIVE_PATH
     case_document = _read_json(case_path)
-    case_document["sanitization_status"] = "pending_review"
+    case_document["sanitization"]["status"] = "pending_review"
     _write_json(case_path, case_document)
 
-    with pytest.raises(EvaluationSuiteError, match="reviewed_sanitized"):
+    with pytest.raises(EvaluationSuiteError, match="sanitization has unsupported status"):
         load_evaluation_suite(suite_path)
 
 
@@ -296,29 +302,29 @@ def test_loader_rejects_invalid_evidence_reference(tmp_path: Path):
     suite_path = _copy_fixture(tmp_path)
     expected_path = (
         suite_path.parent
-        / "cases/constructed-assertion-001/expected-answer.json"
+        / "cases/constructed-assertion-001/evaluator/required-evidence.json"
     )
     expected = _read_json(expected_path)
     expected["required_evidence_ids"].append("repo:missing")
     _write_json(expected_path, expected)
 
-    with pytest.raises(EvaluationSuiteError, match="unknown evidence ID 'repo:missing'"):
+    with pytest.raises(EvaluationSuiteError, match="unknown Canonical Evidence ID"):
         load_evaluation_suite(suite_path)
 
 
-def test_loader_rejects_duplicate_stable_evidence_ids_across_artifacts(
+def test_loader_rejects_duplicate_stable_evidence_ids_within_artifact(
     tmp_path: Path,
 ):
     suite_path = _copy_fixture(tmp_path)
     evidence_path = (
         suite_path.parent
-        / "cases/constructed-assertion-001/repository-evidence.json"
+        / "cases/constructed-assertion-001/canonical-evidence/repository-units.json"
     )
     evidence = _read_json(evidence_path)
-    evidence["items"][0]["evidence_id"] = "log:assertion-mismatch"
+    evidence["units"][1]["evidence_id"] = evidence["units"][0]["evidence_id"]
     _write_json(evidence_path, evidence)
 
-    with pytest.raises(EvaluationSuiteError, match="duplicate stable evidence IDs"):
+    with pytest.raises(EvaluationSuiteError, match="duplicate evidence IDs"):
         load_evaluation_suite(suite_path)
 
 
@@ -326,16 +332,26 @@ def test_loader_rejects_duplicate_stable_evidence_ids_across_artifacts(
     ("target", "field", "message"),
     [
         ("suite", "schema_version", "unsupported suite schema version"),
-        ("case", "case_schema_version", "unsupported case schema version"),
+        ("case", "case_schema_version", "unsupported Offline Case Schema version"),
         (
-            "chunks",
+            "repository_manifest",
             "schema_version",
-            "unsupported frozen log chunks schema version",
+            "unsupported repository manifest schema version",
         ),
         (
-            "repository",
+            "log_units",
             "schema_version",
-            "unsupported repository evidence schema version",
+            "unsupported canonical log evidence schema version",
+        ),
+        (
+            "repository_units",
+            "schema_version",
+            "unsupported canonical repo evidence schema version",
+        ),
+        (
+            "required_evidence",
+            "schema_version",
+            "unsupported evidence ground truth schema version",
         ),
         (
             "expected",
@@ -355,12 +371,14 @@ def test_loader_rejects_unknown_schema_versions(
     target_path = {
         "suite": suite_path,
         "case": suite_path.parent / CASE_RELATIVE_PATH,
-        "chunks": case_root / "log-chunks.json",
-        "repository": case_root / "repository-evidence.json",
-        "expected": case_root / "expected-answer.json",
+        "repository_manifest": case_root / "physical-artifacts/repository-manifest.json",
+        "log_units": case_root / "canonical-evidence/log-units.json",
+        "repository_units": case_root / "canonical-evidence/repository-units.json",
+        "required_evidence": case_root / "evaluator/required-evidence.json",
+        "expected": case_root / "evaluator/expected-answer.json",
     }[target]
     document = _read_json(target_path)
-    document[field] = "2"
+    document[field] = "999"
     _write_json(target_path, document)
 
     with pytest.raises(EvaluationSuiteError, match=message):
@@ -522,27 +540,23 @@ def test_formal_eval_doctor_validates_matrix_components_suite_and_cases(
     )
     payload = json.loads(capsys.readouterr().out)
     assert payload["conditions"][0]["component_fingerprints"]["prompt"]
-    assert payload["evaluation_suite"]["suite_id"] == "tiny-loader-fixture-v1"
+    assert payload["evaluation_suite"]["suite_id"] == "tiny-loader-fixture-v2"
     assert payload["evaluation_suite"]["cases"][0]["case_fingerprint"]
 
 
 @pytest.mark.parametrize(
-    ("invalid_case", "message"),
+    "invalid_case",
     [
-        ("missing_provenance", "source_type"),
-        ("unsanitized", "reviewed_sanitized"),
-        ("invalid_evidence", "unknown evidence ID"),
-        ("fingerprint_drift", "fingerprint changed"),
-        ("malformed_source_type", "source_type must be a non-empty string"),
-        (
-            "malformed_primary_failure_type",
-            "primary_failure_type must be a non-empty string",
-        ),
+        "missing_provenance",
+        "unsanitized",
+        "invalid_evidence",
+        "fingerprint_drift",
+        "malformed_source_type",
+        "malformed_primary_failure_type",
     ],
 )
-def test_formal_eval_doctor_returns_clear_json_errors_for_invalid_cases(
+def test_formal_eval_doctor_returns_redacted_stable_errors_for_invalid_cases(
     invalid_case: str,
-    message: str,
     tmp_path: Path,
     capsys,
 ):
@@ -559,14 +573,18 @@ def test_formal_eval_doctor_returns_clear_json_errors_for_invalid_cases(
     }:
         case_document = _read_json(case_path)
         if invalid_case == "missing_provenance":
-            del case_document["source_type"]
+            del case_document["provenance"]
         elif invalid_case == "unsanitized":
-            case_document["sanitization_status"] = "pending_review"
+            case_document["sanitization"]["status"] = "pending_review"
         else:
-            case_document["source_type"] = []
+            case_document["provenance"]["source_type"] = []
         _write_json(case_path, case_document)
     elif invalid_case in {"invalid_evidence", "malformed_primary_failure_type"}:
-        expected_path = case_path.parent / "expected-answer.json"
+        expected_path = case_path.parent / (
+            "evaluator/required-evidence.json"
+            if invalid_case == "invalid_evidence"
+            else "evaluator/expected-answer.json"
+        )
         expected = _read_json(expected_path)
         if invalid_case == "invalid_evidence":
             expected["required_evidence_ids"].append("repo:missing")
@@ -574,7 +592,7 @@ def test_formal_eval_doctor_returns_clear_json_errors_for_invalid_cases(
             expected["primary_failure_type"] = {}
         _write_json(expected_path, expected)
     else:
-        raw_log_path = case_path.parent / "raw.log"
+        raw_log_path = case_path.parent / "physical-artifacts/raw.log"
         raw_log_path.write_text(
             raw_log_path.read_text(encoding="utf-8") + "drift\n",
             encoding="utf-8",
@@ -583,7 +601,10 @@ def test_formal_eval_doctor_returns_clear_json_errors_for_invalid_cases(
     assert main(_formal_doctor_command(matrix_path, registry_path, suite_path)) == 2
     captured = capsys.readouterr()
     assert captured.out == ""
-    assert message in json.loads(captured.err)["error"]
+    assert json.loads(captured.err) == {
+        "error": "invalid Offline Case package",
+        "code": "invalid_case_manifest",
+    }
 
 
 def test_formal_eval_doctor_rejects_matrix_suite_mismatch(tmp_path: Path, capsys):
@@ -609,4 +630,4 @@ def test_formal_eval_doctor_rejects_matrix_suite_mismatch(tmp_path: Path, capsys
     )
     error = json.loads(capsys.readouterr().err)["error"]
     assert "different-suite-v1" in error
-    assert "tiny-loader-fixture-v1" in error
+    assert "tiny-loader-fixture-v2" in error

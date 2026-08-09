@@ -198,10 +198,18 @@ def main(argv: Sequence[str] | None = None) -> int:
             status = freeze_component(args.manifest, args.registry, args.version)
         else:  # pragma: no cover - argparse prevents this state.
             parser.error("unsupported command")
+    except EvaluationSuiteError as exc:
+        print(
+            json.dumps(
+                {"error": exc.public_message, "code": exc.code},
+                ensure_ascii=False,
+            ),
+            file=sys.stderr,
+        )
+        return 2
     except (
         ComponentRegistryError,
         EvaluationMatrixError,
-        EvaluationSuiteError,
         ReportInputError,
         StorageError,
     ) as exc:

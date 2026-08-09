@@ -1,0 +1,20 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "project_constructed://devagentops/tiny-loader-fixture",
+    "revision_kind": "constructed_snapshot",
+    "exact_revision": "fixture-revision-1"
+  },
+  "files": [
+    {
+      "path": "tests/test_total.py",
+      "sha256": "da7f555a1f5d7fff66d89c8a220346770d5800732ea80f73de153405ba98738e",
+      "size_bytes": 56
+    },
+    {
+      "path": "src/example/calculator.py",
+      "sha256": "1651deb7985c70026242ca22eeb14bb54504b08ad483d13a69b3b55cb01f9935",
+      "size_bytes": 58
+    }
+  ]
+}

@@ -31,7 +31,7 @@ Offline Case Schema V2 will separate three storage and trust layers:
     └── expected-answer.json
 ```
 
-The exact envelope fields remain an implementation contract, but the following responsibilities are accepted.
+Issue #22 冻结并实现了 exact envelope；以下职责和契约现在由 V2-only Loader 强制执行。
 
 ### Physical Artifacts
 
@@ -98,11 +98,11 @@ Tradeoffs:
 
 Issue #15 must not construct the remaining 15 packages under Schema V1. After Schema V2 implementation lands, B04 should be rebuilt first as the V2 calibration Case before construction scales to the remaining Cases.
 
-Tiny Schema V1 fixtures may remain for backward-compatibility loader tests if the implementation decision keeps V1 support. They are not Formal Evaluation Packages.
+Schema V1 Loader 已明确退役：缺失或类型错误的 `case_schema_version` 是 `invalid_case_manifest`，显式非 `"2"` 版本是 `unsupported_case_schema_version`。Tiny fixture 已原地迁移到 V2；不提供双版本分派、mixed-schema Suite 或 V1 migration framework。Issue #15 的五个 V1 calibration drafts 不在 Issue #22 中迁移。
 
 ## Non-Decisions
 
-- This ADR does not implement the V2 loader, Doctor, runtime, retrieval, tools, or Oracle Runner.
+- Runtime、retrieval、tools 与 Oracle Runner 仍不属于本 ADR/Issue #22；V2 Loader、Doctor、scorer integration 与 public leakage boundary 已实现。
 - It does not define a universal chunking rule or corpus-size threshold.
 - It does not add Project Knowledge to Schema V2.
 - It does not require a migration framework unless implementation proves one necessary.

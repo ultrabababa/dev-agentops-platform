@@ -90,7 +90,7 @@ def _evidence_score(
     analysis: CandidateReportAnalysis,
     package: OfflineCasePackage,
 ) -> tuple[float, EvidenceDiagnostics]:
-    required = set(package.expected_answer.required_evidence_ids)
+    required = set(package.evidence_ground_truth.required_evidence_ids)
     cited = set(analysis.cited_evidence_ids)
     matched_count = len(required & cited)
     diagnostics = EvidenceDiagnostics(

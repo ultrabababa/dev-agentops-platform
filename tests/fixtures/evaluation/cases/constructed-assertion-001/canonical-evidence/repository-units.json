@@ -1,0 +1,25 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:test-total",
+      "source": "physical-artifacts/repository/tests/test_total.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 2
+      },
+      "content_sha256": "da7f555a1f5d7fff66d89c8a220346770d5800732ea80f73de153405ba98738e"
+    },
+    {
+      "evidence_id": "repo:calculate-total",
+      "source": "physical-artifacts/repository/src/example/calculator.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 2
+      },
+      "content_sha256": "1651deb7985c70026242ca22eeb14bb54504b08ad483d13a69b3b55cb01f9935"
+    }
+  ]
+}

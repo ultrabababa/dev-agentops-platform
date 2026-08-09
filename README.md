@@ -18,7 +18,7 @@ DevAgentOps 是一个用于秋招展示和系统研究的、可评测的 CI/Test
 - 显式 Offline Case Package / Evaluation Suite Loader 与 Case/Suite Fingerprint；
 - Structured Triage Report Schema V1 校验与确定性单 Case Metric Vector。
 
-Evaluation Matrix、Component Registry 与当前 Offline Case Schema V1 Loader 已形成评测配置和数据的身份链；Structured Triage Report Scorer 可以对候选报告执行单 Case 确定性评分。Formal Case 的 Schema V2 三层数据模型已经通过 ADR 接受，但 [Issue #22](https://github.com/ultrabababa/dev-agentops-platform/issues/22) 跟踪的 Loader、Fingerprint、Leakage Guard 与 fixture 尚未实现，因此当前五个 Batch-1 V1 packages 只作 calibration drafts，不能 Human-freeze 或继续扩展为 20-Case Formal Suite。当前仍不执行 Agent、模型调用、Suite 聚合、Quality Gate、Leaderboard 或 Badcase。
+Evaluation Matrix、Component Registry 与 Offline Case Schema V2 Loader 已形成评测配置和数据的身份链；Structured Triage Report Scorer 可以对候选报告执行单 Case 确定性评分。Schema V2 Loader 会验证 Physical Artifact membership/integrity、Canonical source span、Evidence/Diagnosis Ground Truth split、Provenance、Sanitization、Case/Suite Fingerprint，并通过 `PublicCaseView` 与公共 CLI 错误阻断 Evaluator 数据泄漏。Schema V1 已退役，不再提供兼容 Loader；当前五个 Batch-1 V1 packages 仍只作 calibration drafts，Issue #15 将先按 V2 重建 B04，不由本 Issue 迁移。当前仍不执行 Agent、模型调用、Suite 聚合、Quality Gate、Leaderboard 或 Badcase。
 
 ## V1 承诺
 
@@ -58,7 +58,7 @@ V1 明确不做：
 
 V1 评测方法增加 Oracle Evidence Diagnostic Condition：在保持 Suite、Model、诊断 Prompt、Report Contract、Scorer 与 Inference Settings 尽量一致的配对实验中，绕过普通 Evidence Discovery，只向模型提供经过 Human Review 的 Minimal Sufficient Evidence Set。Oracle input 在运行时由 Required Evidence IDs 经 Canonical Coordinates 解析 Physical Artifacts，不冻结独立 `oracle-evidence.json`；它不会提供 Evidence Ground Truth、Expected Answer、Failure Type Label、答案文本、Tool Path、Scorer Label 或 Curator Reasoning。
 
-Oracle 与正常 Agent 的差异按 Case、Metric 和 Failure Type 报告为 Agent-System Realization Gap，不合成为单一能力分，也不作为普通 Leaderboard 的同 Fingerprint 直接排名。该方法当前仅完成文档与 ADR 设计，尚未实现 Matrix Schema、Runner、Leakage Guard 或 Gap Report；详见 [Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap](docs/evaluation/oracle-evidence-diagnostic-condition.md)。
+Oracle 与正常 Agent 的差异按 Case、Metric 和 Failure Type 报告为 Agent-System Realization Gap，不合成为单一能力分，也不作为普通 Leaderboard 的同 Fingerprint 直接排名。该方法当前仅完成文档与 ADR 设计，尚未实现 Oracle Matrix Schema、Runner、Oracle delivery guard 或 Gap Report；详见 [Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap](docs/evaluation/oracle-evidence-diagnostic-condition.md)。
 
 ## 长期演进
 
@@ -160,8 +160,8 @@ npm run build
 → #6 Offline Case Schema V1 Loader（已完成）
 → #14 Structured Report / Per-Case Scoring（已完成）
 → #21 Evidence Methodology + Schema V2 architecture（已完成）
-→ #22 Offline Case Schema V2 implementation（当前下一步）
-→ #15 Formal Suite Case Construction / Human freeze（等待 #22）
+→ #22 Offline Case Schema V2 implementation（已完成）
+→ #15 Formal Suite Case Construction / Human freeze（下一步先重建 B04 V2）
 ```
 
 《AI Agent Book》及其实验按当前 Issue 的具体问题穿插使用，不作为项目开工前置课程。
