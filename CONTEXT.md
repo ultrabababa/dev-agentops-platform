@@ -187,6 +187,10 @@ _Avoid_: V1 runtime, required architecture
 The human-reviewed reference judgment for an offline case, including the expected failure type, key evidence, required report fields, and reasonable tool path.
 _Avoid_: Model answer, generated label, unverified ground truth
 
+**Expected Diagnosis**:
+The diagnostic conclusion represented by an Expected Answer, including the preferred Failure Type and the essential causal and next-action claims that the Case evidence must support.
+_Avoid_: Full Expected Answer artifact, evaluator prompt, model output
+
 **Hybrid Curated Dataset**:
 A human-reviewed evaluation set built from a mix of public failure samples and deliberately constructed cases to cover the project's failure types.
 _Avoid_: Raw benchmark dump, synthetic-only dataset, unlabelled CI logs
@@ -275,6 +279,10 @@ _Avoid_: Badcase, leaderboard regression
 The complete, named set of runtime, model, prompt, tool, retrieval, skill, policy, and budget settings used for one reproducible evaluation run.
 _Avoid_: Runtime name only, project version only
 
+**Oracle Evidence Diagnostic Condition**:
+A controlled diagnostic evaluation condition that bypasses ordinary evidence discovery and supplies only the Human-reviewed Minimal Sufficient Evidence Set to a fixed model while withholding Expected Answer labels, answer text, tool paths, scorer labels, and curator reasoning. It estimates conditional diagnosis performance when evidence acquisition difficulty is removed.
+_Avoid_: Third V1 runtime, answer-key prompting, model capability proof, product candidate
+
 **Effective Evaluation Condition**:
 The fully resolved evaluation condition used for a run after applying any matrix defaults or one-level extension.
 _Avoid_: Condition reference, unresolved matrix entry
@@ -340,8 +348,12 @@ An evaluation signal indicating that the final structured triage report cited ex
 _Avoid_: Retrieval-only hit, vague evidence mention
 
 **Required Key Evidence**:
-Expected evidence that must be cited for a case to satisfy the evidence quality requirement.
-_Avoid_: Optional evidence, supporting detail
+Human-reviewed source evidence that must be cited for a case to satisfy the evidence quality requirement and that participates in the Case's Minimal Sufficient Evidence Set. It must contain necessary facts without evaluator-authored answer text or reasoning.
+_Avoid_: Optional evidence, supporting detail, answer annotation
+
+**Minimal Sufficient Evidence Set**:
+The inclusion-minimal, Human-reviewed set of source-faithful Required Key Evidence that contains the facts needed to derive the Expected Diagnosis under the fixed diagnosis contract; removing any item makes at least one necessary fact or disambiguation unavailable.
+_Avoid_: Shortest possible context, complete Expected Answer, model-pass-tuned evidence bundle
 
 **Optional Evidence**:
 Expected evidence that can strengthen a triage report but is not required for the case to pass the evidence quality requirement.
@@ -362,6 +374,10 @@ _Avoid_: Overall score only, raw case list
 **Metric Vector**:
 A set of evaluation metric values reported together without collapsing them into a single weighted score.
 _Avoid_: Composite score, single leaderboard score
+
+**Agent-System Realization Gap**:
+A paired metric-vector difference between an Oracle Evidence Condition and a normal Agent Condition for the same Case under matching controlled settings. It estimates how much Oracle-condition diagnosis performance the Agent system did not realize and is reported by Case, metric, and Failure Type.
+_Avoid_: One composite model score, causal proof, ordinary leaderboard rank
 
 **Metric-Specific Ranking**:
 A leaderboard ranking ordered by one evaluation metric at a time instead of a composite score.

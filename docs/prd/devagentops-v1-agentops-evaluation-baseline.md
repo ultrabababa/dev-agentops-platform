@@ -73,6 +73,10 @@ V1 will keep scope disciplined: it will support local offline case packages, a v
 55. As a CLI user, I want generated evaluation reports written to ignored artifacts by default, so that local runs do not create noisy source changes.
 56. As a portfolio builder, I want optional milestone report export, so that selected formal evaluation results can be turned into shareable documentation.
 57. As a future implementer, I want MCP, skill packages, multi-agent triage, memory, OS sandboxing, and Langfuse integration represented as future variants or ablations, so that V1 does not block later platform growth.
+58. As an evaluation reviewer, I want an Oracle Evidence Diagnostic Condition, so that I can estimate whether a fixed model can diagnose a Case after ordinary evidence discovery difficulty is removed.
+59. As an evaluation reviewer, I want Oracle and Agent runs paired only when Suite, model, diagnosis prompt, report contract, scorer, inference settings, and other declared controls match, so that evidence delivery remains the intended intervention.
+60. As an evaluation reviewer, I want Agent-System Realization Gap reported as per-Case and per-Failure-Type metric differences rather than one composite score, so that Agent-system opportunities remain diagnosable.
+61. As a Case curator, I want `required_evidence_ids` to identify a Human-reviewed Minimal Sufficient Evidence Set that contains the facts needed for the Expected Diagnosis without encoding the answer, so that both ordinary evidence scoring and Oracle diagnosis remain trustworthy.
 
 ## Implementation Decisions
 
@@ -101,6 +105,9 @@ V1 will keep scope disciplined: it will support local offline case packages, a v
 - Score evidence hit rate as final report citation of expected required evidence.
 - Report retrieval evidence hit separately from report evidence hit.
 - Allow expected answers to list required key evidence, optional evidence, primary expected failure type, rare acceptable failure types, and multiple reasonable tool paths.
+- Require Human review to treat Required Key Evidence as an inclusion-minimal sufficient set of source-faithful facts for deriving the Expected Diagnosis; Required Evidence must not contain evaluator-authored answer text or reasoning.
+- Define Oracle Evidence as a future diagnostic evidence-delivery condition, not a third V1 Runtime Variant. It supplies only the frozen source Evidence selected by reviewed Required Evidence IDs while withholding the Expected Answer, Failure Type labels, answer text, tool paths, scorer labels, and curator reasoning.
+- Report Agent-System Realization Gap as paired differences for each applicable higher-is-better diagnosis metric, by Case and Failure Type. Do not mix acquisition-dependent or operational metrics into a composite capability score.
 - Score tool path validity by tool categories and evidence-gathering behavior rather than exact micro-trajectory.
 - Treat forbidden mutation actions as hard failures for tool path validity.
 - Implement V1 tool policy sandboxing as tool allowlists, risk levels, and human confirmation metadata, without OS-level isolation.
@@ -119,6 +126,7 @@ V1 will keep scope disciplined: it will support local offline case packages, a v
 - Use eval doctor tests as the highest seam for configuration integrity. A good test feeds invalid matrices, polluted fingerprints, missing provenance, missing sanitization, unknown schema versions, and forbidden retrieval sources, then asserts clear validation failures before any model call.
 - Use fake model providers and fake tool implementations for runtime tests, so tests validate runtime orchestration, tool call handling, trace emission, and report submission without depending on live LLM behavior.
 - Use scorer contract tests against fixture reports and expected answers. A good test asserts quality metric outputs, acceptable failure type handling, required versus optional evidence behavior, invalid evidence reference handling, and badcase reason generation.
+- Use future Oracle contract tests to assert exact frozen-evidence resolution, non-leakage of every evaluator-only field, pairing-key validation, condition/run identity capture, metric-specific gaps, PASS-quadrant interpretation, and variance separation with deterministic fake providers.
 - Use component registry tests to validate draft versus frozen behavior, manifest schema validation, canonical fingerprint stability, version pollution detection, and freeze command behavior.
 - Use suite and case loader tests to validate explicit suite manifests, case schema versions, case fingerprints, suite fingerprints, provenance metadata, sanitization metadata, and frozen log chunk usage.
 - Use run manifest tests to assert that resolved effective conditions, component fingerprints, condition fingerprints, model configuration, report schema version, and code revision are captured.
@@ -154,3 +162,4 @@ V1 will keep scope disciplined: it will support local offline case packages, a v
 - The accepted ADR baseline is the source of architectural truth for this PRD.
 - The first implementation slice should start with the evaluation matrix, effective condition resolution, component registry, suite/case artifact loading, and eval doctor, because those define the formal evaluation boundary before model execution.
 - V1 should optimize for reproducibility, diagnosability, and honest comparison before cost optimization or feature breadth.
+- Oracle Evidence execution and Model-vs-Agent Gap Analysis require a separate implementation Issue after the relevant runner/model seams exist. They do not expand Issue #15's Formal Suite curation scope.

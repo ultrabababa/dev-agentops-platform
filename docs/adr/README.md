@@ -5,7 +5,7 @@ This directory keeps active architecture decisions for DevAgentOps.
 ## Reading Order
 
 1. Read the foundational ADRs `0001` through `0013` for stack, runtime, trace, retrieval, dashboard, storage, eval runner, and baseline decisions.
-2. Read the consolidated topic ADRs `0112` through `0122` for the current V1 evaluation and AgentOps design.
+2. Read the consolidated topic ADRs `0112` through `0124` for the current V1 evaluation and AgentOps design.
 3. Use `archive/micro-decisions/` only when you need the detailed discussion trail behind the consolidated decisions.
 
 ## Active Foundational ADRs
@@ -38,6 +38,7 @@ This directory keeps active architecture decisions for DevAgentOps.
 - [0121 CLI, Dashboard, Reports, and Storage](0121-cli-dashboard-reports-and-storage.md)
 - [0122 Structured Report and Evidence Contract](0122-structured-report-and-evidence-contract.md)
 - [0123 Case Provenance and Sanitization](0123-case-provenance-and-sanitization.md)
+- [0124 Oracle Evidence Diagnostic Condition](0124-oracle-evidence-diagnostic-condition.md)
 
 ## Archived Micro ADRs
 
