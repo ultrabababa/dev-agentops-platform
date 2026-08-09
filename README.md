@@ -52,6 +52,12 @@ V1 明确不做：
 
 完整范围以 [V1 PRD](docs/prd/devagentops-v1-agentops-evaluation-baseline.md) 和 [Active ADRs](docs/adr/README.md) 为准。
 
+## Evaluation Methodology
+
+V1 评测方法增加 Oracle Evidence Diagnostic Condition：在保持 Suite、Model、诊断 Prompt、Report Contract、Scorer 与 Inference Settings 尽量一致的配对实验中，绕过普通 Evidence Discovery，只向模型提供经过 Human Review 的 Minimal Sufficient Evidence Set。它用于估计“正确证据已经在上下文中时，固定模型能否完成诊断”，不会提供 Expected Answer、Failure Type Label、答案文本、Tool Path、Scorer Label 或 Curator Reasoning。
+
+Oracle 与正常 Agent 的差异按 Case、Metric 和 Failure Type 报告为 Agent-System Realization Gap，不合成为单一能力分，也不作为普通 Leaderboard 的同 Fingerprint 直接排名。该方法当前仅完成文档与 ADR 设计，尚未实现 Matrix Schema、Runner、Leakage Guard 或 Gap Report；详见 [Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap](docs/evaluation/oracle-evidence-diagnostic-condition.md)。
+
 ## 长期演进
 
 DevAgentOps 的长期价值不是停留在 Agent 应用外壳，而是作为一个小型 Agent Learning Systems 原型，逐步研究：
@@ -131,7 +137,7 @@ Issue #4 与 #5 共同定义了可复现的正式评测配置：Matrix 解析 De
   --report path/to/report.json
 ```
 
-配置、数据和 Fingerprint 规则见 [Evaluation Matrix、Component Registry 与 Offline Evaluation Suite](docs/evaluation/evaluation-matrix-and-component-registry.md)；报告校验、单 Case 指标、CLI 和信任边界见 [Structured Triage Report 校验与单 Case 确定性评分](docs/evaluation/structured-triage-report-and-per-case-scoring.md)。具体 Component Manifest 字段和 Freeze 命令也可查阅 [components/README.md](components/README.md)。
+配置、数据和 Fingerprint 规则见 [Evaluation Matrix、Component Registry 与 Offline Evaluation Suite](docs/evaluation/evaluation-matrix-and-component-registry.md)；报告校验、单 Case 指标、CLI 和信任边界见 [Structured Triage Report 校验与单 Case 确定性评分](docs/evaluation/structured-triage-report-and-per-case-scoring.md)；Oracle 配对条件与 Gap 解释见 [Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap](docs/evaluation/oracle-evidence-diagnostic-condition.md)。具体 Component Manifest 字段和 Freeze 命令也可查阅 [components/README.md](components/README.md)。
 
 运行后端与前端测试及前端生产构建：
 

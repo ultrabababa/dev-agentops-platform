@@ -83,6 +83,8 @@ Matrix 只接受以下顶层字段：
 
 V1 使用受控条件集合，不生成所有 Runtime、Model、Retriever、Tool 和 Prompt 的笛卡尔积。
 
+ADR 0124 已接受 Oracle Evidence Diagnostic Condition 作为未来的受控诊断条件。它不是新的 `runtime_variant`：未来 Schema 必须显式记录并 Fingerprint Evidence Delivery Mode 或等价版本化契约。当前严格字段集合尚不接受该字段，因此本节不是可执行配置说明。
+
 ### 1.3 Defaults 与一层继承
 
 Effective Condition 的解析优先级是：
@@ -171,6 +173,8 @@ Loader 会先解析完整 Effective Condition，再把规范化 JSON 做 SHA-256
 - 两个不同 ID 如果解析成相同 Effective Condition，会得到相同的结构 Fingerprint。
 
 在正式 Registry 校验模式下，已验证的 Component Fingerprint 也会进入 Condition Fingerprint 输入。因此，同一个 Component Version 如果指向不同的行为内容，不可能继续产生可信的相同 Condition 身份。
+
+Condition Fingerprint 证明单个 Condition 的内容身份，没有要求两个不同受控条件产生同一个 Fingerprint。普通 Leaderboard 仍按相同 Method、Suite 和 Model Configuration 分区；Oracle-versus-Agent 之类的专门 Pair Analysis 应验证各自 Fingerprint，并另外检查声明的 Pairing Keys 和唯一计划内差异，不能把不同 Condition 伪装成相同身份。
 
 ## 2. Component Registry 规则
 
@@ -547,6 +551,7 @@ ID 和 Version 负责提供人类可读名称，Fingerprint 负责提供内容�
 - Run Manifest 持久化；
 - Suite 指标聚合、Quality Gate、Leaderboard 和 Badcase；
 - Evaluation Artifact Leakage 和完整 Model Configuration 预检；
+- Oracle Evidence Delivery、Pair Validator 与 Agent-System Realization Gap；
 - 真实 MCP Server、外部 CI Provider 或完整 Skill Packaging。
 
 所以，当前正式 `eval doctor --registry --suite` 只证明 Matrix、Component、Suite 与 Case 的完整性，不表示正式评测运行已经发生。
@@ -557,6 +562,8 @@ ID 和 Version 负责提供人类可读名称，Fingerprint 负责提供内容�
 - [ADR 0114: Component Versioning and Run Manifests](../adr/0114-component-versioning-and-run-manifests.md)
 - [ADR 0115: Evaluation Suite and Case Artifacts](../adr/0115-evaluation-suite-and-case-artifacts.md)
 - [ADR 0123: Case Provenance and Sanitization](../adr/0123-case-provenance-and-sanitization.md)
+- [ADR 0124: Oracle Evidence Diagnostic Condition](../adr/0124-oracle-evidence-diagnostic-condition.md)
+- [Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap](oracle-evidence-diagnostic-condition.md)
 - [V1 Failure Type Taxonomy 与 Offline Case Policy](v1-failure-type-taxonomy-and-case-policy.md)
 - [V1 PRD](../prd/devagentops-v1-agentops-evaluation-baseline.md)
 - [Component Manifest 与命令参考](../../components/README.md)

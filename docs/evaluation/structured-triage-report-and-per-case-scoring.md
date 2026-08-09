@@ -47,6 +47,8 @@ Issue #14 的评分链分为被测 Agent 侧和可信 Evaluator 侧：
 | Evaluated Agent | Case 输入、允许的 Evidence、报告 Schema、可用工具 | Expected Answer、Scorer 内部标签、Required/Optional Evidence 集合 |
 | Trusted Evaluator | Candidate Report、Case Package、Expected Answer、Scorer | 不应把评分标签重新注入 Agent 的 Prompt、Tool、Retriever 或 Project Knowledge |
 
+上表描述普通 Agent Condition。未来 Oracle Evidence Diagnostic Condition 是一个显式、版本化的 Evidence Delivery 例外：Trusted Evaluator 可以在边界内用 `required_evidence_ids` 选择来源 Evidence，但模型侧只能接收对应的 Frozen Evidence Content 与正常 Stable Evidence ID，不能接收 Required/Optional 标签、Expected Answer、答案文本、Scorer Label 或 Curator Reasoning。该例外不改变普通 Agent、公共 CLI 或 Scorer Output 的信任边界。
+
 Expected Answer 和确定性 Scorer 只能存在于可信 Evaluator 侧。以下公共边界不得泄露评分标签：
 
 - `OfflineCasePackage.as_dict()`；
@@ -369,6 +371,14 @@ Expected Answer 在 Loader 内部表示为只读类型，包含：
 
 类型化重构保持原有 Case Fingerprint 输入不变：Expected Answer 仍按原来的 JSON 字段和列表形式进入 Canonical Serialization。因此，只改变 Python 内部表示不会改变 Case Fingerprint；真正修改 Expected Answer 内容仍会改变 Case 和 Suite Fingerprint。
 
+### 8.1 Required Evidence 的 Minimal Sufficient 原则
+
+Case/Expected Answer 的 Human Review 应把 `required_evidence_ids` 视为 inclusion-minimal 的充分事实集合：整体包含固定诊断契约下推导 Expected Diagnosis 所需的来源事实；逐项移除会使至少一个必要事实或消歧依据不可用。它不表示“越短越好”，也不以某次模型 PASS 作为充分性的循环证明。
+
+Required Evidence 必须引用 Frozen Log Chunk 或 Repository Evidence Snapshot 的 source-faithful 内容，不能由 Curator 改写为 Failure Type、Root Cause、Fix 或 Tool Path 结论。Expected Answer 的答案字段、Required/Optional 标签与 Reviewer 选择理由仍属于 Trusted Evaluator 数据。
+
+当前 Loader 只校验 Required/Optional ID 的非空、去重、互斥和 Referential Integrity；“Minimal”“Sufficient”“不编码答案”仍是 Human Review 质量契约，尚无自动语义验证。
+
 ## 9. CLI 使用
 
 命令格式：
@@ -427,6 +437,7 @@ CLI 输出不包含 Expected Answer，也不包含 Retrieval、Tool Path、Aggre
 - Leaderboard；
 - Badcase 生成和审阅；
 - Agent Runtime、模型调用或真实 CI 执行；
+- Oracle Evidence Pack、配对运行或 Agent-System Realization Gap；
 - 自动修复、代码修改或 CI 重跑。
 
 通过 `eval score` 只表示“这个候选报告已经按当前 Case 的冻结评分契约产生了确定性结果”，不表示完整 Formal Evaluation Run 已经执行。
@@ -440,6 +451,8 @@ CLI 输出不包含 Expected Answer，也不包含 Retrieval、Tool Path、Aggre
 - `docs/adr/0115-evaluation-suite-and-case-artifacts.md`；
 - `docs/adr/0116-metrics-quality-gate-and-leaderboard.md`；
 - `docs/adr/0122-structured-report-and-evidence-contract.md`；
+- `docs/adr/0124-oracle-evidence-diagnostic-condition.md`；
+- `docs/evaluation/oracle-evidence-diagnostic-condition.md`；
 - `docs/evaluation/v1-failure-type-taxonomy-and-case-policy.md`。
 
 主要实现：

@@ -24,6 +24,8 @@ When populated, the `structured_triage_report.failure_type` field must use one o
 
 The `expected_answer.primary_failure_type` field stores the single preferred V1 failure type ID for scoring failure type exact accuracy. The `expected_answer.acceptable_failure_types` field may list rare reviewer-approved alternatives for ambiguous cases; these alternatives are not synonyms and should be used only when the case evidence reasonably supports more than one taxonomy category.
 
+The `expected_answer.required_evidence_ids` field must identify a Human-reviewed Minimal Sufficient Evidence Set. The complete set contains the source facts needed to derive the Expected Diagnosis under the fixed diagnosis contract, while removing any item makes at least one necessary fact or disambiguation unavailable. Required Evidence must remain source-faithful and must not encode the Failure Type, Root Cause, Fix, Tool Path, scorer label, or curator reasoning as evaluator-authored annotations. This principle strengthens Expected Answer review; it does not add Oracle execution or Gap Analysis to the Formal Suite curation scope.
+
 ## Classification and Causal Analysis
 
 The V1 Failure Type is a stable evaluation category, not a complete causal model. A Structured Triage Report should keep the classification separate from the stage where the failure surfaced and from the causal explanation:
