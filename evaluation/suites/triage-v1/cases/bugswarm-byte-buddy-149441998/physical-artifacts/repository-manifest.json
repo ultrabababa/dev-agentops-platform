@@ -1,0 +1,30 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "raphw/byte-buddy",
+    "revision_kind": "git_commit",
+    "exact_revision": "2431dfb0c85e883a6389b04583a49dc80b61eeb9"
+  },
+  "files": [
+    {
+      "path": ".travis.yml",
+      "sha256": "f565a6a434042225ca2816aa00a4a8e7989b177197d95039c77a5c988e9ac32b",
+      "size_bytes": 607
+    },
+    {
+      "path": "byte-buddy-dep/pom.xml",
+      "sha256": "1b51963d79aa8d6c5adaa8b5134755c0cb04dd393cded125e9836a76418e62b5",
+      "size_bytes": 2291
+    },
+    {
+      "path": "byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "sha256": "11dd4cbafa22c7239f67a4909e13768c4f8a1f84c49deac9b5b650d7b17ce5ea",
+      "size_bytes": 71723
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "f528ea3e3041d5ab0eed394cae05ecdf3f2d849c604a2abc735989fe5011672e",
+      "size_bytes": 25315
+    }
+  ]
+}

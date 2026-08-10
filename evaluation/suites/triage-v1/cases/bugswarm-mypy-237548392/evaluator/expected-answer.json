@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "lint_or_type_failure",
+  "acceptable_failure_types": [],
+  "summary": "mypy rejects its own test package because it cannot infer the generic type argument of retry_on_error.",
+  "root_cause": "retry_on_error promises to return the callback's generic result, but callers use side-effect-only lambdas whose return contract provides no useful type argument. The helper signature is over-general for its use.",
+  "recommended_action": "Give retry_on_error a side-effect callback contract such as Callable[[], Any] returning None, consistent with the call sites."
+}

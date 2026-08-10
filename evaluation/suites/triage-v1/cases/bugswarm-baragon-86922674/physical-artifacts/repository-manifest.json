@@ -1,0 +1,30 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "HubSpot/Baragon",
+    "revision_kind": "git_commit",
+    "exact_revision": "25f732d6280b3033dc6f5d7fcf70f5de5e7abf64"
+  },
+  "files": [
+    {
+      "path": ".travis.yml",
+      "sha256": "37c99cb2e941d8cd82847efd4c0b5d189cc6e5ff9aaf9200e5bd7433ec5499f0",
+      "size_bytes": 92
+    },
+    {
+      "path": "BaragonData/pom.xml",
+      "sha256": "13691989d2fac9c43c80e038c91ce203fd3a3fece13abdd8cbb5629941296f67",
+      "size_bytes": 3610
+    },
+    {
+      "path": "BaragonData/src/main/java/com/hubspot/baragon/data/BaragonStateDatastore.java",
+      "sha256": "84be066a7bc88585b60319600e0ded8093463043c46d0739bcc746efe4618e5c",
+      "size_bytes": 9917
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "4c35dbb6dc0c832851a7fb71cb7700228adf4ba09304a5e0f493faad1b8345cb",
+      "size_bytes": 6644
+    }
+  ]
+}

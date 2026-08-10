@@ -1,0 +1,275 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0031",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 31
+      },
+      "content_sha256": "f565a6a434042225ca2816aa00a4a8e7989b177197d95039c77a5c988e9ac32b"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-pom-xml:lines-0001-0064",
+      "source": "physical-artifacts/repository/byte-buddy-dep/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 64
+      },
+      "content_sha256": "1b51963d79aa8d6c5adaa8b5134755c0cb04dd393cded125e9836a76418e62b5"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "98a123d236a240762e223d074e17624f811d56b17a1093d3a307b760af87cd8f"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "6b70727aa0ab6c157e534f222f4ae601e06bbcb7a5d3856311fccb48dea1f5e6"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "94baaca479dcbf36bb9758fdc8d771a8c6b570cf493516cd2cbc47ff49db7266"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-0301-0400",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "456574d52ccc3dd1baf84a6f2592cee088a5d9fc012ae89c614f9deba75b0c6c"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-0401-0500",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "5a20b0ca822e4c98e3f8f480f3725be8fc61125ad2a499758689a76786662a38"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-0501-0600",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "f773545c19cad03f625c7374a24d3568ec8a49ff3b438436130137951cb14a39"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-0601-0700",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 700
+      },
+      "content_sha256": "1b493cfadc1d19d871916e7cd60f20c76e9535549e66ee82f1962558f6fb204a"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-0701-0800",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 701,
+        "end_line": 800
+      },
+      "content_sha256": "455fac7bf22978aff6f56ef57d475542778a524a70f7064799ea6f7af549c284"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-0801-0900",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 801,
+        "end_line": 900
+      },
+      "content_sha256": "41218bade92ef48938f60ae5fa4969a33cc98c3950fb3bf8d77cd2f7441e40b6"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-0901-1000",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 901,
+        "end_line": 1000
+      },
+      "content_sha256": "4213aa86f42e8b592bafa7dc0a7c639a1613b8eb5c2eb433f8e1685579f53898"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-1001-1100",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1001,
+        "end_line": 1100
+      },
+      "content_sha256": "8890672d44f6e1e4927a2253ef85d45d9b9860e52b45ab33468b997bb31049b6"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-1101-1200",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1101,
+        "end_line": 1200
+      },
+      "content_sha256": "3784036dd7b29a198b3abc8a7a6abede2f6b71f6f2f3f1a0b71164e765cc9362"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-1201-1300",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1201,
+        "end_line": 1300
+      },
+      "content_sha256": "0e1b3204bafb4a4a1e9e48f0cbecc59aaff27ac6674dda70f98f5b97ed8a327c"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-1301-1400",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1301,
+        "end_line": 1400
+      },
+      "content_sha256": "99c563f63c1ab96ea2468634c55887d89208eb8f9eae1d3c007a663a3d62e822"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-1401-1500",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1401,
+        "end_line": 1500
+      },
+      "content_sha256": "29d5631f30ea98c3819c2c9bd303aa242bd3b64579b97e9f51b9fda4bea8f1ec"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-1501-1600",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1501,
+        "end_line": 1600
+      },
+      "content_sha256": "1b03303f489bb632b92c6d12ea4dd52000df153d7e4eb8b53499785cba9d92ce"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-1601-1700",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1601,
+        "end_line": 1700
+      },
+      "content_sha256": "2a28a8e30664cd688568b7e847b28dd1acf0515fdc2de11bd39ba75e2715e097"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-1701-1800",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1701,
+        "end_line": 1800
+      },
+      "content_sha256": "8477c4662a1e1820915b7a932dc4970f4edd8623ff5d3e789ea24001db8fb0b8"
+    },
+    {
+      "evidence_id": "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-1801-1812",
+      "source": "physical-artifacts/repository/byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1801,
+        "end_line": 1812
+      },
+      "content_sha256": "995bf1035e1a0ea6e62d4ab3b38e00bd15891f3729d9f00b3dbb2ba5e7f2403b"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "4de31fb5724d66afab847463b4b5aa5d2fb35263a7192284b576689a4292fd45"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0101-0200",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "1f845da07977e17e65d8a192858084272ab968f0680307d48c1ed8abb5f4a29b"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0201-0300",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "2e7554eec942b1feacefebdeda52d54439c0f16972e1c9b206e0c6e6614c44c8"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0301-0400",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "7fc2c3a136dd1c7984072f88c7dfeaa8ef8a64e035feae1ebad42917dd92559d"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0401-0500",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "44361aa986ac2d9a279516c60b85c9c210bf3982f1677375f4de04e052f4e587"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0501-0561",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 561
+      },
+      "content_sha256": "01d946be23469551cb11a219b782b144663a764498434d975ab3b8387608a8af"
+    }
+  ]
+}

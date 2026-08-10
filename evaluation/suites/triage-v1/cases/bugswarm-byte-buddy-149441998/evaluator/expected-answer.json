@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "lint_or_type_failure",
+  "acceptable_failure_types": [],
+  "summary": "After the test stages, FindBugs rejects ClassFileLocator.ForModule for catching Exception where it is not declared thrown.",
+  "root_cause": "The reflective compatibility fallback intentionally catches a broad Exception, but the source provides no analyzer-recognized justification, producing REC_CATCH_EXCEPTION.",
+  "recommended_action": "Narrow the catch where possible or document and suppress the specific FindBugs warning at the intentional reflective fallback."
+}
