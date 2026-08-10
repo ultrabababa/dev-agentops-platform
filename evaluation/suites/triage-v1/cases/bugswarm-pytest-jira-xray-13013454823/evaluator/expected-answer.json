@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "test_assertion_failure",
+  "acceptable_failure_types": [],
+  "summary": "A nested Jira/Xray evidence payload assertion differs only in the casing of the content-type key.",
+  "root_cause": "The implementation emits contentType, but the expected fixtures on the failing branch still use ContentType. A contract-key change left the test oracle stale.",
+  "recommended_action": "Synchronize the expected evidence fixtures with the implementation's contentType key and review sibling fixtures for the same stale casing."
+}

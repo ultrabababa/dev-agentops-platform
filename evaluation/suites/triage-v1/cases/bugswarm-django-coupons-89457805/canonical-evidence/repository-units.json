@@ -1,0 +1,85 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0016",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 16
+      },
+      "content_sha256": "6e971c4ab0c9e1945269150f7c0d053443326140f1cf51210f1e5c2917071e82"
+    },
+    {
+      "evidence_id": "repo:coupons-forms-py:lines-0001-0061",
+      "source": "physical-artifacts/repository/coupons/forms.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 61
+      },
+      "content_sha256": "c8e786365187c54822b2e5b655b9e57bda66fa06e740707dfab25d485703e70e"
+    },
+    {
+      "evidence_id": "repo:coupons-models-py:lines-0001-0100",
+      "source": "physical-artifacts/repository/coupons/models.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "0a110556193bdd2b282b8cfd7483bc3c8d58003edd72a345eee1419101bd2948"
+    },
+    {
+      "evidence_id": "repo:coupons-models-py:lines-0101-0150",
+      "source": "physical-artifacts/repository/coupons/models.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 150
+      },
+      "content_sha256": "ab8d1d4afd3712adfa3388a6f954b4d3bd8f9756f4ff16a2fded9c7c6796931e"
+    },
+    {
+      "evidence_id": "repo:coupons-tests-test-use-cases-py:lines-0001-0078",
+      "source": "physical-artifacts/repository/coupons/tests/test_use_cases.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 78
+      },
+      "content_sha256": "a89861b7ab77b4f1572c26b7b7a02d75234096274c6eb49dff81d543a99d68ae"
+    },
+    {
+      "evidence_id": "repo:requirements-txt:lines-0001-0005",
+      "source": "physical-artifacts/repository/requirements.txt",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 5
+      },
+      "content_sha256": "2b01326c218eeb5310e8a6bdd1f411bc1898a6bed2e780c52b6e30f0f57400c1"
+    },
+    {
+      "evidence_id": "repo:setup-py:lines-0001-0030",
+      "source": "physical-artifacts/repository/setup.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 30
+      },
+      "content_sha256": "28899a1bcdf98cecb1932b063e963f30bd5e1ed4c545d7bdb26e0a466ef06d51"
+    },
+    {
+      "evidence_id": "repo:tox-ini:lines-0001-0051",
+      "source": "physical-artifacts/repository/tox.ini",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 51
+      },
+      "content_sha256": "f2ec3d5dbd7561fd190c3b50e656f1381d86144e2bf5d35b7f760e22d1248646"
+    }
+  ]
+}

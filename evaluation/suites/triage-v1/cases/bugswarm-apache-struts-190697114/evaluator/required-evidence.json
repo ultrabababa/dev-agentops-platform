@@ -1,0 +1,11 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-20601-20700",
+    "repo:core-src-test-java-org-apache-struts2-interceptor-fileuploadinterceptortest-java:lines-0201-0300",
+    "repo:core-src-main-resources-org-apache-struts2-struts-messages-en-properties:lines-0001-0044"
+  ],
+  "optional_evidence_ids": [
+    "log:raw-log:lines-20501-20600"
+  ]
+}

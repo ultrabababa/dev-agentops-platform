@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "test_assertion_failure",
+  "acceptable_failure_types": [],
+  "summary": "The Struts core suite has one failing file-upload assertion amid many expected error-level test messages.",
+  "root_cause": "The test oracle expects the misspelled prefix 'The file is to large', while the English upload message produced by the failing revision says 'The file is too large'. The product message and assertion text are out of sync.",
+  "recommended_action": "Synchronize the stale expected warning text with the actual English upload message and keep the unrelated parser/security-test errors as non-fatal test output."
+}

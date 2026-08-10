@@ -1,0 +1,275 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:core-pom-xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/core/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "41451d7742747f5ead0ded1e352a4103a3aa18604d14a3b15dce7a9cd14d2ee5"
+    },
+    {
+      "evidence_id": "repo:core-pom-xml:lines-0101-0200",
+      "source": "physical-artifacts/repository/core/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "0fc1871cb0a1848546b912c61f6268903a6ab014fa9039b948f93f7f875587fd"
+    },
+    {
+      "evidence_id": "repo:core-pom-xml:lines-0201-0300",
+      "source": "physical-artifacts/repository/core/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "fc683a04b4b0e4b8366026caf039ef41cc4e28a6a1d4cb70fba3772bf2c3398d"
+    },
+    {
+      "evidence_id": "repo:core-pom-xml:lines-0301-0400",
+      "source": "physical-artifacts/repository/core/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "f8ad5722c3fe5a3904ba36bbaa93978255645167427554a548d83bb387ac818f"
+    },
+    {
+      "evidence_id": "repo:core-pom-xml:lines-0401-0434",
+      "source": "physical-artifacts/repository/core/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 434
+      },
+      "content_sha256": "8d55abff3fa6de6dc0c8569d11525404d852c3a056106d4ededb6005c6cd5099"
+    },
+    {
+      "evidence_id": "repo:core-src-main-java-org-apache-struts2-interceptor-fileuploadinterceptor-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/core/src/main/java/org/apache/struts2/interceptor/FileUploadInterceptor.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "c6e49a6873b0f826983c8bb7abd29f1c5a9aa9c1ca60fbe20415ef8c09c244ae"
+    },
+    {
+      "evidence_id": "repo:core-src-main-java-org-apache-struts2-interceptor-fileuploadinterceptor-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/core/src/main/java/org/apache/struts2/interceptor/FileUploadInterceptor.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "a963c01aed8c6e559e28995cfb7f9ca38916426907ba537504cf6140e685dc2e"
+    },
+    {
+      "evidence_id": "repo:core-src-main-java-org-apache-struts2-interceptor-fileuploadinterceptor-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/core/src/main/java/org/apache/struts2/interceptor/FileUploadInterceptor.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "5a0f6816ad3a8d425ec5bdb599f4220616fb16e09090b2e0d2b5acaad55c04f0"
+    },
+    {
+      "evidence_id": "repo:core-src-main-java-org-apache-struts2-interceptor-fileuploadinterceptor-java:lines-0301-0400",
+      "source": "physical-artifacts/repository/core/src/main/java/org/apache/struts2/interceptor/FileUploadInterceptor.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "287246363e0e402831088a96f1d35016480c544beca789a71b35b5919f13404c"
+    },
+    {
+      "evidence_id": "repo:core-src-main-java-org-apache-struts2-interceptor-fileuploadinterceptor-java:lines-0401-0464",
+      "source": "physical-artifacts/repository/core/src/main/java/org/apache/struts2/interceptor/FileUploadInterceptor.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 464
+      },
+      "content_sha256": "163396c2370c1fb9de654eb7f045f3a8fc4de21fc1e1c236d7ca9f79189f684c"
+    },
+    {
+      "evidence_id": "repo:core-src-main-resources-org-apache-struts2-struts-messages-properties:lines-0001-0040",
+      "source": "physical-artifacts/repository/core/src/main/resources/org/apache/struts2/struts-messages.properties",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 40
+      },
+      "content_sha256": "eb43fcea0a6ea831e5d918103e8e0a4c6062116b91745b7bab232288232bceed"
+    },
+    {
+      "evidence_id": "repo:core-src-main-resources-org-apache-struts2-struts-messages-en-properties:lines-0001-0044",
+      "source": "physical-artifacts/repository/core/src/main/resources/org/apache/struts2/struts-messages_en.properties",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 44
+      },
+      "content_sha256": "02213ecd5d74852246a6c74e5d4ce6ec5f2222ddea2244a5da03e3b6425aabf2"
+    },
+    {
+      "evidence_id": "repo:core-src-test-java-org-apache-struts2-interceptor-fileuploadinterceptortest-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/core/src/test/java/org/apache/struts2/interceptor/FileUploadInterceptorTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "10bf735c440e5f9fa2a3a0505e1b8b8cc81863d7da7a8d0fb56171d98c339d56"
+    },
+    {
+      "evidence_id": "repo:core-src-test-java-org-apache-struts2-interceptor-fileuploadinterceptortest-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/core/src/test/java/org/apache/struts2/interceptor/FileUploadInterceptorTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "95b17a796b9c923c19eae9d8656475ae5c9bb754066838f3abcfb262bf380b14"
+    },
+    {
+      "evidence_id": "repo:core-src-test-java-org-apache-struts2-interceptor-fileuploadinterceptortest-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/core/src/test/java/org/apache/struts2/interceptor/FileUploadInterceptorTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "48626f1875362c503cd4bf3a8ca0400c0a4bee6301824bec59b99e421def7bd3"
+    },
+    {
+      "evidence_id": "repo:core-src-test-java-org-apache-struts2-interceptor-fileuploadinterceptortest-java:lines-0301-0400",
+      "source": "physical-artifacts/repository/core/src/test/java/org/apache/struts2/interceptor/FileUploadInterceptorTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "90e91341305d02142d77c103de7d3f68fc74b71cb140c93f01cdffd727e2c510"
+    },
+    {
+      "evidence_id": "repo:core-src-test-java-org-apache-struts2-interceptor-fileuploadinterceptortest-java:lines-0401-0464",
+      "source": "physical-artifacts/repository/core/src/test/java/org/apache/struts2/interceptor/FileUploadInterceptorTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 464
+      },
+      "content_sha256": "7bbaa586d696ea85c2722345a1946f8fa904cf748587d65c9a080d073353b005"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "add7e5e745656003b7d65017c588f00ee3d70c3d01aef75a101e15e1ad8366ad"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0101-0200",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "8fda30f18c47dc31eda8b469df51e76d2ecaf36eae0db0e0d9ad67a4830bcd21"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0201-0300",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "730ac9638e7a5f540110eecb5f424f187b36e2943e3a9a47ce7090b4fb2df2d0"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0301-0400",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "0e56297a61c8cff91970e7fed8a48d7b6feeced562cfeff590d183a0410a3575"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0401-0500",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "2951744ed63a6fd7e64e7873e1c091a19673e5aa7a51af71aba75448149f44ab"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0501-0600",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "fb220105227bb58f0d0d524f815b2ec96ae373fd34613deab63ec6b8f9100762"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0601-0700",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 700
+      },
+      "content_sha256": "635f8a1e3c83aee23c09e56a32ac18fe1846c462079cb67ede20982117406ed0"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0701-0800",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 701,
+        "end_line": 800
+      },
+      "content_sha256": "8f960275ad89c2ec1955b48ae3de4e3d3a5554594174e460361e0382228d9224"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0801-0900",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 801,
+        "end_line": 900
+      },
+      "content_sha256": "77822d149b27398b8bece34264f55226c87aa07720bf527f08cb492267543fb3"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0901-0965",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 901,
+        "end_line": 965
+      },
+      "content_sha256": "582868bf985e6e33e98d20e8db2c133f252d7dded5a401d62b1ad99807af756f"
+    }
+  ]
+}

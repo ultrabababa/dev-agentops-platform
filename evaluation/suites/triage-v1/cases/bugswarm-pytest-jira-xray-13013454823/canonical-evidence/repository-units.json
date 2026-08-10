@@ -1,0 +1,95 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:pyproject-toml:lines-0001-0014",
+      "source": "physical-artifacts/repository/pyproject.toml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 14
+      },
+      "content_sha256": "2d53a042a0b7b303f00ef6709e4224e7a60fedc0c31ccd7ce9bbc26e2f7c0e0e"
+    },
+    {
+      "evidence_id": "repo:requirements-tests-txt:lines-0001-0005",
+      "source": "physical-artifacts/repository/requirements-tests.txt",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 5
+      },
+      "content_sha256": "25472b92475433f5873bf26d6a1410414ed0c133a7295a1597f6caa821f9a98c"
+    },
+    {
+      "evidence_id": "repo:setup-cfg:lines-0001-0048",
+      "source": "physical-artifacts/repository/setup.cfg",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 48
+      },
+      "content_sha256": "a2a064bd7ad4863b3d7625107cd0cb5fc03053a982bb7b0857623380753f1990"
+    },
+    {
+      "evidence_id": "repo:src-pytest-xray-evidence-py:lines-0001-0037",
+      "source": "physical-artifacts/repository/src/pytest_xray/evidence.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 37
+      },
+      "content_sha256": "477e5e1a6271a33c3c45be3d9299fa7ecee507485a043247e571d156a9bbdaee"
+    },
+    {
+      "evidence_id": "repo:tests-conftest-py:lines-0001-0043",
+      "source": "physical-artifacts/repository/tests/conftest.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 43
+      },
+      "content_sha256": "67d30d8a9d429bbf886ed7fc5dcbc941b954ba42ea14b0cb2c62f658ab290c07"
+    },
+    {
+      "evidence_id": "repo:tests-test-xray-plugin-py:lines-0001-0100",
+      "source": "physical-artifacts/repository/tests/test_xray_plugin.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "435fb6db0e09c6d8d2b922532ed1dbf3c9db865cd87b657940d612db19ef6c86"
+    },
+    {
+      "evidence_id": "repo:tests-test-xray-plugin-py:lines-0101-0200",
+      "source": "physical-artifacts/repository/tests/test_xray_plugin.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "e308af3320c691ca246f5c0ef6bcdb1e4a941b0aedee2f3db40dd36ca8e09314"
+    },
+    {
+      "evidence_id": "repo:tests-test-xray-plugin-py:lines-0201-0300",
+      "source": "physical-artifacts/repository/tests/test_xray_plugin.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "3a8cde3dcf2d7c770a64c88ddcd69cf7f6306560acc6221fa5be319bc3b3ae2f"
+    },
+    {
+      "evidence_id": "repo:tests-test-xray-plugin-py:lines-0301-0355",
+      "source": "physical-artifacts/repository/tests/test_xray_plugin.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 355
+      },
+      "content_sha256": "1a0ecaa1c19307c3c829312901827ee60daf2ab83ec687f7a8c07446d1bef5a8"
+    }
+  ]
+}

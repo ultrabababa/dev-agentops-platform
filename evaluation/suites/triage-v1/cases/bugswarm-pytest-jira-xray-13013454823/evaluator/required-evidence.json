@@ -1,0 +1,9 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-0301-0400",
+    "repo:src-pytest-xray-evidence-py:lines-0001-0037",
+    "repo:tests-test-xray-plugin-py:lines-0101-0200"
+  ],
+  "optional_evidence_ids": []
+}

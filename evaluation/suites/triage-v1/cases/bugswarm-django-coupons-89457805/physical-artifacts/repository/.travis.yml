@@ -1,0 +1,16 @@
+sudo: false
+language: python
+install:
+  - "pip install tox"
+script:
+  - "tox"
+env:
+  - "TOXENV=py34-1.8.X"
+  - "TOXENV=py27-1.8.X"
+  - "TOXENV=py34-1.7.X"
+  - "TOXENV=py27-1.7.X"
+  - "TOXENV=py34-1.6.X"
+  - "TOXENV=py27-1.6.X"
+cache:
+  directories:
+    - $HOME/.cache/pip
