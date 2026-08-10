@@ -1,0 +1,25 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "nodejs/node",
+    "revision_kind": "git_commit",
+    "exact_revision": "3163d8aaf4df11ad43487655d05965bed63b97f6"
+  },
+  "files": [
+    {
+      "path": "test/common/debugger.js",
+      "sha256": "0650f50402b12fa77d8c748e6321d7103d43c04c4a999e81ecec9b2e7fe2cb1f",
+      "size_bytes": 4934
+    },
+    {
+      "path": "test/fixtures/debugger/exceptions.js",
+      "sha256": "d775aaec49183cedef3e3aafc18aea29cc60257ba470262d111040fdb145c780",
+      "size_bytes": 129
+    },
+    {
+      "path": "test/parallel/test-debugger-exceptions.js",
+      "sha256": "8f0462894ffb18fbe26fb26d715a8fe4e784df2db16c7babb1158c863189528e",
+      "size_bytes": 2056
+    }
+  ]
+}

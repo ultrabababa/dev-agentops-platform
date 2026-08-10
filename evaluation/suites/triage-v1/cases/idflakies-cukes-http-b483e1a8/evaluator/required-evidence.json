@@ -1,0 +1,10 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-0001-0037",
+    "repo:cukes-http-src-test-java-lv-ctco-cukes-http-facade-httpassertionfacadeimpltest-java:lines-0101-0198",
+    "repo:cukes-http-src-main-java-lv-ctco-cukes-http-facade-httpassertionfacadeimpl-java:lines-0001-0100",
+    "repo:cukes-core-src-main-java-lv-ctco-cukes-core-internal-context-globalworld-java:lines-0001-0080"
+  ],
+  "optional_evidence_ids": []
+}

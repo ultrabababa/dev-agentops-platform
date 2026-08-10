@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "timeout_or_flaky_failure",
+  "acceptable_failure_types": [],
+  "summary": "test_daemon_sigint intermittently observes raw SIGINT exit -2 instead of the daemon's clean exit 0.",
+  "root_cause": "The test pre-creates the pidfile used as its readiness signal, so its wait can finish before the daemon installs the SIGINT handler. Signal timing then decides whether the default disposition kills the process.",
+  "recommended_action": "Do not pre-create the readiness pidfile; clear stale state and wait for the daemon-created readiness signal before sending SIGINT."
+}

@@ -1,0 +1,334 @@
+[project]
+name = "gptme"
+version = "0.31.0"
+description = "Powerful AI agent for coding and general tasks. Terminal-first with shell, code execution, file editing, web browsing, vision, computer use. Unconstrained."
+authors = [
+    { name = "Erik Bjäreholt", email = "erik@bjareho.lt" },
+]
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+dynamic = ["dependencies"]  # "version"
+
+[project.urls]
+Homepage = "https://gptme.org/"
+Repository = "https://github.com/gptme/gptme"
+Documentation = "https://gptme.org/docs/"
+Issues = "https://github.com/gptme/gptme/issues"
+
+[project.scripts]
+gptme = "gptme.cli.main:main"
+gptme-server = "gptme.server.cli:main"
+gptme-acp = "gptme.acp.__main__:main"
+gptme-eval = "gptme.eval.main:main"
+gptme-eval-swebench = "gptme.eval.swebench.main:main"
+gptme-eval-tbench = "gptme.eval.tbench.run:main"
+gptme-util = "gptme.cli.util:main"
+gptme-agent = "gptme.agent.cli:main"
+gptme-doctor = "gptme.cli.doctor:main"
+gptme-auth = "gptme.cli.auth:main"
+gptme-onboard = "gptme.cli.onboard:main"
+gptme-wut = "gptme.cli.wut:main"
+gptme-dspy = "gptme.eval.dspy:main"
+gptme-eval-trends = "gptme.eval.trends:main"
+
+[tool.poetry]
+packages = [
+    { include = "gptme" },
+]
+include = ["gptme/server/static/**/*", "gptme/eval/tbench/setup.sh", "media/*.png", "media/*.wav"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+click = "^8.0"
+click-default-group = "^1.2.4"
+python-dotenv = "^1.0.0"
+rich = "^13.5.2"
+tabulate = "*"
+pick = {version = "^2.2.0", markers = "sys_platform != 'win32'"}
+tiktoken = ">=0.7"
+tomlkit = "*"
+typing-extensions = "*"
+platformdirs = "^4.3"
+lxml = "*"
+pypdf = ">=6.7.3"  # For PDF text extraction in browser tool (CVE fix: RAM exhaustion + infinite loop)
+requests = "^2.32"  # For HTTP requests in browser tool (PDF detection)
+json-repair = "^0.32.0"
+mcp = "^1.13.0"
+questionary = "^2.1.0"
+python-dateutil = "^2.9.0.post0"
+pyyaml = "^6.0.3"
+
+# providers
+openai = "^1.0"
+anthropic = "^0.47"
+
+# tools
+ipython = "^8.17.2"
+bashlex = "^0.18"
+playwright = {version = "1.49.1", optional=true}  # version constrained due to annoying to have to run `playwright install` on every update
+python-xlib = {version = "^0.33", optional=true}  # for X11 interaction
+
+# evals
+multiprocessing-logging = "^0.3.4"
+dspy = {version = "^3.0.2", python = "<=3.13", optional=true}
+datasets = {version = ">=2.14.0", optional=true}  # for SWE-bench eval
+swebench = {version = ">=1.0", optional=true}  # for SWE-bench eval harness
+terminal-bench = {version = ">=0.1", optional=true, python = ">=3.12"}  # for Terminal-Bench eval harness
+
+# datascience essentials
+pillow = {version = "*"}  # non-optional, needed for image scaling in vision
+matplotlib = {version = "*", optional=true}
+pandas = {version = "*", optional=true}
+numpy = {version = "*", optional=true}
+
+# tool sounds (GPTME_TOOL_SOUNDS=true)
+sounddevice = {version = "*", optional=true}
+scipy = {version = "*", optional=true}
+# server
+flask = {version = "^3.0", optional=true}
+flask-cors = {version = ">=4,<6", optional=true}
+pydantic = "^2.11.7"
+
+# telemetry
+opentelemetry-api = {version = "^1.20.0", optional=true}
+opentelemetry-sdk = {version = "^1.20.0", optional=true}
+opentelemetry-instrumentation-flask = {version = "^0.55b1", optional=true}
+opentelemetry-instrumentation-requests = {version = "^0.55b1", optional=true}
+opentelemetry-exporter-otlp = {version = "^1.34.1", optional=true}
+opentelemetry-exporter-prometheus = {version = "^0.55b1", optional=true}
+opentelemetry-instrumentation-anthropic = {version="^0.47.3", optional=true}
+opentelemetry-instrumentation-openai = {version="^0.47.3", optional=true}
+opentelemetry-instrumentation-threading = {version="^0.55b1", optional=true}
+sentence-transformers = {version = "^5.1.2", optional=true}
+
+# build
+pyinstaller = {version="^6.15", python=">=3.10,<3.15", optional=true}  # not yet compatible with Python 3.15+
+
+# acp (Agent Client Protocol)
+agent-client-protocol = {version = ">=0.7", optional=true, python=">=3.10,<3.15"}
+
+[tool.poetry.group.dev.dependencies]
+# lint
+mypy = "*"
+ruff = "*"
+pylint = "*"
+pre-commit = "*"
+radon = "*"
+openapi-spec-validator = "^0.7.2"
+
+# test
+pytest = "^8.0"
+pytest-asyncio = "*"
+pytest-cov = "*"
+pytest-xdist = "^3.5.0"
+pytest-profiling = "^1.7.0"
+pytest-dotenv = "^0.5.2"
+pytest-timeout = "^2.2.0"
+pytest-retry = "^1.6.3"
+pytest-mock = "*"
+greenlet = "*"  # dependency of playwright, but needed for coverage
+
+# build
+pyinstaller = {version="^6.15", python=">=3.10,<3.15"}  # not yet compatible with Python 3.15+
+
+# docs
+sphinx = "^8.0"
+sphinx-click = "^6.0"
+sphinx-book-theme = "^1.0.1"
+sphinx-sitemap = "^2.6.0"
+sphinx-autobuild = "^2024.10.3"
+sphinx-llms-txt = "^0.2.4"
+sphinxcontrib-programoutput = "*"
+sphinxcontrib-asciinema = "*"
+sphinxcontrib-mermaid = "^1.0.0"
+myst-parser = "*"
+
+# types
+types-tabulate = "*"
+types-lxml = "*"
+
+# needed for typechecking scripts
+tomli = "^2.2.1"
+
+[tool.poetry.extras]
+server = ["flask", "flask-cors", "pydantic"]
+browser = ["playwright"]
+datascience = ["matplotlib", "pandas", "numpy"]  # pillow (non-opt)
+sounds = ["sounddevice", "scipy"]
+computer = []  # pillow (non-opt)
+pyinstaller = ["pyinstaller"]
+acp = ["agent-client-protocol"]
+telemetry = [
+    "opentelemetry-api", "opentelemetry-sdk",
+    "opentelemetry-exporter-otlp", "opentelemetry-exporter-prometheus",
+    "opentelemetry-instrumentation-flask", "opentelemetry-instrumentation-requests",
+    "opentelemetry-instrumentation-anthropic", "opentelemetry-instrumentation-openai",
+    "opentelemetry-instrumentation-threading",
+]
+dspy = ["dspy", "sentence-transformers"]
+eval = ["dspy", "sentence-transformers", "datasets", "swebench", "terminal-bench"]
+all = [
+    # server
+    "flask", "flask-cors", "pydantic",
+    # acp
+    "agent-client-protocol",
+    # browser
+    "playwright",
+    # datascience
+    "matplotlib", "pandas", "numpy", # "pillow",
+    # tool sounds
+    "sounddevice", "scipy",
+    # computer
+    # "pillow",
+    # dspy prompt optimization
+    "dspy", "sentence-transformers",
+    # telemetry
+    "opentelemetry-api", "opentelemetry-sdk",
+    "opentelemetry-exporter-otlp", "opentelemetry-exporter-prometheus",
+    "opentelemetry-instrumentation-flask", "opentelemetry-instrumentation-requests",
+    "opentelemetry-instrumentation-anthropic", "opentelemetry-instrumentation-openai",
+    "opentelemetry-instrumentation-threading",
+]
+
+[tool.ruff]
+target-version = "py310"
+
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
+# McCabe complexity (`C901`) by default.
+select = [
+    "E4", "E7", "E9",  # pycodestyle
+    "F",      # pyflakes
+    "B",      # flake8-bugbear
+    "UP",     # pyupgrade
+    "I",      # isort
+    "C4",     # flake8-comprehensions
+    "FURB",   # refurb
+    "FLY",    # flynt (f-string over join)
+    "ISC",    # implicit-str-concat
+    "PLE",    # pylint errors
+    "PERF",   # perflint
+    "RSE102", # unnecessary-paren-on-raise-exception
+    "SIM103", "SIM110", "SIM117", "SIM118", "SIM300", "SIM910",  # flake8-simplify
+    "PIE790", "PIE810",  # flake8-pie
+    "RET501", "RET505", "RET506", "RET507", "RET508",  # flake8-return
+    "RUF010", "RUF019", "RUF100",  # ruff-specific
+    "PLW1510",  # subprocess-run-without-check
+    "TC001", "TC002", "TC003", "TC004",  # flake8-type-checking
+    "PT003", "PT006", "PT011", "PT022",  # pytest style
+    "DTZ",    # flake8-datetimez (require timezone-aware datetimes)
+]
+ignore = ["E402", "E501", "B905", "PERF203"]  # PERF203: try-except-in-loop often intentional
+#fixable = ["ALL"]
+#unfixable = ["B"]
+
+[tool.mypy]
+check_untyped_defs = true
+disable_error_code = "import-untyped"
+
+[[tool.mypy.overrides]]
+module = "tomli_w"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "opentelemetry.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "langchain.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "matplotlib.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "numpy.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "acp.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "flask.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "dspy.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "chromadb.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "playwright.*"
+ignore_missing_imports = true
+
+
+[[tool.mypy.overrides]]
+module = "swebench.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "terminal_bench.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "datasets.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "acp.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "scipy.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "sounddevice.*"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "eval: marks tests as evals (deselect with '-m \"not eval\"'), these may fail, and will not run in CI",
+    "serial",
+    "timeout: marks tests with timeout value in seconds",
+    "requires_api: marks tests that require API access",
+    "flaky: marks tests as flaky (retried automatically)",
+    "integration: marks tests as integration tests requiring external services",
+    "xdist_group: marks tests that should run in the same xdist group",
+]
+
+[tool.coverage.run]
+# Needed to get playwright to play nice with coverage
+# https://stackoverflow.com/a/28589618/965332
+concurrency = ["greenlet"]
+#branch = true
+
+[tool.coverage.report]
+# Regexes for lines to exclude from consideration
+exclude_also = [
+    # Don't complain if tests don't hit defensive assertion code
+    "raise NotImplementedError",
+
+    # Don't complain about interactive stuff
+    "except KeyboardInterrupt:",
+    "if interactive:",
+    "if ask:",
+
+    # Don't complain if non-runnable code isn't run:
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[build-system]
+requires = ["poetry-core>=2.0"]
+build-backend = "poetry.core.masonry.api"

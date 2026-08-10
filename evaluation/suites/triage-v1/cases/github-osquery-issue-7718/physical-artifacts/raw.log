@@ -1,0 +1,9 @@
+93: ======================================================================
+93: FAIL: test_daemon_sigint (__main__.DaemonTests)
+93: ----------------------------------------------------------------------
+93: Traceback (most recent call last):
+93:   File "test_osqueryd.py", line 153, in test_daemon_sigint
+93:     self.daemon_sigint_test_helper(pidfile_path)
+93:   File "test_osqueryd.py", line 141, in daemon_sigint_test_helper
+93:     self.assertEqual(daemon.retcode, 0)
+93: AssertionError: -2 != 0

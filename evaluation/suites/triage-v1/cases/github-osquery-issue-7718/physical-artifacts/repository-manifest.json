@@ -1,0 +1,30 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "osquery/osquery",
+    "revision_kind": "git_commit",
+    "exact_revision": "aaf2853071c61f54ea737cf938601959fd74f571"
+  },
+  "files": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "8a668ad5b72757467b2e0fabe448c4e4ce8aa327e0db65134c80ebe709c43bda",
+      "size_bytes": 6533
+    },
+    {
+      "path": "osquery/core/init.cpp",
+      "sha256": "4e1220fef273163e5fcef34c2773e267cfccb99558af1fabb0e4d8b95da82521",
+      "size_bytes": 25618
+    },
+    {
+      "path": "tools/tests/test_base.py",
+      "sha256": "ee057b1b0b1c628d34b4ac38d8fca11da15204daa24e693e18fdef4f82653831",
+      "size_bytes": 24385
+    },
+    {
+      "path": "tools/tests/test_osqueryd.py",
+      "sha256": "c719ad10c7f1a6fafeb17ada87436c4de53263201700eaa13387e6ecb1d9cf85",
+      "size_bytes": 10183
+    }
+  ]
+}

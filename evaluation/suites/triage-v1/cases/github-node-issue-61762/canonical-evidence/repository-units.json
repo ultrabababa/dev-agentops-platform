@@ -1,0 +1,45 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:test-common-debugger-js:lines-0001-0100",
+      "source": "physical-artifacts/repository/test/common/debugger.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "9c1d19b35766e1df475f67f8f8cdf263f260b037571cf8c5d11ec05591dc3ac5"
+    },
+    {
+      "evidence_id": "repo:test-common-debugger-js:lines-0101-0190",
+      "source": "physical-artifacts/repository/test/common/debugger.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 190
+      },
+      "content_sha256": "8af7bbe308bda9d083883665cf9754dc0abc2799f89d8e21d74983fb63751814"
+    },
+    {
+      "evidence_id": "repo:test-fixtures-debugger-exceptions-js:lines-0001-0010",
+      "source": "physical-artifacts/repository/test/fixtures/debugger/exceptions.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 10
+      },
+      "content_sha256": "d775aaec49183cedef3e3aafc18aea29cc60257ba470262d111040fdb145c780"
+    },
+    {
+      "evidence_id": "repo:test-parallel-test-debugger-exceptions-js:lines-0001-0058",
+      "source": "physical-artifacts/repository/test/parallel/test-debugger-exceptions.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 58
+      },
+      "content_sha256": "8f0462894ffb18fbe26fb26d715a8fe4e784df2db16c7babb1158c863189528e"
+    }
+  ]
+}

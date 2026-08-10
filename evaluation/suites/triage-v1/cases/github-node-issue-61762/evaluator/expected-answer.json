@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "timeout_or_flaky_failure",
+  "acceptable_failure_types": [],
+  "summary": "The debugger exceptions test intermittently times out across restart while waiting for a break message.",
+  "root_cause": "stepCommand('r') immediately waits for the break/prompt phase across debugger restart without first synchronizing on the reconnect acknowledgement. Output-phase timing can make the wait miss or lag the initial break.",
+  "recommended_action": "Issue restart as a plain command, wait for the reconnect acknowledgement, then explicitly wait for the initial break and prompt."
+}

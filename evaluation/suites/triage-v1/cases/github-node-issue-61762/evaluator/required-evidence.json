@@ -1,0 +1,9 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-0001-0005",
+    "repo:test-parallel-test-debugger-exceptions-js:lines-0001-0058",
+    "repo:test-common-debugger-js:lines-0101-0190"
+  ],
+  "optional_evidence_ids": []
+}

@@ -1,0 +1,5 @@
+/Users/runner/work/node/node/dir%20with $unusual"chars?'åß∂ƒ©∆¬…`/test/common/debugger.js:92
+        const timeoutErr = new Error(`Timeout (${TIMEOUT}) while waiting for ${pattern}`);
+                           ^
+
+Error: Timeout (15000) while waiting for /(?:assert|break|break on start|debugCommand|exception|other|promiseRejection|step) in/i

@@ -1,0 +1,15 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "log:raw-log:lines-0001-0005",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 5
+      },
+      "content_sha256": "0f5b951e9fad8d31f4160aba6cb4aa0721b4aedea3971e1adfdf071bc1592293"
+    }
+  ]
+}
