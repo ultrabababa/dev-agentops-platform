@@ -2,14 +2,14 @@
   "schema_version": "1",
   "units": [
     {
-      "evidence_id": "log:raw-log:lines-0001-0005",
+      "evidence_id": "log:raw-log:lines-0001-0027",
       "source": "physical-artifacts/raw.log",
       "span": {
         "type": "line_range",
         "start_line": 1,
-        "end_line": 5
+        "end_line": 27
       },
-      "content_sha256": "0f5b951e9fad8d31f4160aba6cb4aa0721b4aedea3971e1adfdf071bc1592293"
+      "content_sha256": "6c5f8905c5280d750301896e78171cef5fd18b8b3b13b1b19143ff9d3f184c43"
     }
   ]
 }
