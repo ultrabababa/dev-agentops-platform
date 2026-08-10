@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "dependency_or_install_failure",
+  "acceptable_failure_types": [],
+  "summary": "A Java 7 CI job cannot load AsyncHttpClient and fans out into widespread test errors.",
+  "root_cause": "The project resolves async-http-client 2.0.31, whose class file is Java 8 major version 52, while the CI job runs OpenJDK 7. The incompatible dependency poisons shared initialization.",
+  "recommended_action": "Use an async-http-client release compatible with Java 7 or deliberately move the project and CI runtime to Java 8, with bytecode-version enforcement."
+}

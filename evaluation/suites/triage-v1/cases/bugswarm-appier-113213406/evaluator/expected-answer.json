@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "dependency_or_install_failure",
+  "acceptable_failure_types": [],
+  "summary": "The ADAPTER=tiny CI job reaches six model-test errors because TinyDB is not installed.",
+  "root_cause": "The tiny adapter path imports tinydb, but the failing revision's dependency manifest omits that package. The CI matrix validly selects the path; the package declaration is incomplete.",
+  "recommended_action": "Add TinyDB to the installation requirements used by the tiny adapter job and keep the matrix selection unchanged."
+}

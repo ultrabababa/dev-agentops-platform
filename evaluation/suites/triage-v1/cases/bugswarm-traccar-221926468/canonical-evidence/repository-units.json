@@ -1,0 +1,115 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0003",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 3
+      },
+      "content_sha256": "495892ec54f288891d85c810b7d34cdf2b7f970802491e2bd7de9d1b8d26ba9b"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "9429c7aa06e7ed37a71dab67fe45153a96ea6e239ccb3c7b9d0be03810546a92"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0101-0200",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "922c4c1b7f22c08c36c52a4ecec4c03a0595bf9a31607e2875556ce5aecdf3f0"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0201-0285",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 285
+      },
+      "content_sha256": "f35e5958901fc4bd5f5f138fdaf775c169309cd659e747fadcc34d5d38e87836"
+    },
+    {
+      "evidence_id": "repo:src-org-traccar-context-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/src/org/traccar/Context.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "7a367fa30b1a036e289ba8fa758690454af008d447e2c417f974469ae1a04878"
+    },
+    {
+      "evidence_id": "repo:src-org-traccar-context-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/src/org/traccar/Context.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "c60613633cd5a41520f85c6de083e70f6e458bdd381ca50ef537bfbcb5d38a87"
+    },
+    {
+      "evidence_id": "repo:src-org-traccar-context-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/src/org/traccar/Context.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "b6821ff9e70ecaf9fdbd09434f889044c27fe8bf8b35bc6c6059eb46a5effaf9"
+    },
+    {
+      "evidence_id": "repo:src-org-traccar-context-java:lines-0301-0331",
+      "source": "physical-artifacts/repository/src/org/traccar/Context.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 331
+      },
+      "content_sha256": "d9e2055090ff1ab81ee2aece990e305879e7f8b7d656a2b20ef24c17c6de5b9b"
+    },
+    {
+      "evidence_id": "repo:src-org-traccar-webdatahandler-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/src/org/traccar/WebDataHandler.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "b9761fad16f75f978f695283ecf27e0f80f40cdb86d4e87c855178a981513d77"
+    },
+    {
+      "evidence_id": "repo:src-org-traccar-webdatahandler-java:lines-0101-0129",
+      "source": "physical-artifacts/repository/src/org/traccar/WebDataHandler.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 129
+      },
+      "content_sha256": "f5c5cfa227305734cc9b91f8c3e051f7a63fb1e4a77fd84a998081c9f3f41915"
+    },
+    {
+      "evidence_id": "repo:src-org-traccar-notification-eventforwarder-java:lines-0001-0091",
+      "source": "physical-artifacts/repository/src/org/traccar/notification/EventForwarder.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 91
+      },
+      "content_sha256": "8d14028d3f083d2c372faf33827a378fe768469aba0c444ec8fcd96bf046871c"
+    }
+  ]
+}

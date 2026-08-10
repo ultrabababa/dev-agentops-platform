@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "dependency_or_install_failure",
+  "acceptable_failure_types": [],
+  "summary": "The test run aborts while importing NumPy because the test environment does not install that required package.",
+  "root_cause": "The selected test path imports NumPy, but the failing revision's test dependency set does not declare/install it, so collection/execution fails with ImportError.",
+  "recommended_action": "Declare NumPy in the applicable test dependency set and ensure the CI environment installs that manifest before running the suite."
+}

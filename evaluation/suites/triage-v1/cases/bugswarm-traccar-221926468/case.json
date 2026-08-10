@@ -1,0 +1,41 @@
+{
+  "case_schema_version": "2",
+  "case_id": "bugswarm-traccar-221926468",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "https://www.bugswarm.org/artifact-logs/221926468/raw/ ; upstream exact/relevant revision: https://github.com/traccar/traccar/commit/15f3258905e964ab3b23d9c11fde4a1946ef10b0",
+    "license_or_permission": "Apache-2.0 upstream repository; public BugSwarm historical failed-job attribution."
+  },
+  "curation": {
+    "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
+    "review_status": "human_reviewed",
+    "reviewed_by": "Issue #15 Human Candidate Selection and Source Artifact Eligibility gates; package-content Human Review remains pending"
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy; package-content Human Review remains pending",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "Removed ANSI/control noise only; retained the complete or naturally bounded authentic historical failure observation without changing failure semantics.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "22077f42b567c994ead2efb08488c06dfb349a6d8b9afe52ab405545fd83f4de"
+}

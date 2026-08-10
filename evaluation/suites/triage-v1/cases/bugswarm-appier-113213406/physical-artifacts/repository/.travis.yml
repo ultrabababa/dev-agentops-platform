@@ -1,0 +1,31 @@
+sudo: false
+language: python
+python:
+  - "2.6"
+  - "2.7"
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "nightly"
+  - "pypy"
+  - "pypy3"
+services: mongodb
+install:
+  - pip install -r requirements.txt
+  - pip install coveralls
+  - pip install twine
+env:
+  - ADAPTER=mongo
+  - ADAPTER=tiny
+script: if [[ $TRAVIS_PYTHON_VERSION != "3.2" ]]; then coverage run --source=appier setup.py test; else python setup.py test; fi
+after_success: if [[ $TRAVIS_PYTHON_VERSION != "3.2" ]]; then coveralls; fi
+deploy:
+  provider: pypi
+  user: joamag
+  password:
+    secure: IKGSjx+IGgz5d+kbQrhkbATORlfmxU4WMj2KQsuIQuQS1cO6I2r/8q6GhgXoy93Q+FwjZ4JpAeSidVYHNV+GpN2PIDw+bra5BZQvEupUq35j2tahHPhn3dn2D1HxX8Y/C+UnQX/PRJjXSEyKdTeCR+cRUILUQwrH8ngpXJBlsiI=
+  distributions: sdist bdist_wheel
+  on:
+    tags: true
+    python: "2.7"

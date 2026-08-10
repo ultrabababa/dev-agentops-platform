@@ -1,0 +1,58 @@
+# SPDX-License-Identifier: Apache-2.0
+[workspace]
+resolver = "2"
+members = ["crates/tan-core", "crates/tan-cli"]
+
+[workspace.package]
+version = "0.4.1-dev"
+edition = "2024"
+license = "Apache-2.0"
+repository = "https://github.com/alplabai/tan-cli"
+# Edition 2024 needs 1.85, but the locked `ureq` → `url` → `idna` → `icu_*` tree
+# needs 1.86. Verified by the `msrv` CI job, which reads this exact value.
+rust-version = "1.86"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+# preserve_order: serde_json::Value keeps object insertion order (matches JS),
+# so generated JSON mirrors the TypeScript CLI byte-for-byte.
+serde_json = { version = "1", features = ["preserve_order"] }
+serde_yaml = "0.9"
+clap = { version = "4.6", features = ["derive"] }
+inquire = "0.9"
+# Lightweight blocking HTTP client (rustls) for `tan sdk list` (GitHub releases).
+# `socks-proxy` is not optional once the agent reads the proxy environment:
+# `ALL_PROXY` is consulted FIRST, and with the feature off ureq's SOCKS connector
+# is a stub that fails every request with "SOCKS feature disabled." — so a dev
+# box or WSL SSH tunnel exporting `ALL_PROXY=socks5://…` would go from working
+# (request went direct, proxy env ignored) to hard-broken.
+ureq = { version = "2", features = ["json", "socks-proxy"] }
+# `tan sdk list` is the only command that reaches the network, and it has to work
+# from behind a corporate TLS-intercepting middlebox. ureq's own `native-certs`
+# feature is not enough: it *replaces* the bundled webpki roots with the OS store
+# instead of adding to them, so a host whose OS store is empty (slim container,
+# no ca-certificates package) would lose every root it has today. We therefore
+# build the rustls ClientConfig ourselves from BOTH root sets — see
+# `tan-cli/src/http.rs`. Versions track the ones ureq 2.12 itself resolves so
+# cargo unifies to a single rustls/webpki-roots build.
+rustls = { version = "0.23", default-features = false, features = ["ring", "logging", "std", "tls12"] }
+rustls-native-certs = "0.7"
+webpki-roots = "0.26"
+anyhow = "1"
+thiserror = "2"
+owo-colors = "4"
+# Spinners for captured network/IO commands (sdk list/install). Auto-hides on
+# non-TTY; we additionally gate on --quiet/--ci/--non-interactive/JSON.
+indicatif = "0.17"
+# `tan image` only: tar+gzip each built slice's build_dir + sha256 the archive.
+# The one command that needs an archiver; IO layer (tan-cli), never tan-core.
+tar = "0.4"
+flate2 = "1"
+sha2 = "0.10"
+
+[profile.release]
+opt-level = "z"
+lto = true
+strip = true
+codegen-units = 1
+panic = "abort"

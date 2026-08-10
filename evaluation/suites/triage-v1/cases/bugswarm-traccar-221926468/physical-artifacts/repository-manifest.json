@@ -1,0 +1,35 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "traccar/traccar",
+    "revision_kind": "git_commit",
+    "exact_revision": "15f3258905e964ab3b23d9c11fde4a1946ef10b0"
+  },
+  "files": [
+    {
+      "path": ".travis.yml",
+      "sha256": "495892ec54f288891d85c810b7d34cdf2b7f970802491e2bd7de9d1b8d26ba9b",
+      "size_bytes": 33
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "84c31d1c9b37fdfac561a52afeaee6e6b12c1609f3f475642c652f52ac1fc7f0",
+      "size_bytes": 10553
+    },
+    {
+      "path": "src/org/traccar/Context.java",
+      "sha256": "549009fcc0b431c62265510bbefc73e7fb01f6be7cbef2823cd956461fa8f2eb",
+      "size_bytes": 10769
+    },
+    {
+      "path": "src/org/traccar/WebDataHandler.java",
+      "sha256": "c785d51642216ec9ae3db330a314048d24f44ea9d798fa968a4ce1e681b09814",
+      "size_bytes": 4852
+    },
+    {
+      "path": "src/org/traccar/notification/EventForwarder.java",
+      "sha256": "8d14028d3f083d2c372faf33827a378fe768469aba0c444ec8fcd96bf046871c",
+      "size_bytes": 3268
+    }
+  ]
+}

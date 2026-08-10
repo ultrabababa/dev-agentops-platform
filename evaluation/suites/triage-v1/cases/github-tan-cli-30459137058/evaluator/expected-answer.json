@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "dependency_or_install_failure",
+  "acceptable_failure_types": [],
+  "summary": "The first-blink job fails to build hidapi because libudev.h is absent, then later surfaces misleading elftools import errors from the incomplete environment.",
+  "root_cause": "The clean Linux runner prerequisite list omits libudev development headers required by hidapi. Bootstrap continues after the failed requirements install, causing downstream missing-module symptoms.",
+  "recommended_action": "Install the libudev development package before bootstrap and fail fast when requirements installation leaves the environment incomplete."
+}

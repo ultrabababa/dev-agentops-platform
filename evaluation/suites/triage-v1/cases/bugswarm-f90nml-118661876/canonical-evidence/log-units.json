@@ -1,0 +1,75 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "log:raw-log:lines-0001-0100",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "14731ad459bdbeb82d0fe438885da70383415fa53bae7f18dc023b34ecf79887"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0101-0200",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "8698e712587d4c39198684a31302eb010aa97f60a7c39592b906cf67aba191cf"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0201-0300",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "358374b069ed65ad5b8bca67ca2b1e556188224d8aef189e1699c0f72d897e30"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0301-0400",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "c71e1f46a30ae1fb2936433a335ff0fd00655bf23d07b5c3508c984ddee291eb"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0401-0500",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "d8f73e4607d575cd638a0701d5dba4c4d080948a2801fb32257d86f841ec3495"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0501-0600",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "1f397fad7aaebb6cff80fc2d3473bf72c01f405775d30c712ae6f6943c6d2162"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0601-0676",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 676
+      },
+      "content_sha256": "4fea0d60a4e91155e21d2a50552129b6544106e16e55afcbce72d468ca0782e5"
+    }
+  ]
+}
