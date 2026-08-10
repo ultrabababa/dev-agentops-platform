@@ -1,9 +1,9 @@
 # Issue #15 Schema V2 bulk pre-freeze draft review
 
-**Bulk construction status:** 19 packages — 18 `DRAFT_READY`, plus N17 `REJECTED`.
+**Bulk construction status:** 19 packages — 17 `DRAFT_READY`, plus N17 and N16 `REJECTED`.
 **Original 19-candidate disposition:** 18 constructed; N06 `REPLACED` because its committed iDFlakies record has no Agent-visible exception/stack/failure detail.
-**Human Review status:** `PENDING` for the 18 `DRAFT_READY` packages. **N17 is `REJECTED` (`REPLACE_FOR_LOW_DISCRIMINATIVE_VALUE`) and is not a Formal Suite member.** B04 remains the unchanged Human-reviewed calibration baseline at fingerprint `89a8f9a08f0dcb26…`.
-**Unfilled Formal Suite slot:** `timeout_or_flaky_failure: 1`. No replacement candidate has been selected or constructed.
+**Human Review status:** `PENDING` for the 17 `DRAFT_READY` packages. **N17 is `REJECTED` (`REPLACE_FOR_LOW_DISCRIMINATIVE_VALUE`) and N16 is `REJECTED` (`INVALID_FAILURE_ARTIFACT_AND_LOW_DISCRIMINATIVE_VALUE`); neither is a Formal Suite member.** B04 remains the unchanged Human-reviewed calibration baseline at fingerprint `89a8f9a08f0dcb26…`.
+**Unfilled Formal Suite slots:** `timeout_or_flaky_failure: 2` (N17 and N16). N18 is in full Human Review and N01 is queued behind it, so the final shortfall may reach 3. No replacement candidate has been selected or constructed; targeted discovery is deliberately deferred until N18 and N01 conclude.
 
 These packages are not Human-frozen, final, or a Formal Suite. Schema V2 currently requires the literal loader value `curation.review_status = human_reviewed`; each new `case.json.reviewed_by` explicitly scopes that marker to the already completed Candidate Selection and Source Artifact Eligibility gates and states that package-content Human Review remains pending. The Bulk Review Ledger is the authoritative draft-state record.
 
@@ -27,7 +27,7 @@ This rule is accepted in principle but **deliberately not frozen** into the meth
 
 Each review records a `Runtime Discriminative Value` verdict of `ADEQUATE`, `LOW`, `TRIVIAL`, or `BLOCKED`, together with the diagnostic counts behind it **and a shortcut test**: the searches a reader would derive directly from the failure observation, and what those searches return. Counts alone are not decisive — N17 was rejected with entirely healthy counts (43 units, 7.0 % Required, 90.7 % of units in files holding no Required evidence), because one observation-derived search reaches a contemporaneous comment stating the mechanism. **No numeric threshold is frozen**; a suite-wide policy will be written into the methodology after N16, N01 and further real Case reviews.
 
-### N17 as a negative calibration example
+### N17 and N16 as negative calibration examples
 
 N17 is retained in the tree as review history, a rejection record, and a **negative calibration example**. It establishes on a real Case that:
 
@@ -37,12 +37,30 @@ and documents the specific failure mode:
 
 > The real failure-era repository already contains a same-family sibling fix carrying strong causal or remedial guidance → obvious failure-derived search finds it in one hop → the acquisition gap collapses → the Case is unsuitable as a Formal Runtime benchmark, however authentic it is.
 
-Full record: `reviews/n17-review.md`.
+N16 records a **different and independent** failure mode, and the two must not be collapsed:
+
+> The Agent-visible raw failure artifact was never a failure observation — it was the fix author's post-hoc
+> description quoted from the fix PR body → pre-localized, adjacent to the stated root cause and remedy, and
+> with no surviving authentic artifact to replace it → Layer 1 fails and cannot be repaired.
+
+| | N17 | N16 |
+|---|---|---|
+| Layer 1 | `PASS` after repair | **`FAIL / BLOCKED`, unrepairable** |
+| Layer 2 | `FAIL` | `LOW` |
+| Salvageable? | Yes — an authentic Check Run annotation survived | No — job log expired, only a generic exit-code annotation remains |
+
+Full records: `reviews/n17-review.md`, `reviews/n16-review.md`.
 
 ### Measurement-Value Screening — run during Candidate Discovery, before construction
 
 N17's cost was that this was discovered only after a complete package had been built and repaired twice. Screen candidates against their real failure-era repository **before** committing to package construction:
 
+0. **Is the raw failure artifact from the failure side at all?** It must be a CI job log, a Check Run failure
+   annotation, or a failure-reporting issue body. **Never** narrative text from a fix PR, a fix commit message,
+   or a post-mortem write-up, however verbatim the quotation: such text is authored after the diagnosis is
+   known, arrives pre-localized, and usually sits in the same paragraph as the root cause and the fix. If a
+   candidate's only surviving failure text lives in a fix PR, check whether an authentic failure-side artifact
+   still exists; if none does, drop the candidate here rather than constructing a package. (N16 rule.)
 1. Does the authentic failure observation already expose the root cause or the recommended action directly?
 2. Does a sibling in the same test / module / failure family already carry an almost-direct historical fix?
 3. Do obvious failure-derived queries — error tokens, the failing operation, test / function / module names, and natural keywords such as `flaky`, `timeout`, `race`, `restart`, `intermittent`, `sporadic`, issue numbers — hit an answer-bearing file in one hop?
@@ -75,7 +93,7 @@ N16, N18 and N01 are the other `timeout_or_flaky_failure` candidates and must be
 | N10 | `config_or_environment_failure` | https://www.bugswarm.org/artifact-logs/170953503/raw/ | `DRAFT_READY` | `64e149b69750fdc6f150a18e39a3df1ba76ccc24` | complete BugSwarm failed log | 3 | 725 / 27746 | 10 | 2 / 0 | The submodule URL uses the SSH git@github.com transport, but the keyless CI checkout environment has no matching private key. The repository transport configuration is incompatible with CI. | traced public source | ANSI/control-only normalization | Low: the log and .gitmodules form a clean cross-artifact diagnosis. | `PENDING` |
 | N11 | `config_or_environment_failure` | https://www.bugswarm.org/artifact-logs/64757057/raw/ | `DRAFT_READY` | `dc1efd4c626362bb469813229fb5b48b660f1bf3` | complete BugSwarm failed log | 3 | 1376 / 73380 | 17 | 2 / 1 | The publishing configuration makes archive signing unconditional for normal builds. A non-publishing CI environment has no signing identity, so the task graph fails at signArchives. | traced public source | reviewed transformations | High: strict allowlist extraction deliberately changes physical file extent; Human Review must confirm that the 32-line exact excerpt is sufficient and not misleading. | `PENDING` |
 | N01 | `timeout_or_flaky_failure` | https://github.com/UT-SE-Research/iDFlakies/blob/master/scripts/flaky-lists-files/cukes-http | `DRAFT_READY` | `b483e1a8f261b80a66291a42fc455256b0b5059c` | Complete 37-line committed iDFlakies JSON record; the separate original-order file remains curator-only. | 10 | 1243 / 43677 | 17 | 4 / 0 | The preceding test leaves ASSERTS_STATUS_CODE_MAX_SIZE=5 in singleton GlobalWorld state. The victim enables body display without resetting that key, so the assertion formatter reuses leaked state and the outcome depends on test order. | traced public source | ANSI/control-only normalization | High: the committed iDFlakies JSON is authentic and sufficient for order outcome, but it contains no stack trace; causal diagnosis depends heavily on repository state semantics. | `PENDING` |
-| N16 | `timeout_or_flaky_failure` | https://github.com/gptme/gptme/pull/1968; failed job https://github.com/gptme/gptme/actions/runs/23841222952/job/69497065608 | `DRAFT_READY` | `f48de363aa956caae8789a9b751d7631fd44fe3c` | One verbatim failure sentence preserved in upstream PR #1968; expired Actions output was not reconstructed. | 4 | 2752 / 92050 | 30 | 3 / 0 | The implementation publishes the subagent in the shared list before starting its background thread, while the test treats list growth as completion and immediately indexes mock_create_thread.call_args. Scheduler interleaving can leave call_args as None. | traced public source | ANSI/control-only normalization | High: the Actions log expired; raw.log is a 1-line verbatim PR-preserved failure observation, so Agent-visible failure context is unusually thin. | `PENDING` |
+| N16 | `timeout_or_flaky_failure` | https://github.com/gptme/gptme/pull/1968 (fix PR); historical run https://github.com/gptme/gptme/actions/runs/23841222952 | **`REJECTED` — `INVALID_FAILURE_ARTIFACT_AND_LOW_DISCRIMINATIVE_VALUE`; not a Formal Suite member** | `f48de363aa956caae8789a9b751d7631fd44fe3c` (real run head, pre-fix) | **Not an authentic failure observation:** one sentence quoted from the body of merged fix PR #1968. Job log HTTP 410; only surviving Check Run annotation is a generic `.github` exit-code failure with no test-level detail, so salvage is impossible. | 4 | 2752 / 92050 | 30 | 3 / 0 | (as drafted) The implementation publishes the subagent in the shared list before starting its background thread, while the test treats list growth as completion and immediately indexes mock_create_thread.call_args. | fix-PR narrative, not failure-side artifact | transcription of fix-PR prose; earlier ANSI-removal claim was false | Layer 1 FAIL/BLOCKED and unrepairable. Layer 2 LOW: `api.py:417-419` comments state the race mechanism and same-file sibling tests already show the join remediation. | `REJECTED`; retained as negative calibration example |
 | N18 | `timeout_or_flaky_failure` | https://github.com/osquery/osquery/issues/7718 | `DRAFT_READY` | `aaf2853071c61f54ea737cf938601959fd74f571` | Complete fenced traceback embedded in upstream issue #7718. | 4 | 2154 / 67226 | 25 | 2 / 1 | The test pre-creates the pidfile used as its readiness signal, so its wait can finish before the daemon installs the SIGINT handler. Signal timing then decides whether the default disposition kills the process. | traced public source | ANSI/control-only normalization | Medium-high: the issue preserves a complete traceback but not the full CI job; process exit semantics and readiness code carry the diagnosis. | `PENDING` |
 | N17 | `timeout_or_flaky_failure` | Actions run https://github.com/nodejs/node/actions/runs/22532700362/job/65274588187 ; related tracking issue https://github.com/nodejs/node/issues/61762 ; curator-only causal PR https://github.com/nodejs/node/pull/62055 | **`REJECTED` — `REPLACE_FOR_LOW_DISCRIMINATIVE_VALUE`; not a Formal Suite member** | executed: ephemeral `refs/pull/65153/merge`, merge SHA unrecoverable; recoverable byte-equivalent: `3c08a48c24c39ad4dee6d95c5c800246f300525e` | Verbatim GitHub Check Run failure annotation for `test/parallel/test-debugger-exceptions.js`; full Actions job log expired (HTTP 410) and was not reconstructed. | 11 | 3665 / 109731 | 43 | 3 / 6 | The restart step synchronizes only on the break message, inside one fixed window opened before the restart begins, so it depends on debugger output timing and fails intermittently on macOS. Why the break line was absent is deliberately left unresolved. | verified upstream primary sources | trailing newline only | Layer 1 PASS. Layer 2 FAIL: the contemporaneous repository already contained a commented fix for this exact flake pattern in a sibling of the victim, so one observation-derived search yields root cause and recommended action. | `REJECTED`; retained as negative calibration example |
 
@@ -87,7 +105,7 @@ N16, N18 and N01 are the other `timeout_or_flaky_failure` candidates and must be
 - `lint_or_type_failure`: B05, N07, N09 plus unchanged B04 — 3 new drafts.
 - `dependency_or_install_failure`: B06, B09, N13, N20 — 4 drafts.
 - `config_or_environment_failure`: B08, B16, N10, N11 — 4 drafts.
-- `timeout_or_flaky_failure`: N01, N16, N18 — **3 drafts**; N06 `REPLACED`, and its replacement N17 was subsequently `REJECTED` for low Runtime Discriminative Value. **The fourth slot is unfilled and needs a new candidate.**
+- `timeout_or_flaky_failure`: N01, N18 — **2 drafts**; N06 `REPLACED`, its replacement N17 `REJECTED` for low Runtime Discriminative Value, and N16 `REJECTED` for an invalid failure artifact plus low value. **Two slots are unfilled**, and a third would open if N01 fails its full review.
 
 ## Validation contract
 
@@ -97,12 +115,12 @@ Passing this contract establishes only that a package is structurally sound. The
 
 ## Human Review priority — scientific risk first
 
-1. ~~N17~~ — **review closed, `REJECTED`.** No further review needed. A replacement candidate for the fourth `timeout_or_flaky_failure` slot must go through Measurement-Value Screening before construction.
-2. N16: thin GitHub-preserved failure observation; confirm Agent sufficiency. **Apply both N17-derived checks first:** verify the run/job that actually produced the artifact rather than trusting an issue-body excerpt, and run Measurement-Value Screening over the exact-revision snapshot.
-3. N01: benchmark JSON without stack trace; confirm Physical Universe and minimal Required facts.
+1. ~~N17~~, ~~N16~~ — **reviews closed, both `REJECTED`.** No further review needed. Replacement candidates must go through Measurement-Value Screening before construction.
+2. **N18 — highest priority, in full Human Review.** Strongest remaining `timeout_or_flaky_failure` candidate: the raw artifact matches the issue #7718 body verbatim, the issue is a genuine failure report rather than a fix PR, and the declared revision is pre-fix. Source-chain identity must be verified before any causal analysis.
+3. **N01 — queued behind N18.** Its Physical Universe omits two observation-named test classes (`HttpLoggingPluginTest`, `EndsWithRegexpTest`) and must be completed under scope clause (a) before re-screening; its Ground Truth also asserts assertion-formatter behaviour the artifact cannot show.
 4. N20: cross-repository pinned SDK behavior and first-error vs terminal-symptom causality.
 5. N11, B08: approve strict allowlist and credential/endpoint sanitization without causal damage.
-6. B02, N22, B09, N13, N18: distractor/provenance/absence-evidence/partial-job nuances.
+6. B02, N22, B09, N13: distractor/provenance/absence-evidence/partial-job nuances.
 7. N07, N09, B06, B05, N12: moderate causal and Ground Truth review.
 8. B01, B16, N10: lowest-risk direct causal chains.
 
