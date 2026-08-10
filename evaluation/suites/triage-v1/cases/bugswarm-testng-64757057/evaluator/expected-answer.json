@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "config_or_environment_failure",
+  "acceptable_failure_types": [],
+  "summary": "Gradle reaches signArchives and fails because no signatory is configured, despite the CI job not publishing artifacts.",
+  "root_cause": "The publishing configuration makes archive signing unconditional for normal builds. A non-publishing CI environment has no signing identity, so the task graph fails at signArchives.",
+  "recommended_action": "Require archive signing only for the upload/publish task path and keep ordinary CI builds independent of signing credentials."
+}

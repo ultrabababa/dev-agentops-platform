@@ -1,0 +1,55 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:gitmodules:lines-0001-0003",
+      "source": "physical-artifacts/repository/.gitmodules",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 3
+      },
+      "content_sha256": "ea5d5708942aace403c6b0ba3a0da1559250ec4c2deea8cba4168f588a983be5"
+    },
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0003",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 3
+      },
+      "content_sha256": "495892ec54f288891d85c810b7d34cdf2b7f970802491e2bd7de9d1b8d26ba9b"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "231a0beeabd2c7d63996d01d9cfe935379478245a79e3359b9d0e1af89ff9d8a"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0101-0200",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "207dacb91a4b42bad8b36c2f8650f1d7aa68d52064d5e4762b76a833e31bdb02"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0201-0255",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 255
+      },
+      "content_sha256": "98615680decda7c5d30403c58b22eb8855cb33416835b2ad90186114726d1ac0"
+    }
+  ]
+}

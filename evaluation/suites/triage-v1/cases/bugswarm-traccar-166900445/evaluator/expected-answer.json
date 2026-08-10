@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "config_or_environment_failure",
+  "acceptable_failure_types": [],
+  "summary": "The ordinary CI test suite attempts an external SMTP connection and receives a 535 authentication rejection.",
+  "root_cause": "NotificiationMailTest is an environment-dependent integration test embedded in the normal suite and directly relies on external SMTP authentication values that are invalid for the historical CI run.",
+  "recommended_action": "Move the credential-dependent SMTP check to a separately managed integration test using injected secrets and a controlled test service; do not commit credentials."
+}

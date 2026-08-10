@@ -1,0 +1,51 @@
+{
+  "case_schema_version": "2",
+  "case_id": "bugswarm-traccar-166900445",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "https://www.bugswarm.org/artifact-logs/166900445/raw/ ; upstream exact/relevant revision: https://github.com/traccar/traccar/commit/18d39ff2412b9aced899915d0187f21eb25f49b6",
+    "license_or_permission": "Apache-2.0 upstream repository; public BugSwarm historical failed-job attribution."
+  },
+  "curation": {
+    "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
+    "review_status": "human_reviewed",
+    "reviewed_by": "Issue #15 Human Candidate Selection and Source Artifact Eligibility gates; package-content Human Review remains pending"
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy; package-content Human Review remains pending",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "Removed ANSI/control noise only; retained the complete or naturally bounded authentic historical failure observation without changing failure semantics.",
+        "semantics_preserving": true
+      },
+      {
+        "artifact_path": "physical-artifacts/repository/test/org/traccar/notification/NotificiationMailTest.java",
+        "description": "Replaced public historical email, SMTP host, username, and password literals with typed placeholders while preserving the external SMTP-authentication structure.",
+        "semantics_preserving": true
+      },
+      {
+        "artifact_path": "physical-artifacts/repository/src/org/traccar/notification/NotificationMail.java",
+        "description": "Replaced the historical personal email address in the source header; production SMTP configuration structure is unchanged.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "adf97c15a24b0d407ad9d6659b7e2ccaf4ed29f5e92300bce44575bb5748199a"
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "testng-team/testng",
+    "revision_kind": "git_commit",
+    "exact_revision": "dc1efd4c626362bb469813229fb5b48b660f1bf3"
+  },
+  "files": [
+    {
+      "path": ".travis.yml",
+      "sha256": "492e3c2696eb4b7ce0527fb6a75a38d003d39e31238eb9718056e9797476ff42",
+      "size_bytes": 143
+    },
+    {
+      "path": "build.gradle",
+      "sha256": "c4c57b5c7d30dd9acfdb231f96130a4cec99ba876ec6dfb41872c5b97d76be11",
+      "size_bytes": 3037
+    },
+    {
+      "path": "gradle/publishing.gradle",
+      "sha256": "74fe6ccea2965ed5ceec00051f0920eac5c1eaafb0eb72108145a2ee269b5c93",
+      "size_bytes": 469
+    }
+  ]
+}

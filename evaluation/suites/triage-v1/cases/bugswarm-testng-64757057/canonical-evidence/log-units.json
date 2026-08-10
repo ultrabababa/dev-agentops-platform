@@ -1,0 +1,135 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "log:raw-log:lines-0001-0100",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "b1d02811e03e4cc39fe073b1d83e3805a9fc1df056a18145a3a22a32f6babb54"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0101-0200",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "5e947e790fce5221fb516a23fdd98790b223e9ee9752bda19c8bb40c6c525c60"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0201-0300",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "5f8c6199f25da7074a1bbdcf86b974479a61c17298eebcfd461ddbc12591d68c"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0301-0400",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "6a4b2528f92c044d7fc41e7546a2cd444d8adf700fac01a35c32adb188ed58cd"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0401-0500",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "07ff1f98192914dff6938fa62e7212d55d7b0d8a2cbe5bf8b9c6847e4c7d7858"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0501-0600",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "47e701f3c44fac7a759ac65600724a9da6642a25ea4b71167428d1de97e75ecb"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0601-0700",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 700
+      },
+      "content_sha256": "0d400f117bed7b2e6123268f0d945e335f79b7b1cf2670e99f91a1acfbf03159"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0701-0800",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 701,
+        "end_line": 800
+      },
+      "content_sha256": "5c5fe27633d381dfcfa40b11c4c33e75e9fdac9717c89f7a10204c9f3a3adc9a"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0801-0900",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 801,
+        "end_line": 900
+      },
+      "content_sha256": "4ac6c498f39262e96eef38dc4c6e45c84dc274e023c981f3dbaf22c02da9d09d"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0901-1000",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 901,
+        "end_line": 1000
+      },
+      "content_sha256": "45e0e95cce43a09ff1dc8ab67eee466f9079de475988e0c1162e9d5d80f18fe6"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-1001-1100",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1001,
+        "end_line": 1100
+      },
+      "content_sha256": "be4bdcf99abbf88235334b10301ae88b9d7ddc2084276a642d6fc112d0e9ee33"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-1101-1200",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1101,
+        "end_line": 1200
+      },
+      "content_sha256": "21f0e828e54c0bbc478fedf51c5da489f6593f41f93e915a2c25cbfaceb67df7"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-1201-1204",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1201,
+        "end_line": 1204
+      },
+      "content_sha256": "7892dcf0c72a843c9e2df6373476343b5b7cbe68ebb1d65ed499c4958b1819e7"
+    }
+  ]
+}

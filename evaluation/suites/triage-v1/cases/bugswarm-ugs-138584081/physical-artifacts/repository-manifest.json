@@ -1,0 +1,35 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "winder/Universal-G-Code-Sender",
+    "revision_kind": "git_commit",
+    "exact_revision": "3a90292cacebbd8dbdb7228a36ca89c0f6a9940f"
+  },
+  "files": [
+    {
+      "path": ".travis.yml",
+      "sha256": "d7ed60414e92ddfefc55e7f22ceaf336ee10241ab379c509bfc9a90dfa00cce4",
+      "size_bytes": 175
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "121e98355c49081844a59b7367ee9aa159561c7372294330794a74abc8c8ae30",
+      "size_bytes": 531
+    },
+    {
+      "path": "ugs-core/pom.xml",
+      "sha256": "8e19fc42387b15ed435ac1e01c1b39f90f101264ec490a43748265dab2d58b40",
+      "size_bytes": 8891
+    },
+    {
+      "path": "ugs-core/src/com/willwinder/universalgcodesender/MacroHelper.java",
+      "sha256": "3b9d523b0db3044c4322c1539679ed95a94946c7cf51c42d5576608ce4501568",
+      "size_bytes": 4503
+    },
+    {
+      "path": "ugs-core/test/com/willwinder/universalgcodesender/MacroHelperTest.java",
+      "sha256": "80058aaf6dba900f67f4a43f53afb7b6e89a8c2a5d2cf32b6a694e2ee82554cd",
+      "size_bytes": 2668
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-4401-4500",
+    "repo:ugs-core-src-com-willwinder-universalgcodesender-macrohelper-java:lines-0101-0126",
+    "repo:ugs-core-test-com-willwinder-universalgcodesender-macrohelpertest-java:lines-0001-0080"
+  ],
+  "optional_evidence_ids": [
+    "log:raw-log:lines-4501-4600"
+  ]
+}
