@@ -2,36 +2,6 @@
   "schema_version": "1",
   "units": [
     {
-      "evidence_id": "repo:cmakelists-txt:lines-0001-0100",
-      "source": "physical-artifacts/repository/CMakeLists.txt",
-      "span": {
-        "type": "line_range",
-        "start_line": 1,
-        "end_line": 100
-      },
-      "content_sha256": "8014ce8203ac170567cc3886da109949393d4e9b884d396f284fa94103c60b25"
-    },
-    {
-      "evidence_id": "repo:cmakelists-txt:lines-0101-0200",
-      "source": "physical-artifacts/repository/CMakeLists.txt",
-      "span": {
-        "type": "line_range",
-        "start_line": 101,
-        "end_line": 200
-      },
-      "content_sha256": "ebb05313a4815e35bfc4feb3a2b11172f575094e92a19fbd5efc2d57b1be12e3"
-    },
-    {
-      "evidence_id": "repo:cmakelists-txt:lines-0201-0211",
-      "source": "physical-artifacts/repository/CMakeLists.txt",
-      "span": {
-        "type": "line_range",
-        "start_line": 201,
-        "end_line": 211
-      },
-      "content_sha256": "757b23ed7de9c3e3f2963bf13a197007b1795caeb5097d781472d7cc879a1415"
-    },
-    {
       "evidence_id": "repo:osquery-core-init-cpp:lines-0001-0100",
       "source": "physical-artifacts/repository/osquery/core/init.cpp",
       "span": {
@@ -49,7 +19,7 @@
         "start_line": 101,
         "end_line": 200
       },
-      "content_sha256": "5f5161484e86c9cc70b57efabd56738be8813ccf2ccb9135c7a042f2b3a51951"
+      "content_sha256": "bc73a53c7e8ce02a75cb1182d1a46e206725b4470416310fbed54f17dce7fd69"
     },
     {
       "evidence_id": "repo:osquery-core-init-cpp:lines-0201-0300",
@@ -59,7 +29,7 @@
         "start_line": 201,
         "end_line": 300
       },
-      "content_sha256": "d531ba9c2136288cdb69a9694405ae8524c0fc7743965ece09b4db316da50f3b"
+      "content_sha256": "c4477e2b1c0913252522a55a19a857a1184a0d33fadf7b04cc9eb7424c8d11c3"
     },
     {
       "evidence_id": "repo:osquery-core-init-cpp:lines-0301-0400",
@@ -69,7 +39,7 @@
         "start_line": 301,
         "end_line": 400
       },
-      "content_sha256": "bf333fd9c721c7923716fd803f95903899b304c6ea1366c92d5454edc1be2d9b"
+      "content_sha256": "3beacd6d7ae7b96b3c7af225fd764c70cf1f1551a5f2e408794b22676e860817"
     },
     {
       "evidence_id": "repo:osquery-core-init-cpp:lines-0401-0500",
@@ -79,7 +49,7 @@
         "start_line": 401,
         "end_line": 500
       },
-      "content_sha256": "9212f4543d5044bc93d1e105f59e18efda0d5bf5778c96e2e211a893392d4942"
+      "content_sha256": "5312af57b5c8f6b2054120187b84ea314d7b534bca140cc9c0694ec16f875d86"
     },
     {
       "evidence_id": "repo:osquery-core-init-cpp:lines-0501-0600",
@@ -89,7 +59,7 @@
         "start_line": 501,
         "end_line": 600
       },
-      "content_sha256": "27f1ea4bc28c88108b8dcbf114303ca7b69b3222fb4416a9d5b19d4d0561ff9a"
+      "content_sha256": "5f4be4c360772b7f462d404aa1a9dc78f8f9ec2bd193c856156e0fe7756d4511"
     },
     {
       "evidence_id": "repo:osquery-core-init-cpp:lines-0601-0700",
@@ -99,7 +69,7 @@
         "start_line": 601,
         "end_line": 700
       },
-      "content_sha256": "324b864bff8a7cac5df4eb2e9da4cf039efef4909a02ffb942e9409e145d8768"
+      "content_sha256": "8ffe1252fd178dd35882104460ce2d033363abecba3d3ad44242b2b4ffbbc668"
     },
     {
       "evidence_id": "repo:osquery-core-init-cpp:lines-0701-0800",
@@ -109,17 +79,17 @@
         "start_line": 701,
         "end_line": 800
       },
-      "content_sha256": "702e7e53abd125423bcbbc27de49371c036c5eb08c495e4712180401ba869dcd"
+      "content_sha256": "77e033b3f4f9d6898ddca2c9fa92e8eb27384601dc81db8ca9b94f09141d1474"
     },
     {
-      "evidence_id": "repo:osquery-core-init-cpp:lines-0801-0885",
+      "evidence_id": "repo:osquery-core-init-cpp:lines-0801-0875",
       "source": "physical-artifacts/repository/osquery/core/init.cpp",
       "span": {
         "type": "line_range",
         "start_line": 801,
-        "end_line": 885
+        "end_line": 875
       },
-      "content_sha256": "ba7b141bf44443569e0c768b89b9695b51a49da2ee8f97115a791253a639eaaa"
+      "content_sha256": "5759561cacd82e28764baa876ab64d43c3f136eda4b0a88c836d15ebc775fe56"
     },
     {
       "evidence_id": "repo:tools-tests-test-base-py:lines-0001-0100",
