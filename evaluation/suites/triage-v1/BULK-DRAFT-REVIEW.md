@@ -162,6 +162,22 @@ This is therefore the **primary screening question at Candidate Discovery**, app
 suite now contradicts them three times over: B02 has the lowest Required share in the suite (1.3 %) and is the hardest Case;
 N22 has the highest of its group (21.4 %) and is `LOW`.
 
+### Targeted Candidate Discovery round: candidate ledger produced
+
+One combined discovery round covering all 9 slots has been run and recorded in
+[`REPLACEMENT-CANDIDATES.md`](REPLACEMENT-CANDIDATES.md). **23 candidates screened: 9 `KEEP`, 10 `RESERVE`, 4 `REJECT`.**
+No Case Package was constructed and no candidate is admitted.
+
+Two reusable discovery findings:
+
+- **BugSwarm hosts a raw log for only about 45 % of its artifacts.** The dataset lists 6,566 artifacts, but the
+  `artifact-logs/<job_id>/raw/` endpoint returns 404 for the majority. Candidate-pool size must be estimated from
+  *fetchable logs*, not from artifact count.
+- **GitHub Actions `pull_request` jobs record their own executed merge SHA**, as `* [new ref] <sha> -> pull/<n>/merge`
+  and `HEAD is now at <short> Merge <head> into <base>`. Every PR candidate screened this round had a recoverable and
+  upstream-verifiable executed revision, so a `pull_request` origin is **not** by itself a provenance defect. This
+  generalises the N20 finding.
+
 ### Existing-draft Human Review phase: CLOSED
 
 All 19 packages are reviewed and dispositioned — **10 `HUMAN REVIEW PASS`, 9 `REJECTED`**. Nothing is frozen. The next phase is
