@@ -12,8 +12,12 @@ dependencies = [
     "alembic>=1.13,<2",
     "fastapi>=0.141,<1",
     "SQLAlchemy>=2.0,<3",
+    "tokenizers>=0.22,<1",
     "uvicorn>=0.52,<1",
 ]
+
+[tool.setuptools.package-data]
+devagentops = ["assets/*.json"]
 
 [project.optional-dependencies]
 dev = [

@@ -1,10 +1,12 @@
 import json
+import os
 import shutil
 import sqlite3
 import urllib.error
 from pathlib import Path
 
 import devagentops.evaluation_run as evaluation_run
+import pytest
 from devagentops.cli import main
 from devagentops.component_registry import component_fingerprint, load_component_manifest
 from devagentops.evaluation_suite import load_case_package
@@ -324,6 +326,13 @@ def test_eval_run_dispatches_l1_and_records_model_observations(
     assert manifest["model_configuration"]["model"] == "Qwen/Qwen3.5-4B"
     assert manifest["l1_execution"]["expected_model_calls_per_case"] == 1
     assert manifest["l1_execution"]["sdk_retries"] == 0
+    assert manifest["l1_execution"]["token_accounting"] == {
+        "method": "qwen3_5_4b_official_tokenizer_chat_template_v1",
+        "tokenizer_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+        "tokenizer_sha256": (
+            "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+        ),
+    }
     events = artifact["trace"]
     returned = next(event for event in events if event["event_type"] == "model_call_completed")
     assert returned["payload"]["usage"]["prompt_tokens"] == 1000
@@ -579,6 +588,89 @@ def test_siliconflow_adapter_sanitizes_429_and_has_no_retry(
     assert sent["messages"] == [{"role": "user", "content": "one message"}]
     assert "tools" not in sent
     assert sent["n"] == 1
+
+
+def test_qwen3_5_counter_uses_official_tokenizer_and_chat_template() -> None:
+    provider = SiliconFlowProvider(api_key="not-used-for-counting")
+    request = ModelRequest(
+        model="Qwen/Qwen3.5-4B",
+        messages=({"role": "user", "content": "Hello"},),
+        response_format=STRUCTURED_TRIAGE_REPORT_JSON_SCHEMA,
+        enable_thinking=False,
+        temperature=0,
+        max_tokens=1024,
+        completions=1,
+        stream=False,
+        tools=None,
+    )
+
+    count = provider.count_input_tokens(request)
+
+    assert count.input_tokens == 13
+    assert count.method == "qwen3_5_4b_official_tokenizer_chat_template_v1"
+
+
+@pytest.mark.skipif(
+    os.environ.get("DEVAGENTOPS_LIVE_SILICONFLOW") != "1",
+    reason="requires explicit live SiliconFlow smoke opt-in",
+)
+def test_live_siliconflow_tiny_fixture_end_to_end(
+    tmp_path: Path,
+    capsys,
+    monkeypatch,
+) -> None:
+    api_key = os.environ.get("SILICONFLOW_API_KEY", "")
+    assert api_key
+    matrix_path = tmp_path / "matrix.json"
+    _write_l1_matrix(matrix_path)
+    database_path = tmp_path / "devagentops.db"
+    artifacts_dir = tmp_path / "artifacts"
+    monkeypatch.setattr(
+        evaluation_run,
+        "create_model_provider",
+        lambda: SiliconFlowProvider(api_key=api_key, timeout_seconds=180),
+    )
+
+    exit_code = main(_l1_eval_args(matrix_path, database_path, artifacts_dir))
+
+    captured = capsys.readouterr()
+    assert exit_code == 0, captured.err
+    output = json.loads(captured.out)
+    json_path = Path(output["artifacts"]["json"])
+    markdown_path = Path(output["artifacts"]["markdown"])
+    artifact = json.loads(json_path.read_text(encoding="utf-8"))
+    event_types = [event["event_type"] for event in artifact["trace"]]
+    assert event_types.count("model_call_started") == 1
+    assert event_types.count("model_call_completed") == 1
+    started = next(
+        event
+        for event in artifact["trace"]
+        if event["event_type"] == "model_call_started"
+    )
+    completed = next(
+        event
+        for event in artifact["trace"]
+        if event["event_type"] == "model_call_completed"
+    )
+    assert completed["payload"]["actual_call_count"] == 1
+    assert completed["payload"]["usage"]
+    assert completed["payload"]["usage"]["prompt_tokens"] == (
+        started["payload"]["input_tokens"]
+    )
+    with sqlite3.connect(database_path) as connection:
+        assert connection.execute(
+            "SELECT status, runtime_variant FROM evaluation_runs"
+        ).fetchone() == ("completed", "full_context_one_shot")
+        assert connection.execute(
+            "SELECT COUNT(*) FROM evaluation_reports"
+        ).fetchone() == (1,)
+        assert connection.execute(
+            "SELECT COUNT(*) FROM evaluation_case_scores"
+        ).fetchone() == (1,)
+    secret = api_key.encode("utf-8")
+    assert secret not in json_path.read_bytes()
+    assert secret not in markdown_path.read_bytes()
+    assert secret not in database_path.read_bytes()
 
 
 def test_docs_freeze_task_contract_runtime_control_boundary() -> None:

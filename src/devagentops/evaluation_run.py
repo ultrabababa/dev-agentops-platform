@@ -27,7 +27,13 @@ from devagentops.full_context_one_shot import (
     FullContextOneShotError,
     run_full_context_one_shot,
 )
-from devagentops.model_provider import ModelProviderError, create_model_provider
+from devagentops.model_provider import (
+    QWEN3_5_4B_TOKEN_COUNT_METHOD,
+    QWEN3_5_4B_TOKENIZER_REVISION,
+    QWEN3_5_4B_TOKENIZER_SHA256,
+    ModelProviderError,
+    create_model_provider,
+)
 from devagentops.pipeline_baseline import (
     PIPELINE_VERSION,
     PipelineBaselineError,
@@ -169,6 +175,11 @@ def run_evaluation(
             "expected_model_calls_per_case": 1,
             "sdk_retries": 0,
             "tools": None,
+            "token_accounting": {
+                "method": QWEN3_5_4B_TOKEN_COUNT_METHOD,
+                "tokenizer_revision": QWEN3_5_4B_TOKENIZER_REVISION,
+                "tokenizer_sha256": QWEN3_5_4B_TOKENIZER_SHA256,
+            },
         }
 
     trace: list[dict[str, Any]] = []

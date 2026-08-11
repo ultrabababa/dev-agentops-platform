@@ -1,15 +1,29 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Protocol
+
+from tokenizers import Tokenizer
 
 
 SILICONFLOW_BASE_URL = "https://api.siliconflow.cn/v1/chat/completions"
+QWEN3_5_4B_TOKENIZER_REVISION = "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+QWEN3_5_4B_TOKENIZER_SHA256 = (
+    "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+)
+QWEN3_5_4B_TOKEN_COUNT_METHOD = (
+    "qwen3_5_4b_official_tokenizer_chat_template_v1"
+)
+QWEN3_5_4B_TOKENIZER_PATH = (
+    Path(__file__).parent / "assets" / "qwen3_5_4b_tokenizer.json"
+)
 
 
 class ModelProviderError(RuntimeError):
@@ -83,20 +97,35 @@ class SiliconFlowProvider:
             )
         self._api_key = api_key
         self._timeout_seconds = timeout_seconds
+        self._tokenizer: Tokenizer | None = None
 
     def count_input_tokens(self, request: ModelRequest) -> TokenCount:
-        # UTF-8 bytes are a conservative upper bound for byte-backed tokenizers.
-        # Counting the full canonical provider payload includes message framing and
-        # structured-output schema overhead; it intentionally may reject early.
-        canonical_request = json.dumps(
-            request.provider_payload(),
-            ensure_ascii=False,
-            separators=(",", ":"),
-            sort_keys=True,
-        ).encode("utf-8")
+        rendered_input = _render_qwen3_5_l1_chat_input(request)
+        if self._tokenizer is None:
+            try:
+                with QWEN3_5_4B_TOKENIZER_PATH.open("rb") as tokenizer_file:
+                    tokenizer_sha256 = hashlib.file_digest(
+                        tokenizer_file,
+                        "sha256",
+                    ).hexdigest()
+                if tokenizer_sha256 != QWEN3_5_4B_TOKENIZER_SHA256:
+                    raise ValueError("tokenizer asset fingerprint changed")
+                self._tokenizer = Tokenizer.from_file(
+                    str(QWEN3_5_4B_TOKENIZER_PATH)
+                )
+            except Exception as exc:
+                raise ModelProviderError(
+                    "Qwen3.5-4B tokenizer asset could not be loaded",
+                    code="model_tokenizer_unavailable",
+                ) from exc
         return TokenCount(
-            input_tokens=len(canonical_request),
-            method="qwen3_5_canonical_request_utf8_upper_bound_v1",
+            input_tokens=len(
+                self._tokenizer.encode(
+                    rendered_input,
+                    add_special_tokens=False,
+                ).ids
+            ),
+            method=QWEN3_5_4B_TOKEN_COUNT_METHOD,
         )
 
     def complete(self, request: ModelRequest) -> ModelResponse:
@@ -162,3 +191,31 @@ class SiliconFlowProvider:
 
 def create_model_provider() -> ModelProvider:
     return SiliconFlowProvider(api_key=os.environ.get("SILICONFLOW_API_KEY", ""))
+
+
+def _render_qwen3_5_l1_chat_input(request: ModelRequest) -> str:
+    if request.model != "Qwen/Qwen3.5-4B":
+        raise ModelProviderError(
+            "token counting supports only Qwen/Qwen3.5-4B",
+            code="unsupported_tokenizer_model",
+        )
+    if (
+        len(request.messages) != 1
+        or request.messages[0].get("role") != "user"
+        or not isinstance(request.messages[0].get("content"), str)
+        or request.tools is not None
+        or request.enable_thinking is not False
+    ):
+        raise ModelProviderError(
+            "Qwen3.5-4B L1 token counting requires one non-thinking user message without tools",
+            code="unsupported_tokenizer_request_shape",
+        )
+    content = request.messages[0]["content"].strip()
+    # Exact text-only branch of the pinned Qwen3.5-4B chat template for the
+    # Human-frozen L1 request shape, with add_generation_prompt=True. SiliconFlow
+    # private structured-output injection is not client-observable and is not
+    # guessed or encoded here.
+    return (
+        f"<|im_start|>user\n{content}<|im_end|>\n"
+        "<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    )
