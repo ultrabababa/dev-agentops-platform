@@ -51,6 +51,26 @@ def write_evaluation_artifacts(
 
 def _render_markdown(document: dict[str, Any]) -> str:
     manifest = document["manifest"]
+    if document["status"] == "failed":
+        failure = document["failure"]
+        trace = "\n".join(
+            f"{event['sequence']}. `{event['event_type']}`"
+            for event in document["trace"]
+        )
+        return (
+            "# DevAgentOps Evaluation Tracer Bullet\n\n"
+            "## Run Summary\n\n"
+            f"- Run ID: `{document['run_id']}`\n"
+            "- Status: `failed`\n"
+            f"- Condition: `{manifest['selected_condition_id']}`\n"
+            f"- Runtime: `{manifest['runtime_variant']}`\n"
+            f"- Failure code: `{failure['code']}`\n"
+            f"- Failure stage: `{failure['stage']}`\n\n"
+            "## Failure\n\n"
+            f"{failure['message']}\n\n"
+            "## Lifecycle Trace\n\n"
+            f"{trace}\n"
+        )
     result = document["case_results"][0]
     report = result["report"]
     metrics = result["quality_metrics"]
