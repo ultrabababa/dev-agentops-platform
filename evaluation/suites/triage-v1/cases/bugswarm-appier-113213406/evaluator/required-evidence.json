@@ -2,9 +2,10 @@
   "schema_version": "1",
   "required_evidence_ids": [
     "log:raw-log:lines-0901-1000",
-    "repo:travis-yml:lines-0001-0031",
+    "repo:requirements-txt:lines-0001-0002",
+    "repo:src-appier-base-py:lines-0501-0600",
     "repo:src-appier-data-py:lines-0001-0100",
-    "repo:src-appier-base-py:lines-0501-0600"
+    "repo:travis-yml:lines-0001-0031"
   ],
   "optional_evidence_ids": [
     "log:raw-log:lines-1001-1056"

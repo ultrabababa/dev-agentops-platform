@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
     "review_status": "human_reviewed",
-    "reviewed_by": "Issue #15 Human Candidate Selection and Source Artifact Eligibility gates; package-content Human Review remains pending"
+    "reviewed_by": "REJECTED by package-content Human Review: REPLACE_FOR_LOW_DISCRIMINATIVE_VALUE. Layer 1 Scientific Validity remains PASS - raw.log verified byte-exact and all 6 members byte-identical to the exact revision. Layer 2 LOW: the same class of intrinsically shallow dependency-absence diagnosis as B09; the log names the missing module, its file and two line numbers, and the manifest is two lines. Its low Required share reflects one unrelated 144 KB file rather than search difficulty. LOW Cases are not required per taxonomy and B08 already serves the suite-level easy anchor. NOT a Formal Suite member; retained only as a rejection record. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/n13-review.md."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "da37b25bbcd12acefcbc706e23988bc04a5685732961328b65acb1b0483212ca"
+  "case_fingerprint": "3e95a055fdf5804b581eb8fd7c180c4676211d16d65161ab5962071c7bbbdf99"
 }

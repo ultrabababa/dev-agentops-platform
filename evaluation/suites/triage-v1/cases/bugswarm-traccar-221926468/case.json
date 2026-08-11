@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
     "review_status": "human_reviewed",
-    "reviewed_by": "Issue #15 Human Candidate Selection and Source Artifact Eligibility gates; package-content Human Review remains pending"
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value ADEQUATE - the strongest structure reviewed to date, combining a misleading 196-of-237 error fan-out, an unstated domain decode (major.minor 52 is Java 8), roughly 6,700 lines between the real cause and the terminal message, and a class-load-time static at Context.java line 159 that no log grep suggests. Required corrected from 3 to 4 to carry the shared-initialisation claim. THIS IS NOT A FORMAL FREEZE. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/b06-review.md."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "22077f42b567c994ead2efb08488c06dfb349a6d8b9afe52ab405545fd83f4de"
+  "case_fingerprint": "fee1ea1e2378ba5c00dd77d5ca7a7597c99a26c6b3f54415e02609afd142f6b5"
 }

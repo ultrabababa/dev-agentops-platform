@@ -1,45 +1,26 @@
-# N13 — bugswarm-appier-113213406 pre-freeze draft review
+# N13 — bugswarm-appier-113213406 — REJECTED case record
 
-**Status:** `DRAFT_READY`; package-content Human Review `PENDING`
-**Failure type:** `dependency_or_install_failure`
-**Fingerprint:** `da37b25bbcd12acefcbc706e23988bc04a5685732961328b65acb1b0483212ca` (`provisional-pre-freeze`)
+**Layer 1 — Scientific Validity:** `PASS`. **Layer 2 — Runtime Discriminative Value:** **`LOW`**.
+**Status:** **`REJECTED` — `REPLACE_FOR_LOW_DISCRIMINATIVE_VALUE`.** Not a Formal Suite member; retained only as a rejection record. **Layer 1 remains `PASS`** — it was not rejected for any defect.
+**Failure type:** `dependency_or_install_failure`. **Fingerprint:** `3e95a055fdf5804b581eb8fd7c180c4676211d16d65161ab5962071c7bbbdf99`.
 
-## Source and authentic failure observation
+## 1. Layer 1
+Source `bugswarm.org/artifact-logs/113213406/raw/`; exact revision `2b7fc2f824696a408d6c857fb98bab593c4def41` (hivesolutions/appier). `raw.log` **verified byte-exact** (upstream 61,150 B → 59,116 B == frozen). All **6 members byte-identical**. Nothing to repair.
 
-- Source: https://www.bugswarm.org/artifact-logs/113213406/raw/ ; upstream exact/relevant revision: https://github.com/hivesolutions/appier/commit/2b7fc2f824696a408d6c857fb98bab593c4def41
-- Attribution/license note: Apache-2.0 upstream repository; public BugSwarm historical failed-job attribution.
-- raw.log: Complete BugSwarm historical failed-job log with ANSI/control-only normalization.
+## 2. Causal chain
+`raw.log:950-955` — `File ".../src/appier/data.py", line 85, in collection / … line 90, in get_db / import tinydb / ImportError: No module named 'tinydb'`, repeated four times. `requirements.txt` declares `pymongo` and `redis` — **no tinydb**. `data.py:90` imports it inside the TinyDB adapter's `get_db`; `base.py` selects the adapter; `.travis.yml` runs the matrix that reaches this path.
 
-## Physical repository universe
+## 3. Required Evidence — corrected 4 → 5
+Added `repo:requirements-txt:lines-0001-0002`. The Ground Truth asserts *"the failing revision's dependency manifest omits that package"*, and `requirements.txt` is the only evidence for that omission. The existing four pass removal tests.
 
-Exact/relevant revision `2b7fc2f824696a408d6c857fb98bab593c4def41` with 6 bounded investigation files:
+## 4. Shortcut analysis
+`tinydb` appears in the repository **only at the import site** (`src/appier/data.py`), never in a declaration — again the absence pattern. The log names the module, the file and two line numbers. `requirements.txt` is **two lines**. `src/appier/base.py` is 144 KB / 24 units of genuine distractor mass, which is why the Required share is low, but none of it is needed. No answer-prose in the workspace.
 
-- `.travis.yml`
-- `requirements.txt`
-- `setup.py`
-- `src/appier/base.py`
-- `src/appier/data.py`
-- `src/appier/test/model.py`
+## 5. Layer 2 — `LOW`
+55 units, Required 5 (**9.1 %**), 6 files / 161 KB. The low Required share reflects one very large unrelated file rather than real search difficulty: the essential diagnosis is the log plus a two-line manifest. The adapter-selection and matrix reasoning add a third hop but change no conclusion. Slightly above B09 on distractor mass, below B06 and N20 on everything else.
 
-The snapshot contains plausible build/test/config neighbors, not passing/fix artifacts or synthetic distractors.
+## 6. Final disposition
 
-## Causal chain and taxonomy
+**`REJECTED` — `REPLACE_FOR_LOW_DISCRIMINATIVE_VALUE`.** Layer 1 stays `PASS`; the package is authentic, byte-exact and correctly diagnosed. The rejection is purely about measurement value: the diagnosis is intrinsically shallow, because the log names the missing module, its file and its line, leaving only a trivial check against a two- or three-line declaration file.
 
-- Failure observation: The ADAPTER=tiny CI job reaches six model-test errors because TinyDB is not installed.
-- Root cause: The tiny adapter path imports tinydb, but the failing revision's dependency manifest omits that package. The CI matrix validly selects the path; the package declaration is incomplete.
-- Primary type: `dependency_or_install_failure` because the root cause, rather than only the surface stage, matches this V1 class.
-- Recommended action: Add TinyDB to the installation requirements used by the tiny adapter job and keep the matrix selection unchanged.
-
-## Evidence Ground Truth draft
-
-- Required (4): `log:raw-log:lines-0901-1000`, `repo:travis-yml:lines-0001-0031`, `repo:src-appier-data-py:lines-0001-0100`, `repo:src-appier-base-py:lines-0501-0600`
-- Optional (1): `log:raw-log:lines-1001-1056`
-- Rationale: Required IDs are the current inclusion-minimal cross-log/repository facts; helpful corroboration remains Optional. IDs are provisional and must be remapped after Profile v1 freeze.
-
-## Leakage, sanitization, and ambiguity
-
-- Passing/fix revisions and curator causal research are excluded from Physical Artifacts.
-- PublicCaseView exposes no evaluator data; package validation includes exact hashes, membership, and references.
-- Sanitization: Removed ANSI/control noise only; retained the complete or naturally bounded authentic historical failure observation without changing failure semantics.
-- Known scientific risk: Medium: dependency absence is established by combining matrix selection, import site, and the bounded requirements file.
-- Canonicalization: fixed 100-line, start-at-1, full-coverage windows are disposable `provisional-pre-freeze` coordinates, not a frozen Suite rule.
+**`LOW` Cases are not required per taxonomy.** B08 already serves the suite-level easy anchor, so this Case was not retained merely to preserve the category count.
