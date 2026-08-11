@@ -52,6 +52,16 @@
       "content_sha256": "ee397ae251f95aa282e5acc11627b44b689a3700888140093d8608592373e284"
     },
     {
+      "evidence_id": "repo:cukes-core-src-main-java-lv-ctco-cukes-core-internal-matchers-endswithregexp-java:lines-0001-0028",
+      "source": "physical-artifacts/repository/cukes-core/src/main/java/lv/ctco/cukes/core/internal/matchers/EndsWithRegexp.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 28
+      },
+      "content_sha256": "420bd95181d4754d2bbb3400e1ec691619f6bc664c84b3038bd365939414b203"
+    },
+    {
       "evidence_id": "repo:cukes-http-pom-xml:lines-0001-0042",
       "source": "physical-artifacts/repository/cukes-http/pom.xml",
       "span": {
@@ -92,6 +102,26 @@
       "content_sha256": "4318b6e47e4a70235a66e5dfe036eb6dab73fb031fade1e825e5073149b29d8b"
     },
     {
+      "evidence_id": "repo:cukes-http-src-main-java-lv-ctco-cukes-http-logging-httploggingplugin-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/cukes-http/src/main/java/lv/ctco/cukes/http/logging/HttpLoggingPlugin.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "4fa35999076e9d999b6bc0a605ab310b243fc6f5768304c8982aae2f72129063"
+    },
+    {
+      "evidence_id": "repo:cukes-http-src-main-java-lv-ctco-cukes-http-logging-httploggingplugin-java:lines-0101-0145",
+      "source": "physical-artifacts/repository/cukes-http/src/main/java/lv/ctco/cukes/http/logging/HttpLoggingPlugin.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 145
+      },
+      "content_sha256": "fee44e28d99408ab30e9c86e375ab20bc6358f4b04aa64bacdda3700ea743de1"
+    },
+    {
       "evidence_id": "repo:cukes-http-src-main-java-lv-ctco-cukes-http-matchers-statuscodematcher-java:lines-0001-0047",
       "source": "physical-artifacts/repository/cukes-http/src/main/java/lv/ctco/cukes/http/matchers/StatusCodeMatcher.java",
       "span": {
@@ -100,6 +130,16 @@
         "end_line": 47
       },
       "content_sha256": "b52f01492ec07cb8510a3c31e101399f2294d1872331e3f2086ce3941bb08510"
+    },
+    {
+      "evidence_id": "repo:cukes-http-src-test-java-lv-ctco-cukes-http-custommatchers-java:lines-0001-0048",
+      "source": "physical-artifacts/repository/cukes-http/src/test/java/lv/ctco/cukes/http/CustomMatchers.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 48
+      },
+      "content_sha256": "5b1f8a2176d7bc3b044fd56db9e40ae3ba51c894bf48db5b9c88393d81845d71"
     },
     {
       "evidence_id": "repo:cukes-http-src-test-java-lv-ctco-cukes-http-facade-httpassertionfacadeimpltest-java:lines-0001-0100",
@@ -120,6 +160,26 @@
         "end_line": 198
       },
       "content_sha256": "979be17c391316c1ed4172b46421f6f002bc33b5872af95d0cfbc08b3b5bbb41"
+    },
+    {
+      "evidence_id": "repo:cukes-http-src-test-java-lv-ctco-cukes-http-logging-httploggingplugintest-java:lines-0001-0076",
+      "source": "physical-artifacts/repository/cukes-http/src/test/java/lv/ctco/cukes/http/logging/HttpLoggingPluginTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 76
+      },
+      "content_sha256": "10ddeca07c7a05659809335e1fb4d4caf89682aa35bae6e815cfa0d362990395"
+    },
+    {
+      "evidence_id": "repo:cukes-http-src-test-java-lv-ctco-cukes-http-matchers-endswithregexptest-java:lines-0001-0041",
+      "source": "physical-artifacts/repository/cukes-http/src/test/java/lv/ctco/cukes/http/matchers/EndsWithRegexpTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 41
+      },
+      "content_sha256": "8697f09b9a97918e33cb1a934673ca34015e4963754c839529259abbf2b013b8"
     },
     {
       "evidence_id": "repo:pom-xml:lines-0001-0100",

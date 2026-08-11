@@ -2,9 +2,15 @@
   "schema_version": "1",
   "required_evidence_ids": [
     "log:raw-log:lines-0001-0037",
-    "repo:cukes-http-src-test-java-lv-ctco-cukes-http-facade-httpassertionfacadeimpltest-java:lines-0101-0198",
-    "repo:cukes-http-src-main-java-lv-ctco-cukes-http-facade-httpassertionfacadeimpl-java:lines-0001-0100",
-    "repo:cukes-core-src-main-java-lv-ctco-cukes-core-internal-context-globalworld-java:lines-0001-0080"
+    "repo:cukes-core-src-main-java-lv-ctco-cukes-core-internal-context-globalworld-java:lines-0001-0080",
+    "repo:cukes-core-src-main-java-lv-ctco-cukes-core-internal-di-singletonobjectfactory-java:lines-0001-0096",
+    "repo:cukes-http-src-test-java-lv-ctco-cukes-http-facade-httpassertionfacadeimpltest-java:lines-0001-0100",
+    "repo:cukes-http-src-test-java-lv-ctco-cukes-http-facade-httpassertionfacadeimpltest-java:lines-0101-0198"
   ],
-  "optional_evidence_ids": []
+  "optional_evidence_ids": [
+    "repo:cukes-core-src-main-java-lv-ctco-cukes-core-internal-context-globalworldfacade-java:lines-0001-0062",
+    "repo:cukes-http-pom-xml:lines-0001-0042",
+    "repo:cukes-http-src-main-java-lv-ctco-cukes-http-facade-httpassertionfacadeimpl-java:lines-0001-0100",
+    "repo:cukes-http-src-main-java-lv-ctco-cukes-http-matchers-statuscodematcher-java:lines-0001-0047"
+  ]
 }
