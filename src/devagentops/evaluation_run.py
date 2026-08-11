@@ -19,6 +19,23 @@ from devagentops.evaluation_persistence import (
     persist_finalizing_run,
 )
 from devagentops.evaluation_preflight import run_formal_eval_doctor
+from devagentops.fixed_model_workflow import (
+    COMPLETE_RUNTIME_INPUT_SERIALIZER_FINGERPRINT,
+    COMPLETE_RUNTIME_INPUT_SERIALIZER_IDENTITY,
+    EVIDENCE_ANALYSIS_CONTROL_FINGERPRINT,
+    EVIDENCE_ANALYSIS_CONTROL_VERSION,
+    EVIDENCE_ANALYSIS_MEMO_JSON_SCHEMA,
+    EVIDENCE_ANALYSIS_MEMO_SCHEMA_FINGERPRINT,
+    EVIDENCE_ANALYSIS_MEMO_VERSION,
+    HANDOFF_SERIALIZER_FINGERPRINT,
+    HANDOFF_SERIALIZER_IDENTITY,
+    REPORT_SYNTHESIS_CONTROL_FINGERPRINT,
+    REPORT_SYNTHESIS_CONTROL_VERSION,
+    WORKFLOW_FINGERPRINT,
+    WORKFLOW_IDENTITY,
+    FixedModelWorkflowError,
+    run_fixed_model_workflow,
+)
 from devagentops.full_context_one_shot import (
     CONTEXT_LIMIT_TOKENS,
     MAX_OUTPUT_TOKENS,
@@ -94,9 +111,9 @@ def run_evaluation(
     runtime_variant = effective["runtime_variant"]
     _validate_condition(effective, len(preflight.suite.cases))
 
-    l1_prompt = None
-    if runtime_variant == "full_context_one_shot":
-        l1_prompt = resolve_frozen_component_manifest(
+    task_contract_prompt = None
+    if runtime_variant in {"full_context_one_shot", "fixed_model_workflow"}:
+        task_contract_prompt = resolve_frozen_component_manifest(
             registry_path,
             "prompt",
             L1_PROMPT_VERSION,
@@ -147,14 +164,18 @@ def run_evaluation(
             if runtime_variant == "pipeline_baseline"
             else {
                 "applicability": "not_applicable",
-                "reason": "full_context_one_shot_has_no_tools",
+                "reason": (
+                    "full_context_one_shot_has_no_tools"
+                    if runtime_variant == "full_context_one_shot"
+                    else "fixed_model_workflow_has_no_tools"
+                ),
             }
         ),
         "repeat_index": 0,
     }
     if runtime_variant == "pipeline_baseline":
         manifest["pipeline_version"] = PIPELINE_VERSION
-    else:
+    elif runtime_variant in {"full_context_one_shot", "fixed_model_workflow"}:
         manifest["task_contract"] = {
             "component_version": L1_PROMPT_VERSION,
             "fingerprint": condition_identity["component_fingerprints"]["prompt"],
@@ -162,6 +183,7 @@ def run_evaluation(
         manifest["runtime_input_serialization"] = {
             "version": RUNTIME_INPUT_SERIALIZATION_VERSION,
         }
+    if runtime_variant == "full_context_one_shot":
         manifest["l1_execution"] = {
             "provider": "siliconflow",
             "model": "Qwen/Qwen3.5-4B",
@@ -180,6 +202,62 @@ def run_evaluation(
                 "tokenizer_revision": QWEN3_5_4B_TOKENIZER_REVISION,
                 "tokenizer_sha256": QWEN3_5_4B_TOKENIZER_SHA256,
             },
+        }
+    elif runtime_variant == "fixed_model_workflow":
+        manifest["l2_execution"] = {
+            "provider": "siliconflow",
+            "model": "Qwen/Qwen3.5-4B",
+            "workflow": {
+                **WORKFLOW_IDENTITY,
+                "fingerprint": WORKFLOW_FINGERPRINT,
+            },
+            "complete_runtime_input_serializer": {
+                **COMPLETE_RUNTIME_INPUT_SERIALIZER_IDENTITY,
+                "fingerprint": COMPLETE_RUNTIME_INPUT_SERIALIZER_FINGERPRINT,
+            },
+            "stage_controls": {
+                "evidence_analysis": {
+                    "version": EVIDENCE_ANALYSIS_CONTROL_VERSION,
+                    "fingerprint": EVIDENCE_ANALYSIS_CONTROL_FINGERPRINT,
+                },
+                "report_synthesis": {
+                    "version": REPORT_SYNTHESIS_CONTROL_VERSION,
+                    "fingerprint": REPORT_SYNTHESIS_CONTROL_FINGERPRINT,
+                },
+            },
+            "evidence_analysis_output": {
+                "version": EVIDENCE_ANALYSIS_MEMO_VERSION,
+                "schema_fingerprint": EVIDENCE_ANALYSIS_MEMO_SCHEMA_FINGERPRINT,
+                "output_protocol": EVIDENCE_ANALYSIS_MEMO_JSON_SCHEMA,
+            },
+            "report_synthesis_output": {
+                "schema_version": REPORT_SCHEMA_VERSION,
+                "output_protocol": STRUCTURED_TRIAGE_REPORT_JSON_SCHEMA,
+            },
+            "handoff": {
+                **HANDOFF_SERIALIZER_IDENTITY,
+                "fingerprint": HANDOFF_SERIALIZER_FINGERPRINT,
+            },
+            "context_limit_tokens_per_call": CONTEXT_LIMIT_TOKENS,
+            "max_output_tokens_per_stage": MAX_OUTPUT_TOKENS,
+            "enable_thinking": False,
+            "temperature": 0,
+            "completions": 1,
+            "stream": False,
+            "expected_model_calls_per_case": 2,
+            "sdk_retries": 0,
+            "tools": None,
+            "retrieval": None,
+            "token_accounting": {
+                "method": QWEN3_5_4B_TOKEN_COUNT_METHOD,
+                "tokenizer_revision": QWEN3_5_4B_TOKENIZER_REVISION,
+                "tokenizer_sha256": QWEN3_5_4B_TOKENIZER_SHA256,
+            },
+            "condition_fingerprint_limitation": (
+                "Condition Fingerprint alone does not represent the complete "
+                "L2 workflow, stage-control, and handoff treatment identity; "
+                "interpret it together with this Manifest and code revision."
+            ),
         }
 
     trace: list[dict[str, Any]] = []
@@ -206,14 +284,14 @@ def run_evaluation(
                 )
             candidate_document: Any = pipeline_result.raw_report
             visible_output = None
-        else:
+        elif runtime_variant == "full_context_one_shot":
             _append_event(trace, run_id, "l1_execution_started", _now(), case_id=case_id)
             try:
                 provider = create_model_provider()
-                assert l1_prompt is not None
+                assert task_contract_prompt is not None
                 l1_result = run_full_context_one_shot(
                     workspace,
-                    l1_prompt,
+                    task_contract_prompt,
                     provider,
                     before_model_call=lambda payload: _append_event(
                         trace,
@@ -271,6 +349,128 @@ def run_evaluation(
                     "actual_call_count": 1,
                 },
             )
+        else:
+            _append_event(
+                trace,
+                run_id,
+                "l2_workflow_started",
+                _now(),
+                case_id=case_id,
+                payload={
+                    "workflow_version": WORKFLOW_IDENTITY["version"],
+                    "workflow_fingerprint": WORKFLOW_FINGERPRINT,
+                    "expected_model_calls": 2,
+                },
+            )
+            try:
+                provider = create_model_provider()
+                assert task_contract_prompt is not None
+                l2_result = run_fixed_model_workflow(
+                    workspace,
+                    task_contract_prompt,
+                    provider,
+                    before_model_call=lambda payload: _append_event(
+                        trace,
+                        run_id,
+                        "model_call_started",
+                        _now(),
+                        case_id=case_id,
+                        payload={
+                            **payload,
+                            "attempted_logical_call_count": payload[
+                                "logical_call_number"
+                            ],
+                            "completed_logical_call_count": (
+                                payload["logical_call_number"] - 1
+                            ),
+                        },
+                    ),
+                    after_model_call=lambda payload: _append_event(
+                        trace,
+                        run_id,
+                        "model_call_completed",
+                        _now(),
+                        case_id=case_id,
+                        payload={
+                            **payload,
+                            "actual_call_count": payload["logical_call_number"],
+                            "attempted_logical_call_count": payload[
+                                "logical_call_number"
+                            ],
+                            "completed_logical_call_count": payload[
+                                "logical_call_number"
+                            ],
+                        },
+                    ),
+                )
+            except (
+                FixedModelWorkflowError,
+                ModelProviderError,
+                RuntimeWorkspaceError,
+            ) as exc:
+                failure_code = getattr(exc, "code", "l2_execution_failed")
+                started_calls = [
+                    event
+                    for event in trace
+                    if event["event_type"] == "model_call_started"
+                    and event["case_id"] == case_id
+                ]
+                completed_calls = [
+                    event
+                    for event in trace
+                    if event["event_type"] == "model_call_completed"
+                    and event["case_id"] == case_id
+                ]
+                if isinstance(exc, FixedModelWorkflowError):
+                    stage = exc.stage_id
+                elif isinstance(exc, ModelProviderError):
+                    stage = (
+                        "report_synthesis"
+                        if completed_calls
+                        else started_calls[-1]["payload"]["stage_id"]
+                        if started_calls
+                        else "evidence_analysis"
+                    )
+                else:
+                    stage = "l2_execution"
+                payload = {
+                    "code": failure_code,
+                    "stage": stage,
+                    "actual_call_count": len(started_calls),
+                    "attempted_logical_call_count": len(started_calls),
+                    "completed_logical_call_count": len(completed_calls),
+                }
+                if isinstance(exc, FixedModelWorkflowError):
+                    payload.update(exc.context_metadata)
+                if isinstance(exc, ModelProviderError) and exc.http_status is not None:
+                    payload["http_status"] = exc.http_status
+                _fail_run(
+                    database_path,
+                    manifest,
+                    trace,
+                    started_at,
+                    case_id,
+                    failure_code,
+                    stage,
+                    str(exc),
+                    failure_payload=payload,
+                    failure_artifacts_dir=artifacts_dir,
+                )
+            candidate_document = l2_result.candidate_document
+            visible_output = l2_result.visible_output
+            _append_event(
+                trace,
+                run_id,
+                "l2_workflow_completed",
+                _now(),
+                case_id=case_id,
+                payload={
+                    "workflow_version": WORKFLOW_IDENTITY["version"],
+                    "attempted_logical_call_count": 2,
+                    "completed_logical_call_count": 2,
+                    "stop": "program_fixed_after_report_synthesis",
+                },
+            )
         _append_event(
             trace,
             run_id,
@@ -322,7 +522,7 @@ def run_evaluation(
             "quality_metrics": score.quality_metrics.as_dict(),
             "evidence_diagnostics": score.evidence_diagnostics.as_dict(),
         }
-        if runtime_variant == "full_context_one_shot":
+        if runtime_variant in {"full_context_one_shot", "fixed_model_workflow"}:
             result["candidate_document"] = candidate_document
             result["visible_output"] = visible_output
         case_results.append(result)
@@ -413,7 +613,11 @@ def _validate_condition(
     case_count: int,
 ) -> None:
     runtime_variant = effective_condition["runtime_variant"]
-    if runtime_variant not in {"pipeline_baseline", "full_context_one_shot"}:
+    if runtime_variant not in {
+        "pipeline_baseline",
+        "full_context_one_shot",
+        "fixed_model_workflow",
+    }:
         raise EvaluationRunError(
             f"unsupported runtime_variant {runtime_variant!r}",
             code="unsupported_runtime_variant",
@@ -436,23 +640,26 @@ def _validate_condition(
             )
         return
     if effective_condition["model"] != L1_MODEL_CONFIGURATION:
+        level = "L1" if runtime_variant == "full_context_one_shot" else "L2"
         raise EvaluationRunError(
-            "L1 requires the frozen SiliconFlow Qwen/Qwen3.5-4B model identity",
-            code="invalid_l1_model_configuration",
+            f"{level} requires the frozen SiliconFlow Qwen/Qwen3.5-4B model identity",
+            code=f"invalid_{level.casefold()}_model_configuration",
         )
     if effective_condition["components"] != {"prompt": L1_PROMPT_VERSION}:
+        level = "L1" if runtime_variant == "full_context_one_shot" else "L2"
         raise EvaluationRunError(
-            "L1 requires only structured-triage-task-contract-v1",
-            code="invalid_l1_component_configuration",
+            f"{level} requires only structured-triage-task-contract-v1",
+            code=f"invalid_{level.casefold()}_component_configuration",
         )
     expected_budgets = {
         "context_limit_tokens": CONTEXT_LIMIT_TOKENS,
         "max_output_tokens": MAX_OUTPUT_TOKENS,
     }
     if effective_condition["budgets"] != expected_budgets:
+        level = "L1" if runtime_variant == "full_context_one_shot" else "L2"
         raise EvaluationRunError(
-            "L1 requires the frozen context and output token limits",
-            code="invalid_l1_budget_configuration",
+            f"{level} requires the frozen context and output token limits",
+            code=f"invalid_{level.casefold()}_budget_configuration",
         )
 
 
@@ -467,6 +674,7 @@ def _fail_run(
     failure_message: str,
     *,
     failure_payload: dict[str, Any] | None = None,
+    failure_artifacts_dir: Path | None = None,
 ) -> None:
     _append_event(
         trace,
@@ -484,6 +692,30 @@ def _fail_run(
         failure_code=failure_code,
         failure_message=failure_message,
     )
+    if failure_artifacts_dir is not None:
+        try:
+            write_evaluation_artifacts(
+                failure_artifacts_dir,
+                {
+                    "artifact_schema_version": "1",
+                    "run_id": manifest["run_id"],
+                    "status": "failed",
+                    "manifest": manifest,
+                    "trace": trace,
+                    "case_results": [],
+                    "failure": {
+                        "code": failure_code,
+                        "stage": stage,
+                        "message": failure_message,
+                        "payload": trace[-1]["payload"],
+                    },
+                },
+            )
+        except EvaluationArtifactError as exc:
+            raise EvaluationRunError(
+                str(exc),
+                code="artifact_write_failed",
+            ) from exc
     raise EvaluationRunError(failure_message, code=failure_code)
 
 

@@ -226,7 +226,7 @@ Not every runtime gets identical access. Whether a condition has fixed selection
 
 L0–L5+ 是 capability-attribution ladder，不是强制 implementation order；L3 是否必须先于 L4 实现不冻结。V1 Product Runtime 仍只有 Fixed Pipeline 与 self-built ReAct，L1/L2/L3 只是 diagnostic/comparison conditions。L1 不得 silent truncation：如果完整 rendered input 加预留 output tokens 超出固定 context capability，当前 L1 tracer bullet 以零 provider call 的 execution/feasibility failure 结束，不做 truncation、summarization、splitting、retry 或 condition relabel。
 
-当前 Matrix Schema 尚无可执行的通用 Evidence Acquisition/Delivery 字段。这些语义是未来 Condition 与 Run Manifest 必须显式 version 和 fingerprint 的 accepted design；本次文档决策不修改 Matrix/Registry schema，也不冻结未来字段名。Offline Case Schema V2、L0 `pipeline_baseline` tracer bullet 与一个 L1 `full_context_one_shot` tracer bullet 已实现；L2/L3/L4 与 Oracle execution 尚未实现。
+当前 Matrix Schema 尚无可执行的通用 Evidence Acquisition/Delivery 字段。这些语义是未来 Condition 与 Run Manifest 必须显式 version 和 fingerprint 的 accepted design；当前 tracer bullets 不修改 Matrix/Registry schema。Offline Case Schema V2、L0 `pipeline_baseline`、L1 `full_context_one_shot`，以及固定 `evidence_analysis -> report_synthesis -> stop` 的 L2 `fixed_model_workflow` tracer bullet 已实现；L3/L4 与 Oracle execution 尚未实现。
 
 实验比较以 paired per-Case comparison 为基础：固定 same Case、same Physical Universe、same base model（适用时）、same Expected Answer 和 same scorer，只改变目标 Runtime/Evidence Acquisition Condition，再跨 Case aggregate。每个 Case Human Review 都必须检查各 ladder condition 与 Oracle 实际获得什么，以及 Case construction 是否给任一 condition 带来 curator-derived advantage，尤其是 search-space size、signal density、chunk granularity 或 answer exposure 的变化。
 
@@ -235,6 +235,10 @@ L0–L5+ 是 capability-attribution ladder，不是强制 implementation order�
 在条件间匹配同一个 versioned Task Contract fingerprint，表示 task、taxonomy、grounding/citation rules 与 final report contract 是一个共享控制变量。它不表示 rendered request 字节相同，也不表示 evidence delivery 或 model-visible Runtime controls 相同。
 
 `runtime_input` 只能承载 Case-specific Runtime input 与 evidence data plane，不能作为隐藏 stage、tool、Retrieval、loop、stop、retry 或其他 control policy 的通道。不同条件若需要不同的 model-visible Runtime control instructions，这些 instructions 必须显式、versioned，并作为 treatment 记录。Evidence delivery 与 Runtime controls 仍是实验变量；当比较同时改变多个变量时，结果只能解释为 combined difference，不能强称单一 capability 的 causal uplift。
+
+当前 L2 tracer bullet 的两个 model-visible stage controls 位于共享 Task Contract 的 `runtime_input` 之外，并将 version/fingerprint 写入 Run Manifest。Stage 1 memo 是显式 case-scoped intermediate data：provider 成功返回的 exact string 无论 malformed、empty 或低质量都固定进入 Stage 2；parse/validation 仅是 Trace observation，不 gate transition、repair 或 retry。Stage 2 重新获得完整 Physical Evidence Universe 与该 memo，然后固定生成 final report 并 stop。两个调用分别做 context feasibility preflight；Stage 2 可能在 Stage 1 已完成后因实际 handoff 大小而失败，且不得 truncation、summarization、split、fallback 或 relabel。
+
+本 tracer bullet 不扩 Matrix/Registry schema，因此现有 Condition Fingerprint 尚不能单独表达 workflow、stage controls 与 handoff 的完整 L2 treatment identity。当前 run 必须结合 Condition Fingerprint、L2 Run Manifest identity block 和 code revision 解释；在关闭该 representation gap 前不得进行 Formal L1→L2 comparison。即使未来关闭该 gap，L1→L2 仍同时改变 model-call count、stage controls、intermediate representation、重复 evidence exposure、aggregate output allowance、cost/latency 和 failure surface，只能解释为 fixed two-stage workflow package 的 combined difference。
 
 ## 5. Oracle Evidence 是 Derived Runtime Input
 

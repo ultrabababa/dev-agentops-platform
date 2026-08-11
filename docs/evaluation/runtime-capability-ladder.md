@@ -39,7 +39,7 @@ L0 回答：在没有模型推理和 Agent 控制的情况下，当前固定流�
 - 不提供自主工具循环，也不允许模型决定下一阶段。
 - 是非 Agentic diagnostic condition，不是 Product Runtime。
 
-“Full-context” 是结果身份的一部分，不能 silent truncation。如果完整可见 Universe 超出固定 context budget，截断后的 run 不得继续宣称自己是 L1 full-context condition。未来 L1 implementation Issue 必须选择明确、可观察的处理方式，例如 eligibility、preflight failure 或其他 explicit policy；本文不冻结具体机制或字段名。
+“Full-context” 是结果身份的一部分，不能 silent truncation。如果完整可见 Universe 超出固定 context budget，截断后的 run 不得继续宣称自己是 L1 full-context condition。当前 L1 tracer bullet 对完整 rendered request 做精确 preflight；超出 `262144` context capability 时以零 provider call 的 execution failure 结束，不 truncation、summarization、splitting、retry 或 relabel。
 
 L1 回答：移除 evidence acquisition 难度、但不给予多阶段 orchestration 或 Agent loop 时，单次模型推理能做到什么。
 
@@ -50,7 +50,15 @@ L1 回答：移除 evidence acquisition 难度、但不给予多阶段 orchestra
 - 模型不自主循环，也不决定下一项工具或下一阶段。
 - 是非 Agentic diagnostic/comparison condition。
 
-本文不冻结阶段数量、Prompt、provider API、context handoff 或失败策略。L2 回答：相对 L1，固定 orchestration 本身带来多少变化。
+当前 L2 tracer bullet 固定为：
+
+```text
+evidence_analysis -> report_synthesis -> stop
+```
+
+两个 stage 均复用 `structured-triage-task-contract-v1`、完整 Agent-visible Evidence Universe、SiliconFlow `Qwen/Qwen3.5-4B` 与相同 inference settings。每个 stage 各有 exactly one `user` message 和一次独立 context preflight。Stage 1 返回 versioned structured memo；只要 provider 成功返回 string（包括 malformed 或 empty），程序就把 exact visible string 作为显式 case-scoped handoff 交给 Stage 2，不用 parse/validation gate、repair 或 retry。Stage 2 再次获得完整 Universe 与 memo，产生最终 Structured Triage Report 后程序固定 stop。任一 provider/transport/protocol failure 或对应 stage 的 context infeasibility 才停止执行。
+
+这个 tracer bullet 没有 tools、Retrieval、evidence selection、adaptive transition、autonomous loop 或 verifier。L2 回答的是固定 two-stage workflow package 相对 L1 的 combined difference；它同时改变 call count、stage controls、intermediate representation、重复 evidence exposure、aggregate output allowance、cost/latency 和 failure surface，不能把差异强归因于单一 capability。
 
 ### L3 — static retrieval
 
@@ -81,7 +89,9 @@ V1 Product Runtime 只有：
 1. Fixed Pipeline（当前 `pipeline_baseline`）；
 2. self-built ReAct（L4）。
 
-L1、L2、L3 用于解释性能来源。它们可以拥有可执行的 condition、trace 和 manifest，但不因此成为第三、第四或第五种 Product Runtime。未来 Matrix/Run Manifest 需要显式保存足以重建条件的语义；本 Issue 不改变 schema，也不冻结字段名。
+L1、L2、L3 用于解释性能来源。它们可以拥有可执行的 condition、trace 和 manifest，但不因此成为第三、第四或第五种 Product Runtime。当前 L2 tracer bullet 把 workflow、stage controls、memo schema 与 handoff 的 version/fingerprint 写入 Run Manifest，但不扩 Matrix/Registry schema。
+
+因此当前 Condition Fingerprint 单独不能代表完整 L2 treatment identity；解释 tracer-bullet run 时必须同时使用 Condition Fingerprint、L2 Manifest identity block 和 code revision。这个 limitation 必须在 Formal L1→L2 comparison 前关闭，当前 tiny fixture 结果不得作为正式 quality/uplift evidence。
 
 ## 5. 与 Evidence Universe、Workspace 和 Oracle 的关系
 
@@ -123,9 +133,9 @@ DevAgentOps 始终保留 bounded Investigation Workspace、evaluation-first、Tr
 
 ## 8. 本文不决定什么
 
-- L1/L2/L3/L4 的实现、provider 或 Prompt；
-- L1 超预算时选择 ineligible、preflight failure 还是其他 explicit policy；
-- L2 stage contract；
+- L3/L4 的实现、provider 或 Prompt；
+- L2 tracer bullet 之后的通用 workflow 表示；
+- Formal L2 comparison 所需的 Matrix/Registry fingerprint representation；
 - L3 chunk/query/top-k/index/reranker；
 - L3 与 L4 的实现先后；
 - L5+ 的具体 level 分配；
