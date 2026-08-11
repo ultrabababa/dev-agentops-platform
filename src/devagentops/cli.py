@@ -16,11 +16,11 @@ from devagentops.evaluation_matrix import (
     EvaluationMatrixError,
     load_evaluation_matrix,
 )
+from devagentops.evaluation_preflight import run_formal_eval_doctor
+from devagentops.evaluation_run import EvaluationRunError, run_evaluation
 from devagentops.evaluation_suite import (
     EvaluationSuiteError,
     load_case_package,
-    load_evaluation_suite,
-    validate_matrix_suite_references,
 )
 from devagentops.scoring import evaluate_case_report
 from devagentops.storage import StorageError, initialize_database, inspect_database
@@ -111,6 +111,45 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="Path to a candidate Structured Triage Report JSON file.",
     )
+    run_parser = eval_subcommands.add_parser(
+        "run",
+        help="Run one repository-defined evaluation after complete formal preflight.",
+    )
+    run_parser.add_argument(
+        "--matrix",
+        type=Path,
+        required=True,
+        help="Path to a repository-defined evaluation matrix JSON file.",
+    )
+    run_parser.add_argument(
+        "--registry",
+        type=Path,
+        required=True,
+        help="Path to the repository component registry used for formal preflight.",
+    )
+    run_parser.add_argument(
+        "--suite",
+        type=Path,
+        required=True,
+        help="Path to the explicit evaluation suite manifest.",
+    )
+    run_parser.add_argument(
+        "--condition",
+        required=True,
+        help="ID of the resolved evaluation condition to run.",
+    )
+    run_parser.add_argument(
+        "--database",
+        type=_database_path,
+        default=DEFAULT_DATABASE_PATH,
+        help=f"SQLite file path (default: {DEFAULT_DATABASE_PATH}).",
+    )
+    run_parser.add_argument(
+        "--artifacts-dir",
+        type=Path,
+        default=Path(".devagentops/evaluation-artifacts"),
+        help="Ignored directory for generated JSON and Markdown artifacts.",
+    )
 
     component_parser = subcommands.add_parser(
         "component",
@@ -181,17 +220,24 @@ def main(argv: Sequence[str] | None = None) -> int:
             if args.structural_only:
                 status = load_evaluation_matrix(args.matrix)
             else:
-                matrix = load_evaluation_matrix(args.matrix, args.registry)
-                suite = load_evaluation_suite(args.suite)
-                validate_matrix_suite_references(matrix, suite)
-                status = {
-                    **matrix.as_dict(),
-                    "evaluation_suite": suite.as_dict(),
-                }
+                status = run_formal_eval_doctor(
+                    args.matrix,
+                    args.registry,
+                    args.suite,
+                )
         elif args.command == "eval" and args.eval_command == "score":
             package = load_case_package(args.case)
             raw_report = load_candidate_report_json(args.report)
             status = evaluate_case_report(raw_report, package)
+        elif args.command == "eval" and args.eval_command == "run":
+            status = run_evaluation(
+                matrix_path=args.matrix,
+                registry_path=args.registry,
+                suite_path=args.suite,
+                condition_id=args.condition,
+                database_path=args.database,
+                artifacts_dir=args.artifacts_dir,
+            )
         elif args.command == "component" and args.component_command == "validate":
             status = load_component_manifest(args.manifest).validation_result()
         elif args.command == "component" and args.component_command == "freeze":
@@ -214,6 +260,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         StorageError,
     ) as exc:
         print(json.dumps({"error": str(exc)}, ensure_ascii=False), file=sys.stderr)
+        return 2
+    except EvaluationRunError as exc:
+        print(
+            json.dumps(
+                {"error": str(exc), "code": exc.code},
+                ensure_ascii=False,
+            ),
+            file=sys.stderr,
+        )
         return 2
 
     payload = status if isinstance(status, dict) else status.as_dict()
