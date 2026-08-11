@@ -54,10 +54,25 @@ def _render_markdown(document: dict[str, Any]) -> str:
     result = document["case_results"][0]
     report = result["report"]
     metrics = result["quality_metrics"]
-    evidence = "\n".join(
-        f"- `{reference['evidence_id']}`"
-        for reference in report["evidence_references"]
-    )
+    if report is None:
+        evidence = "- No valid evidence references"
+        report_section = (
+            "- Candidate did not satisfy Structured Triage Report V1.\n\n"
+            f"- Validation: `{json.dumps(result['validation'], sort_keys=True)}`\n"
+        )
+    else:
+        evidence = "\n".join(
+            f"- `{reference['evidence_id']}`"
+            for reference in report["evidence_references"]
+        )
+        report_section = (
+            f"- Case: `{report['case_id']}`\n"
+            f"- Failure type: `{report['failure_type']}`\n"
+            f"- Confidence: `{report['confidence']}`\n\n"
+            f"**Summary:** {report['summary']}\n\n"
+            f"**Root cause:** {report['root_cause']}\n\n"
+            f"**Recommended action:** {report['recommended_action']}\n"
+        )
     trace = "\n".join(
         f"{event['sequence']}. `{event['event_type']}`"
         for event in document["trace"]
@@ -72,14 +87,13 @@ def _render_markdown(document: dict[str, Any]) -> str:
         f"- Status: `{document['status']}`\n"
         f"- Condition: `{manifest['selected_condition_id']}`\n"
         f"- Runtime: `{manifest['runtime_variant']}`\n"
-        f"- Pipeline: `{manifest['pipeline_version']}`\n\n"
-        "## Structured Triage Report\n\n"
-        f"- Case: `{report['case_id']}`\n"
-        f"- Failure type: `{report['failure_type']}`\n"
-        f"- Confidence: `{report['confidence']}`\n\n"
-        f"**Summary:** {report['summary']}\n\n"
-        f"**Root cause:** {report['root_cause']}\n\n"
-        f"**Recommended action:** {report['recommended_action']}\n\n"
+        + (
+            f"- Pipeline: `{manifest['pipeline_version']}`\n\n"
+            if "pipeline_version" in manifest
+            else "\n"
+        )
+        + "## Structured Triage Report\n\n"
+        f"{report_section}\n\n"
         "## Evidence References\n\n"
         f"{evidence}\n\n"
         "## Metric Vector\n\n"

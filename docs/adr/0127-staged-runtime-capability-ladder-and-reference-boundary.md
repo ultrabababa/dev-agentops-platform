@@ -33,7 +33,13 @@ The shipped Issue #16 identity remains `runtime_variant="pipeline_baseline"`. `d
 
 L1 means that the complete **Agent-visible Evidence Universe** for the condition is delivered to the model in one fixed prompt and one model call. It must not silently truncate the evidence and continue to claim `full_context_one_shot` semantics. If the complete visible universe exceeds the condition's fixed context budget, a truncated run is not a valid L1 full-context result.
 
-This ADR intentionally does not choose whether a future L1 implementation marks such a Case ineligible, fails preflight, or applies another explicit policy. That mechanism belongs to the L1 implementation design and must remain visible in run identity and results.
+The first L1 implementation records an execution/feasibility failure with zero provider calls when the complete rendered input plus the reserved output tokens exceeds the fixed model context capability. It does not truncate, summarize, split, retry, or relabel the condition.
+
+### Task Contract and Runtime Control Separation
+
+Controlled comparisons should reuse the same versioned Task Contract where scientifically appropriate. The Task Contract defines the diagnosis task, taxonomy, grounding and citation rules, and final Structured Triage Report contract. Evidence delivery, tools, Retrieval, stages, loops, call count, and stop rules belong to the Runtime condition rather than the shared Task Contract.
+
+`runtime_input` is a case-specific data plane. It may carry Case identity, forbidden actions, evidence, answer-neutral citation coordinates, artifact boundaries, and descriptive serialization metadata, but it must not conceal imperative Runtime control policy. Any model-visible Runtime control instructions that vary across conditions must be explicit, versioned, and recorded as treatment. Sharing a Task Contract therefore does not imply byte-identical rendered requests.
 
 ### Oracle is orthogonal
 
@@ -78,10 +84,9 @@ Tradeoffs:
 
 ## Non-Decisions
 
-- No L1, L2, L3, ReAct, model-provider, retrieval, tool, or context-management implementation is selected here.
+- No L2, L3, ReAct, retrieval, tool, or context-management implementation is selected here.
 - The implementation order between L3 and L4 is not frozen.
 - No Matrix, Registry, Run Manifest, or runtime schema field is added or named.
-- No L1 over-budget outcome mechanism is selected.
 - No Pi API or DevAgentOps-to-Pi mapping is frozen.
 - Investigation Workspace, Trusted Evaluator, leakage, Canonical Evidence, and tool-policy contracts are unchanged.
 

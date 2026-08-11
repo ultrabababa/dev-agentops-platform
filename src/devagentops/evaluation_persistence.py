@@ -72,7 +72,10 @@ def persist_finalizing_run(
             for event in trace_events:
                 _insert_trace_event(connection, event)
             for result in case_results:
-                report = result["report"]
+                candidate_document = result.get(
+                    "candidate_document",
+                    result["report"],
+                )
                 connection.execute(
                     text(
                         "INSERT INTO evaluation_reports "
@@ -84,11 +87,13 @@ def persist_finalizing_run(
                     {
                         "run_id": manifest["run_id"],
                         "case_id": result["case_id"],
-                        "schema_version": report["schema_version"],
+                        "schema_version": manifest[
+                            "structured_report_schema_version"
+                        ],
                         "valid": result["validation"]["valid"],
-                        "report_json": canonical_json(report),
+                        "report_json": canonical_json(candidate_document),
                         "validation_json": canonical_json(result["validation"]),
-                        "report_sha256": canonical_sha256(report),
+                        "report_sha256": canonical_sha256(candidate_document),
                     },
                 )
                 connection.execute(
