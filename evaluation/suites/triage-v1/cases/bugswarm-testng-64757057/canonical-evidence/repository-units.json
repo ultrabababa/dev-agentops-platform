@@ -2,16 +2,6 @@
   "schema_version": "1",
   "units": [
     {
-      "evidence_id": "repo:travis-yml:lines-0001-0010",
-      "source": "physical-artifacts/repository/.travis.yml",
-      "span": {
-        "type": "line_range",
-        "start_line": 1,
-        "end_line": 10
-      },
-      "content_sha256": "492e3c2696eb4b7ce0527fb6a75a38d003d39e31238eb9718056e9797476ff42"
-    },
-    {
       "evidence_id": "repo:build-gradle:lines-0001-0100",
       "source": "physical-artifacts/repository/build.gradle",
       "span": {
@@ -32,14 +22,44 @@
       "content_sha256": "a902b5e48568a8502b72704b89a42360a1d6d1112a6c00367e1ee14cb9d40227"
     },
     {
-      "evidence_id": "repo:gradle-publishing-gradle:lines-0001-0032",
+      "evidence_id": "repo:compile-with-gradle-sh:lines-0001-0001",
+      "source": "physical-artifacts/repository/compile-with-gradle.sh",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 1
+      },
+      "content_sha256": "69320b25b169869e56ac4b0bc36a9f4adb38d47fa682b3903c3cd2a085bc237a"
+    },
+    {
+      "evidence_id": "repo:gradle-publishing-gradle:lines-0001-0100",
       "source": "physical-artifacts/repository/gradle/publishing.gradle",
       "span": {
         "type": "line_range",
         "start_line": 1,
-        "end_line": 32
+        "end_line": 100
       },
-      "content_sha256": "74fe6ccea2965ed5ceec00051f0920eac5c1eaafb0eb72108145a2ee269b5c93"
+      "content_sha256": "21cc7f04daf63df61690642ec7fd983337cae14927579e4a6b358afb13e313eb"
+    },
+    {
+      "evidence_id": "repo:gradle-publishing-gradle:lines-0101-0171",
+      "source": "physical-artifacts/repository/gradle/publishing.gradle",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 171
+      },
+      "content_sha256": "57c9e0cbb2923ff447033a2f4a750b7f39fbec7c318e9f48760c5534efa3f144"
+    },
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0010",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 10
+      },
+      "content_sha256": "492e3c2696eb4b7ce0527fb6a75a38d003d39e31238eb9718056e9797476ff42"
     }
   ]
 }

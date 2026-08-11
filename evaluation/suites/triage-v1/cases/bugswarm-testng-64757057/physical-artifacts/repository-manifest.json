@@ -17,9 +17,14 @@
       "size_bytes": 3037
     },
     {
+      "path": "compile-with-gradle.sh",
+      "sha256": "69320b25b169869e56ac4b0bc36a9f4adb38d47fa682b3903c3cd2a085bc237a",
+      "size_bytes": 42
+    },
+    {
       "path": "gradle/publishing.gradle",
-      "sha256": "74fe6ccea2965ed5ceec00051f0920eac5c1eaafb0eb72108145a2ee269b5c93",
-      "size_bytes": 469
+      "sha256": "03fcd01654e2da130cc5f8334d25616b9ec40500df64d6ad2eed8da978dd9f8b",
+      "size_bytes": 4025
     }
   ]
 }
