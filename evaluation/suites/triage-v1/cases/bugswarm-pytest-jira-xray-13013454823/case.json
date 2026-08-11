@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
     "review_status": "human_reviewed",
-    "reviewed_by": "Issue #15 Human Candidate Selection and Source Artifact Eligibility gates; package-content Human Review remains pending"
+    "reviewed_by": "REJECTED by package-content Human Review: UNDERDETERMINED_GT_AND_LOW_DISCRIMINATIVE_VALUE. Layer 1 is NOT recorded as a clean PASS. The artifacts are authentic and byte-identical to the exact revision, but the frozen evidence proves only that the implementation emits contentType while the fixtures expect ContentType; it does not establish which side is stale or regressed, so the Ground Truth claim that the test oracle is stale is underdetermined by the Physical Universe. Layer 2 Runtime Discriminative Value LOW: both key spellings appear in the log, so the mismatch is visible in the observation and the repository only confirms which side emits which. Not salvaged. NOT a Formal Suite member; retained only as a rejection record. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/n22-review.md."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "ca97bbe4bb5aecbc76f8352b2c0b73dd25c2441dc122a9391e9907d70176e9c3"
+  "case_fingerprint": "14fc476bb06fb46ec4775583590e087094a968414a35b0d1fe3eaaded8c6143b"
 }

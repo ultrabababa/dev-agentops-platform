@@ -1,45 +1,39 @@
-# N22 — bugswarm-pytest-jira-xray-13013454823 pre-freeze draft review
+# N22 — bugswarm-pytest-jira-xray-13013454823 — full Human Review record
 
-**Status:** `DRAFT_READY`; package-content Human Review `PENDING`
-**Failure type:** `test_assertion_failure`
-**Fingerprint:** `ca97bbe4bb5aecbc76f8352b2c0b73dd25c2441dc122a9391e9907d70176e9c3` (`provisional-pre-freeze`)
+> **FINAL DISPOSITION: `REJECTED` — `UNDERDETERMINED_GT_AND_LOW_DISCRIMINATIVE_VALUE`.**
+> **N22 is NOT a Formal Suite member.** Retained only as a rejection record. **No salvage attempt was made or should be made.**
+> **Layer 1 is NOT recorded as a clean `PASS`.** The artifacts are authentic and byte-identical to the exact revision, but the Ground Truth claim is underdetermined by the frozen evidence (§3) — this is a Layer 1 finding, not merely a flag.
 
-## Source and authentic failure observation
+**Layer 1 — Scientific Validity:** **`NOT A CLEAN PASS` — Ground Truth underdetermination.** Artifact fidelity and provenance are sound; the Ground Truth direction is not established by the Physical Universe.
+**Layer 2 — Runtime Discriminative Value:** **`LOW`**.
+**Failure type:** `test_assertion_failure`.
+**Fingerprint:** `14fc476bb06fb46ec4775583590e087094a968414a35b0d1fe3eaaded8c6143b` (`provisional-pre-freeze`; supersedes `872e0d45…`).
 
-- Source: https://www.bugswarm.org/artifact-logs/13013454823/raw/ ; upstream exact/relevant revision: https://github.com/fundakol/pytest-jira-xray/commit/019244aa79f9adc182ee138955cc50efe37df9b6
-- Attribution/license note: Apache-2.0 upstream repository; public BugSwarm historical failed-job attribution. Passing revision is a sibling from a common base, not a direct child fix.
-- raw.log: Complete BugSwarm historical failed-job log with ANSI/control-only normalization.
+## Layer 1
+Exact revision `019244aa79f9adc182ee138955cc50efe37df9b6` (fundakol/pytest-jira-xray). `raw.log` **verified byte-exact** (35,496 → 35,474 == frozen). All **6 members byte-identical**. Nothing to repair in the artifacts.
 
-## Physical repository universe
+## Causal chain
+`raw.log:373` — `> assert xray_result['tests'] == expected_tests`. `src/pytest_xray/evidence.py:24` emits `'contentType': content_type`; the fixtures in `tests/test_xray_plugin.py:118,123,129` expect `'ContentType'`. A contract-key casing change left the two out of sync.
 
-Exact/relevant revision `019244aa79f9adc182ee138955cc50efe37df9b6` with 6 bounded investigation files:
+## 3. Ground Truth underdetermination — a Layer 1 finding
+The Ground Truth asserts *"the expected fixtures on the failing branch still use ContentType"*, i.e. that **the test oracle is stale**.
 
-- `pyproject.toml`
-- `requirements-tests.txt`
-- `setup.cfg`
-- `src/pytest_xray/evidence.py`
-- `tests/conftest.py`
-- `tests/test_xray_plugin.py`
+**The frozen evidence proves only two things:** the implementation emits `contentType`, and the fixtures expect `ContentType`. It does **not** establish which side is stale or regressed — whether the implementation changed the contract key or regressed it is not decidable from the Physical Universe alone, and the failing and passing revisions here are sibling histories.
 
-The snapshot contains plausible build/test/config neighbors, not passing/fix artifacts or synthetic distractors.
+The Human decision records this as **Ground Truth underdetermination** and directs that **Layer 1 must not be recorded as a clean `PASS`** for N22. This is distinct from every other rejection in the suite: B05, B09, B16, N10, N12 and N13 were all rejected with Layer 1 `PASS`, purely on measurement value. N22 additionally carries a validity finding — its Expected Answer asserts a causal direction its own evidence cannot support.
 
-## Causal chain and taxonomy
+**No salvage was attempted, per the Human decision.** Establishing the direction would require evidence outside the frozen Physical Universe, and the Case is `LOW` on Layer 2 regardless, so the effort could not produce an admissible Case.
 
-- Failure observation: A nested Jira/Xray evidence payload assertion differs only in the casing of the content-type key.
-- Root cause: The implementation emits contentType, but the expected fixtures on the failing branch still use ContentType. A contract-key change left the test oracle stale.
-- Primary type: `test_assertion_failure` because the root cause, rather than only the surface stage, matches this V1 class.
-- Recommended action: Synchronize the expected evidence fixtures with the implementation's contentType key and review sibling fixtures for the same stale casing.
+## Shortcut analysis
+Both spellings appear in the log — `ContentType` three times and `contentType` once — so the mismatch is **visible in the observation itself**. The repository only confirms which side emits which. The remaining judgement is the direction question in §3, which the artifacts under-determine.
 
-## Evidence Ground Truth draft
+## Layer 2 — `LOW`
+14 units (5 log + 9 repo), Required 3 (**21.4 %**), 6 files / 502 repository lines, log 411 lines. The observation discloses the mismatch; the repository confirms it; the one genuinely open question is not answerable from the frozen evidence.
 
-- Required (3): `log:raw-log:lines-0301-0400`, `repo:src-pytest-xray-evidence-py:lines-0001-0037`, `repo:tests-test-xray-plugin-py:lines-0101-0200`
-- Optional (0): none
-- Rationale: Required IDs are the current inclusion-minimal cross-log/repository facts; helpful corroboration remains Optional. IDs are provisional and must be remapped after Profile v1 freeze.
+## Final disposition
+**`REJECTED` — `UNDERDETERMINED_GT_AND_LOW_DISCRIMINATIVE_VALUE`.** Two independent grounds, either sufficient: the Ground Truth direction is underdetermined by the frozen evidence (§3), and Runtime Discriminative Value is `LOW` because the observation already discloses the mismatch. **Not a Formal Suite member.** Counts as one `test_assertion_failure` replacement.
 
-## Leakage, sanitization, and ambiguity
+**Reusable hazard recorded at ledger level:** a Ground Truth may name a *direction* — which side of a mismatch is wrong — that the Physical Universe cannot decide. Two-sided contract mismatches drawn from sibling histories are the characteristic setting. Removal-testing the Required set does not catch this, because every Required unit can be genuinely necessary while the *claim they jointly support* still overreaches.
 
-- Passing/fix revisions and curator causal research are excluded from Physical Artifacts.
-- PublicCaseView exposes no evaluator data; package validation includes exact hashes, membership, and references.
-- Sanitization: Removed ANSI/control noise only; retained the complete or naturally bounded authentic historical failure observation without changing failure semantics.
-- Known scientific risk: Medium: failing and passing revisions are sibling histories; the package correctly uses only the failing branch, but provenance must not be narrated as a direct child fix.
-- Canonicalization: fixed 100-line, start-at-1, full-coverage windows are disposable `provisional-pre-freeze` coordinates, not a frozen Suite rule.
+## Scope boundary
+Only this record, the N22 `case.json` curation status and fingerprint, and the N22 ledger material were changed. No Physical Artifact was modified.

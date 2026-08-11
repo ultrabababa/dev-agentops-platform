@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
     "review_status": "human_reviewed",
-    "reviewed_by": "Issue #15 Human Candidate Selection and Source Artifact Eligibility gates; package-content Human Review remains pending"
+    "reviewed_by": "REJECTED by package-content Human Review: REPLACE_FOR_LOW_DISCRIMINATIVE_VALUE. Layer 1 Scientific Validity remains PASS - raw.log is verified byte-exact and all 7 members are byte-identical to the exact revision; the package has no defect. Layer 2 Runtime Discriminative Value LOW: the log prints both sides of the comparison in full and the only difference is a Python 2 u-prefix, so the mismatch is visible without opening anything and the repository withholds nothing. NOT a Formal Suite member; retained only as a rejection record. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/n12-review.md."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "df3f7d3d61de07601414651ac769e68532b8552e2470f5b0b03601a3132296a0"
+  "case_fingerprint": "d3532f68605edde516ad7c5e54a2628d83d1e5dfe98a1401a38d299a5fa2e8af"
 }

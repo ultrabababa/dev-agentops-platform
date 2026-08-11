@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
     "review_status": "human_reviewed",
-    "reviewed_by": "Issue #15 Human Candidate Selection and Source Artifact Eligibility gates; package-content Human Review remains pending"
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS - raw.log verified byte-exact (1,953,762 bytes) and all 6 members byte-identical to the exact revision. Runtime Discriminative Value ADEQUATE: the Maven terminal summary names only the failing test out of 1,680 in a 20,718-line log and suppresses the assertion message entirely; the expected string 'The file is to large' appears ZERO times in the log and only in the test source, so both sides of the comparison must be recovered from the repository and a one-character to/too difference spotted. Strongest disclosure profile in the suite. NOT a Formal Freeze and NOT frozen Formal Suite membership: Canonicalization Profile v1 is not frozen, no Suite Manifest exists, and coordinates and fingerprint remain provisional-pre-freeze."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "0335e68f104d4c83010afa9a009563e1c61abfd83cc795ca13a0f02d8947baac"
+  "case_fingerprint": "fee5ba44a1272c3b64cfb4e41e9dffa8103f7e6b3fbe641c6a7b12ff1812c38f"
 }

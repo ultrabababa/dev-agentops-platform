@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
     "review_status": "human_reviewed",
-    "reviewed_by": "Issue #15 Human Candidate Selection and Source Artifact Eligibility gates; package-content Human Review remains pending"
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS - raw.log verified byte-exact and all 6 members byte-identical to the exact revision. Runtime Discriminative Value BORDERLINE-ADEQUATE: the log reports 'expected null, but was:<org.traccar.model.Position@285fb753>', an opaque object identity, so deciding whether the decoder is wrong to produce a Position or the test oracle is stale requires reading the decoder's supported-pattern path and its two return-null guards. That oracle-versus-product judgement is the discrimination this failure class exists to measure. NOT a Formal Freeze and NOT frozen Formal Suite membership: Canonicalization Profile v1 is not frozen, no Suite Manifest exists, and coordinates and fingerprint remain provisional-pre-freeze."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "06572246ded0f1ee916eb3d4592f6e80ea93ca025741e3b1a956ca4476ed3709"
+  "case_fingerprint": "1e84833842aaa8cb33fce73aa717d0d472bbb9d59b9118c1d9eed9455d5d5fed"
 }

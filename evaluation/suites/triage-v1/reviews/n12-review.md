@@ -1,46 +1,37 @@
-# N12 — bugswarm-django-coupons-89457805 pre-freeze draft review
+# N12 — bugswarm-django-coupons-89457805 — full Human Review record
 
-**Status:** `DRAFT_READY`; package-content Human Review `PENDING`
-**Failure type:** `test_assertion_failure`
-**Fingerprint:** `df3f7d3d61de07601414651ac769e68532b8552e2470f5b0b03601a3132296a0` (`provisional-pre-freeze`)
+> **FINAL DISPOSITION: `REJECTED` — `REPLACE_FOR_LOW_DISCRIMINATIVE_VALUE`.**
+> **N12 is NOT a Formal Suite member.** Retained only as a rejection record.
+> **Layer 1 remains `PASS`** — `raw.log` is verified byte-exact and all 7 members are byte-identical to the exact revision. It was not rejected for any defect.
 
-## Source and authentic failure observation
+**Layer 1 — Scientific Validity:** `PASS`.
+**Layer 2 — Runtime Discriminative Value:** **`LOW`** — the observation withholds nothing.
+**Failure type:** `test_assertion_failure`.
+**Fingerprint:** `d3532f68605edde516ad7c5e54a2628d83d1e5dfe98a1401a38d299a5fa2e8af` (`provisional-pre-freeze`; supersedes `047ce6cb…`).
 
-- Source: https://www.bugswarm.org/artifact-logs/89457805/raw/ ; upstream exact/relevant revision: https://github.com/byteweaver/django-coupons/commit/4776a4e472e3a14cf475e95f0e146fc3f79b50eb
-- Attribution/license note: BSD-3-Clause upstream repository; public BugSwarm historical failed-job attribution.
-- raw.log: Complete BugSwarm historical failed-job log with ANSI/control-only normalization.
+## Layer 1
+Exact revision `4776a4e472e3a14cf475e95f0e146fc3f79b50eb` (byteweaver/django-coupons). `raw.log` **verified byte-exact** (18,154 → 17,295 == frozen). All **7 members byte-identical**. Nothing to repair.
 
-## Physical repository universe
+## Causal chain
+`raw.log:~383` prints the comparison in full:
 
-Exact/relevant revision `4776a4e472e3a14cf475e95f0e146fc3f79b50eb` with 7 bounded investigation files:
+```
+AssertionError: "{'code': [ValidationError([u'This code is not valid…'])]}"
+             != "{'code': [ValidationError(['This code is not valid…'])]}"
+```
 
-- `.travis.yml`
-- `coupons/forms.py`
-- `coupons/models.py`
-- `coupons/tests/test_use_cases.py`
-- `requirements.txt`
-- `setup.py`
-- `tox.ini`
+The only difference is the Python 2 `u` prefix. The test stringifies the form-error payload and compares text, so it is coupled to representation rather than to the semantic `form.errors` mapping. `:390` shows the environment as `.tox/py27-1.7.X`, so the interpreter version is visible in the log too.
 
-The snapshot contains plausible build/test/config neighbors, not passing/fix artifacts or synthetic distractors.
+## Shortcut analysis
+The log shows **both sides of the comparison in full**, and the difference is a single visible character. The interpreter version is in the log path. The repository confirms that the test compares stringified output, but adds no fact the observation withholds. No answer-prose; nothing hidden.
 
-## Causal chain and taxonomy
+## Layer 2 — `LOW`
+13 units (5 log + 8 repo), Required 2 (**15.4 %**), 7 files / 391 repository lines, log 418 lines — the smallest observation in the group. Once the diff is read the diagnosis follows immediately, and the remedy — compare the mapping rather than its repr — needs no further evidence.
 
-- Failure observation: One Django coupon test fails on a Unicode-marked ValidationError representation while 24 sibling tests pass.
-- Root cause: The test compares a stringified form-error payload whose Python 2 representation exposes a Unicode prefix. The assertion is coupled to representation details instead of the semantic form.errors mapping.
-- Primary type: `test_assertion_failure` because the root cause, rather than only the surface stage, matches this V1 class.
-- Recommended action: Assert the semantic form.errors structure rather than a stringified ValidationError representation.
+## Final disposition
+**`REJECTED` — `REPLACE_FOR_LOW_DISCRIMINATIVE_VALUE`.** **Layer 1 remains `PASS`** — the package is authentic, byte-identical to its exact revision and correctly diagnosed; no repair would change the outcome. The rejection is purely measurement value: the log prints both sides of the comparison in full, the difference is one visible character, and the repository withholds nothing.
 
-## Evidence Ground Truth draft
+Per the recorded portfolio policy, `LOW` Cases are not retained to preserve category count. **Not a Formal Suite member.** Counts as one `test_assertion_failure` replacement.
 
-- Required (2): `log:raw-log:lines-0301-0400`, `repo:coupons-tests-test-use-cases-py:lines-0001-0078`
-- Optional (1): `repo:coupons-forms-py:lines-0001-0061`
-- Rationale: Required IDs are the current inclusion-minimal cross-log/repository facts; helpful corroboration remains Optional. IDs are provisional and must be remapped after Profile v1 freeze.
-
-## Leakage, sanitization, and ambiguity
-
-- Passing/fix revisions and curator causal research are excluded from Physical Artifacts.
-- PublicCaseView exposes no evaluator data; package validation includes exact hashes, membership, and references.
-- Sanitization: Removed ANSI/control noise only; retained the complete or naturally bounded authentic historical failure observation without changing failure semantics.
-- Known scientific risk: Low-medium: the representation mismatch is visible, while semantic-vs-string diagnosis still requires the test source.
-- Canonicalization: fixed 100-line, start-at-1, full-coverage windows are disposable `provisional-pre-freeze` coordinates, not a frozen Suite rule.
+## Scope boundary
+Only this record, the N12 `case.json` curation status and fingerprint, and the N12 ledger material were changed. No Physical Artifact was modified.
