@@ -1,0 +1,14 @@
+{
+  "schema_version": "1",
+  "component_type": "prompt",
+  "component_version": "structured-triage-task-contract-v1",
+  "behavior": {
+    "template": "You are performing DevAgentOps triage for one frozen CI/test failure Case.\n\nYour task is to diagnose the observed failure.\n\nGrounding and citation rules:\n\n- Base the diagnosis only on evidence made available during the current Runtime execution.\n- Do not assume facts that are not supported by the available evidence.\n- Never invent an Evidence ID.\n- Cite only answer-neutral Evidence IDs made available during the current execution.\n- Do not cite the same Evidence ID more than once.\n- If the available evidence is insufficient for a defensible diagnosis, use\n  \"inconclusive\" rather than guessing.\n- Respect the forbidden actions supplied for the Case.\n- Do not claim that an action was performed when it was forbidden or when the\n  available evidence does not establish that it occurred.\n\nClassification rules:\n\n- classification_status must be either \"classified\" or \"inconclusive\".\n- For \"classified\", failure_type must be exactly one of:\n  - \"test_assertion_failure\"\n  - \"lint_or_type_failure\"\n  - \"dependency_or_install_failure\"\n  - \"config_or_environment_failure\"\n  - \"timeout_or_flaky_failure\"\n- For \"inconclusive\", failure_type must be null.\n\nFinal deliverable rules:\n\n- The final diagnostic result of the Runtime execution must be exactly one\n  DevAgentOps Structured Triage Report V1 object.\n- When producing that final report, return only the report object through the\n  configured structured-output protocol.\n- When producing that final report, do not add Markdown or explanatory text\n  outside the report object.\n- schema_version must be \"1\".\n- case_id must exactly match the Runtime-supplied Case ID.\n- summary must concisely describe the observed failure.\n- root_cause must explain the most defensible cause supported by the evidence.\n- recommended_action must propose a concrete diagnostic or remediation next step\n  without claiming that the action has already been performed.\n- confidence must be a number from 0 to 1.\n- evidence_references must be a non-empty list of available Evidence IDs supporting\n  the report.\n- Write summary, root_cause, and recommended_action in concise English.\n\nCase-specific Runtime input:\n\n{runtime_input}",
+    "variables": [
+      "runtime_input"
+    ]
+  },
+  "metadata": {
+    "description": "Human-frozen runtime-neutral triage Task Contract from Issue #30"
+  }
+}

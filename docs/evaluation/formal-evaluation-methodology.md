@@ -224,11 +224,17 @@ Not every runtime gets identical access. Whether a condition has fixed selection
 | L4 self-built ReAct | search/open/list 工具调查 Physical Investigation Workspace | adaptive decision/tool/observation/stop loop | 第一个 Agentic Product Runtime；adaptive control 带来什么？ |
 | Oracle Evidence | Trusted Builder 直接解析 Required Evidence，绕过 normal discovery | 固定 diagnostic intervention | 正交于 ladder；关键证据已知时模型能否完成诊断？ |
 
-L0–L5+ 是 capability-attribution ladder，不是强制 implementation order；L3 是否必须先于 L4 实现不冻结。V1 Product Runtime 仍只有 Fixed Pipeline 与 self-built ReAct，L1/L2/L3 只是 diagnostic/comparison conditions。L1 不得 silent truncation：如果完整 Agent-visible Universe 超出固定 context budget，截断后的 run 不能继续宣称为 full-context condition；具体 eligibility/preflight/alternative policy 由未来 L1 implementation Issue 决定。
+L0–L5+ 是 capability-attribution ladder，不是强制 implementation order；L3 是否必须先于 L4 实现不冻结。V1 Product Runtime 仍只有 Fixed Pipeline 与 self-built ReAct，L1/L2/L3 只是 diagnostic/comparison conditions。L1 不得 silent truncation：如果完整 rendered input 加预留 output tokens 超出固定 context capability，当前 L1 tracer bullet 以零 provider call 的 execution/feasibility failure 结束，不做 truncation、summarization、splitting、retry 或 condition relabel。
 
-当前 Matrix Schema 尚无可执行的通用 Evidence Acquisition/Delivery 字段。这些语义是未来 Condition 与 Run Manifest 必须显式 version 和 fingerprint 的 accepted design；本次文档决策不修改 Matrix/Registry schema，也不冻结未来字段名。Offline Case Schema V2 与 L0 `pipeline_baseline` tracer bullet 已实现；L1/L2/L3/L4 与 Oracle execution 尚未实现。
+当前 Matrix Schema 尚无可执行的通用 Evidence Acquisition/Delivery 字段。这些语义是未来 Condition 与 Run Manifest 必须显式 version 和 fingerprint 的 accepted design；本次文档决策不修改 Matrix/Registry schema，也不冻结未来字段名。Offline Case Schema V2、L0 `pipeline_baseline` tracer bullet 与一个 L1 `full_context_one_shot` tracer bullet 已实现；L2/L3/L4 与 Oracle execution 尚未实现。
 
 实验比较以 paired per-Case comparison 为基础：固定 same Case、same Physical Universe、same base model（适用时）、same Expected Answer 和 same scorer，只改变目标 Runtime/Evidence Acquisition Condition，再跨 Case aggregate。每个 Case Human Review 都必须检查各 ladder condition 与 Oracle 实际获得什么，以及 Case construction 是否给任一 condition 带来 curator-derived advantage，尤其是 search-space size、signal density、chunk granularity 或 answer exposure 的变化。
+
+### 4.1 Shared Task Contract 与 Runtime Treatment
+
+在条件间匹配同一个 versioned Task Contract fingerprint，表示 task、taxonomy、grounding/citation rules 与 final report contract 是一个共享控制变量。它不表示 rendered request 字节相同，也不表示 evidence delivery 或 model-visible Runtime controls 相同。
+
+`runtime_input` 只能承载 Case-specific Runtime input 与 evidence data plane，不能作为隐藏 stage、tool、Retrieval、loop、stop、retry 或其他 control policy 的通道。不同条件若需要不同的 model-visible Runtime control instructions，这些 instructions 必须显式、versioned，并作为 treatment 记录。Evidence delivery 与 Runtime controls 仍是实验变量；当比较同时改变多个变量时，结果只能解释为 combined difference，不能强称单一 capability 的 causal uplift。
 
 ## 5. Oracle Evidence 是 Derived Runtime Input
 

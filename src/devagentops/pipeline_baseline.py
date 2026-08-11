@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from pathlib import Path
 
-from devagentops.evaluation_suite import OfflineCasePackage, PublicCaseView
+from devagentops.runtime_workspace import RuntimeCaseWorkspace
 
 
 PIPELINE_VERSION = "deterministic_pytest_assertion_v1"
@@ -12,74 +11,6 @@ PIPELINE_VERSION = "deterministic_pytest_assertion_v1"
 
 class PipelineBaselineError(RuntimeError):
     """Raised when the bounded deterministic tracer-bullet rule cannot run."""
-
-
-@dataclass(frozen=True)
-class RuntimeCanonicalCoordinate:
-    evidence_id: str
-    source: str
-
-
-@dataclass(frozen=True)
-class RuntimeCaseWorkspace:
-    case: PublicCaseView
-    package_root: Path
-    repository_members: tuple[str, ...]
-    canonical_coordinates: tuple[RuntimeCanonicalCoordinate, ...]
-
-    @classmethod
-    def from_package(cls, package: OfflineCasePackage) -> RuntimeCaseWorkspace:
-        return cls(
-            case=package.public_view(),
-            package_root=package.manifest_path.parent,
-            repository_members=tuple(
-                item.path for item in package.repository_snapshot.files
-            ),
-            canonical_coordinates=tuple(
-                RuntimeCanonicalCoordinate(
-                    evidence_id=unit.evidence_id,
-                    source=unit.source,
-                )
-                for unit in package.canonical_evidence_units
-            ),
-        )
-
-    def read_raw_log(self) -> str:
-        return self._read_controlled_file(self.case.raw_log_path)
-
-    def list_repository_files(self) -> tuple[str, ...]:
-        return self.repository_members
-
-    def read_repository_file(self, relative_path: str) -> str:
-        if relative_path not in self.repository_members:
-            raise PipelineBaselineError(
-                f"repository file is outside the frozen workspace: {relative_path}"
-            )
-        return self._read_controlled_file(
-            f"{self.case.repository_root}/{relative_path}"
-        )
-
-    def evidence_ids_for_sources(self, sources: set[str]) -> tuple[str, ...]:
-        return tuple(
-            sorted(
-                coordinate.evidence_id
-                for coordinate in self.canonical_coordinates
-                if coordinate.source in sources
-            )
-        )
-
-    def _read_controlled_file(self, relative_path: str) -> str:
-        path = (self.package_root / relative_path).resolve()
-        if not path.is_relative_to(self.package_root.resolve()) or not path.is_file():
-            raise PipelineBaselineError(
-                f"workspace file is unavailable: {relative_path}"
-            )
-        try:
-            return path.read_text(encoding="utf-8")
-        except (OSError, UnicodeDecodeError) as exc:
-            raise PipelineBaselineError(
-                f"workspace file cannot be read as UTF-8: {relative_path}"
-            ) from exc
 
 
 @dataclass(frozen=True)

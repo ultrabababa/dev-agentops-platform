@@ -543,3 +543,28 @@ def validate_component_references(
         )
         fingerprints[matrix_key] = frozen.fingerprint
     return fingerprints
+
+
+def resolve_frozen_component_manifest(
+    registry_path: Path,
+    component_type: str,
+    component_version: str,
+) -> ComponentManifest:
+    """Resolve one already-validated frozen Registry record to its manifest."""
+    registry = _load_registry(registry_path)
+    if component_type not in COMPONENT_TYPES:
+        raise ComponentRegistryError(
+            f"unsupported component type {component_type!r}"
+        )
+    record = registry["components"][component_type].get(component_version)
+    if record is None:
+        raise ComponentRegistryError(
+            f"missing frozen component {component_type}:{component_version}"
+        )
+    frozen = _validate_record(
+        registry_path,
+        component_type,
+        component_version,
+        record,
+    )
+    return load_component_manifest(registry_path.parent / frozen.manifest)
