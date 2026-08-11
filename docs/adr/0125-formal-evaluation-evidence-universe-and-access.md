@@ -23,9 +23,13 @@ A Trusted Evaluator artifact identifies a hidden, Human-reviewed, inclusion-mini
 The Case Package defines what exists in the evaluation world. The **Evidence Acquisition Condition** defines how a runtime may observe and investigate that world:
 
 - Fixed Pipeline uses a deterministic fixed flow, heuristic, or fixed top-k selection and has no autonomous investigation loop.
-- Retrieval applies an independently versioned Runtime Retrieval Chunker to Physical Artifacts and supplies static retrieval results to the fixed model, without a full autonomous investigation loop. Retrieved physical spans are mapped to overlapping Canonical Evidence IDs for trace/citation/measurement.
+- Full-context One-shot supplies the complete Agent-visible Evidence Universe to one fixed Prompt and exactly one model call. It must not silently truncate and still claim full-context semantics; the explicit over-budget outcome is deferred to its implementation design.
+- Fixed Model Workflow uses program-controlled fixed stages and model calls without allowing the model to choose an autonomous next-action loop.
+- Static Retrieval applies an independently versioned Runtime Retrieval Chunker to Physical Artifacts and supplies retrieval results to a fixed model path, without an autonomous investigation loop. Retrieved physical spans are mapped to overlapping Canonical Evidence IDs for trace/citation/measurement.
 - ReAct adaptively searches and opens the Investigation Workspace, chooses follow-up actions, manages context, and decides when to stop.
 - Oracle Evidence bypasses ordinary discovery and directly supplies the reviewed Required Evidence subset under ADR 0124.
+
+Full-context One-shot, Fixed Model Workflow, and Static Retrieval are diagnostic/comparison conditions, not additional V1 Product Runtimes. Oracle is orthogonal to the L0-L5+ capability ladder rather than another rung. The ladder does not require Static Retrieval to be implemented before ReAct.
 
 Canonicalization and Runtime Retrieval Chunking are separate responsibilities. Retrieval chunk size, overlap, embedding, index, top-k, and reranking belong to the Runtime/Evidence Acquisition Condition, not to Case curation. Controlled paired per-Case comparisons keep the Case, Evidence Universe, Expected Answer, scorer, and base model fixed wherever applicable, and vary only the target acquisition/runtime condition. Not every condition must have identical search/open tools, but no condition may receive a curator-derived reduction in search space unless that reduction is the explicitly measured intervention.
 
@@ -64,6 +68,7 @@ Tradeoffs:
 - Runtime Retrieval Chunking parameters and implementation are not defined by this ADR.
 - A Case need not include the entire upstream repository or an unbounded log history.
 - Not every runtime must provide search/open tools or an adaptive loop.
+- L1 over-budget handling, L2 orchestration stages, L3 retrieval parameters, and their schema representation are not defined by this ADR.
 - Constructed Cases remain allowed; only artificial irrelevant distractors added solely to create difficulty are forbidden.
 - The five V1 Failure Types, diagnosis-only product boundary, and deterministic scoring semantics do not change.
 - No runtime, retrieval, tool, index, or Oracle execution is implemented by this decision.
@@ -82,3 +87,7 @@ See [Formal Evaluation Methodology: Evidence Universe and Access Conditions](../
 ## Refines
 
 ADRs: `0113`, `0115`, `0118`, `0122`, `0123`, `0124`.
+
+## Refined By
+
+[ADR 0127: Staged Runtime Capability Ladder and Reference Boundary](0127-staged-runtime-capability-ladder-and-reference-boundary.md).

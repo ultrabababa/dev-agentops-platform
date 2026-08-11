@@ -1,3 +1,5 @@
-# Build a Lightweight ReAct Runtime First
+# Build a Lightweight Self-built ReAct Runtime as the First Agentic Runtime
 
-V1 will implement a lightweight self-built ReAct runtime alongside a fixed pipeline baseline, rather than starting with LangChain, LangGraph, or a modified open-source coding agent runtime. This keeps the core learning surface visible: agent loop control, tool registration, trace capture, step limits, structured report submission, and eval comparison; LangGraph and mature agent runtimes remain later comparison targets for the same triage cases.
+V1 will implement a lightweight self-built ReAct runtime alongside a fixed pipeline baseline, rather than starting with LangChain, LangGraph, or a modified open-source coding agent runtime. ReAct is the first **Agentic Product Runtime**, not necessarily the first model-backed condition implemented after the Pipeline. L1 full-context one-shot, L2 fixed model workflow, and L3 static retrieval may be evaluated as non-Agentic diagnostic/comparison conditions without becoming Product Runtimes or imposing a strict implementation sequence.
+
+This keeps the core learning surface visible: Agent loop control, tool registration, trace capture, step limits, structured report submission, and eval comparison. Mature Agent runtimes remain reference architectures and later comparison points, not dependencies or sources of DevAgentOps Runtime semantics. [ADR 0127](0127-staged-runtime-capability-ladder-and-reference-boundary.md) defines the capability ladder and reference boundary.

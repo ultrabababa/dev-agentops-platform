@@ -55,7 +55,7 @@ physical-artifacts/repository/*
 - `search_repo`；
 - `open_file`。
 
-Workspace 不是一次性 Prompt Context。ReAct 不应在 episode start 获得完整 Canonical Evidence list、Required Evidence IDs 或 Expected Answer。
+Workspace 本身不等于一次性 Prompt Context。Normal ReAct 不应在 episode start 获得完整 Canonical Evidence list、Required Evidence IDs 或 Expected Answer。L1 `full_context_one_shot` 是一个明确的非 Agentic diagnostic condition：它把完整 Agent-visible Evidence Universe 一次性序列化给模型，但仍不得看到 Evaluator artifacts；它不会改变 Workspace、Canonical Evidence 或 Trusted Evaluator 的边界。
 
 ### 1.3 Canonical Evidence Unit
 
@@ -196,7 +196,7 @@ Canonical unit 集合必须覆盖 Formal text Physical Universe，而不是只�
 
 ### 2.3 Trusted Evaluator Artifacts
 
-整个 `evaluator/` 目录属于 Trusted Evaluator boundary。Normal Pipeline/Retrieval/ReAct model 不得直接读取它。Directory layout 是强物理约定；真正可见性仍由 Evidence Acquisition Condition 和 Runtime 强制执行并进入 fingerprint。
+整个 `evaluator/` 目录属于 Trusted Evaluator boundary。Normal model-backed ladder conditions 和 ReAct model 不得直接读取它。Directory layout 是强物理约定；真正可见性仍由 Evidence Acquisition Condition 和 Runtime 强制执行并进入 fingerprint。
 
 `required-evidence.json` 同时服务 Retrieval Evidence Hit、Report Evidence Hit、Oracle construction 和 Human evidence review。`expected-answer.json` 只服务 diagnosis ground truth 与 Scorer。
 
@@ -211,20 +211,24 @@ Canonical unit 集合必须覆盖 Formal text Physical Universe，而不是只�
 
 Not every runtime gets identical access. Whether a condition has fixed selection, retrieval, search/open tools, or an adaptive loop is an experimental variable, not a Case-construction responsibility.
 
-## 4. Evidence Acquisition Conditions
+## 4. Runtime Capability 与 Evidence Acquisition Conditions
 
 所有受控条件尽量固定 same Case、same Physical Evidence Universe、same Expected Answer、same scorer，以及 Agent/System ablation 使用的 same base model。主要差异是 evidence acquisition 与 runtime scaffold。
 
-| Condition | Evidence access | 自主调查 | 主要问题 |
+| Level / condition | Evidence access | 控制流 | 定位与主要问题 |
 | --- | --- | --- | --- |
-| Fixed Pipeline | frozen deterministic acquisition/selection；可按实现读取 Physical Artifacts 或 Canonical Units | 否 | 固定流程能兑现多少诊断能力？ |
-| Retrieval | 用 versioned Runtime Chunker 对 Physical Artifacts 建立/查询 index，返回 selected physical spans，并映射到 overlapping Canonical IDs | 否；只有 static retrieval augmentation | Retrieval 本身带来多少 uplift？ |
-| ReAct Agent | 通过 search/open/list 工具 adaptive multi-step 调查 Physical Investigation Workspace | 是 | 自主 investigation 是否提供额外价值？ |
-| Oracle Evidence | Trusted Builder 直接解析 Required Evidence，绕过 normal discovery | 否；这是 diagnostic intervention | 关键证据已知时，固定模型能否完成诊断？ |
+| L0 deterministic Pipeline | frozen deterministic access/selection | 程序固定，无模型 | Product Runtime baseline；无模型时固定流程能做到什么？ |
+| L1 Full-context One-shot | 完整 Agent-visible Universe 一次性进入固定 Prompt | exactly one model call，无循环 | diagnostic；单次模型 reasoning 能做到什么？ |
+| L2 Fixed Model Workflow | 固定、显式的 evidence/input flow | 程序决定多阶段调用、next stage 与 stop | diagnostic；fixed orchestration 带来什么？ |
+| L3 Static Retrieval | versioned Runtime Chunker/index 返回 selected physical spans，并映射到 overlapping Canonical IDs | 程序固定，无 adaptive Agent loop | evidence-acquisition diagnostic；static retrieval 带来什么？ |
+| L4 self-built ReAct | search/open/list 工具调查 Physical Investigation Workspace | adaptive decision/tool/observation/stop loop | 第一个 Agentic Product Runtime；adaptive control 带来什么？ |
+| Oracle Evidence | Trusted Builder 直接解析 Required Evidence，绕过 normal discovery | 固定 diagnostic intervention | 正交于 ladder；关键证据已知时模型能否完成诊断？ |
 
-当前 Matrix Schema 尚无可执行的通用 Evidence Acquisition/Delivery 字段。这些语义是未来 Condition 与 Run Manifest 必须显式 version 和 fingerprint 的 accepted design；Offline Case Schema V2 已实现，但四种 Runtime Condition 尚未实现。
+L0–L5+ 是 capability-attribution ladder，不是强制 implementation order；L3 是否必须先于 L4 实现不冻结。V1 Product Runtime 仍只有 Fixed Pipeline 与 self-built ReAct，L1/L2/L3 只是 diagnostic/comparison conditions。L1 不得 silent truncation：如果完整 Agent-visible Universe 超出固定 context budget，截断后的 run 不能继续宣称为 full-context condition；具体 eligibility/preflight/alternative policy 由未来 L1 implementation Issue 决定。
 
-实验比较以 paired per-Case comparison 为基础：固定 same Case、same Physical Universe、same base model、same Expected Answer 和 same scorer，只改变目标 Runtime/Evidence Acquisition Condition，再跨 Case aggregate。每个 Case Human Review 都必须检查 Pipeline、Retrieval、ReAct 与 Oracle 实际获得什么，以及 Case construction 是否给任一 condition 带来 curator-derived advantage，尤其是 search-space size、signal density、chunk granularity 或 answer exposure 的变化。
+当前 Matrix Schema 尚无可执行的通用 Evidence Acquisition/Delivery 字段。这些语义是未来 Condition 与 Run Manifest 必须显式 version 和 fingerprint 的 accepted design；本次文档决策不修改 Matrix/Registry schema，也不冻结未来字段名。Offline Case Schema V2 与 L0 `pipeline_baseline` tracer bullet 已实现；L1/L2/L3/L4 与 Oracle execution 尚未实现。
+
+实验比较以 paired per-Case comparison 为基础：固定 same Case、same Physical Universe、same base model（适用时）、same Expected Answer 和 same scorer，只改变目标 Runtime/Evidence Acquisition Condition，再跨 Case aggregate。每个 Case Human Review 都必须检查各 ladder condition 与 Oracle 实际获得什么，以及 Case construction 是否给任一 condition 带来 curator-derived advantage，尤其是 search-space size、signal density、chunk granularity 或 answer exposure 的变化。
 
 ## 5. Oracle Evidence 是 Derived Runtime Input
 
@@ -259,11 +263,12 @@ Oracle model 可以看到 resolved source-faithful content 与 normal Stable Evi
 | 对比结果 | 优先解释与检查 |
 | --- | --- |
 | Oracle PASS + ReAct FAIL | 模型在关键证据已知时能诊断，但 Agent/System 没有成功获得、管理或使用证据；检查 retrieval、tool use、context、planning、report synthesis 与 stopping。 |
-| Retrieval FAIL + ReAct PASS | static/top-k retrieval 不足，多步 adaptive investigation 提供了额外价值。 |
-| Pipeline FAIL + Retrieval PASS | 主要 uplift 来自 retrieval；不能据此把提升必然归因于 Agent loop。 |
+| L3 FAIL + L4 PASS | static/top-k retrieval 或 fixed flow 不足，多步 adaptive investigation 提供了额外价值。 |
+| L2 FAIL + L3 PASS | 主要 uplift 与 static evidence acquisition 相关；不能据此归因于 Agent loop。 |
+| L1 FAIL + L2 PASS | fixed multi-stage orchestration 提供了额外价值；仍不是 Agentic control 的证据。 |
 | Oracle FAIL | 先审计 Oracle evidence completeness/minimality、prompt、report contract、scorer、truncation 与 variance；成立后才视为可能的 model reasoning bottleneck。 |
 
-目标不是预设 ReAct 一定优于 Pipeline，而是测量 `Pipeline -> Retrieval -> ReAct -> Improved Agent` 每一步产生多少 uplift，以及 uplift 来自哪里。完整 Oracle Pairing 与 Realization Gap 解释见 [Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap](oracle-evidence-diagnostic-condition.md)。
+目标不是预设 ReAct 一定优于 Pipeline，而是在受控条件下区分 model reasoning、fixed orchestration、evidence acquisition 与 adaptive Agent control。Ladder 编号不要求实现或实验严格按序；跨越多个 level 的比较只能解释组合差异。完整 ladder 语义见 [Runtime Capability Ladder 与 Model-backed Diagnostic Conditions](runtime-capability-ladder.md)，Oracle Pairing 与 Realization Gap 解释见 [Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap](oracle-evidence-diagnostic-condition.md)。
 
 ## 8. Schema V2 与 Issue #15
 
@@ -310,5 +315,7 @@ Issue #22 不修改任何 Issue #15 Package；现有五个 V1 drafts 根据既�
 - [ADR 0124: Oracle Evidence Diagnostic Condition](../adr/0124-oracle-evidence-diagnostic-condition.md)
 - [ADR 0125: Formal Evaluation Evidence Universe and Access](../adr/0125-formal-evaluation-evidence-universe-and-access.md)
 - [ADR 0126: Offline Case Schema V2 Physical Artifacts and Canonical Evidence](../adr/0126-offline-case-schema-v2-physical-artifacts-and-canonical-evidence.md)
+- [ADR 0127: Staged Runtime Capability Ladder and Reference Boundary](../adr/0127-staged-runtime-capability-ladder-and-reference-boundary.md)
+- [Runtime Capability Ladder 与 Model-backed Diagnostic Conditions](runtime-capability-ladder.md)
 - [Structured Triage Report 校验与单 Case 确定性评分](structured-triage-report-and-per-case-scoring.md)
 - [V1 Failure Type Taxonomy 与 Offline Case Policy](v1-failure-type-taxonomy-and-case-policy.md)
