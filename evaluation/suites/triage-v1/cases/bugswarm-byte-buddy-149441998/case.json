@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
     "review_status": "human_reviewed",
-    "reviewed_by": "Issue #15 Human Candidate Selection and Source Artifact Eligibility gates; package-content Human Review remains pending"
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value BORDERLINE-ADEQUATE. The log states the REC_CATCH_EXCEPTION violation completely, but only the source reveals that the broad catch guards a reflective Java 9 module probe, which is what turns the remedy into a genuine judgement between narrowing the catch and adding an analyzer-recognised justification. NOT a Formal Freeze and NOT frozen Formal Suite membership."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "c3cbd7db95e4d7e45c61aa38bfbb84df0355ccdc8f426aac00bb59d44d72b67b"
+  "case_fingerprint": "314367aa66149a6aa4ce0e676fadaac1674f8d554646e6a65477cc325267a83c"
 }

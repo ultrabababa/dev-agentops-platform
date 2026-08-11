@@ -1,43 +1,22 @@
-# N09 — bugswarm-byte-buddy-149441998 pre-freeze draft review
+# N09 — bugswarm-byte-buddy-149441998 — Human Review PASS record
 
-**Status:** `DRAFT_READY`; package-content Human Review `PENDING`
-**Failure type:** `lint_or_type_failure`
-**Fingerprint:** `c3cbd7db95e4d7e45c61aa38bfbb84df0355ccdc8f426aac00bb59d44d72b67b` (`provisional-pre-freeze`)
+**Layer 1 — Scientific Validity:** `PASS`. **Layer 2 — Runtime Discriminative Value:** **`BORDERLINE-ADEQUATE`**.
+**Status:** **`HUMAN REVIEW PASS`** — retained in the Formal Suite candidate set. **Formal Suite membership is not frozen**: `Canonicalization Profile v1` is unfrozen and no Suite Manifest exists, so coordinates and fingerprint stay `provisional-pre-freeze`.
+**Failure type:** `lint_or_type_failure`. **Fingerprint:** `314367aa66149a6aa4ce0e676fadaac1674f8d554646e6a65477cc325267a83c`.
 
-## Source and authentic failure observation
+## 1. Layer 1
+`bugswarm.org/artifact-logs/149441998/raw/`; exact revision `2431dfb0c85e883a6389b04583a49dc80b61eeb9` (raphw/byte-buddy). `raw.log` **verified byte-exact** (547,776 → 547,021 == frozen). All **4 members byte-identical**. Nothing to repair; Ground Truth accurate.
 
-- Source: https://www.bugswarm.org/artifact-logs/149441998/raw/ ; upstream exact/relevant revision: https://github.com/raphw/byte-buddy/commit/2431dfb0c85e883a6389b04583a49dc80b61eeb9
-- Attribution/license note: Apache-2.0 upstream repository; public BugSwarm historical failed-job attribution.
-- raw.log: Complete BugSwarm historical failed-job log with ANSI/control-only normalization.
+## 2. Causal chain
+`raw.log:~8110` — `[INFO] Exception is caught when Exception is not thrown in net.bytebuddy.dynamic.ClassFileLocator$ForModule.<static initializer for ForModule>() … At ClassFileLocator.java:[line 494] REC_CATCH_EXCEPTION`, then `[ERROR] Failed to execute goal … findbugs-maven-plugin:3.0.3:check … failed with 1 bugs`.
 
-## Physical repository universe
+`ClassFileLocator.java:486-496` shows what the catch actually guards: `Class.forName("java.lang.reflect.Layer")` plus `getDeclaredMethod(...).invoke(...)` — a **reflective Java 9 module-system probe** — with `catch (Exception ignored) { bootModules = Collections.emptyMap(); }` as the compatibility fallback for older JVMs.
 
-Exact/relevant revision `2431dfb0c85e883a6389b04583a49dc80b61eeb9` with 4 bounded investigation files:
+## 3. Required Evidence
+Two units: the log and `ClassFileLocator.java:0401-0500`. Both pass removal tests. The source unit is necessary not to establish *that* a broad Exception is caught — the log says so — but to establish *why*, which is what decides the remedy.
 
-- `.travis.yml`
-- `byte-buddy-dep/pom.xml`
-- `byte-buddy-dep/src/main/java/net/bytebuddy/dynamic/ClassFileLocator.java`
-- `pom.xml`
+## 4. Shortcut analysis
+No answer-prose; no `@SuppressFBWarnings` or comment justifying the catch, which is precisely the finding. The log is generous: file, line, class, method, rule ID and a plain-English statement of the rule. What it cannot give is the **intent**: without the source the reader cannot tell a careless catch-all from a deliberate cross-version compatibility shim, and those imply different remedies — narrow the catch versus add an analyzer-recognised justification. The 8,149-line log carries **545 lines matching `error`**, the heaviest distractor mass of the lint group.
 
-The snapshot contains plausible build/test/config neighbors, not passing/fix artifacts or synthetic distractors.
-
-## Causal chain and taxonomy
-
-- Failure observation: After the test stages, FindBugs rejects ClassFileLocator.ForModule for catching Exception where it is not declared thrown.
-- Root cause: The reflective compatibility fallback intentionally catches a broad Exception, but the source provides no analyzer-recognized justification, producing REC_CATCH_EXCEPTION.
-- Primary type: `lint_or_type_failure` because the root cause, rather than only the surface stage, matches this V1 class.
-- Recommended action: Narrow the catch where possible or document and suppress the specific FindBugs warning at the intentional reflective fallback.
-
-## Evidence Ground Truth draft
-
-- Required (2): `log:raw-log:lines-8101-8149`, `repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-0401-0500`
-- Optional (0): none
-- Rationale: Required IDs are the current inclusion-minimal cross-log/repository facts; helpful corroboration remains Optional. IDs are provisional and must be remapped after Profile v1 freeze.
-
-## Leakage, sanitization, and ambiguity
-
-- Passing/fix revisions and curator causal research are excluded from Physical Artifacts.
-- PublicCaseView exposes no evaluator data; package validation includes exact hashes, membership, and references.
-- Sanitization: Removed ANSI/control noise only; retained the complete or naturally bounded authentic historical failure observation without changing failure semantics.
-- Known scientific risk: Medium: the finding is late and precise, but deciding between narrowing and justified suppression requires understanding the reflective fallback.
-- Canonicalization: fixed 100-line, start-at-1, full-coverage windows are disposable `provisional-pre-freeze` coordinates, not a frozen Suite rule.
+## 5. Layer 2 — `BORDERLINE-ADEQUATE`
+109 units (82 log + 27 repo), Required 2 (**1.8 %**), 4 files / 99,936 repository bytes. Localisation across the largest log in the group is real, and the intent question is a genuine judgement rather than a lookup. But the log states the violation completely, and only one source window is needed. Comparable to B04; above B05, below N07.

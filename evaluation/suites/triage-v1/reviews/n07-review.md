@@ -1,44 +1,31 @@
-# N07 — bugswarm-mypy-237548392 pre-freeze draft review
+# N07 — bugswarm-mypy-237548392 — Human Review PASS record
 
-**Status:** `DRAFT_READY`; package-content Human Review `PENDING`
-**Failure type:** `lint_or_type_failure`
-**Fingerprint:** `38d046472bb63fae3bf2f779aacd105ac643bfbed42c51bbadd590c226bdb4fe` (`provisional-pre-freeze`)
+**Layer 1 — Scientific Validity:** `PASS`. **Layer 2 — Runtime Discriminative Value:** **`ADEQUATE`**.
+**Status:** **`HUMAN REVIEW PASS`** — retained in the Formal Suite candidate set. **Formal Suite membership is not frozen**: `Canonicalization Profile v1` is unfrozen and no Suite Manifest exists, so coordinates and fingerprint stay `provisional-pre-freeze`.
+**Failure type:** `lint_or_type_failure`. **Fingerprint:** `a7a723c2509119bfe58197917e201bcd66113191b5b0ac02e06b33c4bf4ceb44`.
 
-## Source and authentic failure observation
+## 1. Layer 1
+`bugswarm.org/artifact-logs/237548392/raw/`; exact revision `ec1efc4f95a9ee2abca72e9cef4304a19eb5366f` (python/mypy). `raw.log` **verified byte-exact** (247,495 → 245,690 == frozen). All **5 members byte-identical**. Nothing to repair; Ground Truth accurate as written.
 
-- Source: https://www.bugswarm.org/artifact-logs/237548392/raw/ ; upstream exact/relevant revision: https://github.com/python/mypy/commit/ec1efc4f95a9ee2abca72e9cef4304a19eb5366f
-- Attribution/license note: MIT upstream repository; public BugSwarm historical failed-job attribution.
-- raw.log: Complete BugSwarm historical failed-job log with ANSI/control-only normalization.
+## 2. Causal chain
+`raw.log:~2807` — and this is the **entire** failure text:
 
-## Physical repository universe
+```
+mypy/test/testcheck.py:160: error: Cannot infer type argument 1 of "retry_on_error"
+```
 
-Exact/relevant revision `ec1efc4f95a9ee2abca72e9cef4304a19eb5366f` with 5 bounded investigation files:
+The log says *nothing* about why. The explanation is split across two files:
 
-- `.travis.yml`
-- `mypy/test/config.py`
-- `mypy/test/helpers.py`
-- `mypy/test/testcheck.py`
-- `runtests.py`
+- `mypy/test/helpers.py:292` — `def retry_on_error(func: Callable[[], _T], max_wait: float = 1.0) -> _T:`. The helper is generic in `_T` and promises to return whatever the callback returns.
+- `mypy/test/testcheck.py:160` — `retry_on_error(lambda: os.remove(path))`. The callback is a side-effect-only lambda; `os.remove` returns `None`, so there is no useful type to bind `_T` to, and inference of type argument 1 fails.
 
-The snapshot contains plausible build/test/config neighbors, not passing/fix artifacts or synthetic distractors.
+The signature is over-general for its actual use — every call site here is a side effect, not a value producer.
 
-## Causal chain and taxonomy
+## 3. Required Evidence
+Three units: the log, `helpers.py:0201-0300` (the generic declaration) and `testcheck.py:0101-0200` (the call site). All pass removal tests. Drop the log and there is no observation; drop either source unit and the inference argument collapses, because neither the declaration nor the call site alone explains why `_T` cannot be inferred. Optional is deliberately empty — nothing else corroborates without duplicating.
 
-- Failure observation: mypy rejects its own test package because it cannot infer the generic type argument of retry_on_error.
-- Root cause: retry_on_error promises to return the callback's generic result, but callers use side-effect-only lambdas whose return contract provides no useful type argument. The helper signature is over-general for its use.
-- Primary type: `lint_or_type_failure` because the root cause, rather than only the surface stage, matches this V1 class.
-- Recommended action: Give retry_on_error a side-effect callback contract such as Callable[[], Any] returning None, consistent with the call sites.
+## 4. Shortcut analysis
+No answer-prose in the workspace; no comment anywhere flags the signature as over-general. The distinguishing property is that **the log is a bare assertion**: `Cannot infer type argument 1` names the failing function and location but supplies no mechanism at all. Unlike every other lint/type Case reviewed, the source is not confirmatory — it carries the whole explanation, and it carries it across **two files that must be read together**.
 
-## Evidence Ground Truth draft
-
-- Required (3): `log:raw-log:lines-2801-2856`, `repo:mypy-test-helpers-py:lines-0201-0300`, `repo:mypy-test-testcheck-py:lines-0101-0200`
-- Optional (0): none
-- Rationale: Required IDs are the current inclusion-minimal cross-log/repository facts; helpful corroboration remains Optional. IDs are provisional and must be remapped after Profile v1 freeze.
-
-## Leakage, sanitization, and ambiguity
-
-- Passing/fix revisions and curator causal research are excluded from Physical Artifacts.
-- PublicCaseView exposes no evaluator data; package validation includes exact hashes, membership, and references.
-- Sanitization: Removed ANSI/control noise only; retained the complete or naturally bounded authentic historical failure observation without changing failure semantics.
-- Known scientific risk: Medium: the checker points at a call site, and diagnosis requires relating it to the generic helper contract.
-- Canonicalization: fixed 100-line, start-at-1, full-coverage windows are disposable `provisional-pre-freeze` coordinates, not a frozen Suite rule.
+## 5. Layer 2 — `ADEQUATE`
+44 units (29 log + 15 repo), Required 3 (**6.8 %**), 5 files / 42,608 repository bytes. Genuine cross-file type-inference reasoning, a bare one-line observation, and a remedy question that follows only from the composed picture. The strongest Case in the lint/type group and above B04, whose single required source window supplies its explanation in one place.
