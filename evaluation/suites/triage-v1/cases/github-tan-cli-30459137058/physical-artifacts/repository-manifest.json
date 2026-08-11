@@ -3,7 +3,7 @@
   "upstream_repository": {
     "identity": "alplabai/tan-cli",
     "revision_kind": "git_commit",
-    "exact_revision": "3043521c5ef278d79d34045bdb2116e81e9c661d"
+    "exact_revision": "5bf4972f4e5931912654c24bed473296ae9a25eb"
   },
   "files": [
     {

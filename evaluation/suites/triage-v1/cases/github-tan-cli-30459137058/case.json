@@ -18,13 +18,13 @@
   ],
   "provenance": {
     "source_type": "public_permitted_source",
-    "source_url_or_construction_note": "https://github.com/alplabai/tan-cli/actions/runs/30459137058 ; upstream exact/relevant revision: https://github.com/alplabai/tan-cli/commit/3043521c5ef278d79d34045bdb2116e81e9c661d",
+    "source_url_or_construction_note": "Authentic historical failure: GitHub Actions run https://github.com/alplabai/tan-cli/actions/runs/30459137058 , workflow 'parity', job 'first blink -- tan bootstrap -> init -> build' (id 90600330105), event pull_request, conclusion failure, created 2026-07-29T14:05:25Z. raw.log is the complete job log with ANSI removed; verified byte-exact by stripping ANSI from the upstream job log (338,583 bytes, 398 ESC) and comparing to the frozen 336,408 bytes. -- ACTUAL EXECUTED REVISION: 5bf4972f4e5931912654c24bed473296ae9a25eb. This is the ephemeral refs/pull/215/merge commit and it is RECOVERABLE and VERIFIED, unlike the comparable situation in N17. The log records it directly: line 98 fetches '+5bf4972f4e5931912654c24bed473296ae9a25eb:refs/remotes/pull/215/merge', line 107 checks that ref out, and line 125 reads 'HEAD is now at 5bf4972 Merge 3043521c5ef278d79d34045bdb2116e81e9c661d into 309ff63d4630d3b3a71a2e1cd6692f4ff13f4d01'. The commit is still addressable through the API with parents 309ff63d4630 (base) and 3043521c5ef2 (pull-request head), and all four declared members are byte-identical to that merge tree. -- ROBUSTNESS: the four members are additionally byte-identical at the pull-request head 3043521c5ef278d79d34045bdb2116e81e9c661d, which an earlier draft declared. So if the ephemeral merge ref is later garbage-collected the frozen bytes remain verifiable against the head, and the executed SHA remains permanently recorded inside raw.log itself. -- EXTERNAL DEPENDENCIES OUTSIDE THE PHYSICAL UNIVERSE, recorded in the log rather than frozen: the pinned alp-sdk checkout (log line 228, cdfe136) and the Zephyr west workspace (log lines 815-824, zephyr 1f6485ec). The Zephyr Python requirements set that pulls in hidapi lives in that fetched workspace and is deliberately not a Case member; the diagnosis does not depend on reading it, because the log names both hidapi and the missing libudev.h header directly.",
     "license_or_permission": "Apache-2.0 upstream repository; public GitHub Actions run attribution."
   },
   "curation": {
     "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
     "review_status": "human_reviewed",
-    "reviewed_by": "Issue #15 Human Candidate Selection and Source Artifact Eligibility gates; package-content Human Review remains pending"
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value ADEQUATE - lower end. The actual executed revision is the ephemeral refs/pull/215/merge commit 5bf4972f4e5931912654c24bed473296ae9a25eb, recorded in raw.log itself, still addressable, and byte-identical to all four frozen members. The contemporaneous workflow comment at lines 592-601 leaks the warns-and-continues mechanism but does not give away the missing libudev-dev package, which is not enough to reduce the Case to LOW. THIS IS NOT A FORMAL FREEZE: Canonicalization Profile v1 is not frozen, no Suite Manifest exists, and coordinates and fingerprint remain provisional-pre-freeze. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/n20-review.md."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "4d6e25ab8a20c9017cdaa479c071177bd9f80e06e5bd5bcc55bfaa5431490332"
+  "case_fingerprint": "ec7dc5ae3c17db1c8275a41b801e8ea4ea14e412ed7ba6fed82779143fb48c7c"
 }
