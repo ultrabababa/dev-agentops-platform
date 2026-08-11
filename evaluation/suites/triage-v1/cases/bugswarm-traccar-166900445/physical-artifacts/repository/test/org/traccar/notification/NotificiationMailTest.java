@@ -13,16 +13,16 @@ import java.util.Properties;
 
 public class NotificiationMailTest {
 
-    private static final String FROM = "[SANITIZED_EMAIL_ADDRESS]";
-    private static final String TO = "[SANITIZED_EMAIL_ADDRESS]";
+    private static final String FROM = "notification@traccar.org";
+    private static final String TO = "[SANITIZED_PERSONAL_EMAIL]";
 
     private static final String BODY = "Test email body.";
     private static final String SUBJECT = "Test";
 
-    private static final String SMTP_USERNAME = "[SANITIZED_SMTP_USERNAME]";
-    private static final String SMTP_PASSWORD = "[SANITIZED_SMTP_PASSWORD]";
+    private static final String SMTP_USERNAME = "username";
+    private static final String SMTP_PASSWORD = "password";
 
-    private static final String HOST = "[SANITIZED_SMTP_HOST]";
+    private static final String HOST = "email-smtp.us-west-2.amazonaws.com";
 
     private static final int PORT = 25;
 

@@ -18,34 +18,34 @@
   ],
   "provenance": {
     "source_type": "public_permitted_source",
-    "source_url_or_construction_note": "https://www.bugswarm.org/artifact-logs/166900445/raw/ ; upstream exact/relevant revision: https://github.com/traccar/traccar/commit/18d39ff2412b9aced899915d0187f21eb25f49b6",
+    "source_url_or_construction_note": "https://www.bugswarm.org/artifact-logs/166900445/raw/ ; upstream exact/relevant revision: https://github.com/traccar/traccar/commit/18d39ff2412b9aced899915d0187f21eb25f49b6 . The maintainer's personal email does not appear anywhere in raw.log, so redacting it from source introduces no inconsistency with the log; the GitHub username tananaev does appear in Travis build paths and is retained as authentic public CI output.",
     "license_or_permission": "Apache-2.0 upstream repository; public BugSwarm historical failed-job attribution."
   },
   "curation": {
-    "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
+    "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan; sanitization corrected by Claude under the Human-approved B08 review directive",
     "review_status": "human_reviewed",
-    "reviewed_by": "Issue #15 Human Candidate Selection and Source Artifact Eligibility gates; package-content Human Review remains pending"
+    "reviewed_by": "STATUS: NEEDS REVISION / PORTFOLIO HOLD. NOT a Human Review PASS and NOT a Formal Suite member. Full package-content Human Review has been performed: Layer 1 Scientific Validity PASS after reversing four replacements that protected nothing and made the frozen source contradict its own observation; Layer 2 Runtime Discriminative Value LOW. The remaining question is a portfolio decision, not a validity one — whether a LOW Case is worth a config_or_environment_failure slot as a deliberate low-difficulty anchor — and it is deferred until B16 and N10 have been reviewed and the category's difficulty distribution is known. This package must not be admitted on the grounds that the slot needs filling. Authoritative state: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/b08-review.md."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
-    "reviewed_by": "Issue #15 source-only sanitization policy; package-content Human Review remains pending",
+    "reviewed_by": "Issue #15 source-only sanitization policy; package-content Human re-review pending. Three earlier replacements have been REVERSED because they removed no secret and contradicted the observation.",
     "transformations": [
       {
         "artifact_path": "physical-artifacts/raw.log",
-        "description": "Removed ANSI/control noise only; retained the complete or naturally bounded authentic historical failure observation without changing failure semantics.",
+        "description": "Removed ANSI/control noise only; retained the complete authentic historical failed-job log without changing failure semantics.",
         "semantics_preserving": true
       },
       {
         "artifact_path": "physical-artifacts/repository/test/org/traccar/notification/NotificiationMailTest.java",
-        "description": "Replaced public historical email, SMTP host, username, and password literals with typed placeholders while preserving the external SMTP-authentication structure.",
+        "description": "Replaced ONLY the maintainer's personal email address in the TO literal with [SANITIZED_PERSONAL_EMAIL]. All 59 lines are retained at their original line numbers and no other byte differs from the exact revision. This supersedes an earlier transformation that had additionally replaced SMTP_USERNAME, SMTP_PASSWORD, HOST and the FROM address. Those four replacements were reversed because they removed no secret and destroyed causal evidence: the committed username and password are the literal placeholder strings 'username' and 'password', the host is the public documented AWS SES endpoint email-smtp.us-west-2.amazonaws.com, and FROM is a public project role address. Worse, [SANITIZED_SMTP_HOST] is not resolvable, so the sanitized source predicted a name-resolution failure rather than the 535 authentication rejection the log actually records.",
         "semantics_preserving": true
       },
       {
         "artifact_path": "physical-artifacts/repository/src/org/traccar/notification/NotificationMail.java",
-        "description": "Replaced the historical personal email address in the source header; production SMTP configuration structure is unchanged.",
+        "description": "Replaced the maintainer's personal email address in the copyright header with [SANITIZED_EMAIL_ADDRESS]. Header text only; all 132 lines and every functional byte are unchanged.",
         "semantics_preserving": true
       }
     ]
   },
-  "case_fingerprint": "adf97c15a24b0d407ad9d6659b7e2ccaf4ed29f5e92300bce44575bb5748199a"
+  "case_fingerprint": "888c1c84f621532c819330e7d605faf8df399c9a7707d3619ea0f9d6219207f8"
 }

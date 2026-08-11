@@ -2,16 +2,6 @@
   "schema_version": "1",
   "units": [
     {
-      "evidence_id": "repo:travis-yml:lines-0001-0003",
-      "source": "physical-artifacts/repository/.travis.yml",
-      "span": {
-        "type": "line_range",
-        "start_line": 1,
-        "end_line": 3
-      },
-      "content_sha256": "495892ec54f288891d85c810b7d34cdf2b7f970802491e2bd7de9d1b8d26ba9b"
-    },
-    {
       "evidence_id": "repo:pom-xml:lines-0001-0100",
       "source": "physical-artifacts/repository/pom.xml",
       "span": {
@@ -69,7 +59,17 @@
         "start_line": 1,
         "end_line": 59
       },
-      "content_sha256": "acc7518d15619589079c5b238df61523a3160fed0565da212d71b24b2ce2ab7d"
+      "content_sha256": "ce7661a9aaab5e976e63aead8fc72a1eda1451c1083fff853a0388e370b5d1e9"
+    },
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0003",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 3
+      },
+      "content_sha256": "495892ec54f288891d85c810b7d34cdf2b7f970802491e2bd7de9d1b8d26ba9b"
     }
   ]
 }

@@ -23,8 +23,8 @@
     },
     {
       "path": "test/org/traccar/notification/NotificiationMailTest.java",
-      "sha256": "acc7518d15619589079c5b238df61523a3160fed0565da212d71b24b2ce2ab7d",
-      "size_bytes": 1806
+      "sha256": "ce7661a9aaab5e976e63aead8fc72a1eda1451c1083fff853a0388e370b5d1e9",
+      "size_bytes": 1785
     }
   ]
 }

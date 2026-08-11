@@ -3,6 +3,6 @@
   "primary_failure_type": "config_or_environment_failure",
   "acceptable_failure_types": [],
   "summary": "The ordinary CI test suite attempts an external SMTP connection and receives a 535 authentication rejection.",
-  "root_cause": "NotificiationMailTest is an environment-dependent integration test embedded in the normal suite and directly relies on external SMTP authentication values that are invalid for the historical CI run.",
-  "recommended_action": "Move the credential-dependent SMTP check to a separately managed integration test using injected secrets and a controlled test service; do not commit credentials."
+  "root_cause": "NotificiationMailTest is an environment-dependent integration test that runs as part of the ordinary test suite and opens a real authenticated SMTP connection to a public AWS SES endpoint. The credentials it passes are the placeholder literals committed in the test source rather than any real identity, so the remote service rejects the session with 535 Authentication Credentials Invalid on every run in an environment that supplies no valid mail identity.",
+  "recommended_action": "Move the credential-dependent SMTP check out of the ordinary suite into a separately managed integration test that receives its endpoint and credentials from injected secrets against a controlled service, and do not rely on placeholder credentials committed in test source."
 }
