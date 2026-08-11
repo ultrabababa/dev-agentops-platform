@@ -5,7 +5,8 @@ from pathlib import Path
 
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import create_engine, inspect, text
+from sqlalchemy import create_engine, event, inspect, text
+from sqlalchemy.engine import Engine
 from sqlalchemy.exc import SQLAlchemyError
 
 
@@ -46,6 +47,19 @@ def _sqlite_url(path: Path) -> str:
     return f"sqlite:///{path.as_posix()}"
 
 
+def create_database_engine(database_path: Path) -> Engine:
+    path = _resolved_path(database_path)
+    engine = create_engine(_sqlite_url(path))
+
+    @event.listens_for(engine, "connect")
+    def _enable_sqlite_foreign_keys(dbapi_connection, _connection_record) -> None:
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
+
+    return engine
+
+
 def _alembic_config(path: Path) -> Config:
     config = Config()
     config.set_main_option(
@@ -78,7 +92,7 @@ def inspect_database(database_path: Path) -> StorageStatus:
             tables=(),
         )
 
-    engine = create_engine(_sqlite_url(path))
+    engine = create_database_engine(path)
     try:
         with engine.connect() as connection:
             table_names = tuple(sorted(inspect(connection).get_table_names()))

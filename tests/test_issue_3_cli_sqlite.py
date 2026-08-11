@@ -16,7 +16,7 @@ def test_initialize_database_creates_schema_and_parent_directories(tmp_path: Pat
     assert database_path.is_file()
     assert status.exists is True
     assert status.initialized is True
-    assert status.schema_version == "1"
+    assert status.schema_version == "2"
     assert "alembic_version" in status.tables
     assert "devagentops_metadata" in status.tables
 
@@ -32,7 +32,7 @@ def test_initialize_database_is_idempotent(tmp_path: Path):
         metadata_rows = connection.execute(
             "SELECT key, value FROM devagentops_metadata"
         ).fetchall()
-    assert metadata_rows == [("schema_version", "1")]
+    assert metadata_rows == [("schema_version", "2")]
 
 
 def test_database_directory_is_rejected_as_an_invalid_path(tmp_path: Path):
