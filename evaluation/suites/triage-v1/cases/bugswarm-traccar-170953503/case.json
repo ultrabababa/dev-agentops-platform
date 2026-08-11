@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
     "review_status": "human_reviewed",
-    "reviewed_by": "Issue #15 Human Candidate Selection and Source Artifact Eligibility gates; package-content Human Review remains pending"
+    "reviewed_by": "REJECTED by package-content Human Review: REPLACE_FOR_LOW_DISCRIMINATIVE_VALUE. Layer 1 Scientific Validity remains PASS - raw.log is byte-exact against upstream and all members are byte-identical to the exact revision. Layer 2 Runtime Discriminative Value TRIVIAL: the observation essentially states the complete diagnosis, printing the offending SSH submodule URL verbatim beside Permission denied (publickey), so Required is a single log unit and the repository contributes nothing. TRIVIAL should not occupy an equal-weight Formal slot. NOT a Formal Suite member; retained only as a rejection record. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/n10-review.md."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "62de4f9f4aa555189ada0bd7c96d6b2a2414182ae3365f6ba18fc9636601e2c1"
+  "case_fingerprint": "619b08a62991c9d34d58e0c1ebae752dd5cd14a8196311bb6899b109e46ac83d"
 }

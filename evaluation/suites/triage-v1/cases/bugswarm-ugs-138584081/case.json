@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
     "review_status": "human_reviewed",
-    "reviewed_by": "Issue #15 Human Candidate Selection and Source Artifact Eligibility gates; package-content Human Review remains pending"
+    "reviewed_by": "REJECTED by package-content Human Review: REPLACE_FOR_LOW_DISCRIMINATIVE_VALUE. Layer 1 Scientific Validity remains PASS - the package is authentic, byte-identical to its exact revision and correctly diagnosed. Layer 2 Runtime Discriminative Value LOW: the complete diagnosis is log-alone sufficient, because the Java stack names the application file and line and the test file and line, so the repository adds no necessary evidence and Required is a single log unit. NOT a Formal Suite member; retained only as a rejection record. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/b16-review.md."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "e06b82067b2ca2b39879ff7ecfb1db672787df30458e2cd7a38d170f61ed04bb"
+  "case_fingerprint": "9d06d8fee747351d5acd0304798faeca7b7afd11460c6f7e9e25a878b3667653"
 }

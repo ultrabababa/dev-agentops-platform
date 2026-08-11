@@ -24,11 +24,11 @@
   "curation": {
     "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan; sanitization corrected by Claude under the Human-approved B08 review directive",
     "review_status": "human_reviewed",
-    "reviewed_by": "STATUS: NEEDS REVISION / PORTFOLIO HOLD. NOT a Human Review PASS and NOT a Formal Suite member. Full package-content Human Review has been performed: Layer 1 Scientific Validity PASS after reversing four replacements that protected nothing and made the frozen source contradict its own observation; Layer 2 Runtime Discriminative Value LOW. The remaining question is a portfolio decision, not a validity one — whether a LOW Case is worth a config_or_environment_failure slot as a deliberate low-difficulty anchor — and it is deferred until B16 and N10 have been reviewed and the category's difficulty distribution is known. This package must not be admitted on the grounds that the slot needs filling. Authoritative state: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/b08-review.md."
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS after reversing four replacements that protected nothing; Runtime Discriminative Value LOW. ADMITTED WITH AN EXPLICIT PORTFOLIO ROLE: deliberate low-difficulty anchor for the config_or_environment_failure category. LOW is not automatically disqualifying when a Case serves a stated portfolio role, but this Case must never be described as discriminating. THIS IS NOT A FORMAL FREEZE: Canonicalization Profile v1 is not frozen, no Suite Manifest exists, and coordinates and fingerprint remain provisional-pre-freeze. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/b08-review.md."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
-    "reviewed_by": "Issue #15 source-only sanitization policy; package-content Human re-review pending. Three earlier replacements have been REVERSED because they removed no secret and contradicted the observation.",
+    "reviewed_by": "Issue #15 source-only sanitization policy; reviewed and ACCEPTED by package-content Human Review. Three earlier replacements have been REVERSED because they removed no secret and contradicted the observation.",
     "transformations": [
       {
         "artifact_path": "physical-artifacts/raw.log",
@@ -47,5 +47,5 @@
       }
     ]
   },
-  "case_fingerprint": "888c1c84f621532c819330e7d605faf8df399c9a7707d3619ea0f9d6219207f8"
+  "case_fingerprint": "effc4255352175658bb415a41d5c1c819c47eefc74d3d5cda92415d646481448"
 }

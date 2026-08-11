@@ -1,10 +1,12 @@
-# B08 — bugswarm-traccar-166900445 — full Human Review record
+# B08 — bugswarm-traccar-166900445 — Human Review PASS record
+
+> **PACKAGE-CONTENT HUMAN REVIEW: `PASS`**, admitted with an **explicit portfolio role: deliberate low-difficulty anchor** for `config_or_environment_failure`.
+> **This is NOT a Formal Freeze**, and this Case must never be described as discriminating.
 
 **Layer 1 — Scientific Validity:** `PASS` after reversing four non-secret replacements (§2).
-**Layer 2 — Runtime Discriminative Value:** **`LOW`**.
-**Recommended disposition:** `NEEDS REVISION` at portfolio level — the package is now scientifically sound, but whether a `LOW` Case earns a Formal Suite slot is a Human portfolio decision (§9).
+**Layer 2 — Runtime Discriminative Value:** **`LOW`** — deliberate, and the reason it is admitted only as an anchor (§9).
 **Failure type:** `config_or_environment_failure`, `acceptable_failure_types: []`.
-**Fingerprint:** `888c1c84f621532c819330e7d605faf8df399c9a7707d3619ea0f9d6219207f8` (`provisional-pre-freeze`; supersedes `adf97c15…`).
+**Fingerprint:** `effc4255…` (`provisional-pre-freeze`; supersedes `adf97c15…`).
 
 ## 1. Authenticity and provenance
 
@@ -114,7 +116,17 @@ No cross-file composition is required. No competing hypothesis needs elimination
 
 **Important distinction from N17.** N17 rated low because a contemporaneous artifact leaked the answer — a defect of the workspace. B08 rates low because the failure is *intrinsically shallow*: a test with committed placeholder credentials calling a real external service. Nothing was mishandled after the reversal; there is simply not much to investigate.
 
-## 10. Disposition — a portfolio decision, not a validity one
+## 10. Disposition — decided
+
+**`HUMAN REVIEW PASS`, admitted as a deliberate low-difficulty anchor.**
+
+Layer 1 is `PASS`. Layer 2 is `LOW`, and that rating stands unchanged. The Human decision is that `LOW` is not automatically disqualifying when a Case serves an explicit portfolio role: a suite of twenty in which every Case is hard cannot distinguish weak runtimes from broken ones either, and one clean, unambiguous, easy Case per failure type has diagnostic value at the bottom of the range.
+
+B08 is the strongest of the three low Cases in this category — it is the only one of B08 / B16 / N10 that requires opening a second file at all — which is why it, rather than B16 or N10, was chosen for the anchor role. Both of those were rejected.
+
+The label must travel with the Case: it is admitted **because** it is easy, not despite it, and no later reader should mistake it for a measure of investigation ability.
+
+### Superseded reasoning
 
 Layer 1 is `PASS`. The package is authentic, exact-revision, correctly sanitized, causally sound, leakage-free, and its Ground Truth now matches its artifacts.
 
