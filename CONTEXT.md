@@ -112,8 +112,8 @@ The authentic, frozen, offline, bounded-but-realistic information space defined 
 _Avoid_: Minimal required evidence set, whole unbounded upstream repository, synthetic noise corpus
 
 **Investigation Workspace**:
-The runtime-facing view through which an Evidence Acquisition Condition can observe and investigate a Case's physical log and repository artifacts. It may expose searchable or openable artifacts without placing the complete corpus into the initial model context.
-_Avoid_: One-shot prompt context, Expected Answer, curator-selected required evidence pack
+The runtime-facing view through which an Evidence Acquisition Condition can observe and investigate a Case's physical log and repository artifacts. Normal adaptive Agents may receive searchable/openable access rather than the complete corpus in initial context; an explicit Full-context One-shot diagnostic may serialize the complete Agent-visible universe without changing evaluator-only boundaries.
+_Avoid_: Expected Answer, curator-selected required evidence pack, treating diagnostic delivery as the Workspace definition
 
 **Log Evidence**:
 Frozen CI or test output content in the Case Physical Artifacts. Canonical Evidence Units provide stable coordinates for observed/cited source-faithful portions; a Runtime may inspect or retrieve independently chunked physical spans.
@@ -192,12 +192,40 @@ The structured contract a triage runtime uses to represent each agent step, incl
 _Avoid_: Chain-of-thought transcript, free-form ReAct text
 
 **Pipeline Baseline**:
-A fixed triage workflow used as the comparison point for agent runtime experiments.
+A deterministic, no-model, non-Agentic fixed triage workflow used as the comparison point for Agent Runtime experiments. Its shipped V1 runtime identity is `pipeline_baseline`; `deterministic_pipeline` is the L0 capability name, not a rename.
 _Avoid_: Agent runtime, production workflow
 
 **Runtime Variant**:
-An independently runnable triage runtime or workflow implementation that can be compared against other variants using the same evaluation suite.
-_Avoid_: Project version, copied project directory
+An independently runnable Product Runtime or workflow implementation that can be compared against other variants using the same evaluation suite. V1 Product Runtime variants are `pipeline_baseline` and `self_built_react`; diagnostic conditions do not automatically become Runtime Variants.
+_Avoid_: Project version, copied project directory, every evaluation condition
+
+**Runtime Capability Level**:
+A named rung in the L0-L5+ capability-attribution ladder that identifies which class of model reasoning, orchestration, evidence acquisition, or adaptive Agent control is present. Levels guide controlled comparison and do not mandate implementation order.
+_Avoid_: Product maturity rank, Matrix schema field, implementation dependency
+
+**Product Runtime**:
+An independently supported runtime implementation intended to carry product behavior and evolve as a runtime lineage. V1 Product Runtime is limited to Fixed Pipeline and self-built ReAct.
+_Avoid_: Diagnostic condition, Oracle intervention, every ladder rung
+
+**Model-backed Diagnostic Condition**:
+A non-Product evaluation condition that uses a model to isolate a capability such as one-shot reasoning, fixed orchestration, or static evidence acquisition.
+_Avoid_: Product Runtime, adaptive Agent by default, informal prompt experiment
+
+**Full-context One-shot**:
+The L1 non-Agentic diagnostic condition that supplies the complete Agent-visible Evidence Universe through one fixed Prompt and exactly one model call. Silent truncation invalidates the full-context claim; the explicit over-budget outcome is deferred to implementation design.
+_Avoid_: Oracle Evidence, partial-context prompt labeled full-context, evaluator artifact access
+
+**Fixed Model Workflow**:
+The L2 non-Agentic diagnostic condition in which a program fixes model-call stages, transitions, inputs, and stopping instead of allowing the model to choose an adaptive next action.
+_Avoid_: ReAct loop, Product Runtime, unspecified orchestration
+
+**Static Retrieval Diagnostic**:
+The L3 non-Agentic evidence-acquisition condition that supplies versioned static retrieval results to a program-controlled model path without adaptive Agent control.
+_Avoid_: ReAct tool loop, mandatory predecessor to L4, Canonical Units as forced index chunks
+
+**Agent Runtime Kernel Lineage**:
+The self-built adaptive Runtime core that begins at L4 ReAct and is incrementally evolved with later capabilities while retaining explicit state, loop, tool, event, provider, stop, context, evaluation, and safety seams.
+_Avoid_: External runtime fork, L1/L2/L3 diagnostic family, unversioned rewrite
 
 **Multi-Agent Triage**:
 A triage approach that splits responsibility across multiple collaborating agents, such as planner, investigator, critic, and reporter roles.
@@ -304,7 +332,7 @@ The complete, named set of runtime, model, prompt, tool, retrieval, skill, polic
 _Avoid_: Runtime name only, project version only
 
 **Evidence Acquisition Condition**:
-The versioned experimental contract that defines how a runtime may observe and investigate a Case's Evidence Universe, such as deterministic Pipeline selection, static Retrieval, adaptive ReAct investigation, or Oracle Evidence delivery.
+The versioned experimental contract that defines how a runtime may observe and investigate a Case's Evidence Universe, such as deterministic Pipeline access, Full-context One-shot delivery, Fixed Model Workflow inputs, Static Retrieval, adaptive ReAct investigation, or Oracle Evidence delivery.
 _Avoid_: Case contents, Runtime Variant alone, requirement that every condition has identical tools
 
 **Oracle Evidence Diagnostic Condition**:
@@ -464,5 +492,5 @@ A reusable packaged agent capability that may bundle prompts, tools, retrieval c
 _Avoid_: Single tool, tool registry entry
 
 **Reference Agent**:
-A mature external coding agent used as a comparison point or optional integration target, not as the core implementation of DevAgentOps.
-_Avoid_: Project foundation, replacement implementation
+A mature external coding agent studied as a reference architecture or used in an explicit comparison, not as the core implementation or semantics source of DevAgentOps. Pi's current canonical upstream is `earendil-works/pi`; `badlogic/pi-mono` is historical lineage only.
+_Avoid_: Project foundation, implementation dependency, compatibility target, replacement implementation

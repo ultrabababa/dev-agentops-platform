@@ -17,8 +17,9 @@ DevAgentOps 是一个用于秋招展示和系统研究的、可评测的 CI/Test
 - 六类 Component Manifest 的校验、Freeze、Registry 与 Version Pollution 检测。
 - 显式 Offline Case Package / Evaluation Suite Loader 与 Case/Suite Fingerprint；
 - Structured Triage Report Schema V1 校验与确定性单 Case Metric Vector。
+- Issue #16 deterministic Pipeline tracer bullet，包括 doctor-first、Trace、Run Manifest、SQLite persistence、artifact 与既有 scorer 的端到端路径。
 
-Evaluation Matrix、Component Registry 与 Offline Case Schema V2 Loader 已形成评测配置和数据的身份链；Structured Triage Report Scorer 可以对候选报告执行单 Case 确定性评分。Schema V2 Loader 会验证 Physical Artifact membership/integrity、Canonical source span、Evidence/Diagnosis Ground Truth split、Provenance、Sanitization、Case/Suite Fingerprint，并通过 `PublicCaseView` 与公共 CLI 错误阻断 Evaluator 数据泄漏。Schema V1 已退役，不再提供兼容 Loader；当前五个 Batch-1 V1 packages 仍只作 calibration drafts，Issue #15 的 B04 V2 calibration 已通过 Human Review，下一步先校准共享 Canonicalization Profile，再扩展 Formal Case construction。当前仍不执行 Agent、模型调用、Suite 聚合、Quality Gate、Leaderboard 或 Badcase。
+Evaluation Matrix、Component Registry 与 Offline Case Schema V2 Loader 已形成评测配置和数据的身份链；Structured Triage Report Scorer 可以对候选报告执行单 Case 确定性评分。Schema V2 Loader 会验证 Physical Artifact membership/integrity、Canonical source span、Evidence/Diagnosis Ground Truth split、Provenance、Sanitization、Case/Suite Fingerprint，并通过 `PublicCaseView` 与公共 CLI 错误阻断 Evaluator 数据泄漏。Schema V1 已退役，不再提供兼容 Loader；当前五个 Batch-1 V1 packages 仍只作 calibration drafts，Issue #15 的 B04 V2 calibration 已通过 Human Review，下一步先校准共享 Canonicalization Profile，再扩展 Formal Case construction。当前可运行无模型、无 Agent 的 deterministic Pipeline tracer bullet；仍不执行 Agent、模型调用、Suite 聚合、Quality Gate、Leaderboard 或 Badcase。
 
 ## V1 承诺
 
@@ -54,7 +55,9 @@ V1 明确不做：
 
 ## Evaluation Methodology
 
-每个 Formal Case V2 定义一个 authentic、frozen、offline、bounded-but-realistic Evidence Universe，只包含完整或自然有界的 raw log 与 bounded exact-revision repository snapshot。Package 分为唯一事实源 `physical-artifacts/`、以 source span 和 resolved hash 指回事实源的 `canonical-evidence/`、以及只对可信 Evaluator 可见的 `evaluator/`；Project Knowledge 不属于当前 Case Universe，可在未来作为独立 Runtime/Retrieval ablation 输入。`required-evidence.json` 是唯一 Evidence Ground Truth，`expected-answer.json` 只保存 Diagnosis Ground Truth。Pipeline、Retrieval、ReAct 与 Oracle 如何观察同一世界由各自 Evidence Acquisition Condition 决定，详见 [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](docs/evaluation/formal-evaluation-methodology.md)和 [ADR 0126](docs/adr/0126-offline-case-schema-v2-physical-artifacts-and-canonical-evidence.md)。
+Runtime 能力按 L0 deterministic Pipeline、L1 Full-context One-shot、L2 Fixed Model Workflow、L3 Static Retrieval、L4 self-built ReAct、L5+ incremental capabilities 建立 attribution ladder。它用于区分 model reasoning、fixed orchestration、evidence acquisition 与 adaptive Agent control，不是强制 implementation order；L3 是否必须先于 L4 实现不冻结。V1 Product Runtime 仍只有 Fixed Pipeline 与 self-built ReAct，L1/L2/L3 是 diagnostic/comparison conditions，Oracle 是正交 diagnostic intervention。详见 [Runtime Capability Ladder 与 Model-backed Diagnostic Conditions](docs/evaluation/runtime-capability-ladder.md) 和 [ADR 0127](docs/adr/0127-staged-runtime-capability-ladder-and-reference-boundary.md)。
+
+每个 Formal Case V2 定义一个 authentic、frozen、offline、bounded-but-realistic Evidence Universe，只包含完整或自然有界的 raw log 与 bounded exact-revision repository snapshot。Package 分为唯一事实源 `physical-artifacts/`、以 source span 和 resolved hash 指回事实源的 `canonical-evidence/`、以及只对可信 Evaluator 可见的 `evaluator/`；Project Knowledge 不属于当前 Case Universe，可在未来作为独立 Runtime/Retrieval ablation 输入。`required-evidence.json` 是唯一 Evidence Ground Truth，`expected-answer.json` 只保存 Diagnosis Ground Truth。各 ladder condition 与 Oracle 如何观察同一世界由各自 Evidence Acquisition Condition 决定；L1 Full-context 不得 silent truncation 后仍保留 full-context identity，具体 over-budget policy 留给未来实现 Issue。详见 [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](docs/evaluation/formal-evaluation-methodology.md) 和 [ADR 0126](docs/adr/0126-offline-case-schema-v2-physical-artifacts-and-canonical-evidence.md)。
 
 V1 评测方法增加 Oracle Evidence Diagnostic Condition：在保持 Suite、Model、诊断 Prompt、Report Contract、Scorer 与 Inference Settings 尽量一致的配对实验中，绕过普通 Evidence Discovery，只向模型提供经过 Human Review 的 Minimal Sufficient Evidence Set。Oracle input 在运行时由 Required Evidence IDs 经 Canonical Coordinates 解析 Physical Artifacts，不冻结独立 `oracle-evidence.json`；它不会提供 Evidence Ground Truth、Expected Answer、Failure Type Label、答案文本、Tool Path、Scorer Label 或 Curator Reasoning。
 
@@ -139,7 +142,7 @@ Issue #4 与 #5 共同定义了可复现的正式评测配置：Matrix 解析 De
   --report path/to/report.json
 ```
 
-配置、数据和 Fingerprint 规则见 [Evaluation Matrix、Component Registry 与 Offline Evaluation Suite](docs/evaluation/evaluation-matrix-and-component-registry.md)；Evidence Universe、Canonical Evidence 与条件访问语义见 [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](docs/evaluation/formal-evaluation-methodology.md)；报告校验、单 Case 指标、CLI 和信任边界见 [Structured Triage Report 校验与单 Case 确定性评分](docs/evaluation/structured-triage-report-and-per-case-scoring.md)；Oracle 配对条件与 Gap 解释见 [Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap](docs/evaluation/oracle-evidence-diagnostic-condition.md)。具体 Component Manifest 字段和 Freeze 命令也可查阅 [components/README.md](components/README.md)。
+配置、数据和 Fingerprint 规则见 [Evaluation Matrix、Component Registry 与 Offline Evaluation Suite](docs/evaluation/evaluation-matrix-and-component-registry.md)；Runtime capability attribution 见 [Runtime Capability Ladder 与 Model-backed Diagnostic Conditions](docs/evaluation/runtime-capability-ladder.md)；Evidence Universe、Canonical Evidence 与条件访问语义见 [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](docs/evaluation/formal-evaluation-methodology.md)；报告校验、单 Case 指标、CLI 和信任边界见 [Structured Triage Report 校验与单 Case 确定性评分](docs/evaluation/structured-triage-report-and-per-case-scoring.md)；Oracle 配对条件与 Gap 解释见 [Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap](docs/evaluation/oracle-evidence-diagnostic-condition.md)。具体 Component Manifest 字段和 Freeze 命令也可查阅 [components/README.md](components/README.md)。
 
 运行后端与前端测试及前端生产构建：
 
@@ -161,7 +164,9 @@ npm run build
 → #14 Structured Report / Per-Case Scoring（已完成）
 → #21 Evidence Methodology + Schema V2 architecture（已完成）
 → #22 Offline Case Schema V2 implementation（已完成）
+→ #16 deterministic Pipeline tracer bullet（已完成）
 → #15 B04 V2 Human Review（已通过）
+→ #28 Runtime Capability Ladder docs/design（当前）
 → #15 shared Canonicalization Profile v1 calibration / Human freeze（下一步）
 → #15 Formal Suite Case Construction / Human freeze
 ```

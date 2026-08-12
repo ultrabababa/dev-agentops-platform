@@ -103,6 +103,9 @@ class ReportValidationResult:
 class EvidenceReference:
     evidence_id: str
 
+    def as_dict(self) -> dict[str, str]:
+        return {"evidence_id": self.evidence_id}
+
 
 @dataclass(frozen=True)
 class StructuredTriageReport:
@@ -115,6 +118,21 @@ class StructuredTriageReport:
     recommended_action: str
     confidence: float
     evidence_references: tuple[EvidenceReference, ...]
+
+    def as_dict(self) -> dict[str, object]:
+        return {
+            "schema_version": self.schema_version,
+            "case_id": self.case_id,
+            "classification_status": self.classification_status,
+            "failure_type": self.failure_type,
+            "summary": self.summary,
+            "root_cause": self.root_cause,
+            "recommended_action": self.recommended_action,
+            "confidence": self.confidence,
+            "evidence_references": [
+                reference.as_dict() for reference in self.evidence_references
+            ],
+        }
 
 
 @dataclass(frozen=True)

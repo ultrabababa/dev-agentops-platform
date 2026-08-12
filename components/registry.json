@@ -1,7 +1,16 @@
 {
   "components": {
     "mcp_server_set": {},
-    "prompt": {},
+    "prompt": {
+      "structured-triage-task-contract-v1": {
+        "fingerprint": "d96154bc6a5aa436c84f291c16848daec60bdbf1be250dcedc4b115f4b7c4988",
+        "frozen_at": "2026-08-11T12:09:25Z",
+        "manifest": "frozen/prompt/structured-triage-task-contract-v1.json",
+        "metadata": {
+          "description": "Human-frozen runtime-neutral triage Task Contract from Issue #30"
+        }
+      }
+    },
     "retriever_config": {},
     "skill_registry": {},
     "tool_policy": {},
