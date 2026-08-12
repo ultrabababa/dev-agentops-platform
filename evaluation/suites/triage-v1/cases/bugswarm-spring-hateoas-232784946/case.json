@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "Issue #15 targeted replacement construction round",
     "review_status": "human_reviewed",
-    "reviewed_by": "STATUS: constructed in the Issue #15 targeted replacement round; package-content review COMPLETE by the constructing reviewer, awaiting Human disposition. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value ADEQUATE. Thirty-two Spring context failures sit above one property: the spring5-next profile overrides spring.version but not jackson.version. The dependency:list span showing jackson-databind 2.8.5 resolved successfully is Required, because the Ground Truth explicitly distinguishes version incompatibility from a missing or unresolvable dependency. NOT a Formal Freeze and NOT frozen Formal Suite membership."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "573e8780f882b6b1452c286a4086d24c37fd00bbc83f965c1dedf2f7afd37401"
+  "case_fingerprint": "2553f3dc639d72f27ef1fccdf4553aa6b03cf28e61e775b1bceb0958fc65a995"
 }

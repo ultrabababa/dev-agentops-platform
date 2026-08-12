@@ -162,6 +162,35 @@ This is therefore the **primary screening question at Candidate Discovery**, app
 suite now contradicts them three times over: B02 has the lowest Required share in the suite (1.3 %) and is the hardest Case;
 N22 has the highest of its group (21.4 %) and is `LOW`.
 
+### Round 2 Human review — four PASS, F1 repaired
+
+C1, A2, L1 and D1 are **`HUMAN REVIEW PASS`** at `ADEQUATE`, after four Evidence/Ground-Truth alignment fixes that
+changed no rating and no Physical Artifact: C1 promoted `application-test.yml` to Required (it refutes the "activate the
+test profile" reading); A2 promoted four already-present units so the chain closes end to end from the configured report
+property to the absent fixture entry; D1 promoted the `dependency:list` span showing Jackson 2.8.5 **resolved
+successfully**, because its Ground Truth distinguishes version incompatibility from a missing dependency; L1 corrected
+Expected Answer wording about `or`-guard narrowing.
+
+**F1 was repaired, not rejected.** Its original Ground Truth named the wrong source of nondeterminism.
+
+> **Correction of record.** `LuceneTestCase.newIOContext` preserves an incoming READONCE singleton but **never
+> manufactures one** — the switch yields only `DEFAULT`, `MergeInfo` or `FlushInfo`, with the source's own comment
+> *"except READONCE which has semantic implications"*. So once `MockDirectoryWrapper` is in use, the segments-file guard
+> fires on every seed. The seed-dependent branch is **wrapper selection**: `OverviewTestBase.setUp` calls
+> `newFSDirectory(indexDir)` → `newFSDirectory(f, lf, rarely())`, and `wrapDirectory` returns a bare
+> `RawDirectoryWrapper` when that flag is true and a checking `MockDirectoryWrapper` when it is false. `rarely()` is
+> `nextInt(100) >= 99`, so roughly one seed in a hundred escapes the check.
+
+`OverviewTestBase.java` was added to the Physical Universe at the exact revision, Required Evidence was rebuilt from 4 to
+8 units, and the Expected Answer was rewritten. **F1 is not marked Human PASS**; it awaits disposition, and its review
+packet records an open taxonomy question — the intermittency is real but strongly asymmetric, and a stable product-code
+cause exists, which sits awkwardly against the taxonomy's "without a stable product-code root cause" wording.
+
+**Reusable finding — a randomiser on the causal path is not automatically the source of intermittency.** F1's first
+construction assumed it was. The check that matters is whether the randomiser can actually produce the passing value:
+here it provably cannot, so the real branch had to be one level up. Establishing *which* random draw decides the outcome
+is a distinct verification step from establishing *that* the failure is seed-dependent.
+
 ### Replacement construction round 2 — five built, one slot left open
 
 | Case | Slot | Layer 1 | Layer 2 | Note |

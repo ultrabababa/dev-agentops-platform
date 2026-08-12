@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "Issue #15 targeted replacement construction round",
     "review_status": "human_reviewed",
-    "reviewed_by": "STATUS: constructed in the Issue #15 targeted replacement round; package-content review COMPLETE by the constructing reviewer, awaiting Human disposition. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value ADEQUATE. mypy states the violation and no mechanism. The isinstance branch establishes RequestsResponse while the hasattr branch guarantees only iter_content, so raise_for_status is unsafe and iter_content remains valid - which is why exactly one error is reported. RequestsResponse does define raise_for_status, settling the direction. NOT a Formal Freeze and NOT frozen Formal Suite membership."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "99dd4c748661d637153498fa0d754ad986b0863cd8115f75a5f6a4d366cd15ba"
+  "case_fingerprint": "15a8ec502abaf1f18e5ea7a78844f665eacfc99520b24e588189e5d46f255391"
 }

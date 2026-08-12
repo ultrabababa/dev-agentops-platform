@@ -1,10 +1,10 @@
 # L1 — bugswarm-pygithub-36442425251 — construction and Human Review record
 
-> **Layer 1 `PASS`** · **Layer 2 `ADEQUATE`** · constructed and reviewed in the targeted replacement round, awaiting Human disposition.
+> **FINAL DISPOSITION: `HUMAN REVIEW PASS`.** Layer 1 `PASS`, Layer 2 **`ADEQUATE`**.
 > **NOT a Formal Freeze and NOT frozen Formal Suite membership.** `Canonicalization Profile v1` is unfrozen, no Suite Manifest exists, and all coordinates and the fingerprint are `provisional-pre-freeze`.
 
 **Failure type:** `lint_or_type_failure`, `acceptable_failure_types: []`. **Slot:** the single `lint_or_type_failure` replacement.
-**Fingerprint:** `99dd4c748661d637153498fa0d754ad986b0863cd8115f75a5f6a4d366cd15ba`.
+**Fingerprint:** `15a8ec502abaf1f18e5ea7a78844f665eacfc99520b24e588189e5d46f255391` (supersedes `99dd4c74…` after the Expected Answer wording correction in §3).
 
 ## 1. Authenticity and provenance
 Source `https://www.bugswarm.org/artifact-logs/36442425251/raw/`. GitHub Actions `pull_request` job for PR 3182. The log records its own executed revision — `* [new ref] b8ceb2891371446741daf16ce1f56f7615cdaf79 -> pull/3182/merge` and `HEAD is now at b8ceb28 Merge e2c57cbd… into 67cfdb21…` — and that **merge revision is verified upstream** (committer date `2025-01-30T20:23:59Z`). Provenance category: recovered-and-verified executed merge revision, as for N20.
@@ -20,7 +20,9 @@ mypy names the file, line, column, attribute and rule. It says nothing about **w
 
 ## 3. Independent causal chain
 1. `Requester.py:924` — `output.raise_for_status()`.
-2. `:923` — the guard is `if isinstance(output, RequestsResponse) or hasattr(output, "iter_content"):`. Only the left branch narrows to `RequestsResponse`; the `hasattr` branch yields a type known solely to have `iter_content`. mypy joins the branches, and the join retains only what both have.
+2. `:923` — the guard is `if isinstance(output, RequestsResponse) or hasattr(output, "iter_content"):`. Only the `isinstance` branch establishes that the value is a `RequestsResponse`. The `hasattr` branch guarantees the presence of `iter_content` and **nothing more** — in particular it does not establish `RequestsResponse` or `raise_for_status`. Inside the body mypy can rely only on what *both* branches guarantee, so `raise_for_status` is unsafe while `iter_content` remains valid.
+
+   *(Wording corrected at Human review: the earlier phrasing said the branches "join back to `object`", which overstates what mypy does and obscures why one call is accepted and the other is not.)*
 3. `:1057-1068` — `__requestEncode` is annotated `-> Tuple[int, Dict[str, Any], Union[str, object]]`, so `output` starts as bare `object`.
 4. `:132-149` — `RequestsResponse` defines **both** `iter_content` and `raise_for_status`. The wrapper is not missing anything.
 5. Therefore `output.iter_content(...)` on `:925` type-checks while `:924` does not — exactly one error, as the log reports.
@@ -41,5 +43,5 @@ The fourth is a direction-settling unit (N22 countermeasure). Three units Option
 ## 6. Runtime Discriminative Value — `ADEQUATE`
 1,307-line file, 25 units total (7 log + 18 repo), Required 4. The analyzer gives a precise location and no mechanism; the explanation requires a type-origin trace 144 lines below the error, a domain fact about how mypy joins `or`-narrowed branches, and an **absence-based observation** — that the adjacent `iter_content` call produces no error — to confirm the reading. Two hypotheses must be refuted: that the wrapper lacks the method, and that the annotation alone is at fault.
 
-## 7. Disposition
-**Recommended `HUMAN REVIEW PASS`**, Layer 1 `PASS`, Layer 2 `ADEQUATE`. Not a Formal Freeze.
+## 7. Disposition — decided
+**`HUMAN REVIEW PASS`**, Layer 1 `PASS`, Layer 2 `ADEQUATE`. One Expected Answer wording correction applied at Human review (§3); no evidence changed and the rating is unchanged. Not a Formal Freeze; Formal Suite membership is not frozen.

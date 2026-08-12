@@ -1,13 +1,13 @@
 {
   "schema_version": "1",
   "required_evidence_ids": [
-    "log:raw-log:lines-2701-2800",
     "log:raw-log:lines-0801-0900",
+    "log:raw-log:lines-2601-2700",
+    "log:raw-log:lines-2701-2800",
     "repo:pom-xml:lines-0001-0100",
     "repo:pom-xml:lines-0101-0200"
   ],
   "optional_evidence_ids": [
-    "log:raw-log:lines-2601-2700",
     "repo:travis-yml:lines-0001-0019",
     "repo:enablehypermediasupportintegrationtest-java:lines-0101-0200",
     "repo:traversontest-java:lines-0001-0100"

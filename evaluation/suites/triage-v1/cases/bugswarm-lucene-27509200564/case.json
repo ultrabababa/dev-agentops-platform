@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "Issue #15 targeted replacement construction round",
     "review_status": "human_reviewed",
-    "reviewed_by": "STATUS: constructed in the Issue #15 targeted replacement round; package-content review COMPLETE by the constructing reviewer, awaiting Human disposition. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+    "reviewed_by": "STATUS: constructed in the Issue #15 targeted replacement round and REVISED after Human review corrected the nondeterminism mechanism; awaiting Human disposition. NOT a Formal Freeze and NOT frozen Formal Suite membership."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "96321f0921bf091d685a5dd646a3885cd57b268caa3e329dee5ba0e3f92d9b05"
+  "case_fingerprint": "c0b86d8dedeb449cb2ce765f288de0bc7e03b10cf2702f3937196d1af43c0b60"
 }

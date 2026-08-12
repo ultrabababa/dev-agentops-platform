@@ -532,6 +532,16 @@
       "content_sha256": "f671b46fd8ed14bc6fc1b3aeb8cb65436ebdb950d1b65a702c4c09e79386c485"
     },
     {
+      "evidence_id": "repo:overviewtestbase-java:lines-0001-0097",
+      "source": "physical-artifacts/repository/lucene/luke/src/test/org/apache/lucene/luke/models/overview/OverviewTestBase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 97
+      },
+      "content_sha256": "6e4469c2f796d863006ed65ea0ced0839f0e8e68a4183420586f19160a8ea60a"
+    },
+    {
       "evidence_id": "repo:overviewimpl-java:lines-0001-0100",
       "source": "physical-artifacts/repository/lucene/luke/src/java/org/apache/lucene/luke/models/overview/OverviewImpl.java",
       "span": {

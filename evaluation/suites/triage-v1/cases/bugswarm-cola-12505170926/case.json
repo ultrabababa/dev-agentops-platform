@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "Issue #15 targeted replacement construction round",
     "review_status": "human_reviewed",
-    "reviewed_by": "STATUS: constructed in the Issue #15 targeted replacement round; package-content review COMPLETE by the constructing reviewer, awaiting Human disposition. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value ADEQUATE. The log contains zero occurrences of jdbc:mysql, chargeDB, localhost:3306 or MYSQL_SERVER, so the entire configuration side is repository-only; the observation shows only a four-layer Spring cascade ending in Connection refused. application-test.yml is Required because the Expected Answer uses it to refute the 'activate the test profile' reading. NOT a Formal Freeze and NOT frozen Formal Suite membership."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "c6c9be3613608a106784720411307a876e25d9633934fcef6e03cc813237fef1"
+  "case_fingerprint": "a79e3635ea1d755d40922b2e600e434eaa623e30adb151b015196df7936ddacb"
 }

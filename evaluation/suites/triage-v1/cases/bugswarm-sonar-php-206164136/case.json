@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "Issue #15 targeted replacement construction round",
     "review_status": "human_reviewed",
-    "reviewed_by": "STATUS: constructed in the Issue #15 targeted replacement round; package-content review COMPLETE by the constructing reviewer, awaiting Human disposition. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value ADEQUATE. AssertJ discloses only 'Expecting actual not to be null'. Required Evidence now closes the chain end to end: configured report property, fixture path, PhpUnitService, the tests importer, the per-file report resolver, and the absence of any Monkey.php entry in phpunit-junit-report.xml. The test's own SonarLint name is an authentic misdirection the evidence refutes. NOT a Formal Freeze and NOT frozen Formal Suite membership."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "403660d1f69261b9825369b8f75d9906852d5aeea37a5fb27203574be753f925"
+  "case_fingerprint": "feb687cc8c09aeb0214eea1bf38d5b741e1dbfc55652c3d88b8217d1ba9eca87"
 }
