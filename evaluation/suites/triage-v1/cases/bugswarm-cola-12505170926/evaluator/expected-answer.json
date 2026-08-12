@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "config_or_environment_failure",
+  "acceptable_failure_types": [],
+  "summary": "The charge sample's Spring tests fail because the application configuration points at a MySQL server the CI job never provides.",
+  "root_cause": "ChargeServiceTest and ChargeRecordRepoTest boot the full Spring context from Application, so Spring Boot builds the JPA data source declared in application.yml, which targets jdbc:mysql://${MYSQL_SERVER:localhost}:${MYSQL_PORT:3306}/${MYSQL_DB_NAME:chargeDB} with ddl-auto set to update, forcing a connection at context startup. The CI workflow runs only ./mvnw clean install on an OS and JDK matrix and declares no MySQL service and no MYSQL_* environment overrides, so the connection is refused, dataSource bean creation fails, and every test in those classes errors while the context cannot load. Activating the test profile would not help: application-test.yml hard-codes the same localhost:3306 endpoint.",
+  "recommended_action": "Provide the MySQL instance the configuration expects for this job, for example by declaring a MySQL service in the CI workflow and pointing MYSQL_SERVER and MYSQL_PORT at it, or make the context-loading tests use an embedded database instead of the production data source."
+}

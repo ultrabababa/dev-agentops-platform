@@ -1,0 +1,175 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "fce2a1adc07d811f489c95ad8dd46a068f535297c9ab70ae54596d6ed05b8b2c"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0101-0200",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "39eda2e72379add8617b9fc3dc5712ed628ea026a61cb0ebe157c89ca69a0656"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0201-0300",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "2ea4cc40eb97c52f3b982e94d4de578e1e4584cb3122b282f78d96850048cc79"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0301-0400",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "3343859428fc053d35818814ded43aa5445125ac9dd79cb286eaf91708d715e4"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0401-0500",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "0ee0ad46987a2a6588bba9bae861e12c33c76ad94415b28703c22aaaf8309c0a"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0501-0600",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "b997a2915cf7039fc7a91eaf51de7d038665f9bcc68cf9408aabadf3fc5cc77f"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0601-0700",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 700
+      },
+      "content_sha256": "2b048dcbaaf22b6e62694ed9908b7216703c0a83d5025cddd659277d333d2aeb"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0701-0726",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 701,
+        "end_line": 726
+      },
+      "content_sha256": "4f90d9874ec958ac4cdd210d3848d7efd0f31278e2f3460c196433f688ba17d0"
+    },
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0019",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 19
+      },
+      "content_sha256": "f82860e4ce490c536928dbda57811d14aeb35a7ba68ed007f50b925c29d4de2a"
+    },
+    {
+      "evidence_id": "repo:enablehypermediasupportintegrationtest-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/src/test/java/org/springframework/hateoas/config/EnableHypermediaSupportIntegrationTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "1d7d72cd23ba9012352e11c84319de9eb44adaa7ea3519b4a7062b196cf83dd4"
+    },
+    {
+      "evidence_id": "repo:enablehypermediasupportintegrationtest-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/src/test/java/org/springframework/hateoas/config/EnableHypermediaSupportIntegrationTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "4e080ffd30617953323cb5a593573e56961390b98a1c70ebc68f30e0a4f20942"
+    },
+    {
+      "evidence_id": "repo:enablehypermediasupportintegrationtest-java:lines-0201-0227",
+      "source": "physical-artifacts/repository/src/test/java/org/springframework/hateoas/config/EnableHypermediaSupportIntegrationTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 227
+      },
+      "content_sha256": "5f548fd214e44336533e3ce1da8334d2ba138ccdc2d9fd117d84d8cf5306b771"
+    },
+    {
+      "evidence_id": "repo:traversontest-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/src/test/java/org/springframework/hateoas/client/TraversonTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "91d85f5a24c9cdd5183c279acd85a0ea7ebaf920ca0f5cc35b5c1f25035741dd"
+    },
+    {
+      "evidence_id": "repo:traversontest-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/src/test/java/org/springframework/hateoas/client/TraversonTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "16028ab63c5330669fef5b4c1376d4a0307bc067f7bf08c478692366a91d3fc1"
+    },
+    {
+      "evidence_id": "repo:traversontest-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/src/test/java/org/springframework/hateoas/client/TraversonTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "ebdac074260308ff7b030091c41c28b64c8cc5d6a309777b08494a14e32b4c50"
+    },
+    {
+      "evidence_id": "repo:traversontest-java:lines-0301-0400",
+      "source": "physical-artifacts/repository/src/test/java/org/springframework/hateoas/client/TraversonTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "4c23b69ee9dcfd7efbc274ed4574c7076f75ec9f552444d5ac1d5e99b4051bde"
+    },
+    {
+      "evidence_id": "repo:traversontest-java:lines-0401-0407",
+      "source": "physical-artifacts/repository/src/test/java/org/springframework/hateoas/client/TraversonTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 407
+      },
+      "content_sha256": "821e17f031bd128b72335b911bc4ea1080a864af00ca760f4597a58c9c5774b5"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "PyGithub/PyGithub",
+    "revision_kind": "git_commit",
+    "exact_revision": "b8ceb2891371446741daf16ce1f56f7615cdaf79"
+  },
+  "files": [
+    {
+      "path": "github/Requester.py",
+      "sha256": "bd2bbf2f7c14c20bd9103446c2e7875aea4816440106b954a9e943046f0b1ddc",
+      "size_bytes": 52079
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "b49c4f7375aac7fb37433b2083995559e6c071b4a6b965ba3ef2d1bb538418f7",
+      "size_bytes": 2725
+    },
+    {
+      "path": "requirements/types.txt",
+      "sha256": "4da08e081a3478eb115387ab99eea111cfc78b7417b9d1b6e5497485ecede803",
+      "size_bytes": 55
+    },
+    {
+      "path": ".github/workflows/lint.yml",
+      "sha256": "3f2cf5e2810b2c5657e910124c9eb3483e7c1996d9b1d7043207dcf50b0031cc",
+      "size_bytes": 1526
+    }
+  ]
+}

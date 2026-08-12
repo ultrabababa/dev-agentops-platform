@@ -162,6 +162,28 @@ This is therefore the **primary screening question at Candidate Discovery**, app
 suite now contradicts them three times over: B02 has the lowest Required share in the suite (1.3 %) and is the hardest Case;
 N22 has the highest of its group (21.4 %) and is `LOW`.
 
+### Replacement construction round 2 — five built, one slot left open
+
+| Case | Slot | Layer 1 | Layer 2 | Note |
+|---|---|---|---|---|
+| `bugswarm-cola-12505170926` | `config_or_environment_failure` | `PASS` | **`ADEQUATE`** | Log contains **zero** configuration tokens; whole config side is repository-only |
+| `bugswarm-sonar-php-206164136` | `test_assertion_failure` | `PASS` | **`ADEQUATE`** | AssertJ discloses only "Expecting actual not to be null"; ends in an absence inference over a fixture |
+| `bugswarm-pygithub-36442425251` | `lint_or_type_failure` | `PASS` | **`ADEQUATE`** | mypy states the violation; the `or hasattr` narrowing join and the `Union[str, object]` origin are repository-only |
+| `bugswarm-spring-hateoas-232784946` | `dependency_or_install_failure` | `PASS` | **`ADEQUATE`** | 32 broken Spring contexts above one property a profile fails to override |
+| `bugswarm-lucene-27509200564` | `timeout_or_flaky_failure` | `PASS` | **`ADEQUATE`** | Nondeterminism is artifact-visible: a seed line in the log and a randomiser on the causal path |
+| *(second flaky slot)* | `timeout_or_flaky_failure` | — | — | **UNFILLED** — see `reviews/flaky-slot-2-record.md` |
+
+**F2 `orbit` and F3 `ocpsoft/rewrite` were both rejected before construction**, on the same material ground: their
+mechanisms are fully deterministic, so neither can support a `timeout_or_flaky_failure` label. F2's cause is a
+`MessageDigest.digest(input)` whose result is discarded before a second `digest()` call, making every parameter list hash
+to one constant; F3's is a mock `ClassLoader` that the production path bypasses in favour of `Class.forName`.
+
+**Reusable finding — do not screen the flaky category on reproduction metadata.** BugSwarm's `reproducibility_status`
+and `stability` describe how reliably the *artifact* reproduces, not whether the *test* is nondeterministic. The correct
+screen is **artifact-visible nondeterminism** on the causal path: a randomized-testing seed, a retry that succeeds, an
+explicit timeout or sleep, an unreset shared static, or a documented ordering dependence. F1 lucene passes that screen
+and is the model; F2, F3 and the untested F4 were all selected on the wrong property.
+
 ### Replacement construction round 1 — C2, A1, D2 built
 
 The first three candidates, chosen because their open questions could materially change admission, are constructed as

@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "timeout_or_flaky_failure",
+  "acceptable_failure_types": [],
+  "summary": "A Luke test fails intermittently because it opens the segments file with a non-READONCE context that the test framework's randomizer sometimes turns into a rejected one.",
+  "root_cause": "IndexUtils.getIndexFormat opens the segments file with IOContext.DEFAULT. MockDirectoryWrapper.openInput now rejects any read of a file whose name starts with the segments prefix unless the context is exactly IOContext.READONCE. Before that check it replaces the caller's context with LuceneTestCase.newIOContext(randomState, context), which returns a randomly chosen context, so DEFAULT is sometimes randomised into FLUSH or another non-READONCE value and sometimes not. The failure therefore depends on the randomized-testing seed rather than on any stable product state, which is why the job reproduces only on some runs.",
+  "recommended_action": "Open the segments file with IOContext.READONCE in IndexUtils.getIndexFormat so the read satisfies the framework's confined-context requirement on every seed."
+}

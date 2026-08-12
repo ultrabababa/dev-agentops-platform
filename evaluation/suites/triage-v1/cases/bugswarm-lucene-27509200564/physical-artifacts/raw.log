@@ -1,0 +1,973 @@
+﻿2024-07-16T13:01:01.6921944Z Current runner version: '2.317.0'
+2024-07-16T13:01:01.6947235Z ##[group]Operating System
+2024-07-16T13:01:01.6947971Z Ubuntu
+2024-07-16T13:01:01.6948313Z 22.04.4
+2024-07-16T13:01:01.6948674Z LTS
+2024-07-16T13:01:01.6949057Z ##[endgroup]
+2024-07-16T13:01:01.6949429Z ##[group]Runner Image
+2024-07-16T13:01:01.6949871Z Image: ubuntu-22.04
+2024-07-16T13:01:01.6950311Z Version: 20240708.1.0
+2024-07-16T13:01:01.6951305Z Included Software: https://github.com/actions/runner-images/blob/ubuntu22/20240708.1/images/ubuntu/Ubuntu2204-Readme.md
+2024-07-16T13:01:01.6952722Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu22%2F20240708.1
+2024-07-16T13:01:01.6953620Z ##[endgroup]
+2024-07-16T13:01:01.6954033Z ##[group]Runner Image Provisioner
+2024-07-16T13:01:01.6954506Z 2.0.370.1
+2024-07-16T13:01:01.6954869Z ##[endgroup]
+2024-07-16T13:01:01.6957055Z ##[group]GITHUB_TOKEN Permissions
+2024-07-16T13:01:01.6958829Z Actions: read
+2024-07-16T13:01:01.6959425Z Attestations: read
+2024-07-16T13:01:01.6959956Z Checks: read
+2024-07-16T13:01:01.6960345Z Contents: read
+2024-07-16T13:01:01.6960727Z Deployments: read
+2024-07-16T13:01:01.6961153Z Discussions: read
+2024-07-16T13:01:01.6961538Z Issues: read
+2024-07-16T13:01:01.6961891Z Metadata: read
+2024-07-16T13:01:01.6962310Z Packages: read
+2024-07-16T13:01:01.6962675Z Pages: read
+2024-07-16T13:01:01.6963064Z PullRequests: read
+2024-07-16T13:01:01.6963515Z RepositoryProjects: read
+2024-07-16T13:01:01.6963952Z SecurityEvents: read
+2024-07-16T13:01:01.6964344Z Statuses: read
+2024-07-16T13:01:01.6964757Z ##[endgroup]
+2024-07-16T13:01:01.6967728Z Secret source: None
+2024-07-16T13:01:01.6968418Z Prepare workflow directory
+2024-07-16T13:01:01.7980848Z Prepare all required actions
+2024-07-16T13:01:01.8137909Z Getting action download info
+2024-07-16T13:01:01.9612891Z Download action repository 'actions/checkout@v4' (SHA:692973e3d937129bcbf40652eb9f2f61becf3332)
+2024-07-16T13:01:02.1457461Z Complete job name: tests (JDK 21 on ubuntu-latest)
+2024-07-16T13:01:02.2408469Z ##[group]Run actions/checkout@v4
+2024-07-16T13:01:02.2409160Z with:
+2024-07-16T13:01:02.2409797Z   repository: apache/lucene
+2024-07-16T13:01:02.2410467Z   token: ***
+2024-07-16T13:01:02.2410949Z   ssh-strict: true
+2024-07-16T13:01:02.2411358Z   ssh-user: git
+2024-07-16T13:01:02.2411737Z   persist-credentials: true
+2024-07-16T13:01:02.2412254Z   clean: true
+2024-07-16T13:01:02.2412672Z   sparse-checkout-cone-mode: true
+2024-07-16T13:01:02.2413128Z   fetch-depth: 1
+2024-07-16T13:01:02.2413566Z   fetch-tags: false
+2024-07-16T13:01:02.2413981Z   show-progress: true
+2024-07-16T13:01:02.2414336Z   lfs: false
+2024-07-16T13:01:02.2414769Z   submodules: false
+2024-07-16T13:01:02.2415172Z   set-safe-directory: true
+2024-07-16T13:01:02.2415567Z env:
+2024-07-16T13:01:02.2416006Z   GRADLE_ENTERPRISE_ACCESS_KEY: 
+2024-07-16T13:01:02.2416474Z ##[endgroup]
+2024-07-16T13:01:02.4467143Z Syncing repository: apache/lucene
+2024-07-16T13:01:02.4469133Z ##[group]Getting Git version info
+2024-07-16T13:01:02.4470010Z Working directory is '/home/runner/work/lucene/lucene'
+2024-07-16T13:01:02.4471138Z [command]/usr/bin/git version
+2024-07-16T13:01:02.4478209Z git version 2.45.2
+2024-07-16T13:01:02.4502981Z ##[endgroup]
+2024-07-16T13:01:02.4516434Z Temporarily overriding HOME='/home/runner/work/_temp/ac5f57b1-a479-4721-a304-74befce6c84c' before making global git config changes
+2024-07-16T13:01:02.4518430Z Adding repository directory to the temporary git global config as a safe directory
+2024-07-16T13:01:02.4521782Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/lucene/lucene
+2024-07-16T13:01:02.4556503Z Deleting the contents of '/home/runner/work/lucene/lucene'
+2024-07-16T13:01:02.4559907Z ##[group]Initializing the repository
+2024-07-16T13:01:02.4563644Z [command]/usr/bin/git init /home/runner/work/lucene/lucene
+2024-07-16T13:01:02.4628866Z hint: Using 'master' as the name for the initial branch. This default branch name
+2024-07-16T13:01:02.4630648Z hint: is subject to change. To configure the initial branch name to use in all
+2024-07-16T13:01:02.4632588Z hint: of your new repositories, which will suppress this warning, call:
+2024-07-16T13:01:02.4633545Z hint:
+2024-07-16T13:01:02.4634120Z hint: 	git config --global init.defaultBranch <name>
+2024-07-16T13:01:02.4634678Z hint:
+2024-07-16T13:01:02.4635383Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2024-07-16T13:01:02.4636490Z hint: 'development'. The just-created branch can be renamed via this command:
+2024-07-16T13:01:02.4637596Z hint:
+2024-07-16T13:01:02.4638134Z hint: 	git branch -m <name>
+2024-07-16T13:01:02.4638857Z Initialized empty Git repository in /home/runner/work/lucene/lucene/.git/
+2024-07-16T13:01:02.4642412Z [command]/usr/bin/git remote add origin https://github.com/apache/lucene
+2024-07-16T13:01:02.4675142Z ##[endgroup]
+2024-07-16T13:01:02.4675906Z ##[group]Disabling automatic garbage collection
+2024-07-16T13:01:02.4679070Z [command]/usr/bin/git config --local gc.auto 0
+2024-07-16T13:01:02.4708527Z ##[endgroup]
+2024-07-16T13:01:02.4709366Z ##[group]Setting up auth
+2024-07-16T13:01:02.4715224Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2024-07-16T13:01:02.4746876Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2024-07-16T13:01:02.5026623Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2024-07-16T13:01:02.5057701Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2024-07-16T13:01:02.5288689Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2024-07-16T13:01:02.5336662Z ##[endgroup]
+2024-07-16T13:01:02.5344169Z ##[group]Fetching the repository
+2024-07-16T13:01:02.5346309Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +556b838b09c2de3d64d1ba5afb4dcf99bc4014c6:refs/remotes/pull/13574/merge
+2024-07-16T13:01:07.6129221Z From https://github.com/apache/lucene
+2024-07-16T13:01:07.6131669Z  * [new ref]         556b838b09c2de3d64d1ba5afb4dcf99bc4014c6 -> pull/13574/merge
+2024-07-16T13:01:07.6167566Z ##[endgroup]
+2024-07-16T13:01:07.6169857Z ##[group]Determining the checkout info
+2024-07-16T13:01:07.6171829Z ##[endgroup]
+2024-07-16T13:01:07.6174653Z [command]/usr/bin/git sparse-checkout disable
+2024-07-16T13:01:07.6226591Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2024-07-16T13:01:07.6267172Z ##[group]Checking out the ref
+2024-07-16T13:01:07.6272183Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/13574/merge
+2024-07-16T13:01:08.4019198Z Note: switching to 'refs/remotes/pull/13574/merge'.
+2024-07-16T13:01:08.4020005Z 
+2024-07-16T13:01:08.4020674Z You are in 'detached HEAD' state. You can look around, make experimental
+2024-07-16T13:01:08.4022257Z changes and commit them, and you can discard any commits you make in this
+2024-07-16T13:01:08.4023448Z state without impacting any branches by switching back to a branch.
+2024-07-16T13:01:08.4024227Z 
+2024-07-16T13:01:08.4024723Z If you want to create a new branch to retain commits you create, you may
+2024-07-16T13:01:08.4026109Z do so (now or later) by using -c with the switch command. Example:
+2024-07-16T13:01:08.4026768Z 
+2024-07-16T13:01:08.4027135Z   git switch -c <new-branch-name>
+2024-07-16T13:01:08.4027565Z 
+2024-07-16T13:01:08.4027791Z Or undo this operation with:
+2024-07-16T13:01:08.4028313Z 
+2024-07-16T13:01:08.4028506Z   git switch -
+2024-07-16T13:01:08.4028790Z 
+2024-07-16T13:01:08.4029379Z Turn off this advice by setting config variable advice.detachedHead to false
+2024-07-16T13:01:08.4030169Z 
+2024-07-16T13:01:08.4030990Z HEAD is now at 556b838 Merge f33b3285c4a46d4dedbe8464ab3d311d614aea17 into 5e52b8094aca4dab2898c7dd17084fc7cf7fd016
+2024-07-16T13:01:08.4058112Z ##[endgroup]
+2024-07-16T13:01:08.4098541Z [command]/usr/bin/git log -1 --format='%H'
+2024-07-16T13:01:08.4121914Z '556b838b09c2de3d64d1ba5afb4dcf99bc4014c6'
+2024-07-16T13:01:08.4501200Z Prepare all required actions
+2024-07-16T13:01:08.4501707Z Getting action download info
+2024-07-16T13:01:08.5927458Z Download action repository 'actions/setup-java@v4' (SHA:99b8673ff64fbf99d8d325f52d9a5bdedb8483e9)
+2024-07-16T13:01:08.8765898Z Download action repository 'gradle/actions@v3' (SHA:d9c87d481d55275bb5441eef3fe0e46805f9ef70)
+2024-07-16T13:01:09.5492674Z ##[group]Run ./.github/actions/prepare-for-build
+2024-07-16T13:01:09.5493053Z with:
+2024-07-16T13:01:09.5493264Z   java-version: 21
+2024-07-16T13:01:09.5493528Z   java-distribution: temurin
+2024-07-16T13:01:09.5493798Z env:
+2024-07-16T13:01:09.5494017Z   GRADLE_ENTERPRISE_ACCESS_KEY: 
+2024-07-16T13:01:09.5494303Z ##[endgroup]
+2024-07-16T13:01:09.5733923Z ##[group]Run actions/setup-java@v4
+2024-07-16T13:01:09.5734239Z with:
+2024-07-16T13:01:09.5734462Z   distribution: temurin
+2024-07-16T13:01:09.5734723Z   java-version: 21
+2024-07-16T13:01:09.5734968Z   java-package: jdk
+2024-07-16T13:01:09.5735213Z   check-latest: false
+2024-07-16T13:01:09.5735496Z   server-id: github
+2024-07-16T13:01:09.5735747Z   server-username: GITHUB_ACTOR
+2024-07-16T13:01:09.5736055Z   server-password: GITHUB_TOKEN
+2024-07-16T13:01:09.5736355Z   overwrite-settings: true
+2024-07-16T13:01:09.5736620Z   job-status: success
+2024-07-16T13:01:09.5737007Z   token: ***
+2024-07-16T13:01:09.5737219Z env:
+2024-07-16T13:01:09.5737430Z   GRADLE_ENTERPRISE_ACCESS_KEY: 
+2024-07-16T13:01:09.5737728Z ##[endgroup]
+2024-07-16T13:01:09.7638942Z ##[group]Installed distributions
+2024-07-16T13:01:09.7681717Z Resolved Java 21.0.3+9 from tool-cache
+2024-07-16T13:01:09.7682379Z Setting Java 21.0.3+9 as the default
+2024-07-16T13:01:09.7697752Z Creating toolchains.xml for JDK version 21 from temurin
+2024-07-16T13:01:09.7775294Z Writing to /home/runner/.m2/toolchains.xml
+2024-07-16T13:01:09.7775792Z 
+2024-07-16T13:01:09.7776162Z Java configuration:
+2024-07-16T13:01:09.7776679Z   Distribution: temurin
+2024-07-16T13:01:09.7777540Z   Version: 21.0.3+9
+2024-07-16T13:01:09.7778488Z   Path: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.3-9/x64
+2024-07-16T13:01:09.7779177Z 
+2024-07-16T13:01:09.7780532Z ##[endgroup]
+2024-07-16T13:01:09.7807506Z Creating settings.xml with server-id: github
+2024-07-16T13:01:09.7816708Z Writing to /home/runner/.m2/settings.xml
+2024-07-16T13:01:09.8026879Z ##[group]Run gradle/actions/setup-gradle@v3
+2024-07-16T13:01:09.8027221Z with:
+2024-07-16T13:01:09.8027431Z   cache-disabled: false
+2024-07-16T13:01:09.8027689Z   cache-read-only: true
+2024-07-16T13:01:09.8027946Z   cache-write-only: false
+2024-07-16T13:01:09.8028231Z   cache-overwrite-existing: false
+2024-07-16T13:01:09.8028598Z   gradle-home-cache-includes: caches
+notifications
+
+2024-07-16T13:01:09.8028996Z   gradle-home-cache-cleanup: false
+2024-07-16T13:01:09.8029307Z   add-job-summary: always
+2024-07-16T13:01:09.8029611Z   add-job-summary-as-pr-comment: never
+2024-07-16T13:01:09.8029945Z   dependency-graph: disabled
+2024-07-16T13:01:09.8030287Z   dependency-graph-continue-on-failure: true
+2024-07-16T13:01:09.8030669Z   build-scan-publish: false
+2024-07-16T13:01:09.8030960Z   validate-wrappers: false
+2024-07-16T13:01:09.8031244Z   generate-job-summary: true
+2024-07-16T13:01:09.8031545Z   gradle-home-cache-strict-match: false
+2024-07-16T13:01:09.8031995Z   workflow-job-context: {
+  "os": "ubuntu-latest",
+  "java": "21"
+}
+2024-07-16T13:01:09.8032586Z   github-token: ***
+2024-07-16T13:01:09.8032816Z env:
+2024-07-16T13:01:09.8033021Z   GRADLE_ENTERPRISE_ACCESS_KEY: 
+2024-07-16T13:01:09.8033462Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.3-9/x64
+2024-07-16T13:01:09.8034068Z   JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.3-9/x64
+2024-07-16T13:01:09.8034517Z ##[endgroup]
+2024-07-16T13:01:10.2066067Z Merged default JDK locations into /home/runner/.m2/toolchains.xml
+2024-07-16T13:01:10.2068975Z ##[group]Restore Gradle state from cache
+2024-07-16T13:01:10.4244130Z Cache Size: ~10 MB (10777212 B)
+2024-07-16T13:01:10.4275082Z [command]/usr/bin/tar -xf /home/runner/work/_temp/c3e8e39b-3fe4-42e3-82a2-a1ebede76b35/cache.tzst -P -C /home/runner/work/lucene/lucene --use-compress-program unzstd
+2024-07-16T13:01:10.6413157Z Cache restored successfully
+2024-07-16T13:01:10.6450418Z Restored Gradle User Home from cache key: gradle-home-v1|Linux|tests[b4be4909ff08018feddf22c09ece9ea1]-5e52b8094aca4dab2898c7dd17084fc7cf7fd016
+2024-07-16T13:01:10.8763445Z Cache Size: ~1 MB (859252 B)
+2024-07-16T13:01:10.8781082Z [command]/usr/bin/tar -xf /home/runner/work/_temp/f6fdcdb5-7658-46ef-a39f-c168bebc4a36/cache.tzst -P -C /home/runner/work/lucene/lucene --use-compress-program unzstd
+2024-07-16T13:01:10.9780971Z Cache restored successfully
+2024-07-16T13:01:10.9786475Z Restored instrumented-jars with key gradle-instrumented-jars-v1-04434089304348f55ab641b500db9411 to /home/runner/.gradle/caches/jars-*/*/
+2024-07-16T13:01:11.3238674Z Received 10777212 of 10777212 (100.0%), 10.3 MBs/sec
+2024-07-16T13:01:11.7660898Z Received 859252 of 859252 (100.0%), 0.8 MBs/sec
+2024-07-16T13:01:11.7722160Z Received 97385076 of 122550900 (79.5%), 92.9 MBs/sec
+2024-07-16T13:01:11.7793700Z Received 0 of 36850588 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:11.7865014Z Received 0 of 41049990 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:11.7996398Z Received 0 of 43344260 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:11.8067771Z Received 0 of 137229187 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:11.8139130Z Received 0 of 130273043 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:11.8410547Z Received 0 of 1432297 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:12.7735816Z Received 97385076 of 122550900 (79.5%), 46.4 MBs/sec
+2024-07-16T13:01:12.7796612Z Received 0 of 36850588 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:12.7868210Z Received 0 of 41049990 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:12.8000957Z Received 0 of 43344260 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:12.8062516Z Received 0 of 137229187 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:12.8134037Z Received 0 of 130273043 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:12.8415818Z Received 0 of 1432297 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:13.7747213Z Received 97385076 of 122550900 (79.5%), 30.9 MBs/sec
+2024-07-16T13:01:13.7798258Z Received 0 of 36850588 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:13.7869908Z Received 0 of 41049990 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:13.8011318Z Received 0 of 43344260 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:13.8062732Z Received 0 of 137229187 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:13.8134024Z Received 0 of 130273043 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:13.8415713Z Received 0 of 1432297 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:14.7757699Z Received 97385076 of 122550900 (79.5%), 23.2 MBs/sec
+2024-07-16T13:01:14.7798333Z Received 0 of 36850588 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:14.7869854Z Received 0 of 41049990 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:14.8021301Z Received 0 of 43344260 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:14.8062876Z Received 0 of 137229187 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:14.8134140Z Received 0 of 130273043 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:14.8415790Z Received 0 of 1432297 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:15.7768089Z Received 97385076 of 122550900 (79.5%), 18.6 MBs/sec
+2024-07-16T13:01:15.7798945Z Received 0 of 36850588 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:15.7860772Z Received 0 of 41049990 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:15.8029849Z Received 0 of 43344260 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:15.8179897Z Received 0 of 137229187 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:15.8180623Z Received 0 of 130273043 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:15.8476604Z Received 0 of 1432297 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:16.2558148Z Cache Size: ~117 MB (122550900 B)
+2024-07-16T13:01:16.3506384Z Cache Size: ~35 MB (36850588 B)
+2024-07-16T13:01:16.3682591Z Cache Size: ~39 MB (41049990 B)
+2024-07-16T13:01:16.3760710Z [command]/usr/bin/tar -xf /home/runner/work/_temp/75480f0b-91a1-4b15-b3e3-672463398b9b/cache.tzst -P -C /home/runner/work/lucene/lucene --use-compress-program unzstd
+2024-07-16T13:01:16.3875307Z [command]/usr/bin/tar -xf /home/runner/work/_temp/b439e591-d268-4506-85d1-f4f3b3494b56/cache.tzst -P -C /home/runner/work/lucene/lucene --use-compress-program unzstd
+2024-07-16T13:01:16.3993198Z [command]/usr/bin/tar -xf /home/runner/work/_temp/593ab14a-8e58-43d9-94cf-42cf2069bc75/cache.tzst -P -C /home/runner/work/lucene/lucene --use-compress-program unzstd
+2024-07-16T13:01:16.4093376Z Cache Size: ~41 MB (43344260 B)
+2024-07-16T13:01:16.5026862Z [command]/usr/bin/tar -xf /home/runner/work/_temp/3701fa76-b4d7-414c-b3ac-e850ff773dad/cache.tzst -P -C /home/runner/work/lucene/lucene --use-compress-program unzstd
+2024-07-16T13:01:16.7933887Z Received 122550900 of 122550900 (100.0%), 19.4 MBs/sec
+2024-07-16T13:01:16.7934739Z Received 36850588 of 36850588 (100.0%), 5.8 MBs/sec
+2024-07-16T13:01:16.7935509Z Received 41049990 of 41049990 (100.0%), 6.5 MBs/sec
+2024-07-16T13:01:16.8206592Z Received 43344260 of 43344260 (100.0%), 6.9 MBs/sec
+2024-07-16T13:01:16.8207523Z Received 75497472 of 137229187 (55.0%), 12.0 MBs/sec
+2024-07-16T13:01:16.8208267Z Received 0 of 130273043 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:16.8506441Z Received 0 of 1432297 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:17.1246285Z Cache restored successfully
+2024-07-16T13:01:17.1852237Z Restored dependencies with key gradle-dependencies-v1-e27d151427cbb1d78fb1bb40a1ab61ba to /home/runner/.gradle/caches/modules-*/files-*/*/*/*/*
+2024-07-16T13:01:17.2032619Z Cache restored successfully
+2024-07-16T13:01:17.2134491Z Restored generated-gradle-jars with key gradle-generated-gradle-jars-v1-1a83665c481822ee3817bdf1f75747ae to /home/runner/.gradle/caches/8.4/generated-gradle-jars/gradle-api-8.4.jar
+2024-07-16T13:01:17.2454430Z Cache restored successfully
+2024-07-16T13:01:17.2568128Z Restored generated-gradle-jars with key gradle-generated-gradle-jars-v1-8b02b97fb417a75a34543e345c4e56f3 to /home/runner/.gradle/caches/8.8/generated-gradle-jars/gradle-api-8.8.jar
+2024-07-16T13:01:17.4133779Z Cache restored successfully
+2024-07-16T13:01:17.4218967Z Restored transforms with key gradle-transforms-v1-f144d428da246e957e64335f4ef896b9 to /home/runner/.gradle/caches/transforms-4/*/
+2024-07-16T13:01:17.4219856Z /home/runner/.gradle/caches/*/transforms/*/
+2024-07-16T13:01:17.8214977Z Received 120451971 of 137229187 (87.8%), 16.4 MBs/sec
+2024-07-16T13:01:17.8215637Z Received 0 of 130273043 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:17.8506020Z Received 0 of 1432297 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:18.8229343Z Received 120451971 of 137229187 (87.8%), 14.3 MBs/sec
+2024-07-16T13:01:18.8230007Z Received 0 of 130273043 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:18.8511106Z Received 0 of 1432297 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:19.8232871Z Received 120451971 of 137229187 (87.8%), 12.7 MBs/sec
+2024-07-16T13:01:19.8233579Z Received 0 of 130273043 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:19.8514239Z Received 0 of 1432297 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:20.8245011Z Received 120451971 of 137229187 (87.8%), 11.5 MBs/sec
+2024-07-16T13:01:20.8246054Z Received 0 of 130273043 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:20.8548439Z Received 0 of 1432297 (0.0%), 0.0 MBs/sec
+2024-07-16T13:01:20.9602585Z Cache Size: ~1 MB (1432297 B)
+2024-07-16T13:01:21.0160419Z Cache Size: ~131 MB (137229187 B)
+2024-07-16T13:01:21.0688182Z [command]/usr/bin/tar -xf /home/runner/work/_temp/fbe3b2b0-467c-4914-9852-b3a5bf6ee8b7/cache.tzst -P -C /home/runner/work/lucene/lucene --use-compress-program unzstd
+2024-07-16T13:01:21.1041888Z [command]/usr/bin/tar -xf /home/runner/work/_temp/8ac5dd51-8d76-46be-89bb-bc0cc5f6a69d/cache.tzst -P -C /home/runner/work/lucene/lucene --use-compress-program unzstd
+2024-07-16T13:01:21.3663209Z Cache restored successfully
+2024-07-16T13:01:21.3672238Z Restored groovy-dsl with key gradle-groovy-dsl-v1-9101ba44a85c41b32d1d4aed6cff43ad to /home/runner/.gradle/caches/*/groovy-dsl/*/
+2024-07-16T13:01:21.4949748Z Cache Size: ~124 MB (130273043 B)
+2024-07-16T13:01:21.4985857Z [command]/usr/bin/tar -xf /home/runner/work/_temp/6eadb493-744b-4dbb-857f-dc84f98fa245/cache.tzst -P -C /home/runner/work/lucene/lucene --use-compress-program unzstd
+2024-07-16T13:01:21.5883027Z Cache restored successfully
+2024-07-16T13:01:21.6182845Z Restored wrapper-zips with key gradle-wrapper-zips-v1-9b12742562b89ad80b153fd0e40e926d to /home/runner/.gradle/wrapper/dists/gradle-8.8-bin/dl7vupf4psengwqhwktix4v1
+2024-07-16T13:01:21.8215984Z Cache restored successfully
+2024-07-16T13:01:21.8247468Z Received 137229187 of 137229187 (100.0%), 11.9 MBs/sec
+2024-07-16T13:01:21.8248303Z Received 130273043 of 130273043 (100.0%), 11.3 MBs/sec
+2024-07-16T13:01:21.8473610Z Restored wrapper-zips with key gradle-wrapper-zips-v1-f82d94dd741812d9afc7aad8d4ab116c to /home/runner/.gradle/wrapper/dists/gradle-8.4-bin/1w5dpkrfk8irigvoxmyhowfim
+2024-07-16T13:01:21.8483619Z ##[endgroup]
+2024-07-16T13:01:21.8760674Z ##[group]Run ./gradlew test "-Ptask.times=true" --max-workers 2
+2024-07-16T13:01:21.8761387Z ./gradlew test "-Ptask.times=true" --max-workers 2
+2024-07-16T13:01:21.8803808Z shell: /usr/bin/bash -e {0}
+2024-07-16T13:01:21.8804194Z env:
+2024-07-16T13:01:21.8804476Z   GRADLE_ENTERPRISE_ACCESS_KEY: 
+2024-07-16T13:01:21.8805009Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.3-9/x64
+2024-07-16T13:01:21.8805689Z   JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.3-9/x64
+2024-07-16T13:01:21.8806271Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2024-07-16T13:01:21.8806710Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2024-07-16T13:01:21.8807128Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2024-07-16T13:01:21.8807722Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2024-07-16T13:01:21.8808394Z   DEVELOCITY_AUTO_INJECTION_CUSTOM_VALUE: gradle-actions
+2024-07-16T13:01:21.8808906Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2024-07-16T13:01:21.8809280Z ##[endgroup]
+2024-07-16T13:01:22.6523241Z Downloading gradle-wrapper.jar from https://raw.githubusercontent.com/gradle/gradle/v8.8.0/gradle/wrapper/gradle-wrapper.jar
+2024-07-16T13:01:23.8028747Z Generating gradle.properties
+2024-07-16T13:01:24.5544097Z Starting a Gradle Daemon (subsequent builds will be faster)
+2024-07-16T13:01:33.0530843Z 
+2024-07-16T13:01:33.0543545Z > Task :build-infra:compileJava
+2024-07-16T13:01:33.0553110Z Note: /home/runner/work/lucene/lucene/build-tools/build-infra/src/main/java/org/apache/lucene/gradle/Checksum.java uses or overrides a deprecated API.
+2024-07-16T13:01:33.0554673Z 
+2024-07-16T13:01:33.0555073Z > Task :build-infra:pluginDescriptors
+2024-07-16T13:01:33.0555844Z > Task :build-infra:processResources
+2024-07-16T13:01:33.0556630Z > Task :build-infra:classes
+2024-07-16T13:01:33.0557469Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:01:33.1531732Z > Task :build-infra:jar
+2024-07-16T13:01:42.2531525Z 
+2024-07-16T13:01:42.2532454Z > Task :randomizationInfo
+2024-07-16T13:01:42.2544163Z Running tests with randomization seed: tests.seed=6603B3B1AF668E36
+2024-07-16T13:01:42.2545116Z 
+2024-07-16T13:01:42.2545616Z > Task :checkJdkInternalsExportedToGradle
+2024-07-16T13:01:42.2546392Z > Task :lucene:core:processResources
+2024-07-16T13:01:45.7532483Z > Task :gitStatus
+2024-07-16T13:01:45.7533451Z > Task :lucene:codecs:processResources
+2024-07-16T13:01:45.8532588Z > Task :lucene:test-framework:processResources
+2024-07-16T13:01:45.9531097Z > Task :lucene:analysis:common:processResources
+2024-07-16T13:01:45.9532310Z > Task :lucene:analysis:icu:processResources
+2024-07-16T13:01:45.9533403Z > Task :lucene:analysis:kuromoji:processResources
+2024-07-16T13:01:46.0532920Z > Task :lucene:analysis:morfologik:processResources
+2024-07-16T13:01:46.2531405Z > Task :lucene:analysis:nori:processResources
+2024-07-16T13:01:46.2533256Z > Task :lucene:analysis:opennlp:processResources
+2024-07-16T13:01:46.2534564Z > Task :lucene:analysis:phonetic:processResources
+2024-07-16T13:01:46.2535388Z > Task :lucene:analysis:smartcn:processResources
+2024-07-16T13:01:46.3533647Z > Task :lucene:analysis:stempel:processResources
+2024-07-16T13:01:46.3534657Z > Task :lucene:analysis.tests:processTestResources
+2024-07-16T13:01:46.3536477Z > Task :lucene:backward-codecs:processResources
+2024-07-16T13:01:46.6539721Z > Task :lucene:backward-codecs:processTestResources
+2024-07-16T13:01:46.6541384Z > Task :lucene:facet:processResources NO-SOURCE
+2024-07-16T13:01:46.6542586Z > Task :lucene:memory:processResources NO-SOURCE
+2024-07-16T13:01:46.6543728Z > Task :lucene:queries:processResources NO-SOURCE
+2024-07-16T13:01:46.6544898Z > Task :lucene:highlighter:processResources NO-SOURCE
+2024-07-16T13:01:46.6545957Z > Task :lucene:sandbox:processResources
+2024-07-16T13:01:46.6546910Z > Task :lucene:queryparser:processResources
+2024-07-16T13:01:46.6548020Z > Task :lucene:spatial3d:processResources NO-SOURCE
+2024-07-16T13:01:46.6549953Z > Task :lucene:spatial-extras:processResources NO-SOURCE
+2024-07-16T13:01:46.6551347Z > Task :lucene:benchmark:processResources NO-SOURCE
+2024-07-16T13:01:46.7534243Z > Task :lucene:benchmark:processTestResources
+2024-07-16T13:01:46.7535295Z > Task :lucene:expressions:processResources
+2024-07-16T13:01:46.7536646Z > Task :lucene:benchmark-jmh:processResources NO-SOURCE
+2024-07-16T13:01:46.7537796Z > Task :lucene:benchmark-jmh:processTestResources NO-SOURCE
+2024-07-16T13:01:46.7558626Z > Task :lucene:grouping:processResources NO-SOURCE
+2024-07-16T13:01:46.7559770Z > Task :lucene:classification:processResources NO-SOURCE
+2024-07-16T13:01:46.7560750Z > Task :lucene:classification:processTestResources
+2024-07-16T13:01:46.7561729Z > Task :lucene:codecs:processTestResources
+2024-07-16T13:01:49.0534903Z > Task :lucene:core.tests:compileJava
+2024-07-16T13:01:49.0536570Z > Task :lucene:core.tests:processResources NO-SOURCE
+2024-07-16T13:01:49.0537665Z > Task :lucene:core.tests:classes
+2024-07-16T13:01:49.0538826Z > Task :lucene:core.tests:jar
+2024-07-16T13:01:49.0539863Z > Task :lucene:core.tests:processTestResources
+2024-07-16T13:01:49.0540992Z > Task :lucene:demo:processResources NO-SOURCE
+2024-07-16T13:01:49.0542012Z > Task :lucene:demo:processTestResources
+2024-07-16T13:01:49.0543144Z > Task :lucene:join:processResources NO-SOURCE
+2024-07-16T13:01:49.0545817Z > Task :lucene:misc:processResources NO-SOURCE
+2024-07-16T13:01:49.0546898Z > Task :lucene:suggest:processResources
+2024-07-16T13:01:49.1533126Z > Task :lucene:luke:processResources
+2024-07-16T13:01:49.1536906Z > Task :lucene:monitor:processResources NO-SOURCE
+2024-07-16T13:01:49.1543034Z > Task :lucene:replicator:processResources NO-SOURCE
+2024-07-16T13:01:49.1544463Z > Task :lucene:distribution.tests:compileJava NO-SOURCE
+2024-07-16T13:01:49.1545864Z > Task :lucene:distribution.tests:processResources NO-SOURCE
+2024-07-16T13:01:49.1547237Z > Task :lucene:distribution.tests:classes UP-TO-DATE
+2024-07-16T13:01:50.2531278Z > Task :lucene:distribution.tests:compileTestJava
+2024-07-16T13:01:50.2535818Z > Task :lucene:distribution.tests:processTestResources
+2024-07-16T13:01:50.2537123Z > Task :lucene:distribution.tests:testClasses
+2024-07-16T13:01:50.2538320Z > Task :lucene:expressions:processTestResources
+2024-07-16T13:01:50.2539525Z > Task :lucene:facet:processTestResources
+2024-07-16T13:01:50.2540546Z > Task :lucene:grouping:processTestResources
+2024-07-16T13:01:50.2541460Z > Task :lucene:highlighter:processTestResources
+2024-07-16T13:01:50.2542213Z > Task :lucene:join:processTestResources
+2024-07-16T13:01:50.2542906Z > Task :lucene:luke:processTestResources
+2024-07-16T13:01:50.2543601Z > Task :lucene:memory:processTestResources
+2024-07-16T13:01:50.2544302Z > Task :lucene:misc:processTestResources
+2024-07-16T13:01:50.2544996Z > Task :lucene:monitor:processTestResources
+2024-07-16T13:01:50.3531863Z > Task :lucene:queries:processTestResources
+2024-07-16T13:01:50.3534018Z > Task :lucene:queryparser:processTestResources
+2024-07-16T13:01:50.3535219Z > Task :lucene:replicator:processTestResources
+2024-07-16T13:01:50.3536527Z > Task :lucene:sandbox:processTestResources
+2024-07-16T13:01:50.3538073Z > Task :lucene:spatial-test-fixtures:processResources NO-SOURCE
+2024-07-16T13:01:50.3539828Z > Task :lucene:spatial-extras:processTestResources
+2024-07-16T13:01:50.4532072Z > Task :lucene:spatial-test-fixtures:processTestResources NO-SOURCE
+2024-07-16T13:01:50.4533611Z > Task :lucene:spatial3d:processTestResources
+2024-07-16T13:01:50.4534501Z > Task :lucene:suggest:processTestResources
+2024-07-16T13:01:50.4535482Z > Task :lucene:test-framework:processTestResources
+2024-07-16T13:01:50.6531925Z > Task :lucene:analysis:common:processTestResources
+2024-07-16T13:01:50.6533648Z > Task :lucene:analysis:icu:processTestResources
+2024-07-16T13:01:50.6535159Z > Task :lucene:analysis:kuromoji:processTestResources
+2024-07-16T13:01:50.6536326Z > Task :lucene:analysis:morfologik:processTestResources
+2024-07-16T13:01:50.6537708Z > Task :lucene:analysis:morfologik.tests:processTestResources
+2024-07-16T13:01:50.6539249Z > Task :lucene:analysis:nori:processTestResources
+2024-07-16T13:01:50.6540216Z > Task :lucene:analysis:opennlp:processTestResources
+2024-07-16T13:01:50.6541153Z > Task :lucene:analysis:phonetic:processTestResources
+2024-07-16T13:01:50.6544760Z > Task :lucene:analysis:smartcn:processTestResources
+2024-07-16T13:01:50.6546074Z > Task :lucene:analysis:stempel:processTestResources
+2024-07-16T13:01:58.2530803Z 
+2024-07-16T13:01:58.2533411Z Note: Some input files use or override a deprecated API.
+2024-07-16T13:01:58.2534640Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:01:58.2535159Z > Task :lucene:core:compileJava
+2024-07-16T13:01:58.7530384Z 
+2024-07-16T13:01:58.7531463Z > Task :lucene:core:classes
+2024-07-16T13:02:00.5533258Z > Task :lucene:core:compileMain21Java
+2024-07-16T13:02:00.5535107Z > Task :lucene:core:processMain21Resources NO-SOURCE
+2024-07-16T13:02:00.5536509Z > Task :lucene:core:main21Classes
+2024-07-16T13:02:01.1531184Z > Task :lucene:core:jar
+2024-07-16T13:02:04.1533687Z > Task :lucene:codecs:compileJava
+2024-07-16T13:02:04.2531923Z > Task :lucene:codecs:classes
+2024-07-16T13:02:04.2533154Z > Task :lucene:codecs:jar
+2024-07-16T13:02:08.1530519Z 
+2024-07-16T13:02:08.1531595Z > Task :lucene:analysis:common:compileJava
+2024-07-16T13:02:08.1532702Z Note: Some input files use or override a deprecated API.
+2024-07-16T13:02:08.1533982Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:02:08.3529854Z 
+2024-07-16T13:02:08.3531421Z > Task :lucene:analysis:common:classes
+2024-07-16T13:02:08.5531523Z > Task :lucene:analysis:common:jar
+2024-07-16T13:02:09.3537241Z > Task :lucene:analysis:icu:compileJava
+2024-07-16T13:02:09.3538029Z > Task :lucene:analysis:icu:classes
+2024-07-16T13:02:09.3539144Z > Task :lucene:analysis:icu:jar
+2024-07-16T13:02:10.9533127Z > Task :lucene:analysis:kuromoji:compileJava
+2024-07-16T13:02:10.9534529Z > Task :lucene:analysis:kuromoji:classes
+2024-07-16T13:02:11.3531099Z > Task :lucene:analysis:kuromoji:jar
+2024-07-16T13:02:11.8532997Z Note: Some input files use or override a deprecated API.
+2024-07-16T13:02:11.8533683Z 
+2024-07-16T13:02:11.8534267Z > Task :lucene:test-framework:compileJava
+2024-07-16T13:02:11.8535576Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:02:11.9529803Z 
+2024-07-16T13:02:11.9552371Z > Task :lucene:analysis:morfologik:compileJava
+2024-07-16T13:02:11.9553379Z > Task :lucene:analysis:morfologik:classes
+2024-07-16T13:02:11.9554177Z > Task :lucene:analysis:morfologik:jar
+2024-07-16T13:02:12.0531308Z > Task :lucene:test-framework:classes
+2024-07-16T13:02:12.4542921Z > Task :lucene:test-framework:jar
+2024-07-16T13:02:12.7530862Z > Task :lucene:analysis:nori:compileJava
+2024-07-16T13:02:12.7532120Z > Task :lucene:analysis:nori:classes
+2024-07-16T13:02:13.0531687Z > Task :lucene:analysis:opennlp:compileJava
+2024-07-16T13:02:13.0532932Z > Task :lucene:analysis:opennlp:classes
+2024-07-16T13:02:13.0533794Z > Task :lucene:analysis:opennlp:jar
+2024-07-16T13:02:13.5530849Z > Task :lucene:analysis:phonetic:compileJava
+2024-07-16T13:02:13.5531788Z > Task :lucene:analysis:phonetic:classes
+2024-07-16T13:02:13.5532469Z > Task :lucene:analysis:phonetic:jar
+2024-07-16T13:02:13.7530142Z > Task :lucene:analysis:nori:jar
+2024-07-16T13:02:14.3531840Z > Task :lucene:analysis:stempel:compileJava
+2024-07-16T13:02:14.3533964Z > Task :lucene:analysis:stempel:classes
+2024-07-16T13:02:14.5530610Z > Task :lucene:analysis:stempel:jar
+2024-07-16T13:02:14.5531861Z > Task :lucene:analysis:smartcn:compileJava
+2024-07-16T13:02:14.5532784Z > Task :lucene:analysis:smartcn:classes
+2024-07-16T13:02:14.9530955Z > Task :lucene:analysis:smartcn:jar
+2024-07-16T13:02:15.7534824Z > Task :lucene:analysis.tests:compileTestJava
+2024-07-16T13:02:15.7535968Z > Task :lucene:analysis.tests:testClasses
+2024-07-16T13:02:15.7536761Z > Task :lucene:analysis.tests:testJar
+2024-07-16T13:02:17.4529767Z 
+2024-07-16T13:02:17.4531184Z > Task :lucene:backward-codecs:compileJava
+2024-07-16T13:02:17.4532161Z Note: Some input files use or override a deprecated API.
+2024-07-16T13:02:17.4533526Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:02:17.4534112Z 
+2024-07-16T13:02:17.4534437Z > Task :lucene:backward-codecs:classes
+2024-07-16T13:02:17.5530966Z > Task :lucene:backward-codecs:jar
+2024-07-16T13:02:17.7530742Z 
+2024-07-16T13:02:17.7531861Z > Task :lucene:analysis.tests:test
+2024-07-16T13:02:17.7532857Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:02:17.7534194Z SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+2024-07-16T13:02:17.7535641Z SLF4J: Defaulting to no-operation (NOP) logger implementation
+2024-07-16T13:02:17.7536927Z SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+2024-07-16T13:02:20.6530401Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:02:20.7531339Z SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+2024-07-16T13:02:20.7532723Z SLF4J: Defaulting to no-operation (NOP) logger implementation
+2024-07-16T13:02:20.7533910Z SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+2024-07-16T13:02:21.1529756Z 
+2024-07-16T13:02:21.1531341Z > Task :lucene:backward-codecs:compileTestJava
+2024-07-16T13:02:21.1532285Z Note: Some input files use or override a deprecated API.
+2024-07-16T13:02:21.1533409Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:02:21.1534392Z 
+2024-07-16T13:02:21.1534945Z > Task :lucene:backward-codecs:testClasses
+2024-07-16T13:02:23.1530388Z 
+2024-07-16T13:02:23.1531657Z > Task :lucene:backward-codecs:test
+2024-07-16T13:02:23.1532715Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:02:23.1533664Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:02:23.1534947Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:02:23.1536272Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:02:23.1537324Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:02:23.1538598Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:03:01.7530185Z 
+2024-07-16T13:03:01.7531809Z > Task :lucene:analysis.tests:test
+2024-07-16T13:03:01.7533025Z :lucene:analysis.tests:test (SUCCESS): 7 test(s), 1 skipped
+2024-07-16T13:03:01.7533889Z 
+2024-07-16T13:03:01.7534381Z > Task :lucene:analysis.tests:wipeTaskTemp
+2024-07-16T13:03:04.0529633Z 
+2024-07-16T13:03:04.0530849Z > Task :lucene:facet:compileJava
+2024-07-16T13:03:04.0541036Z Note: Some input files use or override a deprecated API.
+2024-07-16T13:03:04.0542303Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:03:04.1530294Z 
+2024-07-16T13:03:04.1531705Z > Task :lucene:facet:classes
+2024-07-16T13:03:04.2530647Z > Task :lucene:facet:jar
+2024-07-16T13:03:05.6533924Z > Task :lucene:memory:compileJava
+2024-07-16T13:03:05.6535191Z > Task :lucene:memory:classes
+2024-07-16T13:03:05.7530481Z > Task :lucene:memory:jar
+2024-07-16T13:03:08.5533468Z Note: /home/runner/work/lucene/lucene/lucene/queries/src/java/org/apache/lucene/queries/payloads/PayloadMatcherFactory.java uses or overrides a deprecated API.
+2024-07-16T13:03:08.5535936Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:03:08.5536522Z 
+2024-07-16T13:03:08.5536853Z > Task :lucene:queries:compileJava
+2024-07-16T13:03:08.6531150Z 
+2024-07-16T13:03:08.6532287Z > Task :lucene:queries:classes
+2024-07-16T13:03:08.6533374Z > Task :lucene:queries:jar
+2024-07-16T13:03:10.6530538Z > Task :lucene:highlighter:compileJava
+2024-07-16T13:03:10.6531817Z > Task :lucene:highlighter:classes
+2024-07-16T13:03:10.7531370Z > Task :lucene:highlighter:jar
+2024-07-16T13:03:12.2530677Z 
+2024-07-16T13:03:12.2531756Z > Task :lucene:sandbox:compileJava
+2024-07-16T13:03:12.2532673Z Note: Some input files use or override a deprecated API.
+2024-07-16T13:03:12.2533860Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:03:12.2541171Z 
+2024-07-16T13:03:12.2541851Z > Task :lucene:sandbox:classes
+2024-07-16T13:03:12.3530431Z > Task :lucene:sandbox:jar
+2024-07-16T13:03:15.2531225Z > Task :lucene:queryparser:compileJava
+2024-07-16T13:03:15.2532488Z > Task :lucene:queryparser:classes
+2024-07-16T13:03:15.3530421Z > Task :lucene:queryparser:jar
+2024-07-16T13:03:17.6530958Z > Task :lucene:spatial3d:compileJava
+2024-07-16T13:03:17.6532052Z > Task :lucene:spatial3d:classes
+2024-07-16T13:03:17.6532692Z > Task :lucene:spatial3d:jar
+2024-07-16T13:03:19.1530760Z > Task :lucene:spatial-extras:compileJava
+2024-07-16T13:03:19.1532205Z > Task :lucene:spatial-extras:classes
+2024-07-16T13:03:19.1533335Z > Task :lucene:spatial-extras:jar
+2024-07-16T13:03:21.0531559Z Note: Some input files use or override a deprecated API.
+2024-07-16T13:03:21.0532304Z 
+2024-07-16T13:03:21.0532568Z > Task :lucene:benchmark:compileJava
+2024-07-16T13:03:21.0533054Z 
+2024-07-16T13:03:21.0533299Z > Task :lucene:benchmark:classes
+2024-07-16T13:03:21.0538303Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:03:21.1555105Z > Task :lucene:benchmark:jar
+2024-07-16T13:03:22.2531851Z > Task :lucene:benchmark:compileTestJava
+2024-07-16T13:03:22.2532705Z > Task :lucene:benchmark:testClasses
+2024-07-16T13:03:24.2532641Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:03:24.2533746Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:03:24.2535012Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:03:24.2535847Z 
+2024-07-16T13:03:24.2819488Z > Task :lucene:benchmark:test
+2024-07-16T13:03:32.9530632Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:03:33.0530401Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:03:33.0532254Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:03:40.9531068Z :lucene:benchmark:test (SUCCESS): 90 test(s)
+2024-07-16T13:03:40.9532186Z 
+2024-07-16T13:03:40.9536597Z > Task :lucene:benchmark:wipeTaskTemp
+2024-07-16T13:03:42.1533770Z Note: /home/runner/work/lucene/lucene/lucene/expressions/src/java/org/apache/lucene/expressions/js/JavascriptCompiler.java uses or overrides a deprecated API.
+2024-07-16T13:03:42.1535780Z 
+2024-07-16T13:03:42.1536080Z > Task :lucene:expressions:compileJava
+2024-07-16T13:03:42.1536556Z 
+2024-07-16T13:03:42.1536809Z > Task :lucene:expressions:classes
+2024-07-16T13:03:42.1537429Z > Task :lucene:expressions:jar
+2024-07-16T13:03:42.1539096Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:03:44.1532946Z /home/runner/work/lucene/lucene/lucene/benchmark-jmh/src/java/module-info.java:20: warning: requires directive for an automatic module
+2024-07-16T13:03:44.1534355Z 
+2024-07-16T13:03:44.1534743Z > Task :lucene:benchmark-jmh:compileJava
+2024-07-16T13:03:44.1535748Z   requires jmh.core;
+2024-07-16T13:03:44.1536264Z               ^
+2024-07-16T13:03:44.1539218Z /home/runner/work/lucene/lucene/lucene/benchmark-jmh/src/java/org/apache/lucene/benchmark/jmh/ExpressionsBenchmark.java:73: warning: [RethrowReflectiveOperationExceptionAsLinkageError] Prefer LinkageError for rethrowing ReflectiveOperationException as unchecked
+2024-07-16T13:03:44.1542052Z       throw new AssertionError(e);
+2024-07-16T13:03:44.1542697Z             ^
+2024-07-16T13:03:44.1543623Z     (see https://errorprone.info/bugpattern/RethrowReflectiveOperationExceptionAsLinkageError)
+2024-07-16T13:03:44.1545346Z   Did you mean 'throw new LinkageError(e.getMessage(), e);'?
+2024-07-16T13:03:45.1530850Z 
+2024-07-16T13:03:45.1536175Z > Task :lucene:backward-codecs:test
+2024-07-16T13:03:45.1537812Z :lucene:backward-codecs:test (SUCCESS): 1900 test(s), 920 skipped
+2024-07-16T13:03:45.1538670Z 
+2024-07-16T13:03:45.1539211Z > Task :lucene:backward-codecs:wipeTaskTemp
+2024-07-16T13:03:45.6530415Z 
+2024-07-16T13:03:45.6531896Z > Task :lucene:benchmark-jmh:compileJava
+2024-07-16T13:03:45.6532733Z 
+2024-07-16T13:03:45.6533138Z > Task :lucene:benchmark-jmh:classes
+2024-07-16T13:03:45.6533884Z > Task :lucene:benchmark-jmh:jar
+2024-07-16T13:03:45.6534683Z > Task :lucene:benchmark-jmh:compileTestJava NO-SOURCE
+2024-07-16T13:03:45.6535981Z > Task :lucene:benchmark-jmh:testClasses UP-TO-DATE
+2024-07-16T13:03:45.6538302Z Note: /home/runner/work/lucene/lucene/lucene/benchmark-jmh/src/java/org/apache/lucene/benchmark/jmh/VectorUtilBenchmark.java uses or overrides a deprecated API.
+2024-07-16T13:03:45.6540398Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:03:45.6541097Z 2 warnings
+2024-07-16T13:03:45.7530576Z > Task :lucene:benchmark-jmh:test NO-SOURCE
+2024-07-16T13:03:45.7531209Z > Task :lucene:benchmark-jmh:wipeTaskTemp
+2024-07-16T13:03:45.9528984Z 
+2024-07-16T13:03:45.9530443Z > Task :lucene:grouping:compileJava
+2024-07-16T13:03:45.9530988Z 
+2024-07-16T13:03:45.9531387Z Note: Some input files use or override a deprecated API.
+2024-07-16T13:03:45.9532593Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:03:45.9533361Z > Task :lucene:grouping:classes
+2024-07-16T13:03:46.0530747Z > Task :lucene:grouping:jar
+2024-07-16T13:03:46.7530894Z > Task :lucene:codecs:compileTestJava
+2024-07-16T13:03:46.7531958Z > Task :lucene:codecs:testClasses
+2024-07-16T13:03:46.9530385Z > Task :lucene:classification:compileJava
+2024-07-16T13:03:46.9531809Z > Task :lucene:classification:classes
+2024-07-16T13:03:46.9532831Z > Task :lucene:classification:jar
+2024-07-16T13:03:48.7529096Z 
+2024-07-16T13:03:48.7530639Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:03:48.7531713Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:03:48.7532524Z > Task :lucene:codecs:test
+2024-07-16T13:03:48.7533461Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:03:48.7534608Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:03:48.7535596Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:03:48.7536822Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:04:16.9535019Z 
+2024-07-16T13:04:16.9536211Z > Task :lucene:classification:compileTestJava
+2024-07-16T13:04:31.4530680Z > Task :lucene:classification:testClasses
+2024-07-16T13:04:33.4531345Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:04:33.4531995Z 
+2024-07-16T13:04:33.4714069Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:04:33.4715389Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:04:33.4716415Z > Task :lucene:classification:test
+2024-07-16T13:04:38.8531192Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:04:38.9530966Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:04:38.9532634Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:04:45.2531299Z :lucene:classification:test (SUCCESS): 43 test(s), 1 skipped
+2024-07-16T13:04:45.2532297Z 
+2024-07-16T13:04:45.2532715Z > Task :lucene:classification:wipeTaskTemp
+2024-07-16T13:04:58.6530582Z 
+2024-07-16T13:04:58.6531531Z > Task :lucene:codecs:test
+2024-07-16T13:04:58.6532466Z :lucene:codecs:test (SUCCESS): 645 test(s), 60 skipped
+2024-07-16T13:04:58.6533067Z 
+2024-07-16T13:04:58.6533330Z > Task :lucene:codecs:wipeTaskTemp
+2024-07-16T13:04:59.0531322Z > Task :lucene:core.tests:compileTestJava
+2024-07-16T13:04:59.0532758Z > Task :lucene:core.tests:testClasses
+2024-07-16T13:04:59.0533432Z > Task :lucene:core.tests:testJar
+2024-07-16T13:05:00.5528906Z 
+2024-07-16T13:05:00.5530238Z > Task :lucene:core.tests:test
+2024-07-16T13:05:00.5531155Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:05:00.5532106Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:05:00.5533188Z :lucene:core.tests:test (SUCCESS): 6 test(s)
+2024-07-16T13:05:00.5533882Z 
+2024-07-16T13:05:00.5534312Z > Task :lucene:core.tests:wipeTaskTemp
+2024-07-16T13:05:01.5530387Z > Task :lucene:demo:compileJava
+2024-07-16T13:05:01.5531587Z > Task :lucene:demo:classes
+2024-07-16T13:05:01.5532450Z > Task :lucene:demo:jar
+2024-07-16T13:05:02.0532166Z > Task :lucene:demo:compileTestJava
+2024-07-16T13:05:02.0535551Z > Task :lucene:demo:testClasses
+2024-07-16T13:05:04.0533155Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:05:04.0534281Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:05:04.0535667Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:05:04.0536524Z 
+2024-07-16T13:05:04.0536740Z > Task :lucene:demo:test
+2024-07-16T13:05:05.6530141Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:05:05.7530417Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:05:05.7532394Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:05:07.8530140Z :lucene:demo:test (SUCCESS): 22 test(s)
+2024-07-16T13:05:07.8530835Z 
+2024-07-16T13:05:07.8532268Z > Task :lucene:demo:wipeTaskTemp
+2024-07-16T13:05:08.7528837Z 
+2024-07-16T13:05:08.7529759Z > Task :lucene:join:compileJava
+2024-07-16T13:05:08.7531733Z Note: /home/runner/work/lucene/lucene/lucene/join/src/java/org/apache/lucene/search/join/JoinUtil.java uses or overrides a deprecated API.
+2024-07-16T13:05:08.7533967Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:05:08.7534572Z 
+2024-07-16T13:05:08.7534801Z > Task :lucene:join:classes
+2024-07-16T13:05:08.7535381Z > Task :lucene:join:jar
+2024-07-16T13:05:09.7531214Z > Task :lucene:misc:compileJava
+2024-07-16T13:05:09.7532188Z > Task :lucene:misc:classes
+2024-07-16T13:05:09.7533076Z > Task :lucene:misc:jar
+2024-07-16T13:05:11.0528783Z 
+2024-07-16T13:05:11.0530398Z Note: Some input files use or override a deprecated API.
+2024-07-16T13:05:11.0531742Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:05:11.0532582Z > Task :lucene:core:compileTestJava
+2024-07-16T13:05:11.1528489Z 
+2024-07-16T13:05:11.1529155Z > Task :lucene:suggest:compileJava
+2024-07-16T13:05:11.1530236Z > Task :lucene:suggest:classes
+2024-07-16T13:05:11.1532530Z > Task :lucene:suggest:jar
+2024-07-16T13:05:11.5530219Z > Task :lucene:core:processTestResources
+2024-07-16T13:05:11.5531067Z > Task :lucene:core:testClasses
+2024-07-16T13:05:13.5530614Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:05:13.5531254Z 
+2024-07-16T13:05:13.5531494Z > Task :lucene:core:test
+2024-07-16T13:05:13.5532229Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:05:13.5533579Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:05:16.6531576Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:05:16.7530583Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:05:16.7532490Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:05:41.1530286Z 
+2024-07-16T13:05:41.1530986Z > Task :lucene:luke:compileJava
+2024-07-16T13:09:44.3530438Z > Task :lucene:luke:classes
+2024-07-16T13:09:44.4530259Z > Task :lucene:luke:jar
+2024-07-16T13:09:44.8529346Z 
+2024-07-16T13:09:44.8530999Z > Task :lucene:core:test
+2024-07-16T13:09:44.8531848Z :lucene:core:test (SUCCESS): 6820 test(s), 218 skipped
+2024-07-16T13:09:45.0529100Z 
+2024-07-16T13:09:45.0530545Z > Task :lucene:core:wipeTaskTemp
+2024-07-16T13:09:45.4528822Z 
+2024-07-16T13:09:45.4530699Z Note: Some input files use or override a deprecated API.
+2024-07-16T13:09:45.4532036Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:09:45.4534786Z > Task :lucene:monitor:compileJava
+2024-07-16T13:09:45.4535577Z 
+2024-07-16T13:09:45.4535874Z > Task :lucene:monitor:classes
+2024-07-16T13:09:45.4536626Z > Task :lucene:monitor:jar
+2024-07-16T13:09:45.7530863Z > Task :lucene:replicator:compileJava
+2024-07-16T13:09:45.7531677Z > Task :lucene:replicator:classes
+2024-07-16T13:09:45.7532337Z > Task :lucene:replicator:jar
+2024-07-16T13:09:46.1530523Z > Task :lucene:distribution:assembleBinaryDirForTests
+2024-07-16T13:09:47.4533490Z Note: /home/runner/work/lucene/lucene/lucene/expressions/src/test/org/apache/lucene/expressions/js/TestCustomFunctions.java uses or overrides a deprecated API.
+2024-07-16T13:09:47.4535392Z 
+2024-07-16T13:09:47.4536498Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:09:47.4537598Z > Task :lucene:expressions:compileTestJava
+2024-07-16T13:09:47.7530760Z 
+2024-07-16T13:09:47.7531512Z > Task :lucene:expressions:testClasses
+2024-07-16T13:09:48.1531278Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:09:48.1531948Z 
+2024-07-16T13:09:48.1532209Z > Task :lucene:distribution.tests:test
+2024-07-16T13:09:48.1534254Z Testing binary distribution at: /home/runner/work/lucene/lucene/lucene/distribution/build/packages/lucene-10.0.0-SNAPSHOT-itests
+2024-07-16T13:09:48.1535996Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:09:52.9538072Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:09:52.9539179Z :lucene:distribution.tests:test (SUCCESS): 9 test(s)
+2024-07-16T13:09:52.9541362Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:09:52.9542947Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:09:52.9544478Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:09:52.9545927Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:09:52.9566221Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:09:52.9567000Z 
+2024-07-16T13:09:52.9567546Z > Task :lucene:distribution.tests:wipeTaskTemp
+2024-07-16T13:09:52.9568203Z 
+2024-07-16T13:09:52.9568524Z > Task :lucene:expressions:test
+2024-07-16T13:09:54.2530917Z :lucene:expressions:test (SUCCESS): 122 test(s)
+2024-07-16T13:09:54.2531636Z 
+2024-07-16T13:09:54.2531964Z > Task :lucene:expressions:wipeTaskTemp
+2024-07-16T13:09:55.7531500Z Note: Some input files use or override a deprecated API.
+2024-07-16T13:09:55.7532172Z 
+2024-07-16T13:09:55.7533236Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:09:55.7534406Z > Task :lucene:grouping:compileTestJava
+2024-07-16T13:09:55.7535087Z 
+2024-07-16T13:09:55.7535457Z > Task :lucene:grouping:testClasses
+2024-07-16T13:09:56.3530108Z 
+2024-07-16T13:09:56.3535237Z Note: /home/runner/work/lucene/lucene/lucene/facet/src/test/org/apache/lucene/facet/taxonomy/TestTaxonomyFacetAssociations.java uses or overrides a deprecated API.
+2024-07-16T13:09:56.3538400Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:09:56.3539293Z > Task :lucene:facet:compileTestJava
+2024-07-16T13:10:01.0532041Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:10:01.0532729Z 
+2024-07-16T13:10:01.0533817Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:10:01.0534716Z > Task :lucene:facet:testClasses
+2024-07-16T13:10:01.0535688Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:10:01.0536795Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:10:01.0537776Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:10:01.0538999Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:10:01.0540158Z 
+2024-07-16T13:10:01.0540643Z > Task :lucene:grouping:test
+2024-07-16T13:10:24.4530744Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:10:24.4531678Z :lucene:grouping:test (SUCCESS): 44 test(s)
+2024-07-16T13:10:24.4711607Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:10:24.4712304Z 
+2024-07-16T13:10:24.4713160Z > Task :lucene:grouping:wipeTaskTemp
+2024-07-16T13:10:24.4713612Z 
+2024-07-16T13:10:24.4713838Z > Task :lucene:facet:test
+2024-07-16T13:10:24.4751052Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:10:24.4752135Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:10:24.4753190Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:10:24.4754738Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:10:28.0531567Z Note: /home/runner/work/lucene/lucene/lucene/highlighter/src/test/org/apache/lucene/search/highlight/TestHighlighter.java uses or overrides a deprecated API.
+2024-07-16T13:10:28.0533437Z 
+2024-07-16T13:10:28.0533711Z > Task :lucene:highlighter:compileTestJava
+2024-07-16T13:10:28.0534206Z 
+2024-07-16T13:10:28.0534444Z > Task :lucene:highlighter:testClasses
+2024-07-16T13:10:28.0535718Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:10:30.0530824Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:10:30.0531506Z 
+2024-07-16T13:10:30.0532531Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:10:30.0533739Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:10:30.0571249Z > Task :lucene:highlighter:test
+2024-07-16T13:10:40.1529926Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:10:40.2553647Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:10:40.2555451Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:10:43.5529816Z 
+2024-07-16T13:10:43.5530821Z > Task :lucene:facet:test
+2024-07-16T13:10:43.5531774Z :lucene:facet:test (SUCCESS): 289 test(s), 3 skipped
+2024-07-16T13:10:43.5532453Z 
+2024-07-16T13:10:43.5532791Z > Task :lucene:facet:wipeTaskTemp
+2024-07-16T13:10:45.4530385Z 
+2024-07-16T13:10:45.4531532Z Note: Some input files use or override a deprecated API.
+2024-07-16T13:10:45.4532807Z Note: Recompile with -Xlint:deprecation for details.
+2024-07-16T13:10:45.4533829Z > Task :lucene:join:compileTestJava
+2024-07-16T13:10:45.4534388Z 
+2024-07-16T13:10:45.4534730Z > Task :lucene:join:testClasses
+2024-07-16T13:10:47.4543760Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:10:47.4544561Z 
+2024-07-16T13:10:47.4546313Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:10:47.4548012Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:10:47.4570989Z > Task :lucene:join:test
+2024-07-16T13:10:57.9533294Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:10:57.9534864Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:10:57.9536341Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:10:58.5530565Z 
+2024-07-16T13:10:58.5531579Z > Task :lucene:highlighter:test
+2024-07-16T13:10:58.5532636Z :lucene:highlighter:test (SUCCESS): 725 test(s)
+2024-07-16T13:10:58.5533319Z 
+2024-07-16T13:10:58.5533731Z > Task :lucene:highlighter:wipeTaskTemp
+2024-07-16T13:10:59.8530296Z > Task :lucene:luke:compileTestJava
+2024-07-16T13:10:59.8531620Z > Task :lucene:luke:testClasses
+2024-07-16T13:11:01.8528680Z 
+2024-07-16T13:11:01.8530197Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:11:01.8531866Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:11:01.8633324Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:11:01.8634641Z SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+2024-07-16T13:11:01.8636033Z SLF4J: Defaulting to no-operation (NOP) logger implementation
+2024-07-16T13:11:01.8637750Z SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+2024-07-16T13:11:01.8638928Z WARNING: Using incubator modules: jdk.incubator.vector
+2024-07-16T13:11:01.8639933Z WARNING: A command line option has enabled the Security Manager
+2024-07-16T13:11:01.8641124Z WARNING: The Security Manager is deprecated and will be removed in a future release
+2024-07-16T13:11:01.8642344Z SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+2024-07-16T13:11:01.8643520Z SLF4J: Defaulting to no-operation (NOP) logger implementation
+2024-07-16T13:11:01.8644677Z SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+2024-07-16T13:11:01.8645704Z > Task :lucene:luke:test
+2024-07-16T13:11:06.2529212Z 
+2024-07-16T13:11:06.2532770Z TestOverviewImpl > testGetIndexFormat FAILED
+2024-07-16T13:11:06.2536189Z     java.lang.RuntimeException: MockDirectoryWrapper: opening segments file [segments_1] with a non-READONCE context[IOContext[context=FLUSH, mergeInfo=null, flushInfo=FlushInfo[numDocs=2489, estimatedSegmentSize=433086], readAdvice=SEQUENTIAL]]
+2024-07-16T13:11:06.2539375Z         at __randomizedtesting.SeedInfo.seed([6603B3B1AF668E36:8EBB33E82E62C25D]:0)
+2024-07-16T13:11:06.2541935Z         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.store.MockDirectoryWrapper.openInput(MockDirectoryWrapper.java:818)
+2024-07-16T13:11:06.2544406Z         at org.apache.lucene.luke.models.util.IndexUtils$2.doBody(IndexUtils.java:344)
+2024-07-16T13:11:06.2862434Z         at org.apache.lucene.luke.models.util.IndexUtils$2.doBody(IndexUtils.java:340)
+2024-07-16T13:11:06.2864738Z         at org.apache.lucene.core@10.0.0-SNAPSHOT/org.apache.lucene.index.SegmentInfos$FindSegmentsFile.run(SegmentInfos.java:807)
+2024-07-16T13:11:06.2866937Z         at org.apache.lucene.core@10.0.0-SNAPSHOT/org.apache.lucene.index.SegmentInfos$FindSegmentsFile.run(SegmentInfos.java:757)
+2024-07-16T13:11:06.2868701Z         at org.apache.lucene.luke.models.util.IndexUtils.getIndexFormat(IndexUtils.java:362)
+2024-07-16T13:11:06.2870311Z         at org.apache.lucene.luke.models.overview.OverviewImpl.getIndexFormat(OverviewImpl.java:111)
+2024-07-16T13:11:06.2872073Z         at org.apache.lucene.luke.models.overview.TestOverviewImpl.testGetIndexFormat(TestOverviewImpl.java:87)
+2024-07-16T13:11:06.2874275Z         at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+2024-07-16T13:11:06.2876737Z         at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+2024-07-16T13:11:06.2878381Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner.invoke(RandomizedRunner.java:1758)
+2024-07-16T13:11:06.2880590Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner$8.evaluate(RandomizedRunner.java:946)
+2024-07-16T13:11:06.2882796Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner$9.evaluate(RandomizedRunner.java:982)
+2024-07-16T13:11:06.2885038Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner$10.evaluate(RandomizedRunner.java:996)
+2024-07-16T13:11:06.2887824Z         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleSetupTeardownChained$1.evaluate(TestRuleSetupTeardownChained.java:48)
+2024-07-16T13:11:06.2890882Z         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.AbstractBeforeAfterRule$1.evaluate(AbstractBeforeAfterRule.java:43)
+2024-07-16T13:11:06.2893726Z         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleThreadAndTestName$1.evaluate(TestRuleThreadAndTestName.java:45)
+2024-07-16T13:11:06.2896723Z         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleIgnoreAfterMaxFailures$1.evaluate(TestRuleIgnoreAfterMaxFailures.java:60)
+2024-07-16T13:11:06.2899558Z         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleMarkFailure$1.evaluate(TestRuleMarkFailure.java:44)
+2024-07-16T13:11:06.2901876Z         at junit@4.13.1/org.junit.rules.RunRules.evaluate(RunRules.java:20)
+2024-07-16T13:11:06.2903674Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+2024-07-16T13:11:06.2906034Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.ThreadLeakControl$StatementRunner.run(ThreadLeakControl.java:390)
+2024-07-16T13:11:06.2908473Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.ThreadLeakControl.forkTimeoutingTask(ThreadLeakControl.java:843)
+2024-07-16T13:11:06.2911063Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.ThreadLeakControl$3.evaluate(ThreadLeakControl.java:490)
+2024-07-16T13:11:06.2913362Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner.runSingleTest(RandomizedRunner.java:955)
+2024-07-16T13:11:06.2915616Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner$5.evaluate(RandomizedRunner.java:840)
+2024-07-16T13:11:06.2917796Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner$6.evaluate(RandomizedRunner.java:891)
+2024-07-16T13:11:06.2920007Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner$7.evaluate(RandomizedRunner.java:902)
+2024-07-16T13:11:06.2922603Z         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.AbstractBeforeAfterRule$1.evaluate(AbstractBeforeAfterRule.java:43)
+2024-07-16T13:11:06.2925043Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+2024-07-16T13:11:06.2927655Z         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleStoreClassName$1.evaluate(TestRuleStoreClassName.java:38)
+2024-07-16T13:11:06.2930774Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.rules.NoShadowingOrOverridesOnMethodsRule$1.evaluate(NoShadowingOrOverridesOnMethodsRule.java:40)
+2024-07-16T13:11:06.2933836Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.rules.NoShadowingOrOverridesOnMethodsRule$1.evaluate(NoShadowingOrOverridesOnMethodsRule.java:40)
+2024-07-16T13:11:06.2936443Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+2024-07-16T13:11:06.2938718Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+2024-07-16T13:11:06.2941413Z         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleAssertionsRequired$1.evaluate(TestRuleAssertionsRequired.java:53)
+2024-07-16T13:11:06.2944147Z         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.AbstractBeforeAfterRule$1.evaluate(AbstractBeforeAfterRule.java:43)
+2024-07-16T13:11:06.2946544Z         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleMarkFailure$1.evaluate(TestRuleMarkFailure.java:44)
+2024-07-16T13:11:06.2949376Z         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleIgnoreAfterMaxFailures$1.evaluate(TestRuleIgnoreAfterMaxFailures.java:60)
+2024-07-16T13:11:06.2952374Z         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleIgnoreTestSuites$1.evaluate(TestRuleIgnoreTestSuites.java:47)
+2024-07-16T13:11:06.2954280Z         at junit@4.13.1/org.junit.rules.RunRules.evaluate(RunRules.java:20)
+2024-07-16T13:11:06.2956043Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+2024-07-16T13:11:06.2958414Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.ThreadLeakControl$StatementRunner.run(ThreadLeakControl.java:390)
+2024-07-16T13:11:06.2961224Z         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.ThreadLeakControl.lambda$forkTimeoutingTask$0(ThreadLeakControl.java:850)
+2024-07-16T13:11:06.2962960Z         at java.base/java.lang.Thread.run(Thread.java:1583)
+2024-07-16T13:11:06.9575763Z 
+2024-07-16T13:11:06.9579112Z org.apache.lucene.luke.models.overview.TestOverviewImpl > test suite's output saved to /home/runner/work/lucene/lucene/lucene/luke/build/test-results/test/outputs/OUTPUT-org.apache.lucene.luke.models.overview.TestOverviewImpl.txt, copied below:
+2024-07-16T13:11:06.9584368Z    >     java.lang.RuntimeException: MockDirectoryWrapper: opening segments file [segments_1] with a non-READONCE context[IOContext[context=FLUSH, mergeInfo=null, flushInfo=FlushInfo[numDocs=2489, estimatedSegmentSize=433086], readAdvice=SEQUENTIAL]]
+2024-07-16T13:11:06.9587185Z    >         at __randomizedtesting.SeedInfo.seed([6603B3B1AF668E36:8EBB33E82E62C25D]:0)
+2024-07-16T13:11:06.9589624Z    >         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.store.MockDirectoryWrapper.openInput(MockDirectoryWrapper.java:818)
+2024-07-16T13:11:06.9591656Z    >         at org.apache.lucene.luke.models.util.IndexUtils$2.doBody(IndexUtils.java:344)
+2024-07-16T13:11:06.9593203Z    >         at org.apache.lucene.luke.models.util.IndexUtils$2.doBody(IndexUtils.java:340)
+2024-07-16T13:11:06.9595224Z    >         at org.apache.lucene.core@10.0.0-SNAPSHOT/org.apache.lucene.index.SegmentInfos$FindSegmentsFile.run(SegmentInfos.java:807)
+2024-07-16T13:11:06.9726190Z    >         at org.apache.lucene.core@10.0.0-SNAPSHOT/org.apache.lucene.index.SegmentInfos$FindSegmentsFile.run(SegmentInfos.java:757)
+2024-07-16T13:11:06.9739757Z    >         at org.apache.lucene.luke.models.util.IndexUtils.getIndexFormat(IndexUtils.java:362)
+2024-07-16T13:11:06.9741213Z    >         at org.apache.lucene.luke.models.overview.OverviewImpl.getIndexFormat(OverviewImpl.java:111)
+2024-07-16T13:11:06.9742897Z    >         at org.apache.lucene.luke.models.overview.TestOverviewImpl.testGetIndexFormat(TestOverviewImpl.java:87)
+2024-07-16T13:11:06.9744631Z    >         at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+2024-07-16T13:11:06.9745975Z    >         at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+2024-07-16T13:11:06.9747460Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner.invoke(RandomizedRunner.java:1758)
+2024-07-16T13:11:06.9749409Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner$8.evaluate(RandomizedRunner.java:946)
+2024-07-16T13:11:06.9751359Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner$9.evaluate(RandomizedRunner.java:982)
+2024-07-16T13:11:06.9753305Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner$10.evaluate(RandomizedRunner.java:996)
+2024-07-16T13:11:06.9755790Z    >         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleSetupTeardownChained$1.evaluate(TestRuleSetupTeardownChained.java:48)
+2024-07-16T13:11:06.9758400Z    >         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.AbstractBeforeAfterRule$1.evaluate(AbstractBeforeAfterRule.java:43)
+2024-07-16T13:11:06.9761232Z    >         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleThreadAndTestName$1.evaluate(TestRuleThreadAndTestName.java:45)
+2024-07-16T13:11:06.9764250Z    >         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleIgnoreAfterMaxFailures$1.evaluate(TestRuleIgnoreAfterMaxFailures.java:60)
+2024-07-16T13:11:06.9767288Z    >         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleMarkFailure$1.evaluate(TestRuleMarkFailure.java:44)
+2024-07-16T13:11:06.9769793Z    >         at junit@4.13.1/org.junit.rules.RunRules.evaluate(RunRules.java:20)
+2024-07-16T13:11:06.9771620Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+2024-07-16T13:11:06.9774004Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.ThreadLeakControl$StatementRunner.run(ThreadLeakControl.java:390)
+2024-07-16T13:11:06.9776473Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.ThreadLeakControl.forkTimeoutingTask(ThreadLeakControl.java:843)
+2024-07-16T13:11:06.9787286Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.ThreadLeakControl$3.evaluate(ThreadLeakControl.java:490)
+2024-07-16T13:11:06.9789644Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner.runSingleTest(RandomizedRunner.java:955)
+2024-07-16T13:11:06.9791844Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner$5.evaluate(RandomizedRunner.java:840)
+2024-07-16T13:11:06.9803713Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner$6.evaluate(RandomizedRunner.java:891)
+2024-07-16T13:11:06.9805821Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.RandomizedRunner$7.evaluate(RandomizedRunner.java:902)
+2024-07-16T13:11:06.9808325Z    >         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.AbstractBeforeAfterRule$1.evaluate(AbstractBeforeAfterRule.java:43)
+2024-07-16T13:11:06.9810825Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+2024-07-16T13:11:06.9813208Z    >         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleStoreClassName$1.evaluate(TestRuleStoreClassName.java:38)
+2024-07-16T13:11:06.9815759Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.rules.NoShadowingOrOverridesOnMethodsRule$1.evaluate(NoShadowingOrOverridesOnMethodsRule.java:40)
+2024-07-16T13:11:06.9819048Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.rules.NoShadowingOrOverridesOnMethodsRule$1.evaluate(NoShadowingOrOverridesOnMethodsRule.java:40)
+2024-07-16T13:11:06.9821446Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+2024-07-16T13:11:06.9823538Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+2024-07-16T13:11:06.9838581Z    >         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleAssertionsRequired$1.evaluate(TestRuleAssertionsRequired.java:53)
+2024-07-16T13:11:06.9841446Z    >         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.AbstractBeforeAfterRule$1.evaluate(AbstractBeforeAfterRule.java:43)
+2024-07-16T13:11:06.9843974Z    >         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleMarkFailure$1.evaluate(TestRuleMarkFailure.java:44)
+2024-07-16T13:11:06.9846585Z    >         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleIgnoreAfterMaxFailures$1.evaluate(TestRuleIgnoreAfterMaxFailures.java:60)
+2024-07-16T13:11:06.9849216Z    >         at org.apache.lucene.test_framework@10.0.0-SNAPSHOT/org.apache.lucene.tests.util.TestRuleIgnoreTestSuites$1.evaluate(TestRuleIgnoreTestSuites.java:47)
+2024-07-16T13:11:06.9851535Z    >         at junit@4.13.1/org.junit.rules.RunRules.evaluate(RunRules.java:20)
+2024-07-16T13:11:06.9853183Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+2024-07-16T13:11:06.9855854Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.ThreadLeakControl$StatementRunner.run(ThreadLeakControl.java:390)
+2024-07-16T13:11:06.9858154Z    >         at randomizedtesting.runner@2.8.1/com.carrotsearch.randomizedtesting.ThreadLeakControl.lambda$forkTimeoutingTask$0(ThreadLeakControl.java:850)
+2024-07-16T13:11:06.9859768Z    >         at java.base/java.lang.Thread.run(Thread.java:1583)
+2024-07-16T13:11:06.9862019Z   2> NOTE: reproduce with: gradlew test --tests TestOverviewImpl.testGetIndexFormat -Dtests.seed=6603B3B1AF668E36 -Dtests.locale=yrl-VE -Dtests.timezone=Etc/GMT+12 -Dtests.asserts=true -Dtests.file.encoding=UTF-8
+2024-07-16T13:11:06.9865461Z   2> NOTE: leaving temporary files on disk at: /home/runner/work/lucene/lucene/lucene/luke/build/tmp/tests-tmp/lucene.luke.models.overview.TestOverviewImpl_6603B3B1AF668E36-001
+2024-07-16T13:11:06.9869642Z   2> NOTE: test params are: codec=Asserting(Lucene99): {f1=PostingsFormat(name=MockRandom), f2=TestBloomFilteredLucenePostings(BloomFilteringPostingsFormat(Lucene99))}, docValues:{}, maxPointsInLeafNode=220, maxMBSortInHeap=5.641354936191508, sim=Asserting(RandomSimilarity(queryNorm=true): {}), locale=yrl-VE, timezone=Etc/GMT+12
+2024-07-16T13:11:06.9873490Z   2> NOTE: Linux 6.5.0-1023-azure amd64/Eclipse Adoptium 21.0.3 (64-bit)/cpus=4,threads=1,free=210653584,total=268435456
+2024-07-16T13:11:06.9875142Z   2> NOTE: All tests run in this JVM: [TestSimpleIniFile, TestCommitsImpl, TestDocumentsImpl, TestOverviewImpl]
+2024-07-16T13:11:06.9876047Z 
+2024-07-16T13:11:07.0530691Z 
+2024-07-16T13:11:07.0531378Z > Task :lucene:join:test
+2024-07-16T13:11:07.0532067Z :lucene:join:test (SUCCESS): 69 test(s)
+2024-07-16T13:11:07.0532537Z 
+2024-07-16T13:11:07.0532779Z > Task :lucene:join:wipeTaskTemp
+2024-07-16T13:11:07.8529774Z 
+2024-07-16T13:11:07.8530618Z > Task :lucene:luke:test FAILED
+2024-07-16T13:11:07.8531626Z :lucene:luke:test (FAILURE): 96 test(s), 1 failure(s)
+2024-07-16T13:11:07.8532095Z 
+2024-07-16T13:11:07.8532269Z 96 tests completed, 1 failed
+2024-07-16T13:11:07.8532570Z 
+2024-07-16T13:11:07.8532741Z > Task :lucene:luke:wipeTaskTemp
+2024-07-16T13:11:08.2530020Z > Task :lucene:memory:compileTestJava
+2024-07-16T13:11:08.2530648Z 
+2024-07-16T13:11:08.2530944Z ERROR: The following test(s) have failed:
+2024-07-16T13:11:08.2532484Z   - org.apache.lucene.luke.models.overview.TestOverviewImpl.testGetIndexFormat (:lucene:luke)
+2024-07-16T13:11:08.2535136Z     Test output: /home/runner/work/lucene/lucene/lucene/luke/build/test-results/test/outputs/OUTPUT-org.apache.lucene.luke.models.overview.TestOverviewImpl.txt
+2024-07-16T13:11:08.2539410Z     Reproduce with: gradlew :lucene:luke:test --tests "org.apache.lucene.luke.models.overview.TestOverviewImpl.testGetIndexFormat" -Ptests.jvms=2 -Ptests.jvmargs= -Ptests.seed=6603B3B1AF668E36 -Ptests.gui=true -Ptests.file.encoding=ISO-8859-1 -Ptests.vectorsize=128 -Ptests.forceintegervectors=true
+2024-07-16T13:11:08.2542222Z 
+2024-07-16T13:11:08.3529355Z Aggregate task times (possibly running in parallel!):
+2024-07-16T13:11:08.3530307Z  659.78 sec.  test
+2024-07-16T13:11:08.3530747Z  350.21 sec.  compileJava
+2024-07-16T13:11:08.3531213Z   99.36 sec.  compileTestJava
+2024-07-16T13:11:08.3531673Z    4.37 sec.  jar
+2024-07-16T13:11:08.3532080Z    3.48 sec.  gitStatus
+2024-07-16T13:11:08.3532535Z    1.83 sec.  compileMain21Java
+2024-07-16T13:11:08.3533050Z    0.81 sec.  processTestResources
+2024-07-16T13:11:08.3533573Z    0.61 sec.  processResources
+2024-07-16T13:11:08.3533913Z 
+2024-07-16T13:11:08.3534129Z FAILURE: Build failed with an exception.
+2024-07-16T13:11:08.3534513Z 
+2024-07-16T13:11:08.3534682Z * What went wrong:
+2024-07-16T13:11:08.3535423Z Execution failed for task ':lucene:luke:test'.
+2024-07-16T13:11:08.3536731Z > There were failing tests. See the results at: file:///home/runner/work/lucene/lucene/lucene/luke/build/test-results/test/
+2024-07-16T13:11:08.3537651Z 
+2024-07-16T13:11:08.3537831Z BUILD FAILED in 9m 44s
+2024-07-16T13:11:08.3538311Z    0.33 sec.  assembleBinaryDirForTests
+2024-07-16T13:11:08.3539265Z    0.02 sec.  wipeTaskTemp
+2024-07-16T13:11:08.3539731Z    0.02 sec.  testJar
+2024-07-16T13:11:08.3540231Z    0.01 sec.  checkJdkInternalsExportedToGradle
+2024-07-16T13:11:08.3540846Z    0.00 sec.  randomizationInfo
+2024-07-16T13:11:08.3541360Z 180 actionable tasks: 180 executed
+2024-07-16T13:11:08.7354877Z ##[error]Process completed with exit code 1.
+2024-07-16T13:11:08.7428376Z Post job cleanup.
+2024-07-16T13:11:08.7527012Z Post job cleanup.
+2024-07-16T13:11:08.9901786Z In post-action step
+2024-07-16T13:11:08.9909648Z Cache is read-only: will not save state for use in subsequent builds.
+2024-07-16T13:11:08.9915782Z Generating Job Summary
+2024-07-16T13:11:08.9939422Z Completed post-action step
+2024-07-16T13:11:09.0124984Z Post job cleanup.
+2024-07-16T13:11:09.1951353Z Post job cleanup.
+2024-07-16T13:11:09.2960279Z [command]/usr/bin/git version
+2024-07-16T13:11:09.2996976Z git version 2.45.2
+2024-07-16T13:11:09.3045470Z Temporarily overriding HOME='/home/runner/work/_temp/d7d821ae-5216-46c2-a552-9045f42f0116' before making global git config changes
+2024-07-16T13:11:09.3046875Z Adding repository directory to the temporary git global config as a safe directory
+2024-07-16T13:11:09.3050834Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/lucene/lucene
+2024-07-16T13:11:09.3084918Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2024-07-16T13:11:09.3117413Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2024-07-16T13:11:09.3379261Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2024-07-16T13:11:09.3404670Z http.https://github.com/.extraheader
+2024-07-16T13:11:09.3418093Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2024-07-16T13:11:09.3453889Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2024-07-16T13:11:09.3952128Z Cleaning up orphan processes
+2024-07-16T13:11:09.4368935Z Terminate orphan process: pid (1910) (java)
+2024-07-16T13:11:09.4415600Z Terminate orphan process: pid (2016) (java)
+2024-07-16T13:11:09.4454712Z Terminate orphan process: pid (2046) (java)

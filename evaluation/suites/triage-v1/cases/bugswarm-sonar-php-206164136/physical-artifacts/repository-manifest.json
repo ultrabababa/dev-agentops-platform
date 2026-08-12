@@ -1,0 +1,55 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "SonarSource/sonar-php",
+    "revision_kind": "git_commit",
+    "exact_revision": "ebf7b1f2cade1ef88a5bc3f3563ce490a94ee374"
+  },
+  "files": [
+    {
+      "path": "sonar-php-plugin/src/test/java/org/sonar/plugins/php/PHPSensorTest.java",
+      "sha256": "faee8ab5a89a283ab40803503de76daea094c276ad2b198f3ba5d73f613831ce",
+      "size_bytes": 18048
+    },
+    {
+      "path": "sonar-php-plugin/src/test/java/org/sonar/plugins/php/PhpTestUtils.java",
+      "sha256": "ff7f11db6febc880d49009d6dc0f82bc3f85b44a80acf5adcca5a75518656747",
+      "size_bytes": 2245
+    },
+    {
+      "path": "sonar-php-plugin/src/main/java/org/sonar/plugins/php/PHPSensor.java",
+      "sha256": "c5967cb3f7ea8693f3a30a892dc3b7135bf7f201acc7fd4b83363321ba9cdee3",
+      "size_bytes": 14417
+    },
+    {
+      "path": "sonar-php-plugin/src/main/java/org/sonar/plugins/php/phpunit/PhpUnitService.java",
+      "sha256": "d33c7c9b6d60ea2068a0a37185e207a55a5b10a2480e811ffc46442d1aab4786",
+      "size_bytes": 4054
+    },
+    {
+      "path": "sonar-php-plugin/src/main/java/org/sonar/plugins/php/phpunit/PhpUnitTestFileReport.java",
+      "sha256": "aa0e1249119de8dcc570593ba64523c152927e5bd1049f2bc369f7f79b8f9739",
+      "size_bytes": 5488
+    },
+    {
+      "path": "sonar-php-plugin/src/main/java/org/sonar/plugins/php/phpunit/PhpUnitTestResultImporter.java",
+      "sha256": "c934c3862677ea61316d7b8db8318ad78cc7d608ea7d07db786661f96c72d742",
+      "size_bytes": 1737
+    },
+    {
+      "path": "sonar-php-plugin/src/test/resources/org/sonar/plugins/php/phpunit/sensor/phpunit-junit-report.xml",
+      "sha256": "b9898ae4bd4d1381da524e6018ca1787b6bc279956d875860443f9b5b9a3d454",
+      "size_bytes": 3618
+    },
+    {
+      "path": "sonar-php-plugin/src/test/resources/org/sonar/plugins/php/phpunit/sensor/phpunit.coverage.xml",
+      "sha256": "773de9464978b804fd1e6d83a89e29dbafd5d62c8e26645254e8edee821d7345",
+      "size_bytes": 3036
+    },
+    {
+      "path": ".travis.yml",
+      "sha256": "923af59b9a25bf77ebea2b25fafaa0ce05fbf33a29e31f5523e76aa96b7b79a7",
+      "size_bytes": 414
+    }
+  ]
+}

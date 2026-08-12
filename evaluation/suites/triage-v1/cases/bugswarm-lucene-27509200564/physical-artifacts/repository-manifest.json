@@ -1,0 +1,40 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "apache/lucene",
+    "revision_kind": "git_commit",
+    "exact_revision": "556b838b09c2de3d64d1ba5afb4dcf99bc4014c6"
+  },
+  "files": [
+    {
+      "path": "lucene/luke/src/java/org/apache/lucene/luke/models/util/IndexUtils.java",
+      "sha256": "92325ef0345138235b9054efd6f86a0e9d425f05af9326b3b9c5c524035f098d",
+      "size_bytes": 18199
+    },
+    {
+      "path": "lucene/test-framework/src/java/org/apache/lucene/tests/store/MockDirectoryWrapper.java",
+      "sha256": "7ddf4c15d7f3ab94bb15383c4f0781504d32035cb840626baea7181aca313ce4",
+      "size_bytes": 38858
+    },
+    {
+      "path": "lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "sha256": "011978e77aaed1b20e348ef76b3719a150c79becdce81b2927f0f098e346b6d1",
+      "size_bytes": 124001
+    },
+    {
+      "path": "lucene/luke/src/test/org/apache/lucene/luke/models/overview/TestOverviewImpl.java",
+      "sha256": "438ab9551bae871fbb0ad3708f6812c86ea1b8ab85f51f10cfcee0f0c6967a38",
+      "size_bytes": 4646
+    },
+    {
+      "path": "lucene/luke/src/java/org/apache/lucene/luke/models/overview/OverviewImpl.java",
+      "sha256": "65d151658840f387341d96fcdfe01d1b54db28a1c6d15766370e209521fc7514",
+      "size_bytes": 4895
+    },
+    {
+      "path": ".github/workflows/run-checks-all.yml",
+      "sha256": "5d390326bb1b3cea8c287da445b452b765d0d21a0ce11234c34b1c897243a647",
+      "size_bytes": 1690
+    }
+  ]
+}

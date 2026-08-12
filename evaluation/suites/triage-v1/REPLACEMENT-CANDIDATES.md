@@ -147,3 +147,25 @@ failures)** for that slot rather than settle for a `LOW` BugSwarm candidate — 
 not retained to preserve category count, and B08 already fills the suite-level easy-anchor role.
 
 **Nothing is admitted, nothing is built, and no Physical Artifact exists for any candidate in this ledger.**
+
+---
+
+## Construction outcomes (appended after the two construction rounds)
+
+**Eight of nine slots are filled.** Constructed and reviewed: C2 blueflood, A1 retrofit, D2 Nukkit (round 1, all three
+`HUMAN REVIEW PASS`); C1 COLA, A2 sonar-php, L1 PyGithub, D1 spring-hateoas, F1 lucene (round 2, all five recommended
+`PASS`). Per-Case records are in `reviews/`.
+
+**Two screening estimates did not survive construction, in opposite directions:**
+
+- **D2 Nukkit** was screened `ADEQUATE` and reviewed at `BORDERLINE-ADEQUATE`. javac quotes the offending imports into
+  the log, so the named source file fails a strict removal test. Retained by Human decision.
+- **F2 orbit** was screened `ADEQUATE` and **rejected before construction** as deterministic, together with its reserve
+  **F3 ocpsoft/rewrite**. The `timeout_or_flaky_failure` entries in this ledger were screened partly on BugSwarm
+  `reproducibility_status` and `stability`, which measure artifact reproduction variance rather than test-level
+  nondeterminism. That screen is withdrawn; see `reviews/flaky-slot-2-record.md`.
+
+**Reserves still standing and unused:** A3 google/auto, A4 spring-hateoas 78347612, L2 PyGithub 34636499466,
+L3 opentelemetry-python, D3 orbit 126506070, D4 quart, D5 autopep8, D6 HikariCP, C3 TwelveMonkeys. **F4 HikariCP is
+withdrawn as a flaky reserve** for the same reason as F2 and F3 — its recorded profile (`AbstractMethodError`) points at a
+dependency ABI mismatch, not nondeterminism.
