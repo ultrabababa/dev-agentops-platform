@@ -1,0 +1,35 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "jenkinsci/remoting",
+    "revision_kind": "git_commit",
+    "exact_revision": "abf0455a68ad6c52a57e912bb89d51f883f77542"
+  },
+  "files": [
+    {
+      "path": "src/test/java/hudson/remoting/ClassFilterTest.java",
+      "sha256": "44a97964ae7c6cedc98924d2059dfd143b2fc57651a1c11a6f780a33963eb9ab",
+      "size_bytes": 10142
+    },
+    {
+      "path": "src/test/java/hudson/remoting/DefaultClassFilterTest.java",
+      "sha256": "c13eb94d8d603d5da9d44ac614fb14c382da2672d06edbac65e9da8f453bfc6f",
+      "size_bytes": 6765
+    },
+    {
+      "path": "src/main/java/hudson/remoting/ClassFilter.java",
+      "sha256": "c56179b6562afb4cf6b7c5df059a1c6557e1bd4886e276482ae9f7764dcc914c",
+      "size_bytes": 13559
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "089e5f432324bd3e2dc2869a8bd4a99b3f1dec7f2a8808aad4508018526922ed",
+      "size_bytes": 19788
+    },
+    {
+      "path": "Jenkinsfile",
+      "sha256": "db12529482a6a638f5afe83a68f9eabcd73d5a0ce19b9ecc76b9941092f2af80",
+      "size_bytes": 1302
+    }
+  ]
+}

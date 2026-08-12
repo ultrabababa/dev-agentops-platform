@@ -162,7 +162,35 @@ This is therefore the **primary screening question at Candidate Discovery**, app
 suite now contradicts them three times over: B02 has the lowest Required share in the suite (1.3 %) and is the hardest Case;
 N22 has the highest of its group (21.4 %) and is `LOW`.
 
-### Suite status — 19 admitted, 20th slot open
+### Suite status — 20th Case constructed
+
+**`odrepair-remoting-abf0455a` fills the 20th slot.** `jenkinsci/remoting` @ `abf0455a68ad6c52a57e912bb89d51f883f77542`,
+victim `ClassFilterTest.userRequest`, polluter `DefaultClassFilterTest.testDefaultsAreUsedIfOverridesAreGarbage`.
+Layer 1 `PASS`, Layer 2 **`ADEQUATE`**. Record: `reviews/f6-remoting-review.md`. Awaiting Human disposition.
+
+The observation is `UT-SE-Research/ODRepair` @ `f1c38c319246bae3f5b946fc066cf21ec8a0723e`,
+`experiments/jsonFiles_0/hudson.remoting.ClassFilterTest.userRequest/flaky-lists.json` — **357 bytes, one line, frozen
+byte-identical with no transformation of any kind**, stating `intended [] -> PASS` and
+`revealed [polluter] -> ERROR` with historical `testRunId`s. PR #706 and ODRepair `results.csv` are curator-side only:
+`pull/706`, `706`, `results.csv` and `NoClassDefFoundError` all occur **zero times** in the package.
+
+**Correction of record — the earlier "blocked" finding was wrong.** That search covered IDoFT's exports, the deleted
+`flaky-test-dataset` issue, `UT-SE-Research/iDFlakies` and the project's issue tracker, but **not
+`UT-SE-Research/ODRepair` itself**. `odr-tests.csv` is ODRepair's *summary* export; the per-victim
+`experiments/jsonFiles_0/<victim>/flaky-lists.json` is the underlying raw record. `reviews/jenkins-remoting-blocked-record.md`
+is superseded.
+
+**Reusable finding — search a benchmark's raw per-subject output, not only its summary export.** Absence from a summary
+CSV does not imply absence from the artifact. The refusals that accompanied the wrong conclusion were themselves correct
+and stand: the fix PR, column excision, and an authored detector record all remain unacceptable observation sources.
+
+**Suite composition — 20 of 20 constructed.** `test_assertion_failure`: B01, B02, A1, A2. `lint_or_type_failure`: B04,
+N07, N09, L1. `dependency_or_install_failure`: B06, N20, D2, D1. `config_or_environment_failure`: N11, B08, C2, C1.
+`timeout_or_flaky_failure`: N01, N18, F5 (dubbo), F6 (remoting). **F1 lucene is excluded for taxonomy mismatch** and is
+retained as a record only. **Nothing is frozen**: `Canonicalization Profile v1` is unfrozen, no Suite Manifest exists,
+and Formal Suite membership is not frozen.
+
+### Superseded status entry — 19 admitted, 20th slot open
 
 **`odrepair-dubbo-737f7a7e` is `HUMAN REVIEW PASS`.** **F1 `bugswarm-lucene-27509200564` is excluded from the formal 20
 for taxonomy mismatch** — its intermittency is real and artifact-visible, but a stable product-code cause exists

@@ -1,0 +1,41 @@
+{
+  "case_schema_version": "2",
+  "case_id": "odrepair-remoting-abf0455a",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "Authentic ODRepair detector output, frozen byte-identical from https://github.com/UT-SE-Research/ODRepair/blob/f1c38c319246bae3f5b946fc066cf21ec8a0723e/experiments/jsonFiles_0/hudson.remoting.ClassFilterTest.userRequest/flaky-lists.json ; the same ODRepair commit binds this victim to the exact revision in experiments/data/victim.csv. Upstream exact revision: https://github.com/jenkinsci/remoting/commit/abf0455a68ad6c52a57e912bb89d51f883f77542",
+    "license_or_permission": "MIT upstream repository; ODRepair is a public research artifact."
+  },
+  "curation": {
+    "created_by": "Issue #15 targeted replacement construction round",
+    "review_status": "human_reviewed",
+    "reviewed_by": "STATUS: constructed from a Human-validated candidate and a Human-supplied immutable ODRepair artifact; package-content review COMPLETE by the constructing reviewer, awaiting Human disposition. The flaky-lists.json detector record is the authentic Agent-visible observation; jenkinsci/remoting PR 706 and ODRepair experiments/data/results.csv are curator-side corroboration only and appear in no Physical Artifact. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "No transformation applied. The committed ODRepair detector record is frozen byte-identical to the upstream file at the declared commit: it contains no ANSI or control sequences, no carriage returns, and already ends with a newline. Nothing was selected, redacted, reordered or added.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "5f335a33e447df8f2014ce1ff89554e5a8c8845fac5c354182f3b5e104e79c34"
+}
