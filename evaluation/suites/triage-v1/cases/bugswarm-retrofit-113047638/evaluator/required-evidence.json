@@ -1,0 +1,20 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-2301-2385",
+    "repo:protoconverterfactorytest-java:lines-0001-0100",
+    "repo:protoconverterfactorytest-java:lines-0101-0143",
+    "repo:protorequestbodyconverter-java:lines-0001-0034",
+    "repo:okhttpcall-java:lines-0101-0200",
+    "repo:requestaction-java:lines-0201-0275"
+  ],
+  "optional_evidence_ids": [
+    "repo:methodhandler-java:lines-0001-0083",
+    "repo:body-java:lines-0001-0047",
+    "repo:requestfactory-java:lines-0001-0069",
+    "repo:requestfactoryparser-java:lines-0401-0500",
+    "repo:protoconverterfactory-java:lines-0001-0073",
+    "repo:pom-xml:lines-0001-0043",
+    "repo:travis-yml:lines-0001-0025"
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "log:raw-log:lines-0001-0100",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "649d3bfb3a64552c52811ea0d2297fcb7624f27ec853b9c6eaead03b48f48ab7"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0101-0200",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "f7d7563b5b54e73d38e2ccce9ea0d4a96cf72d04fb911f9499fd49ce1dadce9d"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0201-0300",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "874cda01365f20a280518e10d67bf3c22d8be9edb81d8ecd987c868db84b9039"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0301-0400",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "0b0f3341d92e328a654be1aa15f6e7666035c904b08c6584db7b8abf2bdf8c16"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0401-0500",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "f877454b6274976988d18982044b54b867896a3c1b9727e23f6d4f3cb2389fd7"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0501-0600",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "9a6d1eb75bb987c1dd309bc8321470b2e6d1f89aee0f3c2bc95862617d690f76"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0601-0700",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 700
+      },
+      "content_sha256": "0f7c73914565109b3b72793677f3179729e37f8fd0dfe5aaaab077420822ea36"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0701-0718",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 701,
+        "end_line": 718
+      },
+      "content_sha256": "967878365154377319c4d3f5644825676cbad7ea0e13d33d04b5452e21b5010d"
+    }
+  ]
+}

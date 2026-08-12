@@ -1,0 +1,475 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:builtinconverters-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/BuiltInConverters.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "7083574c079afd61951f36fe26ce2cf81fb026c3fd8f1e15479679afc8d8c349"
+    },
+    {
+      "evidence_id": "repo:builtinconverters-java:lines-0101-0113",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/BuiltInConverters.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 113
+      },
+      "content_sha256": "8d43317f3a66a69bc1cadeb580c8a868f2b4c102695e75f6fa4de1fac5b132f9"
+    },
+    {
+      "evidence_id": "repo:call-java:lines-0001-0073",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/Call.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 73
+      },
+      "content_sha256": "59261e8e7f11117989c5d71ee3a2d61940f0af218374bde5d8eeb423f433ee67"
+    },
+    {
+      "evidence_id": "repo:converter-java:lines-0001-0081",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/Converter.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 81
+      },
+      "content_sha256": "7862392369bd7f7cb770fc05a0a219f9e108386aed04fbbdd66a2982274ea82e"
+    },
+    {
+      "evidence_id": "repo:methodhandler-java:lines-0001-0083",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/MethodHandler.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 83
+      },
+      "content_sha256": "30a9f4b3de7681d4820bd17ebf6c681890f10ca3936467e4153e056da85db199"
+    },
+    {
+      "evidence_id": "repo:okhttpcall-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/OkHttpCall.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "334dc02a619640d8505737b8eff0f65dc5c1a419a248b1a89f0e2ec661c56759"
+    },
+    {
+      "evidence_id": "repo:okhttpcall-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/OkHttpCall.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "0885aaf4532df295ee9d7157b73332bdd31f3a4b23665fab09f5d8201bc4274f"
+    },
+    {
+      "evidence_id": "repo:okhttpcall-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/OkHttpCall.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "c24c399da1fa5fb0a6a2b4bdba2ddec5e00e68cc4002e47e85992f70136244cf"
+    },
+    {
+      "evidence_id": "repo:platform-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/Platform.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "80cba22778a952699ebd977726f30c036af9803190a63cf1557f5e9ae1b64d6e"
+    },
+    {
+      "evidence_id": "repo:platform-java:lines-0101-0155",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/Platform.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 155
+      },
+      "content_sha256": "4cbfb391946ced083282ae0ae297359f5814516478161296e8c52e26e4b643c0"
+    },
+    {
+      "evidence_id": "repo:requestaction-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/RequestAction.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "64dd1bd4f6809c45a9dc09c9d6efc209a288efe6182e08c3f4b7b788c8be8ba3"
+    },
+    {
+      "evidence_id": "repo:requestaction-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/RequestAction.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "f835c2a7e82ae817a6a4003fb38c1343b69cfb251a1a13c51e097155d00277a5"
+    },
+    {
+      "evidence_id": "repo:requestaction-java:lines-0201-0275",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/RequestAction.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 275
+      },
+      "content_sha256": "ad93ef86443ad77d6bd9e7b84af6d8504eef164cd15b71f13a100d7c98bb572d"
+    },
+    {
+      "evidence_id": "repo:requestbuilder-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/RequestBuilder.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "a1d6f1629ca50ab0c31984d2af435b407b0fdeb85071162daa6b00ced4573677"
+    },
+    {
+      "evidence_id": "repo:requestbuilder-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/RequestBuilder.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "30dfc40fb2acc8fda9c87f9110cecde8b38f095cc380910c204dc7222bc38f6e"
+    },
+    {
+      "evidence_id": "repo:requestbuilder-java:lines-0201-0236",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/RequestBuilder.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 236
+      },
+      "content_sha256": "08f34cc1801f327937c633846fa871957a9a3eed641b0aa684b7c4c8749bab87"
+    },
+    {
+      "evidence_id": "repo:requestfactory-java:lines-0001-0069",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/RequestFactory.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 69
+      },
+      "content_sha256": "2ab797add46b582d1a5004f75b7ae80d47cf228b6c5ff5c385b59cfa2cc9b97e"
+    },
+    {
+      "evidence_id": "repo:requestfactoryparser-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/RequestFactoryParser.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "fb34de88f5a84f0498ae3a01245404b53d2019aa118e0a0cb11ec91f2f89ca3c"
+    },
+    {
+      "evidence_id": "repo:requestfactoryparser-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/RequestFactoryParser.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "25173f776554ebff21e2d5fe78bf1ae40eaba43f699b302f45ee24d243651dd3"
+    },
+    {
+      "evidence_id": "repo:requestfactoryparser-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/RequestFactoryParser.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "bdadd18404b92a8760cd3297448e2d4a05d4861e49e5b4793a87f4d2b759545e"
+    },
+    {
+      "evidence_id": "repo:requestfactoryparser-java:lines-0301-0400",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/RequestFactoryParser.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "89d8b1da6e56f5d27bc3113ea474861926a86663950505fa461f6b9db53927e0"
+    },
+    {
+      "evidence_id": "repo:requestfactoryparser-java:lines-0401-0500",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/RequestFactoryParser.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "cfe396c676220a012c689c6da4c1faa71ad2560045eec49aa91db30aadf3597c"
+    },
+    {
+      "evidence_id": "repo:requestfactoryparser-java:lines-0501-0570",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/RequestFactoryParser.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 570
+      },
+      "content_sha256": "add6939c3f36b17fd75c2937843263e4d024e196c5fa49559a3b0de021ea2fd1"
+    },
+    {
+      "evidence_id": "repo:retrofit-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/Retrofit.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "4b93abf9ea2f0886fdbc5ccda2084bebf687df7b7c3167044caf1ba5c7abe7e2"
+    },
+    {
+      "evidence_id": "repo:retrofit-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/Retrofit.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "b406c3a27d35e69ff4651b7caf566dc4c62cc262f15390490f5705e4401f5dc9"
+    },
+    {
+      "evidence_id": "repo:retrofit-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/Retrofit.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "01631b75e9267b0dc24f92f5868aa707f68b75683d2f3759d59ccafa887ae796"
+    },
+    {
+      "evidence_id": "repo:retrofit-java:lines-0301-0400",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/Retrofit.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "28cebe31e7557bfb88f7edf5a0e80debe327a32024eb7b9985f50c54d204e3bd"
+    },
+    {
+      "evidence_id": "repo:retrofit-java:lines-0401-0500",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/Retrofit.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "f9e25f324f6dffda5a2fc0415d69359fd9d58cb9980ad93bed9615ffc5275e88"
+    },
+    {
+      "evidence_id": "repo:retrofit-java:lines-0501-0573",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/Retrofit.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 573
+      },
+      "content_sha256": "54612c1bd4f64630fcee8a96dc412e94dd510a9b6516e3f1d4eb775ee7ba2e9d"
+    },
+    {
+      "evidence_id": "repo:utils-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/Utils.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "b4f0df620d87329ac16359d99105e784b1e9d2860bfcad299013885293d98dcd"
+    },
+    {
+      "evidence_id": "repo:utils-java:lines-0101-0136",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/Utils.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 136
+      },
+      "content_sha256": "596e54485000dd9ebd727b3e4a1015dc7aa573850cf0a6a65e7a720da306b84c"
+    },
+    {
+      "evidence_id": "repo:body-java:lines-0001-0047",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/http/Body.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 47
+      },
+      "content_sha256": "5a658fe4c0e2d9833cdc4cac1ac5f9a5d60f617eb9861c16919c4e1b1322d77b"
+    },
+    {
+      "evidence_id": "repo:get-java:lines-0001-0039",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/http/GET.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 39
+      },
+      "content_sha256": "87e802fd3c3da26e3b60ce83708cc8e8b75c2f9e74ec6643f40637b1f73cfdec"
+    },
+    {
+      "evidence_id": "repo:post-java:lines-0001-0039",
+      "source": "physical-artifacts/repository/retrofit/src/main/java/retrofit2/http/POST.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 39
+      },
+      "content_sha256": "45f69f6bf85daba08b1b92a658c44fa7ab2ab6b691e715af53591ed079d37f94"
+    },
+    {
+      "evidence_id": "repo:protoconverterfactory-java:lines-0001-0073",
+      "source": "physical-artifacts/repository/retrofit-converters/protobuf/src/main/java/retrofit2/converter/protobuf/ProtoConverterFactory.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 73
+      },
+      "content_sha256": "c8c774078e91d1d8f218861a86e79253bb2095bcfea349f755773d2982745bcb"
+    },
+    {
+      "evidence_id": "repo:protorequestbodyconverter-java:lines-0001-0034",
+      "source": "physical-artifacts/repository/retrofit-converters/protobuf/src/main/java/retrofit2/converter/protobuf/ProtoRequestBodyConverter.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 34
+      },
+      "content_sha256": "eadcc47a53255f80f14b0c5b69fdbf4c2e87b8576b425126c54cde92451251c2"
+    },
+    {
+      "evidence_id": "repo:protoresponsebodyconverter-java:lines-0001-0042",
+      "source": "physical-artifacts/repository/retrofit-converters/protobuf/src/main/java/retrofit2/converter/protobuf/ProtoResponseBodyConverter.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 42
+      },
+      "content_sha256": "35d62abef667616e4e22a48b7cd133291fac972830b48730bda56414b72d290f"
+    },
+    {
+      "evidence_id": "repo:protoconverterfactorytest-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/retrofit-converters/protobuf/src/test/java/retrofit2/converter/protobuf/ProtoConverterFactoryTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "7edd917d91f4d890511415c4c32322009fcb688acb55d7ebf1cde0d59207a63f"
+    },
+    {
+      "evidence_id": "repo:protoconverterfactorytest-java:lines-0101-0143",
+      "source": "physical-artifacts/repository/retrofit-converters/protobuf/src/test/java/retrofit2/converter/protobuf/ProtoConverterFactoryTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 143
+      },
+      "content_sha256": "b3aa20aa2e199b847926131b81c5b2232ec7ff898a53087cca1713f45ba6526f"
+    },
+    {
+      "evidence_id": "repo:phoneprotos-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/retrofit-converters/protobuf/src/test/java/retrofit2/converter/protobuf/PhoneProtos.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "2be4a8fa6e9d51b79d697d40a7f072781ea2a9b15f2dc9a969b8f7c2f4c80b16"
+    },
+    {
+      "evidence_id": "repo:phoneprotos-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/retrofit-converters/protobuf/src/test/java/retrofit2/converter/protobuf/PhoneProtos.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "89bef93fdc3ee34be5619438c9710994a324b7979e8bfabdf5789b286ca39977"
+    },
+    {
+      "evidence_id": "repo:phoneprotos-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/retrofit-converters/protobuf/src/test/java/retrofit2/converter/protobuf/PhoneProtos.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "e8928e99a2802a122ce2cfc6a34f06c78c03c5c984c4de3fdb52f5065cb750be"
+    },
+    {
+      "evidence_id": "repo:phoneprotos-java:lines-0301-0400",
+      "source": "physical-artifacts/repository/retrofit-converters/protobuf/src/test/java/retrofit2/converter/protobuf/PhoneProtos.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "abd10ed5e3970b08ff8e1663bd071ee7237236e74dbcdba0ff449c650c375daa"
+    },
+    {
+      "evidence_id": "repo:phoneprotos-java:lines-0401-0500",
+      "source": "physical-artifacts/repository/retrofit-converters/protobuf/src/test/java/retrofit2/converter/protobuf/PhoneProtos.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "2e8f41b791d70c611d55a684b90545646ff78e6422581ac42ce902b90aaf493a"
+    },
+    {
+      "evidence_id": "repo:phoneprotos-java:lines-0501-0523",
+      "source": "physical-artifacts/repository/retrofit-converters/protobuf/src/test/java/retrofit2/converter/protobuf/PhoneProtos.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 523
+      },
+      "content_sha256": "5fa9ed897318d637c0b6ba9ed22abbf93ee9049db8b7f11fd9277ea77a25b0e6"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0043",
+      "source": "physical-artifacts/repository/retrofit-converters/protobuf/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 43
+      },
+      "content_sha256": "551230b16ebbbcf0632c6605c1ac685700bb7353ac3cb2952cb922f60b90e985"
+    },
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0025",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 25
+      },
+      "content_sha256": "b68b177f4a73124a581e70ffe9096d7c11625cf610ff240839322b83c902f558"
+    }
+  ]
+}

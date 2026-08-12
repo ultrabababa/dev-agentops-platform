@@ -162,6 +162,31 @@ This is therefore the **primary screening question at Candidate Discovery**, app
 suite now contradicts them three times over: B02 has the lowest Required share in the suite (1.3 %) and is the hardest Case;
 N22 has the highest of its group (21.4 %) and is `LOW`.
 
+### Replacement construction round 1 — C2, A1, D2 built
+
+The first three candidates, chosen because their open questions could materially change admission, are constructed as
+Schema V2 packages and reviewed. Records: `reviews/c2-blueflood-review.md`, `reviews/a1-retrofit-review.md`,
+`reviews/d2-nukkit-review.md`. **None is a Formal Freeze and Formal Suite membership is not frozen.**
+
+| Case | Slot | Layer 1 | Layer 2 | Open question outcome |
+|---|---|---|---|---|
+| `bugswarm-blueflood-80881330` | `config_or_environment_failure` | `PASS` | **`ADEQUATE`** | Resolved for the Case — `events_mapping.json` is a repository file |
+| `bugswarm-retrofit-113047638` | `test_assertion_failure` | `PASS` | **`ADEQUATE — lower end`** | Branch-name leak preserved; assessed weak and partly misleading |
+| `bugswarm-nukkit-94403868` | `dependency_or_install_failure` | `PASS` | **`BORDERLINE-ADEQUATE`** | Dependency established from the manifests; **rating lowered from the screening estimate** |
+
+Three findings worth carrying into the remaining six:
+
+- **A screening estimate is not a review verdict.** D2 was screened `ADEQUATE` on an absence-based inference over the
+  log's download list. Once the manifest work was done, the honest rating fell to `BORDERLINE-ADEQUATE`, because the
+  compiler quotes the offending imports into the log and one 29-line build file completes the diagnosis. The rating was
+  lowered rather than the package adjusted to protect it.
+- **Compiler and analyzer output quotes source lines back into the log.** Any candidate whose tooling echoes the
+  offending source text will tend to fail a strict removal test for that source file. This generalises the B16 finding
+  from Java stack traces to javac diagnostics, and it should be applied at screening for the remaining candidates.
+- **Direction-settling units are now selected deliberately.** In both C2 and A1 a Required unit exists solely to
+  determine which side of a mismatch is wrong. This is the standing countermeasure to the N22 hazard, and it is what
+  separates a Required set that establishes a mismatch from one that entails the Expected Answer.
+
 ### Targeted Candidate Discovery round: candidate ledger produced
 
 One combined discovery round covering all 9 slots has been run and recorded in

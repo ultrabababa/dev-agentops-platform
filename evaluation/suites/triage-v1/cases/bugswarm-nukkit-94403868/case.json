@@ -1,0 +1,41 @@
+{
+  "case_schema_version": "2",
+  "case_id": "bugswarm-nukkit-94403868",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "https://www.bugswarm.org/artifact-logs/94403868/raw/ ; upstream exact executed revision: https://github.com/Nukkit/Nukkit/commit/5a893db8c78d3f4b05a9a6d34c7da782ed537611",
+    "license_or_permission": "GPL-3.0 upstream repository; public BugSwarm historical failed-job attribution."
+  },
+  "curation": {
+    "created_by": "Issue #15 targeted replacement construction round",
+    "review_status": "human_reviewed",
+    "reviewed_by": "STATUS: constructed in the Issue #15 targeted replacement round; package-content Human Review COMPLETE by the constructing reviewer, awaiting Human disposition. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "Removed ANSI/control escape sequences and normalised CRLF/CR line endings only; the complete authentic historical failure observation is otherwise unchanged, including all three Travis build attempts.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "44605a3b8c30d05676f7b4ad2209e7d6337207d39abed396a5a266ccc8459348"
+}

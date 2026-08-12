@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "dependency_or_install_failure",
+  "acceptable_failure_types": [],
+  "summary": "The Gradle build cannot compile Nukkit because the LevelDB provider sources import a library the build never declares.",
+  "root_cause": "cn.nukkit.level.format.leveldb.LevelDB imports org.iq80.leveldb.DB, org.iq80.leveldb.Options and org.iq80.leveldb.impl.Iq80DBFactory, but the operative build manifest build.gradle declares only gson, jansi, snakeyaml and jline. The leveldb artifact is therefore absent from the compile classpath and javac reports ten cascading package-does-not-exist and cannot-find-symbol errors, all in that one file. The errors are a downstream symptom of an undeclared dependency, not of a source defect.",
+  "recommended_action": "Declare the missing org.iq80.leveldb dependency in build.gradle, which is the manifest Travis uses for this job, so the LevelDB provider sources have the library on their compile classpath."
+}

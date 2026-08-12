@@ -1,0 +1,110 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "rackerlabs/blueflood",
+    "revision_kind": "git_commit",
+    "exact_revision": "3c1c16bc200b7d0b97b1dc0594d506b53aa51e0d"
+  },
+  "files": [
+    {
+      "path": "blueflood-http/src/integration-test/java/com/rackspacecloud/blueflood/inputs/handlers/HttpAnnotationsEndToEndTest.java",
+      "sha256": "af510a92eb65845404871d025a9e3251ab6fa026be05d553512227b4e9a66a4f",
+      "size_bytes": 7207
+    },
+    {
+      "path": "blueflood-http/src/integration-test/java/com/rackspacecloud/blueflood/http/HttpClientVendor.java",
+      "sha256": "855499df2daacfaaabd9f9c0a5d69e1c9d94092c9e49780050fc673b00b71bc9",
+      "size_bytes": 2155
+    },
+    {
+      "path": "blueflood-elasticsearch/src/main/java/com/rackspacecloud/blueflood/io/EventElasticSearchIO.java",
+      "sha256": "e5cf211e591347eeb533c9fb77ead24027af9ea417627b504224900ba658c505",
+      "size_bytes": 5309
+    },
+    {
+      "path": "blueflood-elasticsearch/src/main/resources/events_mapping.json",
+      "sha256": "3a999e27f1e0b91f79c11abed21c88cf07c24176f8a0b99f997ae33e954dc800",
+      "size_bytes": 454
+    },
+    {
+      "path": "blueflood-elasticsearch/src/main/resources/index_settings.json",
+      "sha256": "469de267b0a0a9655f6b0aacaf52c402940d7f6eed87438f30fc932c6727846e",
+      "size_bytes": 699
+    },
+    {
+      "path": "blueflood-elasticsearch/src/main/resources/metrics_mapping.json",
+      "sha256": "6b7e556f8eba561b54bb907af7875dd7129fd7025fced257e6d682fb8c6c903f",
+      "size_bytes": 529
+    },
+    {
+      "path": "blueflood-elasticsearch/src/main/resources/metrics_mapping_v1.json",
+      "sha256": "44a30a26aef5920e78a48e526a0f7dffa53b2872a1dc9f3ce45542c902de2ee2",
+      "size_bytes": 465
+    },
+    {
+      "path": "blueflood-core/src/main/java/com/rackspacecloud/blueflood/io/EventsIO.java",
+      "sha256": "136f08b10bfe73d40b7971116055573ec1cba6a3e55b5820573c439ac70c47bb",
+      "size_bytes": 940
+    },
+    {
+      "path": "blueflood-core/src/main/java/com/rackspacecloud/blueflood/io/AstyanaxMetricsWriter.java",
+      "sha256": "6563ffd2bc00ccc3c73972d3c1a03dd7be13352bd5699e81aa59b14ce605b0e9",
+      "size_bytes": 1559
+    },
+    {
+      "path": "blueflood-core/src/main/java/com/rackspacecloud/blueflood/service/Configuration.java",
+      "sha256": "b295833862fdcb784b5f568ff97a72a59d63ed3fcb2a7ad664c341056c5f7e35",
+      "size_bytes": 4044
+    },
+    {
+      "path": "blueflood-core/src/main/java/com/rackspacecloud/blueflood/service/CoreConfig.java",
+      "sha256": "28f438c9fe3c74329f69d859e14bd3cd404d3a66f1afc61ab7e233a60c502ac5",
+      "size_bytes": 6130
+    },
+    {
+      "path": "blueflood-core/src/main/java/com/rackspacecloud/blueflood/service/ScheduleContext.java",
+      "sha256": "01f7cfbfa26b9f63edda686186a512c8cff5b92b647990c25e86499edfcfb660",
+      "size_bytes": 14492
+    },
+    {
+      "path": "blueflood-http/src/main/java/com/rackspacecloud/blueflood/inputs/handlers/HttpEventsIngestionHandler.java",
+      "sha256": "f488290d33859ecac96bbf1f56a718b3221b66c438c6f76be7d413cf1bfcb2e6",
+      "size_bytes": 4152
+    },
+    {
+      "path": "blueflood-http/src/main/java/com/rackspacecloud/blueflood/inputs/handlers/HttpMetricsIngestionServer.java",
+      "sha256": "e53327fe1d8bb144e6a144d16e279b9324c8e1ddbb7a54c105f46d7d35dcc177",
+      "size_bytes": 11590
+    },
+    {
+      "path": "blueflood-http/src/main/java/com/rackspacecloud/blueflood/outputs/handlers/HttpMetricDataQueryServer.java",
+      "sha256": "d2e1bdb31caff997086111bcd5d5a629132d199e1287a97ad074ea3a3aa7f74b",
+      "size_bytes": 5408
+    },
+    {
+      "path": "blueflood-http/src/main/java/com/rackspacecloud/blueflood/service/HttpConfig.java",
+      "sha256": "ab830cccac962ce358731fa497ea70f39e395ff2bd8fb26ef4fb37b49a7439bf",
+      "size_bytes": 2503
+    },
+    {
+      "path": "blueflood-http/src/main/java/com/rackspacecloud/blueflood/service/HttpIngestionService.java",
+      "sha256": "dc07c10023af2503aaba123f49b1223df53e757ce7534ae67bd81ec2b878d4b9",
+      "size_bytes": 1662
+    },
+    {
+      "path": "blueflood-http/src/main/java/com/rackspacecloud/blueflood/service/HttpQueryService.java",
+      "sha256": "6b5dee5bece7d811842220abd03ae88adcd96c9c5a8aeceba83fa3f8c7f3ad71",
+      "size_bytes": 1409
+    },
+    {
+      "path": "blueflood-http/pom.xml",
+      "sha256": "c0c046584523aa450dc598291f9cc10fd40d56a696ce3b945fc411cb442972fd",
+      "size_bytes": 6581
+    },
+    {
+      "path": ".travis.yml",
+      "sha256": "a9dc92a178ed7368a68602aa7d73e052cdb5bf4ff463587fe11fc0ff9d4132d6",
+      "size_bytes": 472
+    }
+  ]
+}

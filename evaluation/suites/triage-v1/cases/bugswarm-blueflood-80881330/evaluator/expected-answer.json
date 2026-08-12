@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "config_or_environment_failure",
+  "acceptable_failure_types": [],
+  "summary": "The blueflood-http end-to-end test cannot create its Elasticsearch index because the events mapping is registered under a type name the mapping document does not declare.",
+  "root_cause": "HttpAnnotationsEndToEndTest.setUp registers events_mapping.json under the Elasticsearch type 'metrics', but that document's root type is 'graphite_event', which is the type EventElasticSearchIO actually writes. Elasticsearch's mapping parser therefore rejects the create-index request in @BeforeClass, so both tests in the class error before any assertion runs and the @AfterClass teardown then dereferences objects setUp never assigned.",
+  "recommended_action": "Register the events mapping under the type it declares by using EventElasticSearchIO.ES_TYPE ('graphite_event') instead of the literal 'metrics' in the withMapping call."
+}

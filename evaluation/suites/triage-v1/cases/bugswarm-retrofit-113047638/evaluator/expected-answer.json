@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "test_assertion_failure",
+  "acceptable_failure_types": [],
+  "summary": "The protobuf converter's null-body test fails because it never triggers request construction, so the exception it expects is never thrown.",
+  "root_cause": "serializeNullThrows calls service.post(null) and expects an IllegalStateException immediately, but invoking a service method only creates the Call. The request body is converted inside OkHttpCall.createRawCall, which runs only on request(), execute() or enqueue(). ProtoRequestBodyConverter does throw the expected exception, and RequestAction.Body does invoke the converter when ignoreNull is false, so neither the converter nor the null-body wiring is at fault; the test's oracle assumes eager request construction that the call pipeline does not perform, and fail() therefore runs.",
+  "recommended_action": "Drive the request from the test before asserting, for example by calling execute() on the returned Call inside the try block, so the body converter actually runs."
+}

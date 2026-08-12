@@ -1,0 +1,105 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "Nukkit/Nukkit",
+    "revision_kind": "git_commit",
+    "exact_revision": "5a893db8c78d3f4b05a9a6d34c7da782ed537611"
+  },
+  "files": [
+    {
+      "path": "src/main/java/cn/nukkit/level/format/leveldb/LevelDB.java",
+      "sha256": "f1c7fc652f14db4db5d6b47d6b78b550183e8962989e8d575b25136e18984103",
+      "size_bytes": 13681
+    },
+    {
+      "path": "src/main/java/cn/nukkit/level/format/leveldb/Chunk.java",
+      "sha256": "a0e7991f4f77425da7fa25dee7989f1e827d568bfc943d686ec91f55bc373b5a",
+      "size_bytes": 16957
+    },
+    {
+      "path": "src/main/java/cn/nukkit/level/format/leveldb/key/BaseKey.java",
+      "sha256": "1565438749d81ffc65ce9c973f053dd03a20d970ddc1fa75be5387643ed81679",
+      "size_bytes": 1204
+    },
+    {
+      "path": "src/main/java/cn/nukkit/level/format/leveldb/key/EntitiesKey.java",
+      "sha256": "7089f1cad526146c15622f4cd6db9924cd4f43e136fd0030b726aa243d132729",
+      "size_bytes": 361
+    },
+    {
+      "path": "src/main/java/cn/nukkit/level/format/leveldb/key/ExtraDataKey.java",
+      "sha256": "598c1729ec16238077e69793a6b1597c264b088d58253e591f01a8bd2e4ade8d",
+      "size_bytes": 367
+    },
+    {
+      "path": "src/main/java/cn/nukkit/level/format/leveldb/key/FlagsKey.java",
+      "sha256": "6a5cb83f86378dd458cb438be03db43520af0a89fdccb49e32054ba51928f35d",
+      "size_bytes": 346
+    },
+    {
+      "path": "src/main/java/cn/nukkit/level/format/leveldb/key/TerrainKey.java",
+      "sha256": "88ba251c4ea1f3a85c0f586ab3056cc82bda4c3120e3d662dd416baeb10881f1",
+      "size_bytes": 356
+    },
+    {
+      "path": "src/main/java/cn/nukkit/level/format/leveldb/key/TicksKey.java",
+      "sha256": "092eb35af9c5fed5dab3ca88cf146e247fb45d9829a0fa358dce7884ae4967ce",
+      "size_bytes": 346
+    },
+    {
+      "path": "src/main/java/cn/nukkit/level/format/leveldb/key/TilesKey.java",
+      "sha256": "8cf828e6da14cd2c329f3d904d1d69dcb0f4e26f8e78c9f94bb908d4f11e8c30",
+      "size_bytes": 346
+    },
+    {
+      "path": "src/main/java/cn/nukkit/level/format/leveldb/key/VersionKey.java",
+      "sha256": "4e46a4521cb8ddce1fad24ace66822bb331d06a21117ec3d4956f067079bb23b",
+      "size_bytes": 356
+    },
+    {
+      "path": "src/main/java/cn/nukkit/Server.java",
+      "sha256": "523e76af2ff8f081ddccdab0f1c4f1dc33fcdb598c877302d4c19bba955b70cf",
+      "size_bytes": 60758
+    },
+    {
+      "path": "src/main/java/cn/nukkit/level/format/LevelProvider.java",
+      "sha256": "74b29574b4a22ff55471af782cbdb209c5842378fd499258adf22cffb185dd47",
+      "size_bytes": 1395
+    },
+    {
+      "path": "src/main/java/cn/nukkit/level/format/LevelProviderManager.java",
+      "sha256": "2a7e5dd45bcdcb8082f6b555d6d882b1c64b537c5fbe1c29f8f136daf9222810",
+      "size_bytes": 1228
+    },
+    {
+      "path": "src/main/java/cn/nukkit/level/format/FullChunk.java",
+      "sha256": "e4bd73b3dea1ef8967b1e029c13ba09d8fb290d0671219c12a94361c4c354c8a",
+      "size_bytes": 3031
+    },
+    {
+      "path": "src/main/java/cn/nukkit/level/format/ChunkSection.java",
+      "sha256": "c03cdaef6ddc6d74bf10f848a3721e57615320b52a2c8052b760add05f157d49",
+      "size_bytes": 1060
+    },
+    {
+      "path": "build.gradle",
+      "sha256": "89092afe0da9701dc48d8aed7ff01e613eefcfa2956468b601d802279ce83d62",
+      "size_bytes": 545
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "03f8a85e12a51f04bb13f0eba183b1a0df866116acea0134a4e823e41753eca0",
+      "size_bytes": 2151
+    },
+    {
+      "path": "settings.gradle",
+      "sha256": "a9bd39e45b44a2244b2c835a146fcf5e2dfddbdc3d43e0d4e9558467b4505702",
+      "size_bytes": 45
+    },
+    {
+      "path": ".travis.yml",
+      "sha256": "a72aa51533cdbb5234b48a955b976504d6e681f3e2219aefba04c660a11d9549",
+      "size_bytes": 35
+    }
+  ]
+}

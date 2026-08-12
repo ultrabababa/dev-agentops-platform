@@ -1,0 +1,14 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-0501-0600",
+    "repo:build-gradle:lines-0001-0029"
+  ],
+  "optional_evidence_ids": [
+    "repo:leveldb-java:lines-0001-0100",
+    "repo:server-java:lines-0301-0400",
+    "repo:pom-xml:lines-0001-0062",
+    "repo:settings-gradle:lines-0001-0002",
+    "repo:travis-yml:lines-0001-0004"
+  ]
+}
