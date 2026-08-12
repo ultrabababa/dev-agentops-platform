@@ -1,0 +1,108 @@
+{
+  "schema_version": "1",
+  "suite_id": "triage-suite-v1",
+  "suite_version": "1",
+  "cases": [
+    {
+      "case_id": "bugswarm-traccar-170287308",
+      "manifest": "cases/bugswarm-traccar-170287308/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "bugswarm-apache-struts-190697114",
+      "manifest": "cases/bugswarm-apache-struts-190697114/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "bugswarm-retrofit-113047638",
+      "manifest": "cases/bugswarm-retrofit-113047638/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "bugswarm-sonar-php-206164136",
+      "manifest": "cases/bugswarm-sonar-php-206164136/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "bugswarm-checkstyle-77722324",
+      "manifest": "cases/bugswarm-checkstyle-77722324/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "bugswarm-mypy-237548392",
+      "manifest": "cases/bugswarm-mypy-237548392/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "bugswarm-byte-buddy-149441998",
+      "manifest": "cases/bugswarm-byte-buddy-149441998/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "bugswarm-pygithub-36442425251",
+      "manifest": "cases/bugswarm-pygithub-36442425251/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "bugswarm-traccar-221926468",
+      "manifest": "cases/bugswarm-traccar-221926468/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "github-tan-cli-30459137058",
+      "manifest": "cases/github-tan-cli-30459137058/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "bugswarm-nukkit-94403868",
+      "manifest": "cases/bugswarm-nukkit-94403868/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "bugswarm-spring-hateoas-232784946",
+      "manifest": "cases/bugswarm-spring-hateoas-232784946/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "bugswarm-testng-64757057",
+      "manifest": "cases/bugswarm-testng-64757057/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "bugswarm-traccar-166900445",
+      "manifest": "cases/bugswarm-traccar-166900445/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "bugswarm-blueflood-80881330",
+      "manifest": "cases/bugswarm-blueflood-80881330/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "bugswarm-cola-12505170926",
+      "manifest": "cases/bugswarm-cola-12505170926/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "idflakies-cukes-http-b483e1a8",
+      "manifest": "cases/idflakies-cukes-http-b483e1a8/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "github-osquery-issue-7718",
+      "manifest": "cases/github-osquery-issue-7718/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "odrepair-dubbo-737f7a7e",
+      "manifest": "cases/odrepair-dubbo-737f7a7e/case.json",
+      "weight": 1
+    },
+    {
+      "case_id": "odrepair-remoting-abf0455a",
+      "manifest": "cases/odrepair-remoting-abf0455a/case.json",
+      "weight": 1
+    }
+  ],
+  "suite_fingerprint": "b61f2e3ff85ec77857625a323680b45344fc68523df7cdf70235fa8236c592ed"
+}
