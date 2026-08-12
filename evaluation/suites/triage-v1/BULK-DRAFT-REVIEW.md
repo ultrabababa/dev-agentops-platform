@@ -162,6 +162,27 @@ This is therefore the **primary screening question at Candidate Discovery**, app
 suite now contradicts them three times over: B02 has the lowest Required share in the suite (1.3 %) and is the hardest Case;
 N22 has the highest of its group (21.4 %) and is `LOW`.
 
+### Suite status — 19 admitted, 20th slot open
+
+**`odrepair-dubbo-737f7a7e` is `HUMAN REVIEW PASS`.** **F1 `bugswarm-lucene-27509200564` is excluded from the formal 20
+for taxonomy mismatch** — its intermittency is real and artifact-visible, but a stable product-code cause exists
+(`IndexUtils.getIndexFormat` passes `IOContext.DEFAULT` where READONCE is required), which does not fit
+`timeout_or_flaky_failure`'s *"without a stable product-code root cause"*. The package and its record are retained; the
+Case is not a Formal Suite member. **F1 is not reopened.**
+
+**The proposed 20th Case — `jenkinsci/remoting` `ClassFilterTest.userRequest` — is BLOCKED at Layer 1** and was not
+constructed. Its mechanism verifies cleanly against the exact revision, but **no authentic, retrievable, fix-free
+artifact records the victim–polluter pairing**: ODRepair's `odr-tests.csv` has no remoting rows, IDoFT's `pr-data.csv`
+has no polluter column and carries the fix-PR link on the victim's own row, the polluter method appears in no IDoFT
+dataset, and the linked detector issue repository has been deleted. Full record and options:
+`reviews/jenkins-remoting-blocked-record.md`.
+
+**Reusable finding — an order-dependent Case needs a fix-free record that names *both* ends.** `odr-tests.csv` supports
+this by construction because it has no fix column; `pr-data.csv` does not, because its `PR Link` column carries the
+answer and it never names the polluter. When a project is absent from `odr-tests.csv`, the pairing usually survives only
+in the fix PR — and that is the one place it may not be taken from. Check the fix-free record **before** validating an
+order-dependent candidate, not after.
+
 ### Final flaky slot filled — odrepair-dubbo-737f7a7e
 
 The last open slot is filled by a Human-validated candidate: `apache/incubator-dubbo` at
