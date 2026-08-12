@@ -164,10 +164,17 @@ N22 has the highest of its group (21.4 %) and is `LOW`.
 
 ### Final flaky slot filled — odrepair-dubbo-737f7a7e
 
-The last open slot is constructed from a Human-validated candidate: `apache/incubator-dubbo` at
-`737f7a7ea67832d7f17517326fb2491d0a086dd7`, victim
-`JavassistProxyFactoryTest.testGetInvoker`, polluter `RpcContextTest.testAsync`. Layer 1 `PASS`, Layer 2
-**`ADEQUATE — lower end`**. Record: `reviews/f5-dubbo-review.md`. **Awaiting Human disposition; nothing frozen.**
+The last open slot is filled by a Human-validated candidate: `apache/incubator-dubbo` at
+`737f7a7ea67832d7f17517326fb2491d0a086dd7`, victim `JavassistProxyFactoryTest.testGetInvoker`, polluter
+`RpcContextTest.testAsync`. **`HUMAN REVIEW PASS`** — Layer 1 `PASS`, taxonomy fit `PASS`, Layer 2
+**`ADEQUATE — lower end`**. Record: `reviews/f5-dubbo-review.md`. **Nothing is frozen.**
+
+Two Required promotions were applied at Human review, taking Required from 7 to 9 without expanding the Physical
+Universe: `rpccontext-java:lines-0101-0200` carries the actual `getContext() -> LOCAL.get()` and
+`removeContext() -> LOCAL.remove()` linkage, which the field declaration alone does not show, and
+`asynccontextimpl-java:lines-0001-0084` proves the stored `CompletableFuture` is the one the polluter completed and
+returned by `getInternalFuture()` — an identity the Ground Truth had assumed. Re-running strict removal tests confirms
+inclusion-minimality still holds across all nine.
 
 The observation is the committed **ODRepair** order-dependent-test record, rows selected by exact revision from
 `TestingResearchIllinois/idoft/odr-tests.csv` with the header retained and every row byte-for-byte. `odr-tests.csv` was

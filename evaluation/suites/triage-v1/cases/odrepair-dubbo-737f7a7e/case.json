@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "Issue #15 targeted replacement construction round",
     "review_status": "human_reviewed",
-    "reviewed_by": "STATUS: constructed in the Issue #15 targeted replacement round from a Human-validated candidate; package-content review COMPLETE by the constructing reviewer, awaiting Human disposition. The ODRepair record is the authentic detector observation; the fix PR and its prose are curator-side validation only and are deliberately absent from every Physical Artifact. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; taxonomy fit PASS; Runtime Discriminative Value ADEQUATE - lower end, which must not be rewritten upward. Order-dependent victim: RpcContextTest.testAsync leaves a started AsyncContext in the thread-local RpcContext, and AbstractProxyInvoker then returns the polluter's stale async future instead of the synchronous result. The ODRepair record is the authentic detector observation; the fix PR and its prose are curator-side validation only and are absent from every Physical Artifact. Rated at the lower end because the record names the polluter, so polluter identification is not measured here - this Case measures mechanism reconstruction. NOT a Formal Freeze and NOT frozen Formal Suite membership: Canonicalization Profile v1 is not frozen, no Suite Manifest exists, and coordinates and fingerprint remain provisional-pre-freeze."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "881762dbae4c79d58c8d1f4f9f6a035cadf2c494846a921adbba6ea1a23a135a"
+  "case_fingerprint": "97c5550b6098739d1061206970551a4f0e1290b7e7c01eee959222773d9a8b62"
 }

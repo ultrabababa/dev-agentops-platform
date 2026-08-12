@@ -1,10 +1,10 @@
 # F5 — odrepair-dubbo-737f7a7e — construction and Human Review record
 
-> **Layer 1 `PASS`** · **Layer 2 `ADEQUATE — lower end`** · constructed from a Human-validated candidate, awaiting Human disposition.
+> **FINAL DISPOSITION: `HUMAN REVIEW PASS`.** Layer 1 `PASS`, taxonomy fit `PASS`, Layer 2 **`ADEQUATE — lower end`**, which must not be rewritten upward.
 > **NOT a Formal Freeze and NOT frozen Formal Suite membership.** `Canonicalization Profile v1` is unfrozen, no Suite Manifest exists, and all coordinates and the fingerprint are `provisional-pre-freeze`.
 
 **Failure type:** `timeout_or_flaky_failure`, `acceptable_failure_types: []`. **Slot:** the second `timeout_or_flaky_failure` replacement — the last open slot.
-**Fingerprint:** `881762dbae4c79d58c8d1f4f9f6a035cadf2c494846a921adbba6ea1a23a135a`.
+**Fingerprint:** `97c5550b6098739d1061206970551a4f0e1290b7e7c01eee959222773d9a8b62` (supersedes `881762db…` after the Required promotions in §4).
 
 ## 1. Authenticity and provenance
 
@@ -50,17 +50,24 @@ reveals it.
    `RpcContext.startAsync()`, completes the future, then calls `rpcContext.stopAsync()` — and at `:161` **asserts that
    `isAsyncStarted()` is still true afterwards**. It never calls `RpcContext.removeContext()`, which the sibling
    `testGetContext` at `:35` does call.
-3. **The state is thread-scoped and survives the test.** `RpcContext.java:53` holds the context in an
-   `InternalThreadLocal`; `:126` `getContext()` reads it and `:139` `removeContext()` is the only clearing path. Surefire
-   runs the following test on the same thread, so the started `AsyncContext` is still installed.
+3. **The state is thread-scoped and survives the test.** `RpcContext.java:53` declares the context field as an
+   `InternalThreadLocal`; `:126-127` `getContext()` returns `LOCAL.get()` and `:139-140` `removeContext()` calls
+   `LOCAL.remove()`, the only clearing path. In the observed ordered execution the subsequent test inherits the same
+   thread-local context, so the started `AsyncContext` is still installed.
 4. **The invoker changes its return type because of that state.** `AbstractProxyInvoker.invoke:82-91` reads
    `RpcContext.getContext()` and, because `isAsyncStarted()` is true, takes `:89`
    `return new AsyncRpcResult(rpcContext.getAsyncContext().getInternalFuture());` instead of `:91`
    `return new RpcResult(obj)`.
-5. **The returned value comes from the polluter's future.** `AsyncRpcResult`'s constructor at `:66-79` registers
+5. **The future is the very one the polluter completed.** `AsyncContextImpl`'s constructor stores the
+   `CompletableFuture` handed to it by `testAsync`, `write(Object)` calls `future.complete(value)` on that same field,
+   and `getInternalFuture()` returns it. The identity the diagnosis relies on is therefore established, not assumed.
+6. **The returned value comes from that future.** `AsyncRpcResult`'s constructor at `:66-79` registers
    `future.whenComplete((v, t) -> … rFuture.complete(new RpcResult(v)))`, and `getValue():87-88` reads that result. The
    value therefore originates in the future the polluter already completed, not in this invocation's own return value,
    so the comparison against `origin.echo("aa")` no longer sees `"aa"`.
+
+   `AsyncContextImpl` also shows why the leak is not self-healing: `stop()` flips the `stoped` flag while
+   `isAsyncStarted()` reads `started`, so `RpcContext.stopAsync()` cannot clear the started state.
 
 The victim's own code is correct. The failure exists only for orders in which the polluter runs first.
 
@@ -78,19 +85,23 @@ co-victim the record lists with the same relevant test — as authentic corrobor
 
 Repository 58,140 bytes across 15 files; 28 canonical units total (2 log + 26 repository).
 
-## 4. Required Evidence — 7 units, each removal-tested
+## 4. Required Evidence — 9 units, each removal-tested
 
 | Required unit | What only it supplies | Removal test |
 |---|---|---|
 | `log:raw-log:lines-0101-0186` | The observation: this victim, its relevant test, and `OD-test-type = victim` | Remove: no failure and no ordering relation |
 | `repo:abstractproxytest-java:lines-0001-0073` | The victim method and the `"aa"` comparison | Remove: what the victim asserts is unknown |
 | `repo:rpccontexttest-java:lines-0101-0164` | That `testAsync` starts async, keeps `isAsyncStarted()` true past `stopAsync()`, and never removes the context | Remove: the leak cannot be established |
-| `repo:rpccontext-java:lines-0001-0100` | That the context is an `InternalThreadLocal` cleared only by `removeContext()` | Remove: why one test can affect another is unsupported |
+| `repo:rpccontext-java:lines-0001-0100` | That the context field is declared as an `InternalThreadLocal` | Remove: the state's thread scope is unsupported |
+| `repo:rpccontext-java:lines-0101-0200` | The actual linkage `getContext() -> LOCAL.get()` and `removeContext() -> LOCAL.remove()` | Remove: that the leaked state is read from, and cleared only via, that thread-local is not entailed — the declaration alone does not show how it is accessed |
 | `repo:rpccontext-java:lines-0701-0733` | That `stopAsync()` does not clear the started state | Remove: "the polluter cleaned up, so something else is at fault" survives, **inverting** the diagnosis |
 | `repo:abstractproxyinvoker-java:lines-0001-0100` | The `isAsyncStarted()` branch that returns the stale async future instead of `RpcResult(obj)` | Remove: the mechanism linking leaked state to a wrong result is unavailable |
-| `repo:asyncrpcresult-java:lines-0001-0100` | That the returned value is derived from the polluter's completed future | Remove: the claim that the comparison stops seeing `"aa"` is not entailed |
+| `repo:asynccontextimpl-java:lines-0001-0084` | That the stored `CompletableFuture` is the one `testAsync` passed, that `write()` completes that same field, and that `getInternalFuture()` returns it — plus that `stop()` flips `stoped`, not `started` | Remove: the future-identity the Ground Truth depends on is assumed rather than shown, and the "the polluter stopped it" reading revives |
+| `repo:asyncrpcresult-java:lines-0001-0100` | That the returned value is derived from that completed future | Remove: the claim that the comparison stops seeing `"aa"` is not entailed |
 
-Two units settle direction rather than merely establish the mismatch. Nine units remain Optional.
+Two promotions were applied at Human review (`rpccontext-java:lines-0101-0200` and `asynccontextimpl-java:lines-0001-0084`), taking Required from 7 to 9. **The Physical Universe was not expanded** — both were already canonical units of existing members.
+
+Re-running strict removal tests over the enlarged set confirms **inclusion-minimality holds**: `rpccontext-java:lines-0001-0100` is still necessary because only it shows the field is an `InternalThreadLocal` — `0101-0200` uses `LOCAL` without revealing its type — and `rpccontext-java:lines-0701-0733` is still necessary because only it connects the `RpcContext`-level `stopAsync()` and `isAsyncStarted()` calls to the `AsyncContextImpl` state. Eight units remain Optional.
 
 ## 5. Shortcut and leakage review
 
@@ -114,7 +125,7 @@ Two units settle direction rather than merely establish the mismatch. Nine units
 | Observation | 186 lines / 68,140 bytes, 11 OD-tests |
 | Repository | 15 files / 58,140 bytes |
 | Canonical units | 28 (2 log + 26 repo) |
-| Required / Optional | 7 / 9 |
+| Required / Optional | 9 / 8 |
 
 **What it measures.** Mechanism reconstruction for an order-dependent failure with **no exception text anywhere**: the
 Agent must connect a leaked thread-local, an assertion in the polluter that documents the leak rather than preventing it,
@@ -131,7 +142,14 @@ mechanism alone.
 `timeout_or_flaky_failure`, and here the nondeterminism is the execution order itself — established by the detector
 record, not inferred from reproduction metadata.
 
-## 7. Disposition
+## 7. Disposition — decided
 
-**Recommended `HUMAN REVIEW PASS`**, Layer 1 `PASS`, Layer 2 `ADEQUATE — lower end`. Not a Formal Freeze; Formal Suite
-membership is not frozen.
+**`HUMAN REVIEW PASS`** as the second `timeout_or_flaky_failure` replacement. Layer 1 `PASS`, taxonomy fit `PASS`,
+Layer 2 **`ADEQUATE — lower end`**, which must not be rewritten upward.
+
+One Evidence/Ground-Truth repair was applied at Human review (§4) together with an evidence-faithful rewording of the
+thread-inheritance sentence in both the Expected Answer and §2. No Physical Artifact byte changed, the Physical Universe
+was not expanded, and the rating and taxonomy are unchanged.
+
+This is a **review pass, not a Formal Freeze**: `Canonicalization Profile v1` is unfrozen, no Suite Manifest exists, and
+Formal Suite membership is not frozen.
