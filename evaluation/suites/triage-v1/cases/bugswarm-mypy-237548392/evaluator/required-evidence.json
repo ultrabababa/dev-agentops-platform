@@ -1,0 +1,9 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-2801-2856",
+    "repo:mypy-test-helpers-py:lines-0201-0300",
+    "repo:mypy-test-testcheck-py:lines-0101-0200"
+  ],
+  "optional_evidence_ids": []
+}

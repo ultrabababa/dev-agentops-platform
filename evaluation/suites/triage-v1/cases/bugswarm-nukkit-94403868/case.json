@@ -1,0 +1,41 @@
+{
+  "case_schema_version": "2",
+  "case_id": "bugswarm-nukkit-94403868",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "https://www.bugswarm.org/artifact-logs/94403868/raw/ ; upstream exact executed revision: https://github.com/Nukkit/Nukkit/commit/5a893db8c78d3f4b05a9a6d34c7da782ed537611",
+    "license_or_permission": "GPL-3.0 upstream repository; public BugSwarm historical failed-job attribution."
+  },
+  "curation": {
+    "created_by": "Issue #15 targeted replacement construction round",
+    "review_status": "human_reviewed",
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value BORDERLINE-ADEQUATE, downgraded from the ADEQUATE screening estimate and not to be rewritten upward. The missing dependency is established from build.gradle and pom.xml together with the LevelDB.java imports, not from the log download list. javac quotes the offending imports into the log, so LevelDB.java fails a strict removal test and Required is two units. Retained by Human decision rather than replaced with the D3 orbit reserve. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "Removed ANSI/control escape sequences and normalised CRLF/CR line endings only; the complete authentic historical failure observation is otherwise unchanged, including all three Travis build attempts.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "ac12b54f00ffb96e7ac7a9766185b848b96d080911ec9b819c18ebe2e6079966"
+}

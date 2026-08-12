@@ -1,0 +1,105 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0003",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 3
+      },
+      "content_sha256": "495892ec54f288891d85c810b7d34cdf2b7f970802491e2bd7de9d1b8d26ba9b"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "231a0beeabd2c7d63996d01d9cfe935379478245a79e3359b9d0e1af89ff9d8a"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0101-0200",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "207dacb91a4b42bad8b36c2f8650f1d7aa68d52064d5e4762b76a833e31bdb02"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0201-0255",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 255
+      },
+      "content_sha256": "98615680decda7c5d30403c58b22eb8855cb33416835b2ad90186114726d1ac0"
+    },
+    {
+      "evidence_id": "repo:src-org-traccar-protocol-uproprotocol-java:lines-0001-0047",
+      "source": "physical-artifacts/repository/src/org/traccar/protocol/UproProtocol.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 47
+      },
+      "content_sha256": "9e3b580c993a79380f31f6e81c02a3e73ffbdc6e8e5e70afe82aa83feed146bd"
+    },
+    {
+      "evidence_id": "repo:src-org-traccar-protocol-uproprotocoldecoder-java:lines-0001-0083",
+      "source": "physical-artifacts/repository/src/org/traccar/protocol/UproProtocolDecoder.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 83
+      },
+      "content_sha256": "31ffddb99b52508e5336c19e8cfb8f78a7d03e83418a86dbc50604da57f47091"
+    },
+    {
+      "evidence_id": "repo:test-org-traccar-protocoltest-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/test/org/traccar/ProtocolTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "493eba3c84f6098fdf712f91779f39e6ce08dd7d5e5c10940ee0d59f37cdae6f"
+    },
+    {
+      "evidence_id": "repo:test-org-traccar-protocoltest-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/test/org/traccar/ProtocolTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "52b45e0b3224f7e2a114b9463ba03881823e8c7dcf7eb7283754f1cd963102ca"
+    },
+    {
+      "evidence_id": "repo:test-org-traccar-protocoltest-java:lines-0201-0210",
+      "source": "physical-artifacts/repository/test/org/traccar/ProtocolTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 210
+      },
+      "content_sha256": "f5e759584d9cd3d0d459367d509a429a85640d77cc2f16a5d860a7a2d521a40b"
+    },
+    {
+      "evidence_id": "repo:test-org-traccar-protocol-uproprotocoldecodertest-java:lines-0001-0033",
+      "source": "physical-artifacts/repository/test/org/traccar/protocol/UproProtocolDecoderTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 33
+      },
+      "content_sha256": "7b78aaba18a13ea40164dd52ce78d98b4ad44a114f2fc0da6bce5313a323faed"
+    }
+  ]
+}

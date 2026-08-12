@@ -1,0 +1,295 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:gptme-tools-subagent-api-py:lines-0001-0100",
+      "source": "physical-artifacts/repository/gptme/tools/subagent/api.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "9d74311b2771ef28c73400319af7dfe0bfaeecfed96263bde17b789ba6db3d9e"
+    },
+    {
+      "evidence_id": "repo:gptme-tools-subagent-api-py:lines-0101-0200",
+      "source": "physical-artifacts/repository/gptme/tools/subagent/api.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "fd45fdbc460bd2db4f13d3f7188aadeec07a9e6d1920d32fabc7b9b845d07448"
+    },
+    {
+      "evidence_id": "repo:gptme-tools-subagent-api-py:lines-0201-0300",
+      "source": "physical-artifacts/repository/gptme/tools/subagent/api.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "4bb56a042cc5bb016212e52a2eec4cf410a3929e8acf6d918721883e2b63b0b5"
+    },
+    {
+      "evidence_id": "repo:gptme-tools-subagent-api-py:lines-0301-0400",
+      "source": "physical-artifacts/repository/gptme/tools/subagent/api.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "b32dad694ffad7ed3fa9c64f78b3a32038f5a33e40f0d5ecbeea7910786bc3d4"
+    },
+    {
+      "evidence_id": "repo:gptme-tools-subagent-api-py:lines-0401-0500",
+      "source": "physical-artifacts/repository/gptme/tools/subagent/api.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "9493e4a0b5c714ca4782dd53abb543e05cb87d87b557b8d31f1776a149196750"
+    },
+    {
+      "evidence_id": "repo:gptme-tools-subagent-api-py:lines-0501-0544",
+      "source": "physical-artifacts/repository/gptme/tools/subagent/api.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 544
+      },
+      "content_sha256": "372ceed7128a6d72cf19cab1b6335ae74f91b4618256aeff748d40c725cded1a"
+    },
+    {
+      "evidence_id": "repo:pyproject-toml:lines-0001-0100",
+      "source": "physical-artifacts/repository/pyproject.toml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "fbe881d0e489cf94890b9da221e9fe42590249a0bb39851266cf7b2dda4fff8b"
+    },
+    {
+      "evidence_id": "repo:pyproject-toml:lines-0101-0200",
+      "source": "physical-artifacts/repository/pyproject.toml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "24c0dae46709f4f78b68a7bba17d87eac6cdfbdce3a84ad9ca0a29e209f3490c"
+    },
+    {
+      "evidence_id": "repo:pyproject-toml:lines-0201-0300",
+      "source": "physical-artifacts/repository/pyproject.toml",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "5341c3b7ad5b8d388a728c953b72f3ba465ba538bfe35eee7174a7b184bfe0f9"
+    },
+    {
+      "evidence_id": "repo:pyproject-toml:lines-0301-0334",
+      "source": "physical-artifacts/repository/pyproject.toml",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 334
+      },
+      "content_sha256": "86c55d89ce22948e35ca7e1b2e6c16b40481b8c9be81c2ee9b2baa2833831204"
+    },
+    {
+      "evidence_id": "repo:tests-conftest-py:lines-0001-0100",
+      "source": "physical-artifacts/repository/tests/conftest.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "310ef29c5fc3e553f87a8764e97911ef5788206e673eea941be6adbf56f9419b"
+    },
+    {
+      "evidence_id": "repo:tests-conftest-py:lines-0101-0200",
+      "source": "physical-artifacts/repository/tests/conftest.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "ec538bc84952099786da2b514a01d4a66a251a066e06e2bde8ca078d58d9389c"
+    },
+    {
+      "evidence_id": "repo:tests-conftest-py:lines-0201-0300",
+      "source": "physical-artifacts/repository/tests/conftest.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "87397a01f827fe25b87b4433035ba1b2e6751915b6980f862a75e159e7b186d8"
+    },
+    {
+      "evidence_id": "repo:tests-conftest-py:lines-0301-0400",
+      "source": "physical-artifacts/repository/tests/conftest.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "4a8d602bc397623d52fb4988f9e6757e9cdc1b67fe20c8811f130127d99385ad"
+    },
+    {
+      "evidence_id": "repo:tests-conftest-py:lines-0401-0497",
+      "source": "physical-artifacts/repository/tests/conftest.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 497
+      },
+      "content_sha256": "9117166adec1287272ddedd2ed7e4a9944cf952b6864db8a87fbc312673ccc96"
+    },
+    {
+      "evidence_id": "repo:tests-test-tools-subagent-py:lines-0001-0100",
+      "source": "physical-artifacts/repository/tests/test_tools_subagent.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "abad5b63f84996ac3db27a109bde85fdbec94784da06cd3108c02845a13b2087"
+    },
+    {
+      "evidence_id": "repo:tests-test-tools-subagent-py:lines-0101-0200",
+      "source": "physical-artifacts/repository/tests/test_tools_subagent.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "ec5314784fbbbeb1e6695ce2a3ecd800b7a605c3651a34762306f18e53b57d79"
+    },
+    {
+      "evidence_id": "repo:tests-test-tools-subagent-py:lines-0201-0300",
+      "source": "physical-artifacts/repository/tests/test_tools_subagent.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "f217e494c9626ffeb9cb9677d0e8407ee8b3581de163d0e204f6153c0df7905f"
+    },
+    {
+      "evidence_id": "repo:tests-test-tools-subagent-py:lines-0301-0400",
+      "source": "physical-artifacts/repository/tests/test_tools_subagent.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "d671f841be2b9f9e629d5b668642de3815570bdc3b4657a1ecc2b7feb62d69ab"
+    },
+    {
+      "evidence_id": "repo:tests-test-tools-subagent-py:lines-0401-0500",
+      "source": "physical-artifacts/repository/tests/test_tools_subagent.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "2f94aac563849117e9029373b3a4afd051495014069c0fe72844cb54284c6192"
+    },
+    {
+      "evidence_id": "repo:tests-test-tools-subagent-py:lines-0501-0600",
+      "source": "physical-artifacts/repository/tests/test_tools_subagent.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "983fd28ac0ac2f7a3256c940e860308a612439da30f488a235bd19e196974a6d"
+    },
+    {
+      "evidence_id": "repo:tests-test-tools-subagent-py:lines-0601-0700",
+      "source": "physical-artifacts/repository/tests/test_tools_subagent.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 700
+      },
+      "content_sha256": "54a41aadff1f4ac6d61cc200627c17e0e1aa978324caf1a28beff22fb2905d4c"
+    },
+    {
+      "evidence_id": "repo:tests-test-tools-subagent-py:lines-0701-0800",
+      "source": "physical-artifacts/repository/tests/test_tools_subagent.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 701,
+        "end_line": 800
+      },
+      "content_sha256": "34a8f562970aa7788318b58d5521b8755ed570ce497b1506e30d0f811ded6669"
+    },
+    {
+      "evidence_id": "repo:tests-test-tools-subagent-py:lines-0801-0900",
+      "source": "physical-artifacts/repository/tests/test_tools_subagent.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 801,
+        "end_line": 900
+      },
+      "content_sha256": "1cc870c54ebb517792df0d624b1350c49bd4c7ecaa5c916c0d5f67284f1e8366"
+    },
+    {
+      "evidence_id": "repo:tests-test-tools-subagent-py:lines-0901-1000",
+      "source": "physical-artifacts/repository/tests/test_tools_subagent.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 901,
+        "end_line": 1000
+      },
+      "content_sha256": "1475f36a1588ebe4a8099f490f026ef0ec650f425cf4481c71733c67873ff768"
+    },
+    {
+      "evidence_id": "repo:tests-test-tools-subagent-py:lines-1001-1100",
+      "source": "physical-artifacts/repository/tests/test_tools_subagent.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1001,
+        "end_line": 1100
+      },
+      "content_sha256": "729dc35fd3ca40aedeacf11c4b12ca136a7859e8fa4daf984d5b6861d869b635"
+    },
+    {
+      "evidence_id": "repo:tests-test-tools-subagent-py:lines-1101-1200",
+      "source": "physical-artifacts/repository/tests/test_tools_subagent.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1101,
+        "end_line": 1200
+      },
+      "content_sha256": "50bde3331719851557609adcdda88f8d31bbb93efc7e3aa1d64e2661b62d4eab"
+    },
+    {
+      "evidence_id": "repo:tests-test-tools-subagent-py:lines-1201-1300",
+      "source": "physical-artifacts/repository/tests/test_tools_subagent.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1201,
+        "end_line": 1300
+      },
+      "content_sha256": "a4407d14a6522d12a2d552883b7f8196d4693cdd672b252b5ccb8e0b358d4722"
+    },
+    {
+      "evidence_id": "repo:tests-test-tools-subagent-py:lines-1301-1376",
+      "source": "physical-artifacts/repository/tests/test_tools_subagent.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1301,
+        "end_line": 1376
+      },
+      "content_sha256": "c25dad8a56a6fc2fd3b667e5251e6cd6ffe331cfbe27eeb216323cdba6e32704"
+    }
+  ]
+}

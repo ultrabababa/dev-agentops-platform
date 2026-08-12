@@ -1,0 +1,41 @@
+{
+  "case_schema_version": "2",
+  "case_id": "github-gptme-pr-1968",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "REJECTED PACKAGE — INVALID FAILURE ARTIFACT. physical-artifacts/raw.log is NOT an authentic historical failure observation. It is a single sentence quoted verbatim from the body of https://github.com/gptme/gptme/pull/1968 , whose title is 'fix(test): join subagent threads before mock assertions' and which is merged: that is, it is the fix author's post-hoc description of the failure, written in the fix PR after the diagnosis was known. The historical run itself is real and was confirmed (https://github.com/gptme/gptme/actions/runs/23841222952 , head_sha f48de363aa956caae8789a9b751d7631fd44fe3c, conclusion failure), and the declared revision is genuinely the run head and pre-fix, but no test-level historical failure artifact survives: the job log returns HTTP 410 (retention expired) and the only surviving Check Run annotation is a generic '.github / Process completed with exit code 2.' with no test-level detail. The Case therefore cannot be salvaged the way N17 was. Curator-only causal verification source, which must never be used as an Agent-visible failure artifact: https://github.com/gptme/gptme/pull/1968 .",
+    "license_or_permission": "MIT upstream repository; public GitHub PR failure excerpt and failed-job metadata attribution."
+  },
+  "curation": {
+    "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
+    "review_status": "human_reviewed",
+    "reviewed_by": "REJECTED by lightweight Measurement-Value Screening: INVALID_FAILURE_ARTIFACT_AND_LOW_DISCRIMINATIVE_VALUE. Layer 1 Scientific Validity FAIL/BLOCKED (the raw failure artifact is fix-PR narrative, not a historical failure observation, and no authentic test-level artifact survives to replace it); Layer 2 Runtime Discriminative Value LOW. This package is NOT a Formal Suite member and must not be frozen. It is retained only as a rejection record and a negative calibration example. The literal loader value human_reviewed is required by Schema V2 and here records that review completed with a rejection; it does not assert admission. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/n16-review.md."
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy; superseded by the rejection recorded in curation.reviewed_by",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "CORRECTED DESCRIPTION for the rejection record. The earlier text claimed ANSI/control removal from an authentic historical failure observation; both claims were wrong. No ANSI or control bytes were ever present and none were removed. The file is one sentence transcribed verbatim from the body of fix PR gptme/gptme#1968 with a trailing newline, so the transformation is transcription of fix-PR prose, not sanitization of a CI artifact. This is the Layer 1 defect that caused the rejection and is recorded here rather than repaired.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "80345301a60c04f71210d5719c481edc024bdb70af06c7c4185a2fcb251539df"
+}

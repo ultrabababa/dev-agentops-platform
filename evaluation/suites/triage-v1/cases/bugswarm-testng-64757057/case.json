@@ -1,0 +1,46 @@
+{
+  "case_schema_version": "2",
+  "case_id": "bugswarm-testng-64757057",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "https://www.bugswarm.org/artifact-logs/64757057/raw/ ; upstream exact/relevant revision: https://github.com/testng-team/testng/commit/dc1efd4c626362bb469813229fb5b48b660f1bf3 . The failing command is Travis's DEFAULT install step for a Gradle project, './gradlew assemble', which is why it does not match the script: entry in .travis.yml; the declared script ./compile-with-gradle.sh never ran because the install phase failed first.",
+    "license_or_permission": "Apache-2.0 upstream repository; public BugSwarm historical failed-job attribution."
+  },
+  "curation": {
+    "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan; Physical Universe and Evidence Ground Truth revised by Claude under the Human-approved testng review directive",
+    "review_status": "human_reviewed",
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value BORDERLINE-ADEQUATE. The earlier 'Human-approved strict allowlist' extraction of gradle/publishing.gradle is explicitly SUPERSEDED: it deleted 137 of 171 lines, pruned competing hypotheses and presented a truncated artifact as a complete file. The file is restored to full extent with only the line-96 credential replaced by typed placeholders, per the ledger rule 'replace, do not excise'. THIS IS NOT A FORMAL FREEZE: Canonicalization Profile v1 is not frozen, no Suite Manifest exists, and the Canonical coordinates and Case fingerprint remain provisional-pre-freeze. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/n11-review.md."
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy; reviewed and ACCEPTED by package-content Human Review. The earlier strict allowlist extraction of gradle/publishing.gradle has been REVERSED as curator pruning of the investigation workspace; the file is restored to its full exact-revision extent with only the hardcoded credential replaced by typed placeholders, matching the precedent set by bugswarm-traccar-166900445.",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "Removed ANSI/control noise only; retained the complete authentic historical failed-job log without changing failure semantics. Verified by strip-and-compare against the cited BugSwarm source.",
+        "semantics_preserving": true
+      },
+      {
+        "artifact_path": "physical-artifacts/repository/gradle/publishing.gradle",
+        "description": "Replaced the two hardcoded Sonatype credential literals on line 96 with typed placeholders [SANITIZED_SONATYPE_USERNAME] and [SANITIZED_SONATYPE_PASSWORD]. Every one of the 171 lines is retained at its original line number and no other byte was changed, so file extent, structure, task graph and line coordinates are preserved. This supersedes an earlier strict allowlist extraction that had kept only upstream lines 60-91 and discarded 137 lines; that extraction was reversed because it removed authentic non-secret content including the local.properties load, the bintray and artifactory configuration and the uploadArchives block, all of which are legitimate competing hypotheses.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "6dd132fd5604fce4ebdaf475c777bfc4ca57a940ae2befd8e26e502276841b69"
+}

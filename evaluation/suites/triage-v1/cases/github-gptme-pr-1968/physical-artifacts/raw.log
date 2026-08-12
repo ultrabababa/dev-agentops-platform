@@ -1,0 +1,1 @@
+Master CI run `23841222952` failed on `tests/test_tools_subagent.py::test_subagent_with_profile_and_model` with `TypeError: 'NoneType' object is not subscriptable` while reading `mock_create_thread.call_args[1]`.

@@ -1,0 +1,575 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:indexutils-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/lucene/luke/src/java/org/apache/lucene/luke/models/util/IndexUtils.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "ae6c12bb2d7a953b84ccbfe87431808a698c5cd6cfe0235ec298c43162deaa3e"
+    },
+    {
+      "evidence_id": "repo:indexutils-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/lucene/luke/src/java/org/apache/lucene/luke/models/util/IndexUtils.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "68f1fd5784de5ccd8f2bb2b655f0d0221efa015836ebbe9baa335a4c964d9691"
+    },
+    {
+      "evidence_id": "repo:indexutils-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/lucene/luke/src/java/org/apache/lucene/luke/models/util/IndexUtils.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "e1ffb4e7a46c0a98d96922405615823e32713ec547c2342b118f72e666a73419"
+    },
+    {
+      "evidence_id": "repo:indexutils-java:lines-0301-0400",
+      "source": "physical-artifacts/repository/lucene/luke/src/java/org/apache/lucene/luke/models/util/IndexUtils.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "c9989a8d8f9cc88336d19c30310fc15915a86ef4e3d5c48287641d44e2bdfef6"
+    },
+    {
+      "evidence_id": "repo:indexutils-java:lines-0401-0500",
+      "source": "physical-artifacts/repository/lucene/luke/src/java/org/apache/lucene/luke/models/util/IndexUtils.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "2724239cf64c6aca2d63a9739aa4745070edda9a5d7988efa70158f53486ef6d"
+    },
+    {
+      "evidence_id": "repo:indexutils-java:lines-0501-0549",
+      "source": "physical-artifacts/repository/lucene/luke/src/java/org/apache/lucene/luke/models/util/IndexUtils.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 549
+      },
+      "content_sha256": "9be1d48e696194e2c6e8ef02be4782d571606cc2c5f0fb8c947ede493ee9927c"
+    },
+    {
+      "evidence_id": "repo:mockdirectorywrapper-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/store/MockDirectoryWrapper.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "da8a3d1687676fc6790e62f16dc5ad3a3988626b49afe6267dbcc106c8245b8c"
+    },
+    {
+      "evidence_id": "repo:mockdirectorywrapper-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/store/MockDirectoryWrapper.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "8cc848b5482c94ab912eec81c17469944424e245fc4586fa467a4bea324b51f5"
+    },
+    {
+      "evidence_id": "repo:mockdirectorywrapper-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/store/MockDirectoryWrapper.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "bf90254ebf6640e3632f651424d50ec1be3bb59343f7181902ba17af8b11124a"
+    },
+    {
+      "evidence_id": "repo:mockdirectorywrapper-java:lines-0301-0400",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/store/MockDirectoryWrapper.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "90458c8d520c8f3831b010763a3d618f48822ff7460d5d750de6538abdb49f29"
+    },
+    {
+      "evidence_id": "repo:mockdirectorywrapper-java:lines-0401-0500",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/store/MockDirectoryWrapper.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "0c512d66baccef2c24ef869c0bb55f7fb0ea02bfc6a0e298a47b8e707c4b4ebc"
+    },
+    {
+      "evidence_id": "repo:mockdirectorywrapper-java:lines-0501-0600",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/store/MockDirectoryWrapper.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "d8921f95e13ce8fbb7ccd83f18ff4f6e82466832b21c791d8366da391ddddf78"
+    },
+    {
+      "evidence_id": "repo:mockdirectorywrapper-java:lines-0601-0700",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/store/MockDirectoryWrapper.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 700
+      },
+      "content_sha256": "25c248d0a49bdf90456add3c1330403a961ddf01536ab558ddcb9ce8dcb4c149"
+    },
+    {
+      "evidence_id": "repo:mockdirectorywrapper-java:lines-0701-0800",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/store/MockDirectoryWrapper.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 701,
+        "end_line": 800
+      },
+      "content_sha256": "3eef70f2f1b39aa231c3003ed37673e62f407ba97450ffca66cbfd111a5ea9ea"
+    },
+    {
+      "evidence_id": "repo:mockdirectorywrapper-java:lines-0801-0900",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/store/MockDirectoryWrapper.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 801,
+        "end_line": 900
+      },
+      "content_sha256": "3718d0d417e7261ee808d9514922fafee670a5b7ce256efc233785f5fe0feaf5"
+    },
+    {
+      "evidence_id": "repo:mockdirectorywrapper-java:lines-0901-1000",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/store/MockDirectoryWrapper.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 901,
+        "end_line": 1000
+      },
+      "content_sha256": "d48c8def10db32a0b2fe4bf2dc67bce38eb43f3f048a1f92d232cf22c0f88236"
+    },
+    {
+      "evidence_id": "repo:mockdirectorywrapper-java:lines-1001-1100",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/store/MockDirectoryWrapper.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1001,
+        "end_line": 1100
+      },
+      "content_sha256": "f38ee258a043c59bc19fc7b9883a45ff41114adf3bdacf4ec7ac00babc610ce2"
+    },
+    {
+      "evidence_id": "repo:mockdirectorywrapper-java:lines-1101-1142",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/store/MockDirectoryWrapper.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1101,
+        "end_line": 1142
+      },
+      "content_sha256": "350a46ca53114848f8dd82767eb292469763dc2fdeb4fb40529081862ee3963e"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "627bbc348b3867785447f23a8649c89b994e7efc65823a93084871c211f1e13b"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "7b39d1469d52cec983297483eac0117a17dc7bc645ffc60844e03149da8f7fb0"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "5a17545cd35507ddc43bd35b3d14533c7ae1e5140f11548b89eb30d283f11e5f"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-0301-0400",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "7dbf6dc3641b19a673cd65e3ce0699fe039f0058e454d586c09bd7dfe694d782"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-0401-0500",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "b8fe064eef1a477386bce73ae6c4a477cbeff91bddd5c88cd9cab6c263243472"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-0501-0600",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "bbf29dce6c0c5c2c5ff2adfc2e1e36635d3de2309ad7e2f6a510aeaea1f5030c"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-0601-0700",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 700
+      },
+      "content_sha256": "a3b6ecf62171d275a7d9af22fea7c704f8d622f54de462179ca17b5bdc320915"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-0701-0800",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 701,
+        "end_line": 800
+      },
+      "content_sha256": "70ca2413429f59bf660a3eb8038aab973f651131ea21b1bb4b2609d2c23f27f8"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-0801-0900",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 801,
+        "end_line": 900
+      },
+      "content_sha256": "c7973ee5f88cfd4bb2549b786f790633506e7bb3927dce5538abbe066a8c1104"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-0901-1000",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 901,
+        "end_line": 1000
+      },
+      "content_sha256": "369a81d5a0988bd3911dfd24d845f1b2e692d87cb27944474446d59528f01df0"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-1001-1100",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1001,
+        "end_line": 1100
+      },
+      "content_sha256": "e52a67a51223563552d661396704078940562986546e5f97a6da39fe988fa1a6"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-1101-1200",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1101,
+        "end_line": 1200
+      },
+      "content_sha256": "1a9f656fd9656bbc78e2944fccbbd164d7952403df9d5083dfadc15a971ff89b"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-1201-1300",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1201,
+        "end_line": 1300
+      },
+      "content_sha256": "1dbdfe5e5a360abd3c75f8b92c787856109664bc12902aa916290b8b63e7a99f"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-1301-1400",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1301,
+        "end_line": 1400
+      },
+      "content_sha256": "2e11929e7e6f0cd74e776408df95c48e140bb2eaf47a8107c4011e0b83c044c6"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-1401-1500",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1401,
+        "end_line": 1500
+      },
+      "content_sha256": "528da47ea7ead187fce1cd398b2ee4ce59363f917d19e59278015a7f63dd2b93"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-1501-1600",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1501,
+        "end_line": 1600
+      },
+      "content_sha256": "53b87f1a130bb8e6192f28fd17f28375a7069951083a4e71e8740e1546a108bd"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-1601-1700",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1601,
+        "end_line": 1700
+      },
+      "content_sha256": "bd3f8a9c4827dbe8409a1f20ce036be554b204ff09429ad9976b65caad543b5b"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-1701-1800",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1701,
+        "end_line": 1800
+      },
+      "content_sha256": "f4c26234fe1b4c919cd82593dfa26f0e302c6663f35db3133db90077de0513c3"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-1801-1900",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1801,
+        "end_line": 1900
+      },
+      "content_sha256": "04cfb4a5bb72ccbea40b4cad05d18eb17dcdc1d2cc06d4559518ba35b79d6def"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-1901-2000",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1901,
+        "end_line": 2000
+      },
+      "content_sha256": "efb6957caa22b6faf94cf1034a3f0750e274f535e89d280a54787c44366e869e"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-2001-2100",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 2001,
+        "end_line": 2100
+      },
+      "content_sha256": "f6e7c262b01f1d8dc8581b47d1fc9046d327dd56027e69b8d37f16c7f997f3b1"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-2101-2200",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 2101,
+        "end_line": 2200
+      },
+      "content_sha256": "3e38642168029ed278956a2b5220fbce56b379e213a913f47e68844fe263df6f"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-2201-2300",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 2201,
+        "end_line": 2300
+      },
+      "content_sha256": "accb2fe2c7bec7c1f46fa41db0edd4c96cf45a6adaf89c884d8055124a70784e"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-2301-2400",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 2301,
+        "end_line": 2400
+      },
+      "content_sha256": "8ef8c9c62f8e0237e278b10aeb7a96612ff008e24fe31a76285fe54729dc6631"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-2401-2500",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 2401,
+        "end_line": 2500
+      },
+      "content_sha256": "f5c753f2f11843c65c4870fd15b2e37d96a58c9ea71a38173c214fefc87fb4bb"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-2501-2600",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 2501,
+        "end_line": 2600
+      },
+      "content_sha256": "acf77df9c4efd597864bc30d210b47486084b7fd6e225252b7a62645df407c9c"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-2601-2700",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 2601,
+        "end_line": 2700
+      },
+      "content_sha256": "64cb6d603c178b869216a14a5e70087aab02028ec2fa7208f4700b4abee5190a"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-2701-2800",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 2701,
+        "end_line": 2800
+      },
+      "content_sha256": "aedbdf0e16c55933edcb5a872fd7e08b620307cf7db3e46bd72ffae0616dcb26"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-2801-2900",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 2801,
+        "end_line": 2900
+      },
+      "content_sha256": "2b39bca9ba689f9879f2fb15aa263fdf1d3fbb5276f097550afc7da8edc47393"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-2901-3000",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 2901,
+        "end_line": 3000
+      },
+      "content_sha256": "406902a0d4da4acc04add0a12ce4652c4bd32f2b1ee30e69ad48c9ccbc32a6c2"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-3001-3100",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 3001,
+        "end_line": 3100
+      },
+      "content_sha256": "42b0e318f4d164a5f683325adf8c283d873da20ddd125e9916ef85e685b54673"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-3101-3200",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 3101,
+        "end_line": 3200
+      },
+      "content_sha256": "8feec78ac6e1a40eaa5f286bfff52d0fc65c1451877a897531884f708df7adc4"
+    },
+    {
+      "evidence_id": "repo:lucenetestcase-java:lines-3201-3240",
+      "source": "physical-artifacts/repository/lucene/test-framework/src/java/org/apache/lucene/tests/util/LuceneTestCase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 3201,
+        "end_line": 3240
+      },
+      "content_sha256": "ace2f23c2418d16980fd34603ab7494356cb8ca4893396dd6d3ecb6444d00da6"
+    },
+    {
+      "evidence_id": "repo:testoverviewimpl-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/lucene/luke/src/test/org/apache/lucene/luke/models/overview/TestOverviewImpl.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "29950315283c6baf573a99a1fd4e74fbc3f31cc91c9b1d23dedb17d80cb5277b"
+    },
+    {
+      "evidence_id": "repo:testoverviewimpl-java:lines-0101-0136",
+      "source": "physical-artifacts/repository/lucene/luke/src/test/org/apache/lucene/luke/models/overview/TestOverviewImpl.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 136
+      },
+      "content_sha256": "f671b46fd8ed14bc6fc1b3aeb8cb65436ebdb950d1b65a702c4c09e79386c485"
+    },
+    {
+      "evidence_id": "repo:overviewtestbase-java:lines-0001-0097",
+      "source": "physical-artifacts/repository/lucene/luke/src/test/org/apache/lucene/luke/models/overview/OverviewTestBase.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 97
+      },
+      "content_sha256": "6e4469c2f796d863006ed65ea0ced0839f0e8e68a4183420586f19160a8ea60a"
+    },
+    {
+      "evidence_id": "repo:overviewimpl-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/lucene/luke/src/java/org/apache/lucene/luke/models/overview/OverviewImpl.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "b5c4d28f03e67fbac3240724766e1ded7b9c40bc20d45e9678167f3b56012084"
+    },
+    {
+      "evidence_id": "repo:overviewimpl-java:lines-0101-0177",
+      "source": "physical-artifacts/repository/lucene/luke/src/java/org/apache/lucene/luke/models/overview/OverviewImpl.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 177
+      },
+      "content_sha256": "59df9417fabea458b1d20c5457ff45c6e839018e8eb47624052d0ced1df4f546"
+    },
+    {
+      "evidence_id": "repo:run-checks-all-yml:lines-0001-0067",
+      "source": "physical-artifacts/repository/.github/workflows/run-checks-all.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 67
+      },
+      "content_sha256": "5d390326bb1b3cea8c287da445b452b765d0d21a0ce11234c34b1c897243a647"
+    }
+  ]
+}

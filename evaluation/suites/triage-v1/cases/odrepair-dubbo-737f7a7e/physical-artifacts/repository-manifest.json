@@ -1,0 +1,85 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "apache/incubator-dubbo",
+    "revision_kind": "git_commit",
+    "exact_revision": "737f7a7ea67832d7f17517326fb2491d0a086dd7"
+  },
+  "files": [
+    {
+      "path": "dubbo-rpc/dubbo-rpc-api/src/test/java/org/apache/dubbo/rpc/proxy/AbstractProxyTest.java",
+      "sha256": "faf7f588b990833d948647a44e5dca132c33c615ba1e9aa1c3faf043f172b205",
+      "size_bytes": 2618
+    },
+    {
+      "path": "dubbo-rpc/dubbo-rpc-api/src/test/java/org/apache/dubbo/rpc/proxy/javassist/JavassistProxyFactoryTest.java",
+      "sha256": "f6ddb9b934dae69bc8fbc1de2bd8db04ee4b4cb03ba88a761d4c9eaee5c25ed7",
+      "size_bytes": 1040
+    },
+    {
+      "path": "dubbo-rpc/dubbo-rpc-api/src/test/java/org/apache/dubbo/rpc/proxy/jdk/JdkProxyFactoryTest.java",
+      "sha256": "7e6f6b5a7e79dba545b4036851ea7c941e981628c25a6474ba42b9985201cee9",
+      "size_bytes": 1022
+    },
+    {
+      "path": "dubbo-rpc/dubbo-rpc-api/src/test/java/org/apache/dubbo/rpc/RpcContextTest.java",
+      "sha256": "dacb2bbbd4886c836a36e6c5d69f595fd03c313efe341c25d057c0eda43463ce",
+      "size_bytes": 5743
+    },
+    {
+      "path": "dubbo-rpc/dubbo-rpc-api/src/test/java/org/apache/dubbo/rpc/support/DemoService.java",
+      "sha256": "c4063c7b6f8d832ec7dd7bf2700a11b88de6048a857e27b196e71cf3296e4c64",
+      "size_bytes": 1806
+    },
+    {
+      "path": "dubbo-rpc/dubbo-rpc-api/src/test/java/org/apache/dubbo/rpc/support/DemoServiceImpl.java",
+      "sha256": "a468034fad60ba5fb6a76234d99c8ab0781dd9e790fd4b230697b85fdda7c798",
+      "size_bytes": 3134
+    },
+    {
+      "path": "dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/proxy/AbstractProxyInvoker.java",
+      "sha256": "1716b71e56db1beca474a90ec0b681d66d909564a7429a4dcc2b8aec7498f641",
+      "size_bytes": 4209
+    },
+    {
+      "path": "dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/RpcContext.java",
+      "sha256": "967f14c52838626a781832346aa67f88d0c483af4fb2ca6c1097b09a5d7995f1",
+      "size_bytes": 19545
+    },
+    {
+      "path": "dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/AsyncContext.java",
+      "sha256": "3d3d166b8b3cf0ac55502351a8a00efc80e2041c3f11130888fc1a89dab1cd02",
+      "size_bytes": 2751
+    },
+    {
+      "path": "dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/AsyncContextImpl.java",
+      "sha256": "239e8094f378e3190ca868774573b514f932bdface5746182a86a393a0259066",
+      "size_bytes": 2795
+    },
+    {
+      "path": "dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/AsyncRpcResult.java",
+      "sha256": "9d2e2040bf09bf5b829bd76d1f752e88710aef4e7461d10697672d738b5267d4",
+      "size_bytes": 6372
+    },
+    {
+      "path": "dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/RpcResult.java",
+      "sha256": "a4c059d9695dd9997cb3035350badce0f160394bbb309d5283b9af076ee6efd0",
+      "size_bytes": 2351
+    },
+    {
+      "path": "dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/proxy/javassist/JavassistProxyFactory.java",
+      "sha256": "21435779df16ddad982fb76aa110dc43c0abecc783db7c9151e804dbc04bb6c8",
+      "size_bytes": 2237
+    },
+    {
+      "path": "dubbo-rpc/dubbo-rpc-api/pom.xml",
+      "sha256": "6acd838540e8b192dc7df792c4900e1a66debcb275f33deeabbd7f03dc6c3ef3",
+      "size_bytes": 2158
+    },
+    {
+      "path": ".travis.yml",
+      "sha256": "29e79e399c79053b7cf22d9e523163c7c4aab065a97ae6c2f5f6722e5b87c6db",
+      "size_bytes": 359
+    }
+  ]
+}

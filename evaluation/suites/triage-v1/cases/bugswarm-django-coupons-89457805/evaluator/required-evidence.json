@@ -1,0 +1,10 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-0301-0400",
+    "repo:coupons-tests-test-use-cases-py:lines-0001-0078"
+  ],
+  "optional_evidence_ids": [
+    "repo:coupons-forms-py:lines-0001-0061"
+  ]
+}

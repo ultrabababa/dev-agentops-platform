@@ -1,0 +1,475 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:leveldb-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/LevelDB.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "cb789b7f5be01f315be5c16b72dd094cda2889d6f5cd4334846a7beb314dba8c"
+    },
+    {
+      "evidence_id": "repo:leveldb-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/LevelDB.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "643e599971a57eccafa9d6da513ba981488662e289052473aa56fb4a0ebbad35"
+    },
+    {
+      "evidence_id": "repo:leveldb-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/LevelDB.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "26e1155ffb02cefe7cc1dd0d4e62c4dd091515f9e7f1bb99d03816fd9d4cf32f"
+    },
+    {
+      "evidence_id": "repo:leveldb-java:lines-0301-0400",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/LevelDB.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "9f17e1c3196c6752345c566e23f20dddd489205e0cf0d6ef152ee6f3dde3d95b"
+    },
+    {
+      "evidence_id": "repo:leveldb-java:lines-0401-0448",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/LevelDB.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 448
+      },
+      "content_sha256": "c2ac7810df6f5a196c00ed20caa0f0d5acb4a723df2e1074c5d39dc24ad2956c"
+    },
+    {
+      "evidence_id": "repo:chunk-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/Chunk.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "1d42dbbf73e48d16d93282e893db4662392c37bf9c1768c4108fba4c2b0122c7"
+    },
+    {
+      "evidence_id": "repo:chunk-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/Chunk.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "a74e6b1f04a25328f9f500fae1f30545a73625089f84827ec50579b80417173e"
+    },
+    {
+      "evidence_id": "repo:chunk-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/Chunk.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "75ea806d41fdec7ae34e2c499d4eb30fd877880138963b9c88428e94bc31ed8b"
+    },
+    {
+      "evidence_id": "repo:chunk-java:lines-0301-0400",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/Chunk.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "97ec0eab1dc5fdee4a74268ecdd9020b9d08ad777f771521c959fc49ff025743"
+    },
+    {
+      "evidence_id": "repo:chunk-java:lines-0401-0500",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/Chunk.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "0a12594f62985c33569da8a5a019a748c7e6b80b2989dc5014694283d91109e4"
+    },
+    {
+      "evidence_id": "repo:chunk-java:lines-0501-0502",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/Chunk.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 502
+      },
+      "content_sha256": "3794d02a8121944d176d265e9bb9cc59f6ab890bcadf8aefdebdbbb4f2ea8444"
+    },
+    {
+      "evidence_id": "repo:basekey-java:lines-0001-0039",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/key/BaseKey.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 39
+      },
+      "content_sha256": "1565438749d81ffc65ce9c973f053dd03a20d970ddc1fa75be5387643ed81679"
+    },
+    {
+      "evidence_id": "repo:entitieskey-java:lines-0001-0015",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/key/EntitiesKey.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 15
+      },
+      "content_sha256": "7089f1cad526146c15622f4cd6db9924cd4f43e136fd0030b726aa243d132729"
+    },
+    {
+      "evidence_id": "repo:extradatakey-java:lines-0001-0015",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/key/ExtraDataKey.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 15
+      },
+      "content_sha256": "598c1729ec16238077e69793a6b1597c264b088d58253e591f01a8bd2e4ade8d"
+    },
+    {
+      "evidence_id": "repo:flagskey-java:lines-0001-0015",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/key/FlagsKey.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 15
+      },
+      "content_sha256": "6a5cb83f86378dd458cb438be03db43520af0a89fdccb49e32054ba51928f35d"
+    },
+    {
+      "evidence_id": "repo:terrainkey-java:lines-0001-0015",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/key/TerrainKey.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 15
+      },
+      "content_sha256": "88ba251c4ea1f3a85c0f586ab3056cc82bda4c3120e3d662dd416baeb10881f1"
+    },
+    {
+      "evidence_id": "repo:tickskey-java:lines-0001-0015",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/key/TicksKey.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 15
+      },
+      "content_sha256": "092eb35af9c5fed5dab3ca88cf146e247fb45d9829a0fa358dce7884ae4967ce"
+    },
+    {
+      "evidence_id": "repo:tileskey-java:lines-0001-0015",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/key/TilesKey.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 15
+      },
+      "content_sha256": "8cf828e6da14cd2c329f3d904d1d69dcb0f4e26f8e78c9f94bb908d4f11e8c30"
+    },
+    {
+      "evidence_id": "repo:versionkey-java:lines-0001-0015",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/leveldb/key/VersionKey.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 15
+      },
+      "content_sha256": "4e46a4521cb8ddce1fad24ace66822bb331d06a21117ec3d4956f067079bb23b"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "039d2fec46b42faab55c450d304568a74e2f5eea9c4b24ecbbb14fc889b64e93"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "e779e577926abc7f23d68f61958e275940b075f6f28d12d1deb56e32b27fb1a4"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "c696a69a38049a0b7c33f3a50d23ea049fcf1f2644854206a45ec9191c201209"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-0301-0400",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "4edb5da90cbef86e1ddcba632544b3cab0ccb72152d6870aadd48bc46ccb89b6"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-0401-0500",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "24f79d6a9dd1ff15c00c552cbd0615e5b58515e9193437d80303e40441afb34e"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-0501-0600",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "703b640ddb1a3559d56e970016972196087631d30ad5a1a69170cc2414956516"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-0601-0700",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 700
+      },
+      "content_sha256": "7cb7ad97e704a4217551f1e27afa9e315f18c4ac5af4dd45fa52d455c776e46b"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-0701-0800",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 701,
+        "end_line": 800
+      },
+      "content_sha256": "bb8562a883dfa4ab232d1263a39499ad5bbc2aa26fadd5c7f7aa7fcdb9369991"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-0801-0900",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 801,
+        "end_line": 900
+      },
+      "content_sha256": "4021a9da6c6626a5f248c152a5df9a4d30a42adfc922a8d023b90dda74393d20"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-0901-1000",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 901,
+        "end_line": 1000
+      },
+      "content_sha256": "af99dcdc15c88ddb4a98c3d5812642f4e9f5f28d6bae7f1b753ddd8b061ad999"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-1001-1100",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1001,
+        "end_line": 1100
+      },
+      "content_sha256": "30921cace85403ef12aca2a67cbcabd0a07882a3115310d7e124c90f1ecd2665"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-1101-1200",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1101,
+        "end_line": 1200
+      },
+      "content_sha256": "5ced3cdaf43ac537a6aa45722394007114f4d9a31d76c2b1588a7521f7cf41cb"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-1201-1300",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1201,
+        "end_line": 1300
+      },
+      "content_sha256": "f145514b566a5aba8b01abe51fb88957d799a5585e7b3935fd65929be9b6daf6"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-1301-1400",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1301,
+        "end_line": 1400
+      },
+      "content_sha256": "a1f3406156abffd49c63d2cdd945aa981a6f5f84daf35c036386526a27756033"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-1401-1500",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1401,
+        "end_line": 1500
+      },
+      "content_sha256": "a8bcba634dc1066e129edf88317df7302be057370bf82a297a4cb3890061e9b0"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-1501-1600",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1501,
+        "end_line": 1600
+      },
+      "content_sha256": "87028de336d173c66a5d1f6f9c8d5e6988fe04afea96f43e2f9002a0185bb2a3"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-1601-1700",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1601,
+        "end_line": 1700
+      },
+      "content_sha256": "6eaa2368fccbffcfdbeba6485175b7f6937540190f37c0a7e77a0198f255b9f8"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-1701-1800",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1701,
+        "end_line": 1800
+      },
+      "content_sha256": "657e04602cd05c04467f80df175d5573121bb993a0ba647876b7840e230cdec3"
+    },
+    {
+      "evidence_id": "repo:server-java:lines-1801-1801",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/Server.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1801,
+        "end_line": 1801
+      },
+      "content_sha256": "412ca345ccf75bf9c0806bce695be8de808b79984251a7a54d202cf6101dd451"
+    },
+    {
+      "evidence_id": "repo:levelprovider-java:lines-0001-0075",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/LevelProvider.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 75
+      },
+      "content_sha256": "74b29574b4a22ff55471af782cbdb209c5842378fd499258adf22cffb185dd47"
+    },
+    {
+      "evidence_id": "repo:levelprovidermanager-java:lines-0001-0041",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/LevelProviderManager.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 41
+      },
+      "content_sha256": "2a7e5dd45bcdcb8082f6b555d6d882b1c64b537c5fbe1c29f8f136daf9222810"
+    },
+    {
+      "evidence_id": "repo:fullchunk-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/FullChunk.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "f1db8c78b224a91fc3379a5f97262e124694bc302207753b34bb7700ae64f51e"
+    },
+    {
+      "evidence_id": "repo:fullchunk-java:lines-0101-0155",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/FullChunk.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 155
+      },
+      "content_sha256": "18129b22cedef17e65c20787dd0b0bca20761849bc95cb82bd5e54d298f1a580"
+    },
+    {
+      "evidence_id": "repo:chunksection-java:lines-0001-0049",
+      "source": "physical-artifacts/repository/src/main/java/cn/nukkit/level/format/ChunkSection.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 49
+      },
+      "content_sha256": "c03cdaef6ddc6d74bf10f848a3721e57615320b52a2c8052b760add05f157d49"
+    },
+    {
+      "evidence_id": "repo:build-gradle:lines-0001-0029",
+      "source": "physical-artifacts/repository/build.gradle",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 29
+      },
+      "content_sha256": "89092afe0da9701dc48d8aed7ff01e613eefcfa2956468b601d802279ce83d62"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0062",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 62
+      },
+      "content_sha256": "03f8a85e12a51f04bb13f0eba183b1a0df866116acea0134a4e823e41753eca0"
+    },
+    {
+      "evidence_id": "repo:settings-gradle:lines-0001-0002",
+      "source": "physical-artifacts/repository/settings.gradle",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 2
+      },
+      "content_sha256": "a9bd39e45b44a2244b2c835a146fcf5e2dfddbdc3d43e0d4e9558467b4505702"
+    },
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0004",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 4
+      },
+      "content_sha256": "a72aa51533cdbb5234b48a955b976504d6e681f3e2219aefba04c660a11d9549"
+    }
+  ]
+}

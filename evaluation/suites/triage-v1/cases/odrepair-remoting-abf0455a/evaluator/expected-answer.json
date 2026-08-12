@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "timeout_or_flaky_failure",
+  "acceptable_failure_types": [],
+  "summary": "ClassFilterTest.userRequest is order-dependent: it passes alone but errors when it runs after DefaultClassFilterTest.testDefaultsAreUsedIfOverridesAreGarbage, which permanently poisons ClassFilter's static initialization.",
+  "root_cause": "testDefaultsAreUsedIfOverridesAreGarbage writes the deliberately invalid pattern \"Z{100,0}\" to a temporary overrides file and points ClassFilter.FILE_OVERRIDE_LOCATION_PROPERTY at it. ClassFilter initialises its defaults from a static initializer, which calls createDefaultInstance; that method reads the property and compiles each line, and Pattern.compile on an invalid expression makes it throw an Error. An Error escaping a static initializer leaves the class permanently unusable for the rest of that JVM: the initializer is never retried, so the polluter's @After clearProperty, which only unsets the system property, cannot restore it. ClassFilterTest.userRequest then calls setUp, which constructs a TestFilter, and TestFilter extends ClassFilter, so merely instantiating it requires the already-failed class and the test errors rather than failing an assertion. The victim's own code is correct; the failure exists only for orders in which the polluter runs first in the same JVM.",
+  "recommended_action": "Stop the polluter from leaving ClassFilter permanently initialised from a bad override, for example by exercising the invalid-override path in an isolated JVM or by making the overrides be re-read rather than fixed at static initialization, so that clearing the property actually restores usable state."
+}

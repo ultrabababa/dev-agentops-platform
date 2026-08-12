@@ -1,0 +1,225 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:cukes-core-pom-xml:lines-0001-0087",
+      "source": "physical-artifacts/repository/cukes-core/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 87
+      },
+      "content_sha256": "2edf0fc83a364a5f47a45426c5d4f3ac518a9054b67515e4b49fe8c9c866e0f5"
+    },
+    {
+      "evidence_id": "repo:cukes-core-src-main-java-lv-ctco-cukes-core-cukesoptions-java:lines-0001-0038",
+      "source": "physical-artifacts/repository/cukes-core/src/main/java/lv/ctco/cukes/core/CukesOptions.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 38
+      },
+      "content_sha256": "348bec12950e0bcc71104bed78652d9f43fdb761c4fb36b6a0bd6ed2aa44922c"
+    },
+    {
+      "evidence_id": "repo:cukes-core-src-main-java-lv-ctco-cukes-core-internal-context-globalworld-java:lines-0001-0080",
+      "source": "physical-artifacts/repository/cukes-core/src/main/java/lv/ctco/cukes/core/internal/context/GlobalWorld.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 80
+      },
+      "content_sha256": "e110bbc246651795a213381c8064e7bfeec513d96079105c91318180dc94c57d"
+    },
+    {
+      "evidence_id": "repo:cukes-core-src-main-java-lv-ctco-cukes-core-internal-context-globalworldfacade-java:lines-0001-0062",
+      "source": "physical-artifacts/repository/cukes-core/src/main/java/lv/ctco/cukes/core/internal/context/GlobalWorldFacade.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 62
+      },
+      "content_sha256": "3896dac6994289dd8ae452bf4af616bd7b8e83f92c7c5ad54b3f39449de9b44c"
+    },
+    {
+      "evidence_id": "repo:cukes-core-src-main-java-lv-ctco-cukes-core-internal-di-singletonobjectfactory-java:lines-0001-0096",
+      "source": "physical-artifacts/repository/cukes-core/src/main/java/lv/ctco/cukes/core/internal/di/SingletonObjectFactory.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 96
+      },
+      "content_sha256": "ee397ae251f95aa282e5acc11627b44b689a3700888140093d8608592373e284"
+    },
+    {
+      "evidence_id": "repo:cukes-core-src-main-java-lv-ctco-cukes-core-internal-matchers-endswithregexp-java:lines-0001-0028",
+      "source": "physical-artifacts/repository/cukes-core/src/main/java/lv/ctco/cukes/core/internal/matchers/EndsWithRegexp.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 28
+      },
+      "content_sha256": "420bd95181d4754d2bbb3400e1ec691619f6bc664c84b3038bd365939414b203"
+    },
+    {
+      "evidence_id": "repo:cukes-http-pom-xml:lines-0001-0042",
+      "source": "physical-artifacts/repository/cukes-http/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 42
+      },
+      "content_sha256": "3eceb34df91da1a80495bb0c099ceae8999ba00810d2ee24a2f909abe1904c25"
+    },
+    {
+      "evidence_id": "repo:cukes-http-src-main-java-lv-ctco-cukes-http-facade-httpassertionfacadeimpl-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/cukes-http/src/main/java/lv/ctco/cukes/http/facade/HttpAssertionFacadeImpl.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "34b7d1e9115a4aa5c7057011cf2a6ab1c236604f4e2356c3d6d3e754af882459"
+    },
+    {
+      "evidence_id": "repo:cukes-http-src-main-java-lv-ctco-cukes-http-facade-httpassertionfacadeimpl-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/cukes-http/src/main/java/lv/ctco/cukes/http/facade/HttpAssertionFacadeImpl.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "4946d63a00ec0f0b18a6f08ee28bde9d56bfd6b50870ef85cbfa881b98bd0df9"
+    },
+    {
+      "evidence_id": "repo:cukes-http-src-main-java-lv-ctco-cukes-http-facade-httpassertionfacadeimpl-java:lines-0201-0230",
+      "source": "physical-artifacts/repository/cukes-http/src/main/java/lv/ctco/cukes/http/facade/HttpAssertionFacadeImpl.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 230
+      },
+      "content_sha256": "4318b6e47e4a70235a66e5dfe036eb6dab73fb031fade1e825e5073149b29d8b"
+    },
+    {
+      "evidence_id": "repo:cukes-http-src-main-java-lv-ctco-cukes-http-logging-httploggingplugin-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/cukes-http/src/main/java/lv/ctco/cukes/http/logging/HttpLoggingPlugin.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "4fa35999076e9d999b6bc0a605ab310b243fc6f5768304c8982aae2f72129063"
+    },
+    {
+      "evidence_id": "repo:cukes-http-src-main-java-lv-ctco-cukes-http-logging-httploggingplugin-java:lines-0101-0145",
+      "source": "physical-artifacts/repository/cukes-http/src/main/java/lv/ctco/cukes/http/logging/HttpLoggingPlugin.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 145
+      },
+      "content_sha256": "fee44e28d99408ab30e9c86e375ab20bc6358f4b04aa64bacdda3700ea743de1"
+    },
+    {
+      "evidence_id": "repo:cukes-http-src-main-java-lv-ctco-cukes-http-matchers-statuscodematcher-java:lines-0001-0047",
+      "source": "physical-artifacts/repository/cukes-http/src/main/java/lv/ctco/cukes/http/matchers/StatusCodeMatcher.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 47
+      },
+      "content_sha256": "b52f01492ec07cb8510a3c31e101399f2294d1872331e3f2086ce3941bb08510"
+    },
+    {
+      "evidence_id": "repo:cukes-http-src-test-java-lv-ctco-cukes-http-custommatchers-java:lines-0001-0048",
+      "source": "physical-artifacts/repository/cukes-http/src/test/java/lv/ctco/cukes/http/CustomMatchers.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 48
+      },
+      "content_sha256": "5b1f8a2176d7bc3b044fd56db9e40ae3ba51c894bf48db5b9c88393d81845d71"
+    },
+    {
+      "evidence_id": "repo:cukes-http-src-test-java-lv-ctco-cukes-http-facade-httpassertionfacadeimpltest-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/cukes-http/src/test/java/lv/ctco/cukes/http/facade/HttpAssertionFacadeImplTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "e1efb1deb3b741503f6ae07145b4edb51406f1ac8fed8d257bba9f4d4d175878"
+    },
+    {
+      "evidence_id": "repo:cukes-http-src-test-java-lv-ctco-cukes-http-facade-httpassertionfacadeimpltest-java:lines-0101-0198",
+      "source": "physical-artifacts/repository/cukes-http/src/test/java/lv/ctco/cukes/http/facade/HttpAssertionFacadeImplTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 198
+      },
+      "content_sha256": "979be17c391316c1ed4172b46421f6f002bc33b5872af95d0cfbc08b3b5bbb41"
+    },
+    {
+      "evidence_id": "repo:cukes-http-src-test-java-lv-ctco-cukes-http-logging-httploggingplugintest-java:lines-0001-0076",
+      "source": "physical-artifacts/repository/cukes-http/src/test/java/lv/ctco/cukes/http/logging/HttpLoggingPluginTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 76
+      },
+      "content_sha256": "10ddeca07c7a05659809335e1fb4d4caf89682aa35bae6e815cfa0d362990395"
+    },
+    {
+      "evidence_id": "repo:cukes-http-src-test-java-lv-ctco-cukes-http-matchers-endswithregexptest-java:lines-0001-0041",
+      "source": "physical-artifacts/repository/cukes-http/src/test/java/lv/ctco/cukes/http/matchers/EndsWithRegexpTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 41
+      },
+      "content_sha256": "8697f09b9a97918e33cb1a934673ca34015e4963754c839529259abbf2b013b8"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "e917ef04d41f0cb386e4a3f52fac0003975da54e8f76c97832827ea4ab73245c"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0101-0200",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "4f8cc6dd9b6f0aace7c424dad0f8320b2d8b6bfe8ab6104d635231f506bcf348"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0201-0300",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "c43af725c3cc5604c5635abe2f69c9d2e2406cb2edcb50303694ce83f9440be5"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0301-0326",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 326
+      },
+      "content_sha256": "90096c2aa1b143a1c34b7001ace1446c7fefe8d25aad53ccae07ecf5ec37bfde"
+    }
+  ]
+}

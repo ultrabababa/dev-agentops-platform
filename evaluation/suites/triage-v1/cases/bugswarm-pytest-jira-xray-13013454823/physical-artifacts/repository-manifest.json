@@ -1,0 +1,40 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "fundakol/pytest-jira-xray",
+    "revision_kind": "git_commit",
+    "exact_revision": "019244aa79f9adc182ee138955cc50efe37df9b6"
+  },
+  "files": [
+    {
+      "path": "pyproject.toml",
+      "sha256": "2d53a042a0b7b303f00ef6709e4224e7a60fedc0c31ccd7ce9bbc26e2f7c0e0e",
+      "size_bytes": 245
+    },
+    {
+      "path": "requirements-tests.txt",
+      "sha256": "25472b92475433f5873bf26d6a1410414ed0c133a7295a1597f6caa821f9a98c",
+      "size_bytes": 81
+    },
+    {
+      "path": "setup.cfg",
+      "sha256": "a2a064bd7ad4863b3d7625107cd0cb5fc03053a982bb7b0857623380753f1990",
+      "size_bytes": 1121
+    },
+    {
+      "path": "src/pytest_xray/evidence.py",
+      "sha256": "477e5e1a6271a33c3c45be3d9299fa7ecee507485a043247e571d156a9bbdaee",
+      "size_bytes": 990
+    },
+    {
+      "path": "tests/conftest.py",
+      "sha256": "67d30d8a9d429bbf886ed7fc5dcbc941b954ba42ea14b0cb2c62f658ab290c07",
+      "size_bytes": 1091
+    },
+    {
+      "path": "tests/test_xray_plugin.py",
+      "sha256": "8ca3cc94ed08f0394d8cd0cbc04432a1ae802bae61c51c49f071ccf738078f0d",
+      "size_bytes": 10496
+    }
+  ]
+}

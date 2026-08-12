@@ -1,0 +1,41 @@
+{
+  "case_schema_version": "2",
+  "case_id": "bugswarm-retrofit-113047638",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "https://www.bugswarm.org/artifact-logs/113047638/raw/ ; upstream exact executed revision: https://github.com/square/retrofit/commit/323ffc8f00b19dba98873e77a77c25ec7f89f56c",
+    "license_or_permission": "Apache-2.0 upstream repository; public BugSwarm historical failed-job attribution."
+  },
+  "curation": {
+    "created_by": "Issue #15 targeted replacement construction round",
+    "review_status": "human_reviewed",
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value ADEQUATE - lower end, which must not be rewritten upward. The Maven summary names only serializeNullThrows out of 307 tests and contains zero assertion-message characters. ProtoRequestBodyConverter does throw the expected exception and RequestAction.Body does invoke the converter when ignoreNull is false, so both obvious hypotheses are refuted; MethodHandler.invoke and OkHttpCall.createRawCall show the request is not constructed until request, execute or enqueue. The authentic Travis branch name jw/pass-null-to-converters is preserved and assessed as a weak, partly misleading leak. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "Removed ANSI/control escape sequences and normalised CRLF/CR line endings only; the complete authentic historical failure observation is otherwise unchanged, including the Travis clone line that names the source branch.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "72cbfcde3063ed5fbf8b8ecea57479edbabdbb6d7c753d71a7b57b71a7fac67b"
+}

@@ -1,0 +1,85 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0013",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 13
+      },
+      "content_sha256": "d7ed60414e92ddfefc55e7f22ceaf336ee10241ab379c509bfc9a90dfa00cce4"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0015",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 15
+      },
+      "content_sha256": "121e98355c49081844a59b7367ee9aa159561c7372294330794a74abc8c8ae30"
+    },
+    {
+      "evidence_id": "repo:ugs-core-pom-xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/ugs-core/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "4730d7250bd6703560d41a49d57487c3d679df985042a20d80a0e0d7e311eb3f"
+    },
+    {
+      "evidence_id": "repo:ugs-core-pom-xml:lines-0101-0200",
+      "source": "physical-artifacts/repository/ugs-core/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "11f8b89bfaae2442f14ab6e9e93ce194d31addb19edd188a962af03bd99819bb"
+    },
+    {
+      "evidence_id": "repo:ugs-core-pom-xml:lines-0201-0282",
+      "source": "physical-artifacts/repository/ugs-core/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 282
+      },
+      "content_sha256": "c5e1640626a76270cc782577a72dfb337796c85e69ebd3f216a1331265d8cf59"
+    },
+    {
+      "evidence_id": "repo:ugs-core-src-com-willwinder-universalgcodesender-macrohelper-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/ugs-core/src/com/willwinder/universalgcodesender/MacroHelper.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "3907616aa9715476270779bc3ab1fdfd335dfb889d390ff541129a0bf307c33f"
+    },
+    {
+      "evidence_id": "repo:ugs-core-src-com-willwinder-universalgcodesender-macrohelper-java:lines-0101-0126",
+      "source": "physical-artifacts/repository/ugs-core/src/com/willwinder/universalgcodesender/MacroHelper.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 126
+      },
+      "content_sha256": "6e41d0bc3354d1c2375a4b71ec6052423eeff10826ec7ed2383fb2a27c1068a3"
+    },
+    {
+      "evidence_id": "repo:ugs-core-test-com-willwinder-universalgcodesender-macrohelpertest-java:lines-0001-0080",
+      "source": "physical-artifacts/repository/ugs-core/test/com/willwinder/universalgcodesender/MacroHelperTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 80
+      },
+      "content_sha256": "80058aaf6dba900f67f4a43f53afb7b6e89a8c2a5d2cf32b6a694e2ee82554cd"
+    }
+  ]
+}

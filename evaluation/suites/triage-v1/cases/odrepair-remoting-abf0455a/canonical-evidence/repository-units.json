@@ -1,0 +1,165 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:classfiltertest-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/src/test/java/hudson/remoting/ClassFilterTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "4b517288e784baa7631d5f51ba57c7fc36a186b1fe9bcadc812853d990548654"
+    },
+    {
+      "evidence_id": "repo:classfiltertest-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/src/test/java/hudson/remoting/ClassFilterTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "5704b4f8ec0ac351af46230103fe7b57b76f8bba9a0d2dca52b5f3db28ff5835"
+    },
+    {
+      "evidence_id": "repo:classfiltertest-java:lines-0201-0295",
+      "source": "physical-artifacts/repository/src/test/java/hudson/remoting/ClassFilterTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 295
+      },
+      "content_sha256": "0ec426f7a4b7eb792168d680f6777f315bafa3f8fdc918bb178e621449e7976a"
+    },
+    {
+      "evidence_id": "repo:defaultclassfiltertest-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/src/test/java/hudson/remoting/DefaultClassFilterTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "1b54e29b75b66037cd15a486f371cf21e7f2dff957ca7cad01971297a9027075"
+    },
+    {
+      "evidence_id": "repo:defaultclassfiltertest-java:lines-0101-0163",
+      "source": "physical-artifacts/repository/src/test/java/hudson/remoting/DefaultClassFilterTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 163
+      },
+      "content_sha256": "ffb55032fef3bce95bf3e34caf6b12efce788f57da52e3fe40632d1d4e5cbf12"
+    },
+    {
+      "evidence_id": "repo:classfilter-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/src/main/java/hudson/remoting/ClassFilter.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "481df34ec835b6e0ff56f03e4516785d53e45de8737e3bc3d7a726b7574ec179"
+    },
+    {
+      "evidence_id": "repo:classfilter-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/src/main/java/hudson/remoting/ClassFilter.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "bd45e84cc9b887f4a5134c087c1b7b0ef1e86d81035b5cd530f8a0f6e1ee4a67"
+    },
+    {
+      "evidence_id": "repo:classfilter-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/src/main/java/hudson/remoting/ClassFilter.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "8c2fd883b80caf362fb807dba81ebae79b328078843cc634f47c8a1e67c3c87f"
+    },
+    {
+      "evidence_id": "repo:classfilter-java:lines-0301-0352",
+      "source": "physical-artifacts/repository/src/main/java/hudson/remoting/ClassFilter.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 352
+      },
+      "content_sha256": "8ad5312af7e7995c7db1c8073a03ea6173bf75dbd836851801725d760b0f3406"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "f18f89c0c08d675cf65770f8b17b5d581096527231395c9a912fd2fe50bc5c21"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0101-0200",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "e665859d41920ff873da321fc234858ebb1d5705c416a51546a5b1b651d51263"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0201-0300",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "4182298b4fe6019a771fd02880ce30af384427f77c0b3b5520fb841ffee62e66"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0301-0400",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "3f9df0f33ee0a69f32668e51e7597d28c7fde35fd7c508994e9566c9398333df"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0401-0500",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "9c649f54689912f80a0ef061aca8208b4ed948c537e3bc5c058a35bc81b6bbc2"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0501-0547",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 547
+      },
+      "content_sha256": "d51f0af6575fd16974187c190d3e5f94d7939132b33923c24b79cb237b2adde5"
+    },
+    {
+      "evidence_id": "repo:jenkinsfile:lines-0001-0045",
+      "source": "physical-artifacts/repository/Jenkinsfile",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 45
+      },
+      "content_sha256": "db12529482a6a638f5afe83a68f9eabcd73d5a0ce19b9ecc76b9941092f2af80"
+    }
+  ]
+}

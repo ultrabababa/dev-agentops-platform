@@ -1,0 +1,40 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "apache/struts",
+    "revision_kind": "git_commit",
+    "exact_revision": "880c4c2d33f67c28a834a44da5a2523b858601b3"
+  },
+  "files": [
+    {
+      "path": "core/pom.xml",
+      "sha256": "417ba57af5d49faac76d0411fd4daf6f7ae6b71f599df1b5537fb67d961a003e",
+      "size_bytes": 16553
+    },
+    {
+      "path": "core/src/main/java/org/apache/struts2/interceptor/FileUploadInterceptor.java",
+      "sha256": "5112a7570092aa85a21227358948a83541bf3e7f13f82fa5c9490967d2d06eb3",
+      "size_bytes": 18038
+    },
+    {
+      "path": "core/src/main/resources/org/apache/struts2/struts-messages.properties",
+      "sha256": "eb43fcea0a6ea831e5d918103e8e0a4c6062116b91745b7bab232288232bceed",
+      "size_bytes": 2328
+    },
+    {
+      "path": "core/src/main/resources/org/apache/struts2/struts-messages_en.properties",
+      "sha256": "02213ecd5d74852246a6c74e5d4ce6ec5f2222ddea2244a5da03e3b6425aabf2",
+      "size_bytes": 2455
+    },
+    {
+      "path": "core/src/test/java/org/apache/struts2/interceptor/FileUploadInterceptorTest.java",
+      "sha256": "f4d0218bb7208365513f71eb42c1e77e79a4283743bbcc02de20520d49397227",
+      "size_bytes": 18708
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "903583498415fa463d5a3b1383a4c0b5fcec8a914a98a00a92d4249bb329a7be",
+      "size_bytes": 37250
+    }
+  ]
+}

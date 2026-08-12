@@ -1,0 +1,23 @@
+sudo: false
+language: python
+# cache package wheels (1 cache per python version)
+cache: pip
+python:
+  - "3.3"
+  - "3.4"
+  # Specifically request 3.5.1 because we need to be compatible with that.
+  - "3.5.1"
+  - "3.6"
+  - "3.7-dev"
+  # Pypy build is disabled because it doubles the travis build time, and it rarely fails
+  # unless one one of the other builds fails.
+  # - "pypy3"
+
+install:
+  - pip install -r test-requirements.txt
+  - python2 -m pip install --user typing
+  - python setup.py install
+
+script:
+  - python runtests.py -x lint
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.6' ]]; then flake8; fi

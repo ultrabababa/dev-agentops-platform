@@ -1,0 +1,30 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "alplabai/tan-cli",
+    "revision_kind": "git_commit",
+    "exact_revision": "5bf4972f4e5931912654c24bed473296ae9a25eb"
+  },
+  "files": [
+    {
+      "path": ".github/workflows/parity.yml",
+      "sha256": "782b9b425d88b101c5a4c8a698bc110108e4339431fd87fa76bef841a6a6928b",
+      "size_bytes": 38758
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "1376537fa21720b11395deadd619b92e88e9ad650c225167a5df2abcb324029f",
+      "size_bytes": 2581
+    },
+    {
+      "path": "README.md",
+      "sha256": "d3e832f6b80ced8fc277979828171c0af02654ecc035b0e2c8bd4e952fb2c236",
+      "size_bytes": 19437
+    },
+    {
+      "path": "install.sh",
+      "sha256": "9b48a1c00bb3e0ff63b0628278b340bcdac7b4d7977e8e184d887f28c3628865",
+      "size_bytes": 10726
+    }
+  ]
+}

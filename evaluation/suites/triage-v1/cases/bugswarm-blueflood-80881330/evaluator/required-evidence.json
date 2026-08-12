@@ -1,0 +1,17 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-7801-7900",
+    "repo:eventelasticsearchio-java:lines-0001-0100",
+    "repo:events-mapping-json:lines-0001-0027",
+    "repo:httpannotationsendtoendtest-java:lines-0001-0100",
+    "repo:httpannotationsendtoendtest-java:lines-0101-0159"
+  ],
+  "optional_evidence_ids": [
+    "repo:index-settings-json:lines-0001-0027",
+    "repo:metrics-mapping-json:lines-0001-0022",
+    "repo:metrics-mapping-v1-json:lines-0001-0021",
+    "repo:pom-xml:lines-0001-0100",
+    "repo:travis-yml:lines-0001-0025"
+  ]
+}

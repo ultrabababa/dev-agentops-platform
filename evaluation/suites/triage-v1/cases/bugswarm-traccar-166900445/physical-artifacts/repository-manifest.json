@@ -1,0 +1,30 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "traccar/traccar",
+    "revision_kind": "git_commit",
+    "exact_revision": "18d39ff2412b9aced899915d0187f21eb25f49b6"
+  },
+  "files": [
+    {
+      "path": ".travis.yml",
+      "sha256": "495892ec54f288891d85c810b7d34cdf2b7f970802491e2bd7de9d1b8d26ba9b",
+      "size_bytes": 33
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "5deae855af38e478e7b4a994d17d7319ccd60833e365d997955ee71622b18acf",
+      "size_bytes": 9123
+    },
+    {
+      "path": "src/org/traccar/notification/NotificationMail.java",
+      "sha256": "2518da2d60c5856983814fa150ff260594e8f8ad58626cf38a66322bad404f0d",
+      "size_bytes": 5167
+    },
+    {
+      "path": "test/org/traccar/notification/NotificiationMailTest.java",
+      "sha256": "ce7661a9aaab5e976e63aead8fc72a1eda1451c1083fff853a0388e370b5d1e9",
+      "size_bytes": 1785
+    }
+  ]
+}

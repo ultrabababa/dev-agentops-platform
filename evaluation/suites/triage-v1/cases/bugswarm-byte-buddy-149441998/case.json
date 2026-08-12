@@ -1,0 +1,41 @@
+{
+  "case_schema_version": "2",
+  "case_id": "bugswarm-byte-buddy-149441998",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "https://www.bugswarm.org/artifact-logs/149441998/raw/ ; upstream exact/relevant revision: https://github.com/raphw/byte-buddy/commit/2431dfb0c85e883a6389b04583a49dc80b61eeb9",
+    "license_or_permission": "Apache-2.0 upstream repository; public BugSwarm historical failed-job attribution."
+  },
+  "curation": {
+    "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
+    "review_status": "human_reviewed",
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value BORDERLINE-ADEQUATE. The log states the REC_CATCH_EXCEPTION violation completely, but only the source reveals that the broad catch guards a reflective Java 9 module probe, which is what turns the remedy into a genuine judgement between narrowing the catch and adding an analyzer-recognised justification. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy; package-content Human Review remains pending",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "Removed ANSI/control noise only; retained the complete or naturally bounded authentic historical failure observation without changing failure semantics.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "314367aa66149a6aa4ce0e676fadaac1674f8d554646e6a65477cc325267a83c"
+}

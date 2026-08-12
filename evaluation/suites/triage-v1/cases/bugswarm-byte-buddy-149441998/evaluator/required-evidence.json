@@ -1,0 +1,8 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-8101-8149",
+    "repo:byte-buddy-dep-src-main-java-net-bytebuddy-dynamic-classfilelocator-java:lines-0401-0500"
+  ],
+  "optional_evidence_ids": []
+}

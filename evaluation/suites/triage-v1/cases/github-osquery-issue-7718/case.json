@@ -1,0 +1,35 @@
+{
+  "case_schema_version": "2",
+  "case_id": "github-osquery-issue-7718",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "PROVENANCE CATEGORY: undeterminable exact failing revision + recoverable failure-era snapshot. The value in repository-manifest.json exact_revision is the FAILURE-ERA SNAPSHOT and must NOT be read as the actual failing revision. -- AUTHENTIC DATED FAILURE ARTIFACT: physical-artifacts/raw.log is the byte-identical fenced traceback from the body of https://github.com/osquery/osquery/issues/7718 , titled 'test_osqueryd.py test_daemon_sigint flaky test', labelled 'flaky test', filed by Smjert at 2022-08-08T16:19:02Z with zero comments. -- ACTUAL FAILING REVISION: UNDETERMINABLE. The issue body is a bare unittest traceback and records no run, build, job, branch or commit reference, and the issue carries no comments, so no anchor to a specific executed revision exists anywhere in the public record. This is a permanent absence of an anchor, not an expired-retention problem, and it cannot be recovered by any means. -- RECOVERABLE FAILURE-ERA SNAPSHOT: 3d26714fc113cef9e79fde0ae1fd52e1d5ba6f2c ('Add core to the type column description of osquery_extensions schema (#7716)', committer date 2022-08-08T15:52:27Z), selected deterministically as the latest osquery/osquery master commit at or before the failure-observation timestamp, 27 minutes before the issue was filed. It was NOT selected for proximity to any fix. -- RELATIONSHIP AND CONFIDENCE: the snapshot is at or before the observation, so every frozen member is repository state a reader of that failure could have inspected at that time. Per-member history was checked around the anchor: the last preceding change to tools/tests/test_osqueryd.py is 0e130a865f96 (2022-08-01, 'Improve Pidfile handling (#7304)'), to tools/tests/test_base.py is e06610a83b1f (2022-04-25), and osquery/core/init.cpp is the pre-d02fcd6970f8 state. Confidence that these are failure-era bytes is high; confidence that they are the exact executed bytes is unattainable and is not claimed anywhere in this package. -- SUPERSEDED SELECTION: an earlier draft declared aaf2853071c61f54ea737cf938601959fd74f571 ('docs: Update the list of pages (#7866)', 2022-12-06), four months after the observation and chosen only for being pre-fix relative to the later fix. That selection is rejected under this provenance category. osquery/core/init.cpp has been refrozen from that December state (885 lines) back to the failure-era state (875 lines), reversing d02fcd6970f8 ('Add a mechanism to reduce memory retained on Linux (#7502)', committer date 2022-08-09T01:10:55Z, about nine hours after the observation), whose only effect on this file was a Linux-only malloc_trim_threshold flag declaration that shifted every later line by ten and left signal-handler installation and pidfile creation semantically unchanged. -- CURATOR-ONLY causal verification source, deliberately absent from Physical Artifacts: the later fix https://github.com/osquery/osquery/pull/7888 , commit 7734da437375 (2022-12-17), which closed this issue.",
+    "license_or_permission": "Apache-2.0 OR GPL-2.0-only upstream repository; public GitHub issue failure traceback and public failure-era repository content, used with upstream attribution."
+  },
+  "curation": {
+    "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan; source chain and Evidence Ground Truth revised by Claude under the Human-approved N18 revision directive",
+    "review_status": "human_reviewed",
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value BORDERLINE-ADEQUATE. Reviewed against Issue #15 Candidate Selection, Source Artifact Eligibility, and full package-content review covering provenance, Physical Universe scope, independent causal reconstruction, Failure Type, Expected Answer, Required-Evidence inclusion-minimality by removal proof, leakage, and shortcut analysis. THIS IS NOT A FORMAL FREEZE: Canonicalization Profile v1 is not frozen, no Suite Manifest exists, and the Canonical coordinates and Case fingerprint remain provisional-pre-freeze and may be mechanically rebuilt. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/n18-review.md."
+  },
+  "sanitization": {
+    "status": "reviewed_no_changes",
+    "reviewed_by": "Issue #15 source-only sanitization policy; reviewed and ACCEPTED by package-content Human Review. physical-artifacts/raw.log is byte-identical to the fenced traceback in the issue body: 508 bytes with all nine CRLF line terminators retained verbatim. No ANSI or other control bytes were present, nothing was removed, and no line was added, removed, reordered, truncated or rewritten. An earlier draft normalized the final CRLF to LF and its metadata wrongly claimed ANSI/control removal; the artifact has been restored to full byte fidelity so that no transformation needs to be declared at all. Repository members are byte-identical to the declared failure-era snapshot. The traceback contains no credential or private identifier.",
+    "transformations": []
+  },
+  "case_fingerprint": "5bba62cbf454764e247b64cb7a373036e857c75110973f00d496cd461449b743"
+}

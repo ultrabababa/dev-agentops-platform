@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "dependency_or_install_failure",
+  "acceptable_failure_types": [],
+  "summary": "The spring5-next matrix job fails because it upgrades Spring without upgrading Jackson, leaving a Jackson class Spring 5 needs off the classpath.",
+  "root_cause": "The job runs with PROFILE=spring5-next, whose pom profile overrides only spring.version to 5.0.0.BUILD-SNAPSHOT. jackson.version stays at the single top-level value 2.8.5 shared by every profile. Spring 5's AllEncompassingFormHttpMessageConverter references com.fasterxml.jackson.databind.exc.InvalidDefinitionException, which does not exist in Jackson 2.8.5, so constructing RequestMappingHandlerAdapter throws NoClassDefFoundError. Every Spring test context that builds that bean then fails, producing 32 failures across otherwise unrelated test classes. Jackson resolved successfully at 2.8.5, so this is a version incompatibility rather than a missing or unresolvable artifact.",
+  "recommended_action": "Raise jackson.version in the spring5-next profile to a Jackson 2.9 release that provides InvalidDefinitionException, leaving the Spring 4.3 profiles on their current Jackson version."
+}

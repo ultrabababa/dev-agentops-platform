@@ -1,0 +1,13 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-3701-3800",
+    "repo:pom-xml:lines-0001-0100",
+    "repo:src-org-traccar-context-java:lines-0101-0200",
+    "repo:travis-yml:lines-0001-0003"
+  ],
+  "optional_evidence_ids": [
+    "log:raw-log:lines-10401-10452",
+    "repo:pom-xml:lines-0201-0285"
+  ]
+}

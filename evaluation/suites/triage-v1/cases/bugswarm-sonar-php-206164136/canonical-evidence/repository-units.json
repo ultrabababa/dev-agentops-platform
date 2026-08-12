@@ -1,0 +1,175 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:phpsensortest-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/test/java/org/sonar/plugins/php/PHPSensorTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "e1bfa4888881e374c7dcc2ba86866bc9462f3619c825b19f801313072c131b75"
+    },
+    {
+      "evidence_id": "repo:phpsensortest-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/test/java/org/sonar/plugins/php/PHPSensorTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "d6868db6b14df7ca34bd10558db6bb243e15ac7d0aa0b1870e7f2bf38d52813c"
+    },
+    {
+      "evidence_id": "repo:phpsensortest-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/test/java/org/sonar/plugins/php/PHPSensorTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "c6f89838c7747692adc9ec6afe17657f13afb81f478ff48c91ef5a79e8c74350"
+    },
+    {
+      "evidence_id": "repo:phpsensortest-java:lines-0301-0400",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/test/java/org/sonar/plugins/php/PHPSensorTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "9db8d9dd87d3e20aabcaa4bffb8365dc6d7ef38455135d27e0b3853e2f373a86"
+    },
+    {
+      "evidence_id": "repo:phpsensortest-java:lines-0401-0456",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/test/java/org/sonar/plugins/php/PHPSensorTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 456
+      },
+      "content_sha256": "83b0a3be0923e00bc9e4ac20a0b91157fb84807bac80e4c9bf820a29b80a0ef4"
+    },
+    {
+      "evidence_id": "repo:phptestutils-java:lines-0001-0057",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/test/java/org/sonar/plugins/php/PhpTestUtils.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 57
+      },
+      "content_sha256": "ff7f11db6febc880d49009d6dc0f82bc3f85b44a80acf5adcca5a75518656747"
+    },
+    {
+      "evidence_id": "repo:phpsensor-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/main/java/org/sonar/plugins/php/PHPSensor.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "6bf5c7a1a94ec967552364f8d8cdeb351b32224d63694f9cba6b1fa7cb5dd95c"
+    },
+    {
+      "evidence_id": "repo:phpsensor-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/main/java/org/sonar/plugins/php/PHPSensor.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "7f22c296f696dcf4006862b1f766588bed6b1f49fbd73e4616c7c2596a52988a"
+    },
+    {
+      "evidence_id": "repo:phpsensor-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/main/java/org/sonar/plugins/php/PHPSensor.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "9f09cfaac8439d5b15053bfa244024e79f59506ee2656b5899eb4808f6f5c58d"
+    },
+    {
+      "evidence_id": "repo:phpsensor-java:lines-0301-0364",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/main/java/org/sonar/plugins/php/PHPSensor.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 364
+      },
+      "content_sha256": "5439846601f6fe208c6272fa6bb6e5f6090efad3c8191147cb7ca9835d3c5f3a"
+    },
+    {
+      "evidence_id": "repo:phpunitservice-java:lines-0001-0099",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/main/java/org/sonar/plugins/php/phpunit/PhpUnitService.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 99
+      },
+      "content_sha256": "d33c7c9b6d60ea2068a0a37185e207a55a5b10a2480e811ffc46442d1aab4786"
+    },
+    {
+      "evidence_id": "repo:phpunittestfilereport-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/main/java/org/sonar/plugins/php/phpunit/PhpUnitTestFileReport.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "6f8d468b65620eec4ea25b8ff9105baff94736200dac182fe0be1793ab46d0a5"
+    },
+    {
+      "evidence_id": "repo:phpunittestfilereport-java:lines-0101-0155",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/main/java/org/sonar/plugins/php/phpunit/PhpUnitTestFileReport.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 155
+      },
+      "content_sha256": "cff36f667d94bc8a0a0bd1e5895c440412c5f4a43c8c5a2780dab7125329cf9a"
+    },
+    {
+      "evidence_id": "repo:phpunittestresultimporter-java:lines-0001-0044",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/main/java/org/sonar/plugins/php/phpunit/PhpUnitTestResultImporter.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 44
+      },
+      "content_sha256": "c934c3862677ea61316d7b8db8318ad78cc7d608ea7d07db786661f96c72d742"
+    },
+    {
+      "evidence_id": "repo:phpunit-junit-report-xml:lines-0001-0055",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/test/resources/org/sonar/plugins/php/phpunit/sensor/phpunit-junit-report.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 55
+      },
+      "content_sha256": "b9898ae4bd4d1381da524e6018ca1787b6bc279956d875860443f9b5b9a3d454"
+    },
+    {
+      "evidence_id": "repo:phpunit-coverage-xml:lines-0001-0055",
+      "source": "physical-artifacts/repository/sonar-php-plugin/src/test/resources/org/sonar/plugins/php/phpunit/sensor/phpunit.coverage.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 55
+      },
+      "content_sha256": "773de9464978b804fd1e6d83a89e29dbafd5d62c8e26645254e8edee821d7345"
+    },
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0022",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 22
+      },
+      "content_sha256": "923af59b9a25bf77ebea2b25fafaa0ce05fbf33a29e31f5523e76aa96b7b79a7"
+    }
+  ]
+}

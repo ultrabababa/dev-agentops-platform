@@ -1,0 +1,50 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "alibaba/COLA",
+    "revision_kind": "git_commit",
+    "exact_revision": "1e0c1306bd98d454c1bd5f23888f6162969115b8"
+  },
+  "files": [
+    {
+      "path": "cola-samples/charge/src/test/java/com/huawei/charging/ChargeServiceTest.java",
+      "sha256": "4d0a88ca90e3269c27a4b91458a65c0dab5b29cf1624e3e676944221dc132d5f",
+      "size_bytes": 3936
+    },
+    {
+      "path": "cola-samples/charge/src/test/java/com/huawei/charging/ChargeRecordRepoTest.java",
+      "sha256": "eb288a2afe4838485110069b71da7ac64bb275daea6a0483a1aa73e421c5ae0e",
+      "size_bytes": 1665
+    },
+    {
+      "path": "cola-samples/charge/src/test/java/com/huawei/charging/PropertyTest.java",
+      "sha256": "d4db4f3e6b1843722d188f4e3040602e108099a595fdc774a82e0594845422f5",
+      "size_bytes": 1233
+    },
+    {
+      "path": "cola-samples/charge/src/main/java/com/huawei/charging/Application.java",
+      "sha256": "f1a9b7593111256d2696d17f1c679a847ea669db955dc103e65a3cf7c6e2f894",
+      "size_bytes": 323
+    },
+    {
+      "path": "cola-samples/charge/src/main/resources/application.yml",
+      "sha256": "294813f89c507b55b53b1c7b8a1b65538bba364883348f53b85b553bb617d05f",
+      "size_bytes": 520
+    },
+    {
+      "path": "cola-samples/charge/src/test/resources/application-test.yml",
+      "sha256": "0ffab409ad1c181c2798e489ee34f856023ccf21ff11d3e1dc060fec76fd908d",
+      "size_bytes": 342
+    },
+    {
+      "path": "cola-samples/charge/pom.xml",
+      "sha256": "69ed5beac6dce0bfa2e437245cc6130967cc862bd75e17d3c6608696ebcdce7a",
+      "size_bytes": 2693
+    },
+    {
+      "path": ".github/workflows/ci.yaml",
+      "sha256": "3803ed4c4c0b6f96112a42279162f83481d70731f401eba7b332b31e491a08ac",
+      "size_bytes": 682
+    }
+  ]
+}

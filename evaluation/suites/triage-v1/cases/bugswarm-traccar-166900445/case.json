@@ -1,0 +1,51 @@
+{
+  "case_schema_version": "2",
+  "case_id": "bugswarm-traccar-166900445",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "https://www.bugswarm.org/artifact-logs/166900445/raw/ ; upstream exact/relevant revision: https://github.com/traccar/traccar/commit/18d39ff2412b9aced899915d0187f21eb25f49b6 . The maintainer's personal email does not appear anywhere in raw.log, so redacting it from source introduces no inconsistency with the log; the GitHub username tananaev does appear in Travis build paths and is retained as authentic public CI output.",
+    "license_or_permission": "Apache-2.0 upstream repository; public BugSwarm historical failed-job attribution."
+  },
+  "curation": {
+    "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan; sanitization corrected by Claude under the Human-approved B08 review directive",
+    "review_status": "human_reviewed",
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS after reversing four replacements that protected nothing; Runtime Discriminative Value LOW. ADMITTED WITH AN EXPLICIT PORTFOLIO ROLE: deliberate low-difficulty anchor for the config_or_environment_failure category. LOW is not automatically disqualifying when a Case serves a stated portfolio role, but this Case must never be described as discriminating. THIS IS NOT A FORMAL FREEZE: Canonicalization Profile v1 is not frozen, no Suite Manifest exists, and coordinates and fingerprint remain provisional-pre-freeze. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/b08-review.md."
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy; reviewed and ACCEPTED by package-content Human Review. Three earlier replacements have been REVERSED because they removed no secret and contradicted the observation.",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "Removed ANSI/control noise only; retained the complete authentic historical failed-job log without changing failure semantics.",
+        "semantics_preserving": true
+      },
+      {
+        "artifact_path": "physical-artifacts/repository/test/org/traccar/notification/NotificiationMailTest.java",
+        "description": "Replaced ONLY the maintainer's personal email address in the TO literal with [SANITIZED_PERSONAL_EMAIL]. All 59 lines are retained at their original line numbers and no other byte differs from the exact revision. This supersedes an earlier transformation that had additionally replaced SMTP_USERNAME, SMTP_PASSWORD, HOST and the FROM address. Those four replacements were reversed because they removed no secret and destroyed causal evidence: the committed username and password are the literal placeholder strings 'username' and 'password', the host is the public documented AWS SES endpoint email-smtp.us-west-2.amazonaws.com, and FROM is a public project role address. Worse, [SANITIZED_SMTP_HOST] is not resolvable, so the sanitized source predicted a name-resolution failure rather than the 535 authentication rejection the log actually records.",
+        "semantics_preserving": true
+      },
+      {
+        "artifact_path": "physical-artifacts/repository/src/org/traccar/notification/NotificationMail.java",
+        "description": "Replaced the maintainer's personal email address in the copyright header with [SANITIZED_EMAIL_ADDRESS]. Header text only; all 132 lines and every functional byte are unchanged.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "effc4255352175658bb415a41d5c1c819c47eefc74d3d5cda92415d646481448"
+}

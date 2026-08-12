@@ -1,0 +1,13 @@
+language: java
+
+jdk:
+  - oraclejdk8
+
+after_success:
+  - codecov
+  - mvn package -pl ugs-core assembly:assembly
+  - mvn install
+
+before_script:
+  - pip install --user codecov
+

@@ -1,0 +1,35 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "marshallward/f90nml",
+    "revision_kind": "git_commit",
+    "exact_revision": "a654e03ebf8660b24aa56180a331fb76e79a73f7"
+  },
+  "files": [
+    {
+      "path": ".travis.yml",
+      "sha256": "ec3ce54f54f97547df294f58503792ef62aaaf22c82c2704280d890fa72b72e8",
+      "size_bytes": 440
+    },
+    {
+      "path": "setup.cfg",
+      "sha256": "e4bd33cba1e9779df4fe84fc34e92a4c43a4adcbcfe4b937ae1302bd3e73d4b8",
+      "size_bytes": 28
+    },
+    {
+      "path": "setup.py",
+      "sha256": "d1b4617c8589e64bbf847b323b6ae9ad3d163944d9af1c4d80fe09ad1529c6a7",
+      "size_bytes": 1302
+    },
+    {
+      "path": "test/requirements_test.txt",
+      "sha256": "61403f303c141e05caaf090946b64b8881541bbe35a2dc7c6c281c958c52bc3a",
+      "size_bytes": 89
+    },
+    {
+      "path": "test/test_f90nml.py",
+      "sha256": "2a150dfafb6331040b5f03a2b49eb62bd8fdb913974a787a0ed7de08092c6ea5",
+      "size_bytes": 20291
+    }
+  ]
+}

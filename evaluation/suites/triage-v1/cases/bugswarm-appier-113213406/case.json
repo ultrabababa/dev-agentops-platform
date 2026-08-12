@@ -1,0 +1,41 @@
+{
+  "case_schema_version": "2",
+  "case_id": "bugswarm-appier-113213406",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "https://www.bugswarm.org/artifact-logs/113213406/raw/ ; upstream exact/relevant revision: https://github.com/hivesolutions/appier/commit/2b7fc2f824696a408d6c857fb98bab593c4def41",
+    "license_or_permission": "Apache-2.0 upstream repository; public BugSwarm historical failed-job attribution."
+  },
+  "curation": {
+    "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
+    "review_status": "human_reviewed",
+    "reviewed_by": "REJECTED by package-content Human Review: REPLACE_FOR_LOW_DISCRIMINATIVE_VALUE. Layer 1 Scientific Validity remains PASS - raw.log verified byte-exact and all 6 members byte-identical to the exact revision. Layer 2 LOW: the same class of intrinsically shallow dependency-absence diagnosis as B09; the log names the missing module, its file and two line numbers, and the manifest is two lines. Its low Required share reflects one unrelated 144 KB file rather than search difficulty. LOW Cases are not required per taxonomy and B08 already serves the suite-level easy anchor. NOT a Formal Suite member; retained only as a rejection record. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/n13-review.md."
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy; package-content Human Review remains pending",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "Removed ANSI/control noise only; retained the complete or naturally bounded authentic historical failure observation without changing failure semantics.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "3e95a055fdf5804b581eb8fd7c180c4676211d16d65161ab5962071c7bbbdf99"
+}

@@ -1,0 +1,497 @@
+"""Test configuration and shared fixtures."""
+
+import json
+import logging
+import os
+import queue
+import random
+import socket
+import tempfile
+import threading
+import time
+from contextlib import contextmanager
+
+import pytest
+import requests
+
+import gptme.init as _gptme_init
+from gptme.config import get_config
+from gptme.init import init
+from gptme.tools import clear_tools
+from gptme.tools import shell as shell_module
+from gptme.tools.rag import _has_gptme_rag
+from gptme.tools.subagent import _subagents
+
+logger = logging.getLogger(__name__)
+
+# Set at session start if Anthropic API quota is exhausted
+_anthropic_quota_exhausted = False
+
+# Error patterns that indicate API quota/rate-limit exhaustion
+_QUOTA_ERROR_PATTERNS = [
+    "usage limits",
+    "rate limit",
+    "quota exceeded",
+    "billing hard limit",
+    "insufficient_quota",
+    "exceeded your current quota",
+    "spending limit",
+]
+
+
+def has_api_key() -> bool:
+    """Check if any API key is configured."""
+    config = get_config()
+    # Check for any configured API keys
+    return bool(
+        config.get_env("OPENAI_API_KEY", "")
+        or config.get_env("ANTHROPIC_API_KEY", "")
+        or config.get_env("OPENROUTER_API_KEY", "")
+        or config.get_env("DEEPSEEK_API_KEY", "")
+    )
+
+
+def _check_anthropic_quota_exhausted() -> bool:
+    """Make a minimal API call to detect if the Anthropic quota is exhausted.
+
+    Returns True if quota is exhausted, False if API is available or key not configured.
+    Runs whenever ANTHROPIC_API_KEY is configured, regardless of MODEL env var.
+    """
+    config = get_config()
+    api_key = config.get_env("ANTHROPIC_API_KEY", "")
+    if not api_key:
+        return False
+    try:
+        import anthropic
+    except ImportError:
+        return False
+    try:
+        client = anthropic.Anthropic(api_key=api_key)
+        client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=1,
+            messages=[{"role": "user", "content": "hi"}],
+        )
+        return False
+    except anthropic.BadRequestError as e:
+        error_str = str(e).lower()
+        if any(p in error_str for p in _QUOTA_ERROR_PATTERNS):
+            logger.warning(f"Anthropic API quota exhausted: {e}")
+            return True
+        return False
+    except anthropic.RateLimitError as e:
+        logger.warning(f"Anthropic API rate limited: {e}")
+        return True
+    except Exception:
+        return False
+
+
+def pytest_configure(config):
+    """Register custom markers."""
+    config.addinivalue_line(
+        "markers",
+        "requires_api: mark test as requiring an API key",
+    )
+    # Disable pre-commit checks during tests to avoid interference
+    os.environ["GPTME_CHECK"] = "false"
+    # Disable chat history context during tests for predictable prompts
+    os.environ["GPTME_CHAT_HISTORY"] = "false"
+
+
+@pytest.hookimpl(wrapper=True)
+def pytest_runtest_makereport(item, call):
+    """Convert API quota/rate-limit failures to skips for requires_api tests.
+
+    The session-start quota check may pass with a tiny haiku call, but the
+    actual test can hit quota limits with heavier models or longer generations.
+    This hook catches those mid-run failures and converts them to skips.
+    """
+    report = yield
+
+    if (
+        report.when == "call"
+        and report.failed
+        and "requires_api" in item.keywords
+        and call.excinfo is not None
+    ):
+        error_str = str(call.excinfo.value).lower()
+        if any(pattern in error_str for pattern in _QUOTA_ERROR_PATTERNS):
+            report.outcome = "skipped"
+            report.longrepr = f"API quota exhausted during test: {call.excinfo.value}"
+
+    return report
+
+
+def pytest_collection_modifyitems(config, items):
+    """Skip tests marked as requiring API key if no key is configured or quota exhausted."""
+    if not has_api_key():
+        # Set environment variables to override LLM provider config
+        os.environ["MODEL"] = "local/test"
+        os.environ["OPENAI_BASE_URL"] = "http://localhost:666"
+
+        skip_api = pytest.mark.skip(reason="No API key configured")
+        for item in items:
+            if "requires_api" in item.keywords:
+                item.add_marker(skip_api)
+    elif _anthropic_quota_exhausted:
+        skip_api = pytest.mark.skip(reason="Anthropic API quota exhausted")
+        for item in items:
+            if "requires_api" in item.keywords:
+                item.add_marker(skip_api)
+
+
+def pytest_sessionstart(session):
+    global _anthropic_quota_exhausted
+    # Download the embedding model before running tests.
+    download_model()
+    # Check if Anthropic quota is exhausted to skip API tests gracefully.
+    if has_api_key():
+        _anthropic_quota_exhausted = _check_anthropic_quota_exhausted()
+        if _anthropic_quota_exhausted:
+            logger.warning(
+                "⚠️  Anthropic API quota exhausted — requires_api tests will be skipped"
+            )
+
+
+def download_model():
+    if not _has_gptme_rag():
+        return
+
+    try:
+        # downloads the model if it doesn't exist
+        from chromadb.utils import embedding_functions  # fmt: skip
+    except ImportError:
+        return
+
+    ef = embedding_functions.DefaultEmbeddingFunction()
+    if ef:
+        ef._download_model_if_not_exists()
+
+
+@pytest.fixture
+def auth_headers():
+    """Provide authentication headers for HTTP requests to test server."""
+    return {"Authorization": "Bearer test-token-for-server-thread"}
+
+
+@pytest.fixture(autouse=True)
+def reduce_anthropic_retries(monkeypatch):
+    """Reduce Anthropic API retries during tests to prevent timeouts.
+
+    Anthropic API can have transient errors (5xx, overloaded) that trigger
+    exponential backoff retries. With default max_retries=5 and 60s timeout
+    per retry, a test with 2 sequential subagents can take ~10.5 minutes,
+    causing GitHub Actions timeout (15 min).
+
+    Reducing to max_retries=2 brings total time to ~4 minutes, well under
+    the timeout while still allowing some retry resilience.
+    """
+    # Set environment variable to limit retries during tests
+    monkeypatch.setenv("GPTME_TEST_MAX_RETRIES", "2")
+
+
+@pytest.fixture(autouse=True)
+def clear_tools_before():
+    # Clear all tools and cache to prevent test conflicts
+    clear_tools()
+    # Reset init state so tools are fully re-registered on next init() call.
+    # Without this, the _init_done guard prevents init_tools() from re-running
+    # after clear_tools(), leaving get_tool() returning None for all tools.
+    _gptme_init._init_done = False
+
+
+@pytest.fixture(autouse=True)
+def cleanup_shell_after():
+    """Clean up ShellSession after each test to prevent orphaned processes.
+
+    This is critical for CI where orphaned bash processes can cause
+    the test runner to hang during cleanup (Issue #910).
+    """
+    yield
+    # Close shell if it exists (using ContextVar API)
+    shell = shell_module._shell_var.get()
+    if shell is not None:
+        try:
+            shell.close()
+        except Exception as e:
+            logger.warning(f"Error closing shell during test cleanup: {e}")
+        shell_module._shell_var.set(None)
+
+
+@pytest.fixture(autouse=True)
+def cleanup_subagents_after():
+    """Clean up subagent threads and subprocesses after each test.
+
+    Subagent threads are daemon threads that should die with the parent,
+    but explicitly clearing them prevents potential issues.
+    Subprocesses in subprocess mode need explicit termination.
+    """
+    yield
+    # Wait briefly for any running subagent threads to complete
+    for subagent in _subagents:
+        # Clean up threads
+        if subagent.thread is not None and subagent.thread.is_alive():
+            subagent.thread.join(timeout=5.0)
+        # Clean up subprocesses (subprocess mode)
+        if subagent.process is not None and subagent.process.poll() is None:
+            subagent.process.terminate()
+            try:
+                subagent.process.wait(timeout=5.0)
+            except Exception:
+                # Force kill if graceful termination fails
+                subagent.process.kill()
+    # Clear the subagents list
+    _subagents.clear()
+
+
+@pytest.fixture
+def temp_file():
+    @contextmanager
+    def _temp_file(content):
+        # Create a temporary file with the given content
+        temporary_file = tempfile.NamedTemporaryFile(delete=False, mode="w+")
+        try:
+            temporary_file.write(content)
+            temporary_file.flush()
+            temporary_file.close()
+            yield temporary_file.name  # Yield the path to the temporary file
+        finally:
+            # Delete the temporary file to ensure cleanup
+            if os.path.exists(temporary_file.name):
+                os.unlink(temporary_file.name)
+
+    return _temp_file
+
+
+@pytest.fixture(autouse=True)
+def init_():
+    # Pass MODEL from env explicitly to avoid picking up stale config.chat.model
+    # values left by server tests. When _init_done is reset per-test, init_model()
+    # re-runs and would otherwise read the contaminated config instead of the test
+    # environment's MODEL. Server tests now use fully-qualified model names
+    # (e.g. "openai/gpt-4o-mini") to prevent provider validation errors.
+    model = os.environ.get("MODEL")
+    init(model, interactive=False, tool_allowlist=None, tool_format="markdown")
+
+
+@pytest.fixture
+def cleanup_tmux_sessions():
+    """Clean up gptme_* tmux sessions before and after a test.
+
+    This prevents cross-test contamination when tests run the gptme CLI
+    which creates gptme_N sessions internally.
+    """
+    import subprocess
+
+    def _cleanup():
+        """Kill all gptme_* sessions except worker-specific ones."""
+        import re
+
+        # Match simple gptme_N sessions (N = digits only)
+        # but NOT worker-specific ones like gptme_gw0_test_*
+        simple_session_pattern = re.compile(r"^gptme_\d+$")
+
+        try:
+            result = subprocess.run(
+                ["tmux", "list-sessions", "-F", "#{session_name}"],
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            if result.returncode == 0:
+                for session in result.stdout.strip().split("\n"):
+                    session = session.strip()
+                    if not session:
+                        continue
+                    if simple_session_pattern.match(session):
+                        subprocess.run(
+                            ["tmux", "kill-session", "-t", session],
+                            check=False,
+                            capture_output=True,
+                            timeout=5,
+                        )
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            pass  # tmux not available or timed out
+
+    # Cleanup before test
+    _cleanup()
+    yield
+    # Cleanup after test
+    _cleanup()
+
+
+@pytest.fixture
+def server_thread():
+    """Start a server in a thread for testing."""
+    # Skip if flask not installed
+    pytest.importorskip(
+        "flask", reason="flask not installed, install server extras (-E server)"
+    )
+
+    from gptme.server.app import create_app  # fmt: skip
+
+    app = create_app()
+
+    # Find a free port
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(("localhost", 0))  # Let OS assign a free port
+    port = s.getsockname()[1]
+    s.close()
+
+    # Configure the app for testing
+    app.config["TESTING"] = True
+    app.config["SERVER_NAME"] = f"localhost:{port}"
+
+    # Start the server in a thread
+    def run_server():
+        with app.app_context():
+            app.run(port=port, threaded=True)
+
+    thread = threading.Thread(target=run_server)
+    thread.daemon = True
+    thread.start()
+
+    # Give server time to start (so we don't get Connection Refused)
+    time.sleep(0.5)
+
+    return port  # Return the port to the test
+
+
+@pytest.fixture
+def client():
+    from gptme.server.app import create_app  # fmt: skip
+
+    app = create_app()
+
+    # Create a test client without authentication by default
+    with app.test_client() as test_client:
+        yield test_client
+
+
+@pytest.fixture()
+def setup_conversation(server_thread):
+    """Create a conversation and return its ID, session ID, and port."""
+    port = server_thread
+    conversation_id = f"test-tools-{int(time.time())}-{random.randint(1000, 9999)}"
+
+    # Create conversation with custom system prompt
+    # Use "@log" to create workspace in the conversation's log directory
+    resp = requests.put(
+        f"http://localhost:{port}/api/v2/conversations/{conversation_id}",
+        headers={"Authorization": "Bearer test-token-for-server-thread"},
+        json={
+            "prompt": "You are an AI assistant for testing.",
+            "config": {
+                "chat": {
+                    "workspace": "@log",
+                }
+            },
+        },
+    )
+    assert resp.status_code == 200
+    session_id = resp.json()["session_id"]
+
+    return port, conversation_id, session_id
+
+
+@pytest.fixture()
+def event_listener(setup_conversation):
+    """Set up an event listener for the conversation."""
+    port, conversation_id, session_id = setup_conversation
+    events: queue.Queue = queue.Queue()
+    event_sequence = []
+    tool_id = None
+    tool_output_received = False
+    tool_executing_received = False
+
+    def listen_for_events():
+        nonlocal tool_id, tool_output_received, tool_executing_received
+        resp = requests.get(
+            f"http://localhost:{port}/api/v2/conversations/{conversation_id}/events?session_id={session_id}",
+            headers={"Authorization": "Bearer test-token-for-server-thread"},
+            stream=True,
+        )
+        try:
+            for line in resp.iter_lines():
+                if line:
+                    line = line.decode("utf-8")
+                    if line.startswith("data: "):
+                        event_data = json.loads(line[6:])
+                        events.put(event_data)
+
+                        # Track event types
+                        if "type" in event_data:
+                            event_type = event_data["type"]
+                            event_sequence.append(event_type)
+
+                            if event_type == "tool_pending":
+                                tool_id = event_data.get("tool_id")
+                            elif event_type == "tool_executing":
+                                tool_executing_received = True
+        except Exception as e:
+            events.put({"error": str(e)})
+        finally:
+            resp.close()
+
+    event_thread = threading.Thread(target=listen_for_events)
+    event_thread.daemon = True
+    event_thread.start()
+
+    return {
+        "port": port,
+        "conversation_id": conversation_id,
+        "session_id": session_id,
+        "events": events,
+        "event_sequence": event_sequence,
+        "get_tool_id": lambda: tool_id,
+        "is_tool_executing_received": lambda: tool_executing_received,
+    }
+
+
+@pytest.fixture
+def mock_generation():
+    """Create a mock generation with customizable output."""
+
+    def create(responses: list[str]):
+        response_iter = iter(responses)
+
+        def mock_stream(messages, model, tools=None, max_tokens=None):
+            try:
+                content = next(response_iter)
+                # Yield the content as a single chunk that will be iterated over char by char
+                yield [content]  # Wrap in list so it's only iterated once
+            except StopIteration:
+                yield ["No more responses"]
+
+        return mock_stream
+
+    return create
+
+
+@pytest.fixture
+def wait_for_event():
+    """
+    Wait for a specific event type in the event listener.
+
+    Waiting for an event will mark all events before it as already awaited,
+    so repeated calls don't wait for events before the last awaited one.
+    """
+    # max index awaited
+    already_awaited = 0
+
+    def wait(event_listener, event_type, timeout=10):
+        nonlocal already_awaited
+        start_time = time.time()
+        seq = event_listener["event_sequence"]
+        while time.time() - start_time < timeout:
+            if event_type in seq[already_awaited:]:
+                events_passed = seq[already_awaited:].index(event_type) + 1
+                # print(seq[already_awaited : already_awaited + events_passed])
+                already_awaited += events_passed
+                # print(already_awaited)
+                return True
+            time.sleep(0.1)
+        return False
+
+    return wait

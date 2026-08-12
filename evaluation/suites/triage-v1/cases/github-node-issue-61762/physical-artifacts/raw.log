@@ -1,0 +1,27 @@
+--- stderr ---
+/Users/runner/work/node/node/dir%20with $unusual"chars?'åß∂ƒ©∆¬…`/test/common/debugger.js:92
+        const timeoutErr = new Error(`Timeout (${TIMEOUT}) while waiting for ${pattern}`);
+                           ^
+
+Error: Timeout (15000) while waiting for /(?:assert|break|break on start|debugCommand|exception|other|promiseRejection|step) in/i
+    at /Users/runner/work/node/node/dir%20with $unusual"chars?'åß∂ƒ©∆¬…`/test/common/debugger.js:92:28
+    at new Promise (<anonymous>)
+    at Object.waitFor (/Users/runner/work/node/node/dir%20with $unusual"chars?'åß∂ƒ©∆¬…`/test/common/debugger.js:67:14)
+    at Object.stepCommand (/Users/runner/work/node/node/dir%20with $unusual"chars?'åß∂ƒ©∆¬…`/test/common/debugger.js:178:10)
+    at /Users/runner/work/node/node/dir%20with $unusual"chars?'åß∂ƒ©∆¬…`/test/parallel/test-debugger-exceptions.js:41:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  output: '< Debugger ending on ws://127.0.0.1:62933/91891e38-20c0-4123-a1e7-54b23973c024\n' +
+    '< For help, see: https://nodejs.org/en/docs/inspector\n' +
+    '< \n' +
+    'debug> \n' +
+    '< Debugger listening on ws://127.0.0.1:62936/b8941344-d799-4dc0-9bde-0e61b30d6b0d\n' +
+    '< For help, see: https://nodejs.org/en/docs/inspector\n' +
+    '< \n' +
+    'debug> connecting to 127.0.0.1:62936 ...< Debugger attached.\n' +
+    '< \n' +
+    'debug>  ok\n' +
+    'debug> '
+}
+
+Node.js v26.0.0-pre
+Command: out/Release/node "/Users/runner/work/node/node/dir%20with $unusual"chars?'åß∂ƒ©∆¬…`/test/parallel/test-debugger-exceptions.js"

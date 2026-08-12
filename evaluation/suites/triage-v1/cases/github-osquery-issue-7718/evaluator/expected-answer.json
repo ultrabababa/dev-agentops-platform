@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "timeout_or_flaky_failure",
+  "acceptable_failure_types": [],
+  "summary": "test_daemon_sigint intermittently observes a raw SIGINT termination reported as exit -2 instead of the daemon's handled clean exit 0.",
+  "root_cause": "The test pre-creates the pidfile that its own readiness wait then polls, so that wait can return before the daemon has installed its SIGINT handler. In the daemon's real startup the SIGINT handler is installed earlier than the pidfile is created, so a daemon-created pidfile would be a valid readiness signal; pre-creating the file removes that guarantee. When the signal arrives first the default disposition terminates the process and the test wrapper reports the negative exit code -2 rather than the handled clean exit 0.",
+  "recommended_action": "Do not pre-create the readiness pidfile; clear any stale pidfile and wait for the daemon-created readiness signal before sending SIGINT."
+}

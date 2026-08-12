@@ -1,0 +1,30 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "spring-projects/spring-hateoas",
+    "revision_kind": "git_commit",
+    "exact_revision": "d68700231eb1d8afaf27328cc5d576a71e966a2a"
+  },
+  "files": [
+    {
+      "path": "pom.xml",
+      "sha256": "f8985cad505aae8565a7d0e5f3e41a854495c657aa311aabae082b3bc32f51e3",
+      "size_bytes": 19509
+    },
+    {
+      "path": ".travis.yml",
+      "sha256": "f82860e4ce490c536928dbda57811d14aeb35a7ba68ed007f50b925c29d4de2a",
+      "size_bytes": 337
+    },
+    {
+      "path": "src/test/java/org/springframework/hateoas/config/EnableHypermediaSupportIntegrationTest.java",
+      "sha256": "71fab9843b05e850c7eba337f24c28848de02b16acb84819014073a221d9a61b",
+      "size_bytes": 8400
+    },
+    {
+      "path": "src/test/java/org/springframework/hateoas/client/TraversonTest.java",
+      "sha256": "18d352ddb73682236be8fc4fdb8d10750db2f1321bef902d7b119a1230c7a973",
+      "size_bytes": 12116
+    }
+  ]
+}

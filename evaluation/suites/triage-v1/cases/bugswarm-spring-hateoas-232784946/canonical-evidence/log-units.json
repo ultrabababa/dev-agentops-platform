@@ -1,0 +1,495 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "log:raw-log:lines-0001-0100",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "30103b0d319317c8ad56ed57a477402741ab4f957bd54761b8451719225c6696"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0101-0200",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "668949487a199e970f5de7f6956a48b84686da00d64adbd60f94392979d21c18"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0201-0300",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "1c06bf181ce48a628778b664b4df95e9df653208b80fe9548ddce20a31d2f216"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0301-0400",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "eb296cd4420c774329919a487489f8a5d942ff2d11e0ecf81a689d3ecff43c1d"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0401-0500",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "6300c68b82d1653fbf10c9eb489eb15c4b73886d3534e4db56e6faaf4851c964"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0501-0600",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "0b98440fbef9d4a678904c4087177d4b69ffd25b0c75a42e10d8aa810f712655"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0601-0700",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 700
+      },
+      "content_sha256": "45beb9685ef3dc54a328039bffdb44c4d35ef0134f97ca60854270f41a0ea86d"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0701-0800",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 701,
+        "end_line": 800
+      },
+      "content_sha256": "f1f69dfc18009e8f76a4113d8d0dca33f2190b0129128f05627d18e103494280"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0801-0900",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 801,
+        "end_line": 900
+      },
+      "content_sha256": "010d881248e473094ea895fb2f0a64ab2a0ee3d8930496e63a5e6f37b9a02a49"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0901-1000",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 901,
+        "end_line": 1000
+      },
+      "content_sha256": "367027d0b9d89fb2c93ae0a6688d1296f0d7af919ad6a03900852f4fad7cddca"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-1001-1100",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1001,
+        "end_line": 1100
+      },
+      "content_sha256": "2a66fd2d9c087db7be60fc81ddb5fb2693f027f1ddb32b90472f9e1bba0d7b8b"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-1101-1200",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1101,
+        "end_line": 1200
+      },
+      "content_sha256": "64bcdcd0a68e97369c4a6fbc9354d0e208453452c17b16e7b2d2f56c1ddb91b9"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-1201-1300",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1201,
+        "end_line": 1300
+      },
+      "content_sha256": "eab38eb860fee3433716bff075d109f1c804ddd930db9d4e7269afac8a7895be"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-1301-1400",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1301,
+        "end_line": 1400
+      },
+      "content_sha256": "ac7fef492603f47bc18521ed8e997935f7104527bcac074ac49268b5bc8e4de0"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-1401-1500",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1401,
+        "end_line": 1500
+      },
+      "content_sha256": "13544fd43a5be76e137ad82d59f0bcd372e50aadef297b1804ae08507d354fd5"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-1501-1600",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1501,
+        "end_line": 1600
+      },
+      "content_sha256": "73d12057275bc40449ff41ad1066903fbc3476d2423b6712ad5f3ef05184bc5c"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-1601-1700",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1601,
+        "end_line": 1700
+      },
+      "content_sha256": "906cf664f7dd45e2cf81c95eec00485f8a5ebe6dd28e8855a39f2cd9c39d79fd"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-1701-1800",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1701,
+        "end_line": 1800
+      },
+      "content_sha256": "80af006d27de2428ec367efdbe3d5c69ef1874bcf44bd919b397e07d0fcba32d"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-1801-1900",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1801,
+        "end_line": 1900
+      },
+      "content_sha256": "2204aad06318890a4505e37fbf3946fc0e4eac544f95edaf9efc00686389a04f"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-1901-2000",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1901,
+        "end_line": 2000
+      },
+      "content_sha256": "f5218f1c4d495ec21bd4595e53d0012d97e2a0ba6d0dfe85f5f70503b2824834"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-2001-2100",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 2001,
+        "end_line": 2100
+      },
+      "content_sha256": "cb569f3548a2579426ed340ed5494ac2d962b7a8f3a1039a9b352ec93f381ef3"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-2101-2200",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 2101,
+        "end_line": 2200
+      },
+      "content_sha256": "08919615e67c2e7af9ffb8f2c3f034179164323fbfbf9afaf5775bb6c224f31c"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-2201-2300",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 2201,
+        "end_line": 2300
+      },
+      "content_sha256": "0b41eb7261c5ae33d1962cfe16597f93f609713a454209a0a0ad7b4d7486fe17"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-2301-2400",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 2301,
+        "end_line": 2400
+      },
+      "content_sha256": "9ef14a181737e2ae3fe6908a5fa28536481da72e11582f63c4281a3fc0b52421"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-2401-2500",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 2401,
+        "end_line": 2500
+      },
+      "content_sha256": "696ad3d878154cce0b8ec81fb01cc371da7d2468da8a296d2089b44124f0e0ad"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-2501-2600",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 2501,
+        "end_line": 2600
+      },
+      "content_sha256": "f73564092f768514658813b1d42c72f7ce7c04d9fdb685169dbd7dd6c90a83d6"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-2601-2700",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 2601,
+        "end_line": 2700
+      },
+      "content_sha256": "429e652537c3d3397688a10f63649232889f26d5b0f21020614ebe4b53315faa"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-2701-2800",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 2701,
+        "end_line": 2800
+      },
+      "content_sha256": "4a9077629a83844bfb41b79a96ccab460679fc4ba86e79f3c451bdb52d6b18cc"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-2801-2900",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 2801,
+        "end_line": 2900
+      },
+      "content_sha256": "db94561a3e9d8b02ed8dec9ecedb5daf05fab2ed1ea1ff0e7907840574e1e628"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-2901-3000",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 2901,
+        "end_line": 3000
+      },
+      "content_sha256": "9df567ea8193e93bdeca303e01ac150acea25692f9b4065d6a7d3b158d97577d"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-3001-3100",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 3001,
+        "end_line": 3100
+      },
+      "content_sha256": "25cbfa5d14e4fb19eca79dfa9a9450dbbeb3429bc83fe4a5a9f67c3a0466d9cd"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-3101-3200",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 3101,
+        "end_line": 3200
+      },
+      "content_sha256": "fcbe2e0a051d97dd82bf82b22b87e42112a580cf0a32d801767aae57e94dddc9"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-3201-3300",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 3201,
+        "end_line": 3300
+      },
+      "content_sha256": "7dc5422cec25d928f14bee98534502251040010c6e1e04af4b1a759609e92a31"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-3301-3400",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 3301,
+        "end_line": 3400
+      },
+      "content_sha256": "480f19f6c3c96a870fbcca20ebb52c9a973f639af0af2ee3d4afa2370b48d94f"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-3401-3500",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 3401,
+        "end_line": 3500
+      },
+      "content_sha256": "ae77879748182fd19a0b35d45269fe5b6b998a4ea1b3de8d9be6cfa4ae3d9ffe"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-3501-3600",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 3501,
+        "end_line": 3600
+      },
+      "content_sha256": "29e20983fa7e79f82d1b073f3192f5679f3cf9ef7a48906dd7737e0ab41427d1"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-3601-3700",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 3601,
+        "end_line": 3700
+      },
+      "content_sha256": "eef0eeca895e422290278e60d8868042a7f7b171404fa4a6d060a55c47921ae7"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-3701-3800",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 3701,
+        "end_line": 3800
+      },
+      "content_sha256": "0d82dd72d0c5e9b4a0e773f070e5b7662cba3f87a6699d4579f86b14582c63ad"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-3801-3900",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 3801,
+        "end_line": 3900
+      },
+      "content_sha256": "5b0691c5bf6af36ae0b0c52f0491a1b7dd11f7db10ce8e521f92102ba705bf02"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-3901-4000",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 3901,
+        "end_line": 4000
+      },
+      "content_sha256": "625b43dbe88a6dd16218956733a5b52ecafc8b055e1a3d8a0c177836626f83d0"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-4001-4100",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 4001,
+        "end_line": 4100
+      },
+      "content_sha256": "69108405be61bd80db8691520304a52286da5e0bd1e3aa5ed8e527d4038cede2"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-4101-4200",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 4101,
+        "end_line": 4200
+      },
+      "content_sha256": "009ce8ac80364eb4e9ff18f8df2075974e11247e14efd27dfffd8fda4e1c9412"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-4201-4300",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 4201,
+        "end_line": 4300
+      },
+      "content_sha256": "35b904e546bc38b774ac2b1940ce91ae4552a3102db4aa44115d2815845eaa96"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-4301-4400",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 4301,
+        "end_line": 4400
+      },
+      "content_sha256": "a8dadfd6a4dcc68e9a777291e8b395ecabed7375439c56cace6ec99305290485"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-4401-4500",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 4401,
+        "end_line": 4500
+      },
+      "content_sha256": "53b4969bc94f31d64cfe74c583dd40e6d2e5d6e02f2d77b907bfd5b74b288e00"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-4501-4600",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 4501,
+        "end_line": 4600
+      },
+      "content_sha256": "d85d5ca52a99ab15c4cb6b4995f8497e2b711c45904f6ce9fd00e1547b7b1b4b"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-4601-4700",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 4601,
+        "end_line": 4700
+      },
+      "content_sha256": "69e7cde35453b0e846cd015979d4dc1e4b658971a258055dd94445d186bb9705"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-4701-4800",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 4701,
+        "end_line": 4800
+      },
+      "content_sha256": "05a2c7efd173c85f407d7c8b0c82fe7545bd144ccfd8830b4d415ed872b11993"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-4801-4824",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 4801,
+        "end_line": 4824
+      },
+      "content_sha256": "114c2032455599d76b80498a0c521899df674e0e894994a72eb8f358fd2ee70d"
+    }
+  ]
+}

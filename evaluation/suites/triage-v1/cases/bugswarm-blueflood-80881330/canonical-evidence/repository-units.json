@@ -1,0 +1,325 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:httpannotationsendtoendtest-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/blueflood-http/src/integration-test/java/com/rackspacecloud/blueflood/inputs/handlers/HttpAnnotationsEndToEndTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "874658e43fa894922bd151940f7a97fcc4a2b0643e22f449d3436ca3ccfc5e86"
+    },
+    {
+      "evidence_id": "repo:httpannotationsendtoendtest-java:lines-0101-0159",
+      "source": "physical-artifacts/repository/blueflood-http/src/integration-test/java/com/rackspacecloud/blueflood/inputs/handlers/HttpAnnotationsEndToEndTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 159
+      },
+      "content_sha256": "45cb1228d0a5408c66998eeb4bbfbc88d7dad27f216b32ef240c8857378ea704"
+    },
+    {
+      "evidence_id": "repo:httpclientvendor-java:lines-0001-0055",
+      "source": "physical-artifacts/repository/blueflood-http/src/integration-test/java/com/rackspacecloud/blueflood/http/HttpClientVendor.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 55
+      },
+      "content_sha256": "855499df2daacfaaabd9f9c0a5d69e1c9d94092c9e49780050fc673b00b71bc9"
+    },
+    {
+      "evidence_id": "repo:eventelasticsearchio-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/blueflood-elasticsearch/src/main/java/com/rackspacecloud/blueflood/io/EventElasticSearchIO.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "e5e48a532cbe687a299f93b3c103b1facdade80af20a46804435652f633809b3"
+    },
+    {
+      "evidence_id": "repo:eventelasticsearchio-java:lines-0101-0133",
+      "source": "physical-artifacts/repository/blueflood-elasticsearch/src/main/java/com/rackspacecloud/blueflood/io/EventElasticSearchIO.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 133
+      },
+      "content_sha256": "a837c58df7b4d71f4e3e3d3620bbe07fad006e77c7e7f59ba39688d73ea4d4df"
+    },
+    {
+      "evidence_id": "repo:events-mapping-json:lines-0001-0027",
+      "source": "physical-artifacts/repository/blueflood-elasticsearch/src/main/resources/events_mapping.json",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 27
+      },
+      "content_sha256": "3a999e27f1e0b91f79c11abed21c88cf07c24176f8a0b99f997ae33e954dc800"
+    },
+    {
+      "evidence_id": "repo:index-settings-json:lines-0001-0027",
+      "source": "physical-artifacts/repository/blueflood-elasticsearch/src/main/resources/index_settings.json",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 27
+      },
+      "content_sha256": "469de267b0a0a9655f6b0aacaf52c402940d7f6eed87438f30fc932c6727846e"
+    },
+    {
+      "evidence_id": "repo:metrics-mapping-json:lines-0001-0022",
+      "source": "physical-artifacts/repository/blueflood-elasticsearch/src/main/resources/metrics_mapping.json",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 22
+      },
+      "content_sha256": "6b7e556f8eba561b54bb907af7875dd7129fd7025fced257e6d682fb8c6c903f"
+    },
+    {
+      "evidence_id": "repo:metrics-mapping-v1-json:lines-0001-0021",
+      "source": "physical-artifacts/repository/blueflood-elasticsearch/src/main/resources/metrics_mapping_v1.json",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 21
+      },
+      "content_sha256": "44a30a26aef5920e78a48e526a0f7dffa53b2872a1dc9f3ce45542c902de2ee2"
+    },
+    {
+      "evidence_id": "repo:eventsio-java:lines-0001-0025",
+      "source": "physical-artifacts/repository/blueflood-core/src/main/java/com/rackspacecloud/blueflood/io/EventsIO.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 25
+      },
+      "content_sha256": "136f08b10bfe73d40b7971116055573ec1cba6a3e55b5820573c439ac70c47bb"
+    },
+    {
+      "evidence_id": "repo:astyanaxmetricswriter-java:lines-0001-0044",
+      "source": "physical-artifacts/repository/blueflood-core/src/main/java/com/rackspacecloud/blueflood/io/AstyanaxMetricsWriter.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 44
+      },
+      "content_sha256": "6563ffd2bc00ccc3c73972d3c1a03dd7be13352bd5699e81aa59b14ce605b0e9"
+    },
+    {
+      "evidence_id": "repo:configuration-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/blueflood-core/src/main/java/com/rackspacecloud/blueflood/service/Configuration.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "68b5d3ce3c7d38204881dc969afee3e967f54ef3c24b44fb0fdb5e606fb86002"
+    },
+    {
+      "evidence_id": "repo:configuration-java:lines-0101-0122",
+      "source": "physical-artifacts/repository/blueflood-core/src/main/java/com/rackspacecloud/blueflood/service/Configuration.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 122
+      },
+      "content_sha256": "37e6c79e5d154212e5754a4dd99058e2cd00cf4758601956cd96b0d242234b5b"
+    },
+    {
+      "evidence_id": "repo:coreconfig-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/blueflood-core/src/main/java/com/rackspacecloud/blueflood/service/CoreConfig.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "14d7f7353d97b9f7389ea5506b64a0f3e87b92a385136682407dd609c98d23fd"
+    },
+    {
+      "evidence_id": "repo:coreconfig-java:lines-0101-0161",
+      "source": "physical-artifacts/repository/blueflood-core/src/main/java/com/rackspacecloud/blueflood/service/CoreConfig.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 161
+      },
+      "content_sha256": "c16ae1c5ed54412aca9a1762722fb452d5491394eeadcccafb9dd0b9bab46d29"
+    },
+    {
+      "evidence_id": "repo:schedulecontext-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/blueflood-core/src/main/java/com/rackspacecloud/blueflood/service/ScheduleContext.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "8ed148ebaf57ed91a17d5510e640910b1f5d30f102ff6db66608f848b0c0adaf"
+    },
+    {
+      "evidence_id": "repo:schedulecontext-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/blueflood-core/src/main/java/com/rackspacecloud/blueflood/service/ScheduleContext.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "2452ebeec536fd41754b6ec66118b96df89a3a11a1add71a2cba166cc668720e"
+    },
+    {
+      "evidence_id": "repo:schedulecontext-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/blueflood-core/src/main/java/com/rackspacecloud/blueflood/service/ScheduleContext.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "4ad3288419c0af0d5e6cac3ac51d4cf3fc2341c2d24fb642b2cfb13e30c8548e"
+    },
+    {
+      "evidence_id": "repo:schedulecontext-java:lines-0301-0342",
+      "source": "physical-artifacts/repository/blueflood-core/src/main/java/com/rackspacecloud/blueflood/service/ScheduleContext.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 342
+      },
+      "content_sha256": "986b9ca676ee3f21f5dacc2470048508f45f288ce77e4f443340f7b081825e9d"
+    },
+    {
+      "evidence_id": "repo:httpeventsingestionhandler-java:lines-0001-0091",
+      "source": "physical-artifacts/repository/blueflood-http/src/main/java/com/rackspacecloud/blueflood/inputs/handlers/HttpEventsIngestionHandler.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 91
+      },
+      "content_sha256": "f488290d33859ecac96bbf1f56a718b3221b66c438c6f76be7d413cf1bfcb2e6"
+    },
+    {
+      "evidence_id": "repo:httpmetricsingestionserver-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/blueflood-http/src/main/java/com/rackspacecloud/blueflood/inputs/handlers/HttpMetricsIngestionServer.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "b49a4919e6385b0d87395f9ccd50dd6c36b0dbded7bd150728161fcb96e1b168"
+    },
+    {
+      "evidence_id": "repo:httpmetricsingestionserver-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/blueflood-http/src/main/java/com/rackspacecloud/blueflood/inputs/handlers/HttpMetricsIngestionServer.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "0249079b4090ddf9603667959b4e5de0197135fe855afdab6f021ac0e46e5667"
+    },
+    {
+      "evidence_id": "repo:httpmetricsingestionserver-java:lines-0201-0232",
+      "source": "physical-artifacts/repository/blueflood-http/src/main/java/com/rackspacecloud/blueflood/inputs/handlers/HttpMetricsIngestionServer.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 232
+      },
+      "content_sha256": "e80042b9d1a13f702757ea246716af3d90e03bbfd4d27647d59d0eac0faf9be8"
+    },
+    {
+      "evidence_id": "repo:httpmetricdataqueryserver-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/blueflood-http/src/main/java/com/rackspacecloud/blueflood/outputs/handlers/HttpMetricDataQueryServer.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "f4290a66382b5c054afe6590999d353f6545b7fa8f0b40a80b40d1c5201f3268"
+    },
+    {
+      "evidence_id": "repo:httpmetricdataqueryserver-java:lines-0101-0123",
+      "source": "physical-artifacts/repository/blueflood-http/src/main/java/com/rackspacecloud/blueflood/outputs/handlers/HttpMetricDataQueryServer.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 123
+      },
+      "content_sha256": "3555f5a6f49478af5e7b9ea435a61efddc7f299f21b92934086bcebbe49cde1b"
+    },
+    {
+      "evidence_id": "repo:httpconfig-java:lines-0001-0071",
+      "source": "physical-artifacts/repository/blueflood-http/src/main/java/com/rackspacecloud/blueflood/service/HttpConfig.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 71
+      },
+      "content_sha256": "ab830cccac962ce358731fa497ea70f39e395ff2bd8fb26ef4fb37b49a7439bf"
+    },
+    {
+      "evidence_id": "repo:httpingestionservice-java:lines-0001-0050",
+      "source": "physical-artifacts/repository/blueflood-http/src/main/java/com/rackspacecloud/blueflood/service/HttpIngestionService.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 50
+      },
+      "content_sha256": "dc07c10023af2503aaba123f49b1223df53e757ce7534ae67bd81ec2b878d4b9"
+    },
+    {
+      "evidence_id": "repo:httpqueryservice-java:lines-0001-0048",
+      "source": "physical-artifacts/repository/blueflood-http/src/main/java/com/rackspacecloud/blueflood/service/HttpQueryService.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 48
+      },
+      "content_sha256": "6b5dee5bece7d811842220abd03ae88adcd96c9c5a8aeceba83fa3f8c7f3ad71"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/blueflood-http/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "10be74fee15c84ed678e925d99e28abd9e36f931f154ca95ce8254129a2bb738"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0101-0200",
+      "source": "physical-artifacts/repository/blueflood-http/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "ca68b4a187774e1d5436027d6d85f7a17ee2b4661f0121f36ab95fbcfdb05423"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0201-0203",
+      "source": "physical-artifacts/repository/blueflood-http/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 203
+      },
+      "content_sha256": "7e639b5a81d15a2020beb2e2f90db06cbc56757c5052d09da0b9351e1101eec7"
+    },
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0025",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 25
+      },
+      "content_sha256": "a9dc92a178ed7368a68602aa7d73e052cdb5bf4ff463587fe11fc0ff9d4132d6"
+    }
+  ]
+}

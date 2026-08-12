@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "lint_or_type_failure",
+  "acceptable_failure_types": [],
+  "summary": "FindBugs rejects BaragonData after reporting an apparent infinite recursive loop in a collection overload.",
+  "root_cause": "fetchServiceToUpstreamInfoMap is declared once and calls itself unconditionally on the recursive line, with no base case or terminating condition on the path, so static analysis reports an apparent infinite recursive loop and the FindBugs check fails the build.",
+  "recommended_action": "Give the recursive path a terminating condition, or replace the self-call with the intended non-recursive lookup for the modified services, then re-run the FindBugs check."
+}

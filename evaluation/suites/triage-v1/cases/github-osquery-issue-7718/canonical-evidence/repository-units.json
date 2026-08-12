@@ -1,0 +1,215 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:osquery-core-init-cpp:lines-0001-0100",
+      "source": "physical-artifacts/repository/osquery/core/init.cpp",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "bafbfc69646ac251812c8de8b85d7815b967326210825ee26a1d1a83fdff1ac0"
+    },
+    {
+      "evidence_id": "repo:osquery-core-init-cpp:lines-0101-0200",
+      "source": "physical-artifacts/repository/osquery/core/init.cpp",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "bc73a53c7e8ce02a75cb1182d1a46e206725b4470416310fbed54f17dce7fd69"
+    },
+    {
+      "evidence_id": "repo:osquery-core-init-cpp:lines-0201-0300",
+      "source": "physical-artifacts/repository/osquery/core/init.cpp",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "c4477e2b1c0913252522a55a19a857a1184a0d33fadf7b04cc9eb7424c8d11c3"
+    },
+    {
+      "evidence_id": "repo:osquery-core-init-cpp:lines-0301-0400",
+      "source": "physical-artifacts/repository/osquery/core/init.cpp",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "3beacd6d7ae7b96b3c7af225fd764c70cf1f1551a5f2e408794b22676e860817"
+    },
+    {
+      "evidence_id": "repo:osquery-core-init-cpp:lines-0401-0500",
+      "source": "physical-artifacts/repository/osquery/core/init.cpp",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "5312af57b5c8f6b2054120187b84ea314d7b534bca140cc9c0694ec16f875d86"
+    },
+    {
+      "evidence_id": "repo:osquery-core-init-cpp:lines-0501-0600",
+      "source": "physical-artifacts/repository/osquery/core/init.cpp",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "5f4be4c360772b7f462d404aa1a9dc78f8f9ec2bd193c856156e0fe7756d4511"
+    },
+    {
+      "evidence_id": "repo:osquery-core-init-cpp:lines-0601-0700",
+      "source": "physical-artifacts/repository/osquery/core/init.cpp",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 700
+      },
+      "content_sha256": "8ffe1252fd178dd35882104460ce2d033363abecba3d3ad44242b2b4ffbbc668"
+    },
+    {
+      "evidence_id": "repo:osquery-core-init-cpp:lines-0701-0800",
+      "source": "physical-artifacts/repository/osquery/core/init.cpp",
+      "span": {
+        "type": "line_range",
+        "start_line": 701,
+        "end_line": 800
+      },
+      "content_sha256": "77e033b3f4f9d6898ddca2c9fa92e8eb27384601dc81db8ca9b94f09141d1474"
+    },
+    {
+      "evidence_id": "repo:osquery-core-init-cpp:lines-0801-0875",
+      "source": "physical-artifacts/repository/osquery/core/init.cpp",
+      "span": {
+        "type": "line_range",
+        "start_line": 801,
+        "end_line": 875
+      },
+      "content_sha256": "5759561cacd82e28764baa876ab64d43c3f136eda4b0a88c836d15ebc775fe56"
+    },
+    {
+      "evidence_id": "repo:tools-tests-test-base-py:lines-0001-0100",
+      "source": "physical-artifacts/repository/tools/tests/test_base.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "788d342d5671f6a5d486774177e2bd6da37633a88af8ce65deeac535a3b65460"
+    },
+    {
+      "evidence_id": "repo:tools-tests-test-base-py:lines-0101-0200",
+      "source": "physical-artifacts/repository/tools/tests/test_base.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "4d276bef7642c8e5d282b77c011d66cb9e017eee913a9daa6622aea07d4248d7"
+    },
+    {
+      "evidence_id": "repo:tools-tests-test-base-py:lines-0201-0300",
+      "source": "physical-artifacts/repository/tools/tests/test_base.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "99d2dd6bbad4efcb607647959ea52e1d78dbbec76fb5f0b4aaec870859eebf40"
+    },
+    {
+      "evidence_id": "repo:tools-tests-test-base-py:lines-0301-0400",
+      "source": "physical-artifacts/repository/tools/tests/test_base.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "d31bb8078505860cfa532606793a8e62434a8019f03712bfc1ec7ffbac88a555"
+    },
+    {
+      "evidence_id": "repo:tools-tests-test-base-py:lines-0401-0500",
+      "source": "physical-artifacts/repository/tools/tests/test_base.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "c7002ab6bfb0e9aabf81312b351055e8b4d1842cc9adfb389464deeab80d2e3e"
+    },
+    {
+      "evidence_id": "repo:tools-tests-test-base-py:lines-0501-0600",
+      "source": "physical-artifacts/repository/tools/tests/test_base.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "3f8910a3a79761206f00508f853b6da2ada47a553ed26734578578792598f6ac"
+    },
+    {
+      "evidence_id": "repo:tools-tests-test-base-py:lines-0601-0700",
+      "source": "physical-artifacts/repository/tools/tests/test_base.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 700
+      },
+      "content_sha256": "201f8adb5d39beb590e76a83709709bd4b6deb2e4eaeef91b2f753fed39c5916"
+    },
+    {
+      "evidence_id": "repo:tools-tests-test-base-py:lines-0701-0735",
+      "source": "physical-artifacts/repository/tools/tests/test_base.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 701,
+        "end_line": 735
+      },
+      "content_sha256": "3f67793296b04a624d30daf4c90ce8feb82c4088a69d8bf98423a8b74c1affc8"
+    },
+    {
+      "evidence_id": "repo:tools-tests-test-osqueryd-py:lines-0001-0100",
+      "source": "physical-artifacts/repository/tools/tests/test_osqueryd.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "ea13e50064768b9b91629f12147089495cb62da4cb6146eb173f2f2416b18c06"
+    },
+    {
+      "evidence_id": "repo:tools-tests-test-osqueryd-py:lines-0101-0200",
+      "source": "physical-artifacts/repository/tools/tests/test_osqueryd.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "f77340e683849dc5053711a1d12630278a01db7571502d0fd0ff338f8d72bfb2"
+    },
+    {
+      "evidence_id": "repo:tools-tests-test-osqueryd-py:lines-0201-0300",
+      "source": "physical-artifacts/repository/tools/tests/test_osqueryd.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "bdf2b8f61b52e3c3cd7b670b11caaac95b599c4903b4cb47d046daa924b7f666"
+    },
+    {
+      "evidence_id": "repo:tools-tests-test-osqueryd-py:lines-0301-0314",
+      "source": "physical-artifacts/repository/tools/tests/test_osqueryd.py",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 314
+      },
+      "content_sha256": "54c4877ce511e26ab7a2d6cdc7d150bdf48eec2b6d43ca5b33cd44753792cc53"
+    }
+  ]
+}

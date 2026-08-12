@@ -1,0 +1,35 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "python/mypy",
+    "revision_kind": "git_commit",
+    "exact_revision": "ec1efc4f95a9ee2abca72e9cef4304a19eb5366f"
+  },
+  "files": [
+    {
+      "path": ".travis.yml",
+      "sha256": "db39cebb86d65fd72744569bca16a0721ff1d62c5d01f4b4b587b7c99d5ed861",
+      "size_bytes": 602
+    },
+    {
+      "path": "mypy/test/config.py",
+      "sha256": "39fc86f7f723cd06252c46c4c593ebf2b94486198d34b7415dc5ca8e3e5eb37e",
+      "size_bytes": 641
+    },
+    {
+      "path": "mypy/test/helpers.py",
+      "sha256": "b72dbd5f16cdf38cb0ab30fe4f0ebc52b7735b90504976af6727374cb763bd78",
+      "size_bytes": 10030
+    },
+    {
+      "path": "mypy/test/testcheck.py",
+      "sha256": "5ce87d56c69dc4cc94b2d4e48d8eb8e7a75d3aaf6e807162ebb0ea0fbf7d7d21",
+      "size_bytes": 15322
+    },
+    {
+      "path": "runtests.py",
+      "sha256": "9318330f43109a8015993a45461760eee088dfc11f057e3eb575520207aff72d",
+      "size_bytes": 16613
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-0001-0027",
+    "repo:test-common-debugger-js:lines-0101-0190",
+    "repo:test-parallel-test-debugger-exceptions-js:lines-0001-0058"
+  ],
+  "optional_evidence_ids": [
+    "repo:github-workflows-test-macos-yml:lines-0101-0142",
+    "repo:lib-internal-debugger-inspect-repl-js:lines-0901-1000",
+    "repo:test-common-debugger-js:lines-0001-0100",
+    "repo:test-fixtures-debugger-exceptions-js:lines-0001-0010",
+    "repo:test-parallel-test-debugger-restart-message-js:lines-0001-0043",
+    "repo:test-parallel-test-debugger-run-after-quit-restart-js:lines-0001-0085"
+  ]
+}

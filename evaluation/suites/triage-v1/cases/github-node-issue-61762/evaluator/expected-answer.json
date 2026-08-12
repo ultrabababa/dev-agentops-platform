@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "timeout_or_flaky_failure",
+  "acceptable_failure_types": [],
+  "summary": "The macOS run of test/parallel/test-debugger-exceptions.js timed out after 15000 ms inside the restart step at line 41 while waiting for a debugger break message, although the captured output shows the restart, reconnection, command acknowledgement and prompt all completing.",
+  "root_cause": "The test synchronizes its debugger restart through stepCommand('r'), which flushes the captured output, writes the command and then waits up to a single fixed platform timeout for the BREAK_MESSAGE pattern alone. In the failing run the restart, reconnection, 'ok' acknowledgement and prompt all arrived inside that window but the expected break line did not, so this restart synchronization depends on debugger output timing and fails intermittently on macOS. The available evidence does not establish why the break line was absent from the observed window, so the underlying debugger event and output delivery behaviour remains unresolved and must not be reported as the proven subsystem root cause.",
+  "recommended_action": "Stop relying on the break message alone to synchronize the restart step: acknowledge the restart and its prompt first, then wait for the initial break explicitly, and re-run the macOS job to confirm the timeout no longer reproduces."
+}

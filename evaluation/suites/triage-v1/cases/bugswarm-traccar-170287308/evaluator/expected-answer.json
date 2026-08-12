@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "test_assertion_failure",
+  "acceptable_failure_types": [],
+  "summary": "A decoder test expects no decoded object, but the Upro decoder returns a Position for the first sample.",
+  "root_cause": "The sample matches the supported Upro packet pattern and follows the normal Position construction path, while the test still calls verifyNothing. The test oracle is stale for a valid decoded sample.",
+  "recommended_action": "Update the Upro test expectation for that sample to assert a decoded Position while retaining the decoder behavior and neighboring packet checks."
+}

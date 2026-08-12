@@ -1,0 +1,19 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-0001-0001",
+    "repo:classfilter-java:lines-0101-0200",
+    "repo:classfilter-java:lines-0201-0300",
+    "repo:classfiltertest-java:lines-0001-0100",
+    "repo:classfiltertest-java:lines-0101-0200",
+    "repo:defaultclassfiltertest-java:lines-0001-0100",
+    "repo:defaultclassfiltertest-java:lines-0101-0163"
+  ],
+  "optional_evidence_ids": [
+    "repo:classfilter-java:lines-0001-0100",
+    "repo:classfilter-java:lines-0301-0352",
+    "repo:classfiltertest-java:lines-0201-0295",
+    "repo:jenkinsfile:lines-0001-0045",
+    "repo:pom-xml:lines-0001-0100"
+  ]
+}

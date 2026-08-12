@@ -1,0 +1,65 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "nodejs/node",
+    "revision_kind": "git_commit",
+    "exact_revision": "3c08a48c24c39ad4dee6d95c5c800246f300525e"
+  },
+  "files": [
+    {
+      "path": ".github/workflows/test-macos.yml",
+      "sha256": "178dec95785d9accbd54a6d953e46a1490ddd32b29b08b9bd6d792f0f157920a",
+      "size_bytes": 4552
+    },
+    {
+      "path": "lib/internal/debugger/inspect.js",
+      "sha256": "1df6abe379fe2a983407fc177879794059864897d124c2a05a848b2758ef1923",
+      "size_bytes": 9907
+    },
+    {
+      "path": "lib/internal/debugger/inspect_client.js",
+      "sha256": "9a5709df41d7c24d5610ee48c085a08862d9ed3a96c59b2752fb7b446a1de0d5",
+      "size_bytes": 9839
+    },
+    {
+      "path": "lib/internal/debugger/inspect_repl.js",
+      "sha256": "0753601c9455292c96e8a53f6ddf3e0949cea0605ce1d5a9f6abb7fe74dc30c8",
+      "size_bytes": 36908
+    },
+    {
+      "path": "test/common/debugger.js",
+      "sha256": "0650f50402b12fa77d8c748e6321d7103d43c04c4a999e81ecec9b2e7fe2cb1f",
+      "size_bytes": 4934
+    },
+    {
+      "path": "test/common/fixtures.js",
+      "sha256": "d2888d150463380169cd553b4289d37136a88b0ec96bc484ed2b1a15a9b31630",
+      "size_bytes": 2711
+    },
+    {
+      "path": "test/common/index.js",
+      "sha256": "1e9b5570b8c4976bb0b611f0568ab67db0dc5b467eb6c2b8553cee0c576d4922",
+      "size_bytes": 33491
+    },
+    {
+      "path": "test/fixtures/debugger/exceptions.js",
+      "sha256": "d775aaec49183cedef3e3aafc18aea29cc60257ba470262d111040fdb145c780",
+      "size_bytes": 129
+    },
+    {
+      "path": "test/parallel/test-debugger-exceptions.js",
+      "sha256": "8f0462894ffb18fbe26fb26d715a8fe4e784df2db16c7babb1158c863189528e",
+      "size_bytes": 2056
+    },
+    {
+      "path": "test/parallel/test-debugger-restart-message.js",
+      "sha256": "dc9c187415456ac47c67ca92301b2a2d826b092324a4c514039f428e2fb5267c",
+      "size_bytes": 1216
+    },
+    {
+      "path": "test/parallel/test-debugger-run-after-quit-restart.js",
+      "sha256": "1fa16b32265db0b3cda1bee48e1edb908b9ae9b28b555d7573a71d336dd6f7e5",
+      "size_bytes": 2339
+    }
+  ]
+}

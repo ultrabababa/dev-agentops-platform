@@ -1,0 +1,41 @@
+{
+  "case_schema_version": "2",
+  "case_id": "bugswarm-baragon-86922674",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "https://www.bugswarm.org/artifact-logs/86922674/raw/ ; upstream exact/relevant revision: https://github.com/HubSpot/Baragon/commit/25f732d6280b3033dc6f5d7fcf70f5de5e7abf64",
+    "license_or_permission": "Apache-2.0 upstream repository; public BugSwarm historical failed-job attribution."
+  },
+  "curation": {
+    "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
+    "review_status": "human_reviewed",
+    "reviewed_by": "REJECTED by package-content Human Review: REPLACE_FOR_LOW_DISCRIMINATIVE_VALUE. Layer 1 Scientific Validity remains PASS after the accepted Ground Truth correction: this is one method with an unconditional self-call and no base case, and there is no overload. raw.log is verified byte-exact and all 4 members are byte-identical to the exact revision. Layer 2 LOW: FindBugs prints the diagnosis in plain English together with the method, signature, file and line, so the source only confirms. LOW Cases are not retained to preserve category count. NOT a Formal Suite member; retained as a rejection record."
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy; package-content Human Review remains pending",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "Removed ANSI/control noise only; retained the complete or naturally bounded authentic historical failure observation without changing failure semantics.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "b333462c8c7fb3019b519d990fa79637c04039a951020660b5b2ad24b922ca8d"
+}

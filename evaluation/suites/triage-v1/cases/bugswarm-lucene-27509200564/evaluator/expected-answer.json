@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "timeout_or_flaky_failure",
+  "acceptable_failure_types": [],
+  "summary": "A Luke test outcome depends on the randomized-testing seed because the seed decides whether the index directory is wrapped in the checking MockDirectoryWrapper at all.",
+  "root_cause": "IndexUtils.getIndexFormat opens the segments file with IOContext.DEFAULT, and MockDirectoryWrapper.openInput rejects any read of a segments file whose context is not IOContext.READONCE. That rejection is not itself seed-dependent: LuceneTestCase.newIOContext preserves an incoming READONCE singleton but otherwise returns only DEFAULT, MergeInfo or FlushInfo and never manufactures READONCE, so once MockDirectoryWrapper is in use this path always throws. The seed-dependent branch is upstream, in wrapper selection. OverviewTestBase.setUp builds the directory with newFSDirectory(indexDir), which delegates to newFSDirectory(f, lf, rarely()); wrapDirectory returns a bare RawDirectoryWrapper when that flag is true and a MockDirectoryWrapper when it is false. rarely() is random.nextInt(100) >= 99, so roughly one seed in a hundred yields the bare wrapper and the check is absent, and the test passes; on the remaining seeds MockDirectoryWrapper is installed and the test fails deterministically.",
+  "recommended_action": "Open the segments file with IOContext.READONCE in IndexUtils.getIndexFormat so the read satisfies the confined-context requirement whenever the checking wrapper is selected."
+}

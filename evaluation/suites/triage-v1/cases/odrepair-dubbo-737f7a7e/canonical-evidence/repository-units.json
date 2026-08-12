@@ -1,0 +1,265 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:abstractproxytest-java:lines-0001-0073",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/test/java/org/apache/dubbo/rpc/proxy/AbstractProxyTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 73
+      },
+      "content_sha256": "faf7f588b990833d948647a44e5dca132c33c615ba1e9aa1c3faf043f172b205"
+    },
+    {
+      "evidence_id": "repo:javassistproxyfactorytest-java:lines-0001-0027",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/test/java/org/apache/dubbo/rpc/proxy/javassist/JavassistProxyFactoryTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 27
+      },
+      "content_sha256": "f6ddb9b934dae69bc8fbc1de2bd8db04ee4b4cb03ba88a761d4c9eaee5c25ed7"
+    },
+    {
+      "evidence_id": "repo:jdkproxyfactorytest-java:lines-0001-0027",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/test/java/org/apache/dubbo/rpc/proxy/jdk/JdkProxyFactoryTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 27
+      },
+      "content_sha256": "7e6f6b5a7e79dba545b4036851ea7c941e981628c25a6474ba42b9985201cee9"
+    },
+    {
+      "evidence_id": "repo:rpccontexttest-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/test/java/org/apache/dubbo/rpc/RpcContextTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "da478c592cbfa0118ea63301fc5b12b2ae70b31d3f65bb31c1528e1ad6af3f36"
+    },
+    {
+      "evidence_id": "repo:rpccontexttest-java:lines-0101-0164",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/test/java/org/apache/dubbo/rpc/RpcContextTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 164
+      },
+      "content_sha256": "a8f6e8c9487273f861de74ae6c2599d800bafa0930be8d6fe9546c33112e6ecb"
+    },
+    {
+      "evidence_id": "repo:demoservice-java:lines-0001-0064",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/test/java/org/apache/dubbo/rpc/support/DemoService.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 64
+      },
+      "content_sha256": "c4063c7b6f8d832ec7dd7bf2700a11b88de6048a857e27b196e71cf3296e4c64"
+    },
+    {
+      "evidence_id": "repo:demoserviceimpl-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/test/java/org/apache/dubbo/rpc/support/DemoServiceImpl.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "386e25357caf54ffb9a5abfa00ccd253415094b14d9d91d80b34bb5b66667bc2"
+    },
+    {
+      "evidence_id": "repo:demoserviceimpl-java:lines-0101-0123",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/test/java/org/apache/dubbo/rpc/support/DemoServiceImpl.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 123
+      },
+      "content_sha256": "016f8fe8fb439094d7c423c27f1959f7005a67061ebfc21a8f0d7a19471293cd"
+    },
+    {
+      "evidence_id": "repo:abstractproxyinvoker-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/proxy/AbstractProxyInvoker.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "493f91cd7d404fad7945f48ab67be884a3733b3d796a0c688ea07b2925fc4f0f"
+    },
+    {
+      "evidence_id": "repo:abstractproxyinvoker-java:lines-0101-0112",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/proxy/AbstractProxyInvoker.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 112
+      },
+      "content_sha256": "e96320efa6b938b7445ce3a6602bd2607d84912794e0a42171910c15fe7e9804"
+    },
+    {
+      "evidence_id": "repo:rpccontext-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/RpcContext.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "51a398a1490ec9a6f520e8e53d4fba0cc78263f3a03d7e35c1962dfaf981bf4c"
+    },
+    {
+      "evidence_id": "repo:rpccontext-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/RpcContext.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "d74a33064bdf79a65b52cd803302210a59cec23563b5fdc797d76da282790f00"
+    },
+    {
+      "evidence_id": "repo:rpccontext-java:lines-0201-0300",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/RpcContext.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "afc4b1a4f592e39c7d76596cdbc00972917caeac8a1a7d96d82762961fb9c43c"
+    },
+    {
+      "evidence_id": "repo:rpccontext-java:lines-0301-0400",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/RpcContext.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "cffc67f1afe0536c63df772f90eec8d4a7c7150737a26d87eabd1d648869a659"
+    },
+    {
+      "evidence_id": "repo:rpccontext-java:lines-0401-0500",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/RpcContext.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "100b07b6587c1cab09bcfb65e51dedc78856ffad998a5c945e5b5803621224f3"
+    },
+    {
+      "evidence_id": "repo:rpccontext-java:lines-0501-0600",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/RpcContext.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "517a09b7ca6dde835ff3a50bef1790a6b67f7fd2e36192833c141bd685beda1d"
+    },
+    {
+      "evidence_id": "repo:rpccontext-java:lines-0601-0700",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/RpcContext.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 700
+      },
+      "content_sha256": "d2fed4a1555a71eaf7b808b3c3bdfcee3e7aa8a0ab80497354e2c937bdd5b1ee"
+    },
+    {
+      "evidence_id": "repo:rpccontext-java:lines-0701-0733",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/RpcContext.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 701,
+        "end_line": 733
+      },
+      "content_sha256": "848395bc74f03102f996d870ae7679980b1ed4c3417c4e4e1ea6ab6022025293"
+    },
+    {
+      "evidence_id": "repo:asynccontext-java:lines-0001-0086",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/AsyncContext.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 86
+      },
+      "content_sha256": "3d3d166b8b3cf0ac55502351a8a00efc80e2041c3f11130888fc1a89dab1cd02"
+    },
+    {
+      "evidence_id": "repo:asynccontextimpl-java:lines-0001-0084",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/AsyncContextImpl.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 84
+      },
+      "content_sha256": "239e8094f378e3190ca868774573b514f932bdface5746182a86a393a0259066"
+    },
+    {
+      "evidence_id": "repo:asyncrpcresult-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/AsyncRpcResult.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "929983563b281f728cbbc5a895d54078b8a4e86827310e3201a59900c13e23f9"
+    },
+    {
+      "evidence_id": "repo:asyncrpcresult-java:lines-0101-0188",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/AsyncRpcResult.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 188
+      },
+      "content_sha256": "d6ccee114f31b0ca022c5f247e895b4ba291443135e6a3d2e5c380990e819dd9"
+    },
+    {
+      "evidence_id": "repo:rpcresult-java:lines-0001-0093",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/RpcResult.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 93
+      },
+      "content_sha256": "a4c059d9695dd9997cb3035350badce0f160394bbb309d5283b9af076ee6efd0"
+    },
+    {
+      "evidence_id": "repo:javassistproxyfactory-java:lines-0001-0052",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/src/main/java/org/apache/dubbo/rpc/proxy/javassist/JavassistProxyFactory.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 52
+      },
+      "content_sha256": "21435779df16ddad982fb76aa110dc43c0abecc783db7c9151e804dbc04bb6c8"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0048",
+      "source": "physical-artifacts/repository/dubbo-rpc/dubbo-rpc-api/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 48
+      },
+      "content_sha256": "6acd838540e8b192dc7df792c4900e1a66debcb275f33deeabbd7f03dc6c3ef3"
+    },
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0020",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 20
+      },
+      "content_sha256": "29e79e399c79053b7cf22d9e523163c7c4aab065a97ae6c2f5f6722e5b87c6db"
+    }
+  ]
+}

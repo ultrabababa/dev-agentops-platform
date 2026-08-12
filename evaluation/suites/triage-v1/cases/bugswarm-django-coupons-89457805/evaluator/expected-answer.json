@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "test_assertion_failure",
+  "acceptable_failure_types": [],
+  "summary": "One Django coupon test fails on a Unicode-marked ValidationError representation while 24 sibling tests pass.",
+  "root_cause": "The test compares a stringified form-error payload whose Python 2 representation exposes a Unicode prefix. The assertion is coupled to representation details instead of the semantic form.errors mapping.",
+  "recommended_action": "Assert the semantic form.errors structure rather than a stringified ValidationError representation."
+}

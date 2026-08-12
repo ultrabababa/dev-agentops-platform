@@ -1,0 +1,11 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-2301-2400",
+    "repo:test-org-traccar-protocol-uproprotocoldecodertest-java:lines-0001-0033",
+    "repo:src-org-traccar-protocol-uproprotocoldecoder-java:lines-0001-0083"
+  ],
+  "optional_evidence_ids": [
+    "repo:test-org-traccar-protocoltest-java:lines-0001-0100"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "case_schema_version": "2",
+  "case_id": "bugswarm-cola-12505170926",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "https://www.bugswarm.org/artifact-logs/12505170926/raw/ ; upstream exact executed revision: https://github.com/alibaba/COLA/commit/1e0c1306bd98d454c1bd5f23888f6162969115b8",
+    "license_or_permission": "Apache-2.0 upstream repository; public BugSwarm historical failed-job attribution."
+  },
+  "curation": {
+    "created_by": "Issue #15 targeted replacement construction round",
+    "review_status": "human_reviewed",
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value ADEQUATE. The log contains zero occurrences of jdbc:mysql, chargeDB, localhost:3306 or MYSQL_SERVER, so the entire configuration side is repository-only; the observation shows only a four-layer Spring cascade ending in Connection refused. application-test.yml is Required because the Expected Answer uses it to refute the 'activate the test profile' reading. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "Removed ANSI/control escape sequences and normalised CRLF/CR line endings only; the complete authentic historical failure observation is otherwise unchanged.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "a79e3635ea1d755d40922b2e600e434eaa623e30adb151b015196df7936ddacb"
+}

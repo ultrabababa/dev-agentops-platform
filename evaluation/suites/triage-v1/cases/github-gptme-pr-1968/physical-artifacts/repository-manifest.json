@@ -1,0 +1,30 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "gptme/gptme",
+    "revision_kind": "git_commit",
+    "exact_revision": "f48de363aa956caae8789a9b751d7631fd44fe3c"
+  },
+  "files": [
+    {
+      "path": "gptme/tools/subagent/api.py",
+      "sha256": "d20035063717ef984cc299a34d7c8d703ae72540677c97c38821d5a298b03f36",
+      "size_bytes": 21247
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "cdd9164e23197577bb79c0a221aa5992d019e6a73cae14409b9b0406ed4bee4b",
+      "size_bytes": 10194
+    },
+    {
+      "path": "tests/conftest.py",
+      "sha256": "bb325d144fd7a76d1353589b6619b85544bb18700af5a869c3fa0b3a7adeed83",
+      "size_bytes": 16488
+    },
+    {
+      "path": "tests/test_tools_subagent.py",
+      "sha256": "c7e3206d8dfb181420a82c9aceba8cef705dc2f2d25ab217c9a71a52017edc73",
+      "size_bytes": 43908
+    }
+  ]
+}

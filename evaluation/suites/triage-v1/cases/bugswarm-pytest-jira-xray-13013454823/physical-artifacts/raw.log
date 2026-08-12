@@ -1,0 +1,411 @@
+2023-04-25T16:34:08.2305333Z Requested labels: ubuntu-20.04
+2023-04-25T16:34:08.2305617Z Job defined at: fundakol/pytest-jira-xray/.github/workflows/main.yml@refs/pull/71/merge
+2023-04-25T16:34:08.2305767Z Waiting for a runner to pick up this job...
+2023-04-25T16:34:08.4909525Z Job is waiting for a hosted runner to come online.
+2023-04-25T16:34:11.6345851Z Job is about to start running on the hosted runner: GitHub Actions 5 (hosted)
+2023-04-25T16:34:14.1735360Z Current runner version: '2.303.0'
+2023-04-25T16:34:14.1762601Z ##[group]Operating System
+2023-04-25T16:34:14.1763098Z Ubuntu
+2023-04-25T16:34:14.1763380Z 20.04.6
+2023-04-25T16:34:14.1763758Z LTS
+2023-04-25T16:34:14.1764004Z ##[endgroup]
+2023-04-25T16:34:14.1764318Z ##[group]Runner Image
+2023-04-25T16:34:14.1764730Z Image: ubuntu-20.04
+2023-04-25T16:34:14.1765005Z Version: 20230417.1
+2023-04-25T16:34:14.1765554Z Included Software: https://github.com/actions/runner-images/blob/ubuntu20/20230417.1/images/linux/Ubuntu2004-Readme.md
+2023-04-25T16:34:14.1766190Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu20%2F20230417.1
+2023-04-25T16:34:14.1766583Z ##[endgroup]
+2023-04-25T16:34:14.1766925Z ##[group]Runner Image Provisioner
+2023-04-25T16:34:14.1767281Z 2.0.139.1
+2023-04-25T16:34:14.1767575Z ##[endgroup]
+2023-04-25T16:34:14.1768505Z ##[group]GITHUB_TOKEN Permissions
+2023-04-25T16:34:14.1769127Z Actions: write
+2023-04-25T16:34:14.1769455Z Checks: write
+2023-04-25T16:34:14.1769982Z Contents: write
+2023-04-25T16:34:14.1770369Z Deployments: write
+2023-04-25T16:34:14.1770673Z Discussions: write
+2023-04-25T16:34:14.1771011Z Issues: write
+2023-04-25T16:34:14.1771311Z Metadata: read
+2023-04-25T16:34:14.1771577Z Packages: write
+2023-04-25T16:34:14.1771895Z Pages: write
+2023-04-25T16:34:14.1772244Z PullRequests: write
+2023-04-25T16:34:14.1772546Z RepositoryProjects: write
+2023-04-25T16:34:14.1772899Z SecurityEvents: write
+2023-04-25T16:34:14.1773234Z Statuses: write
+2023-04-25T16:34:14.1773552Z ##[endgroup]
+2023-04-25T16:34:14.1777181Z Secret source: Actions
+2023-04-25T16:34:14.1777647Z Prepare workflow directory
+2023-04-25T16:34:14.2539172Z Prepare all required actions
+2023-04-25T16:34:14.2727453Z Getting action download info
+2023-04-25T16:34:14.4507001Z Download action repository 'actions/checkout@v2' (SHA:ee0669bd1cc54295c223e0bb666b733df41de1c5)
+2023-04-25T16:34:14.7674010Z Download action repository 'actions/setup-python@v2' (SHA:75f3110429a8c05be0e1bf360334e4cced2b63fa)
+2023-04-25T16:34:15.0197387Z Download action repository 'codecov/codecov-action@v2' (SHA:f32b3a3741e1053eb607407145bc9619351dc93b)
+2023-04-25T16:34:15.4429305Z Complete job name: Tests (3.8)
+2023-04-25T16:34:15.5475447Z ##[group]Run actions/checkout@v2
+2023-04-25T16:34:15.5475783Z with:
+2023-04-25T16:34:15.5476062Z   repository: fundakol/pytest-jira-xray
+2023-04-25T16:34:15.5476589Z   token: ***
+2023-04-25T16:34:15.5476815Z   ssh-strict: true
+2023-04-25T16:34:15.5477075Z   persist-credentials: true
+2023-04-25T16:34:15.5477331Z   clean: true
+2023-04-25T16:34:15.5477545Z   fetch-depth: 1
+2023-04-25T16:34:15.5477768Z   lfs: false
+2023-04-25T16:34:15.5477993Z   submodules: false
+2023-04-25T16:34:15.5478240Z   set-safe-directory: true
+2023-04-25T16:34:15.5478494Z ##[endgroup]
+2023-04-25T16:34:15.7964261Z Syncing repository: fundakol/pytest-jira-xray
+2023-04-25T16:34:15.7966520Z ##[group]Getting Git version info
+2023-04-25T16:34:15.7967305Z Working directory is '/home/runner/work/pytest-jira-xray/pytest-jira-xray'
+2023-04-25T16:34:15.7968428Z [command]/usr/bin/git version
+2023-04-25T16:34:15.8067297Z git version 2.40.0
+2023-04-25T16:34:15.8091839Z ##[endgroup]
+2023-04-25T16:34:15.8154247Z Temporarily overriding HOME='/home/runner/work/_temp/21df149f-8db3-41bf-99a6-1d5241c8b686' before making global git config changes
+2023-04-25T16:34:15.8154932Z Adding repository directory to the temporary git global config as a safe directory
+2023-04-25T16:34:15.8155640Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/pytest-jira-xray/pytest-jira-xray
+2023-04-25T16:34:15.8201962Z Deleting the contents of '/home/runner/work/pytest-jira-xray/pytest-jira-xray'
+2023-04-25T16:34:15.8204288Z ##[group]Initializing the repository
+2023-04-25T16:34:15.8208268Z [command]/usr/bin/git init /home/runner/work/pytest-jira-xray/pytest-jira-xray
+2023-04-25T16:34:15.8288879Z hint: Using 'master' as the name for the initial branch. This default branch name
+2023-04-25T16:34:15.8289983Z hint: is subject to change. To configure the initial branch name to use in all
+2023-04-25T16:34:15.8290809Z hint: of your new repositories, which will suppress this warning, call:
+2023-04-25T16:34:15.8291147Z hint: 
+2023-04-25T16:34:15.8315728Z hint: 	git config --global init.defaultBranch <name>
+2023-04-25T16:34:15.8316065Z hint: 
+2023-04-25T16:34:15.8316459Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2023-04-25T16:34:15.8316952Z hint: 'development'. The just-created branch can be renamed via this command:
+2023-04-25T16:34:15.8317263Z hint: 
+2023-04-25T16:34:15.8317536Z hint: 	git branch -m <name>
+2023-04-25T16:34:15.8318298Z Initialized empty Git repository in /home/runner/work/pytest-jira-xray/pytest-jira-xray/.git/
+2023-04-25T16:34:15.8318995Z [command]/usr/bin/git remote add origin https://github.com/fundakol/pytest-jira-xray
+2023-04-25T16:34:15.8362638Z ##[endgroup]
+2023-04-25T16:34:15.8363215Z ##[group]Disabling automatic garbage collection
+2023-04-25T16:34:15.8363746Z [command]/usr/bin/git config --local gc.auto 0
+2023-04-25T16:34:15.8388006Z ##[endgroup]
+2023-04-25T16:34:15.8388489Z ##[group]Setting up auth
+2023-04-25T16:34:15.8394109Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2023-04-25T16:34:15.8424182Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2023-04-25T16:34:15.8742835Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2023-04-25T16:34:15.8774650Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2023-04-25T16:34:15.8995928Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2023-04-25T16:34:15.9033445Z ##[endgroup]
+2023-04-25T16:34:15.9034252Z ##[group]Fetching the repository
+2023-04-25T16:34:15.9041869Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin +2878542e39759e8566641194229c24c7212e3d79:refs/remotes/pull/71/merge
+2023-04-25T16:34:16.1221684Z remote: Enumerating objects: 41, done.        
+2023-04-25T16:34:16.1222669Z remote: Counting objects:   2% (1/41)        
+2023-04-25T16:34:16.1223047Z remote: Counting objects:   4% (2/41)        
+2023-04-25T16:34:16.1223347Z remote: Counting objects:   7% (3/41)        
+2023-04-25T16:34:16.1223640Z remote: Counting objects:   9% (4/41)        
+2023-04-25T16:34:16.1223912Z remote: Counting objects:  12% (5/41)        
+2023-04-25T16:34:16.1224199Z remote: Counting objects:  14% (6/41)        
+2023-04-25T16:34:16.1224488Z remote: Counting objects:  17% (7/41)        
+2023-04-25T16:34:16.1225005Z remote: Counting objects:  19% (8/41)        
+2023-04-25T16:34:16.1225304Z remote: Counting objects:  21% (9/41)        
+2023-04-25T16:34:16.1225589Z remote: Counting objects:  24% (10/41)        
+2023-04-25T16:34:16.1225909Z remote: Counting objects:  26% (11/41)        
+2023-04-25T16:34:16.1226191Z remote: Counting objects:  29% (12/41)        
+2023-04-25T16:34:16.1226480Z remote: Counting objects:  31% (13/41)        
+2023-04-25T16:34:16.1226768Z remote: Counting objects:  34% (14/41)        
+2023-04-25T16:34:16.1227041Z remote: Counting objects:  36% (15/41)        
+2023-04-25T16:34:16.1227313Z remote: Counting objects:  39% (16/41)        
+2023-04-25T16:34:16.1227591Z remote: Counting objects:  41% (17/41)        
+2023-04-25T16:34:16.1227859Z remote: Counting objects:  43% (18/41)        
+2023-04-25T16:34:16.1278868Z remote: Counting objects:  46% (19/41)        
+2023-04-25T16:34:16.1279227Z remote: Counting objects:  48% (20/41)        
+2023-04-25T16:34:16.1279519Z remote: Counting objects:  51% (21/41)        
+2023-04-25T16:34:16.1279793Z remote: Counting objects:  53% (22/41)        
+2023-04-25T16:34:16.1280119Z remote: Counting objects:  56% (23/41)        
+2023-04-25T16:34:16.1280720Z remote: Counting objects:  58% (24/41)        
+2023-04-25T16:34:16.1280986Z remote: Counting objects:  60% (25/41)        
+2023-04-25T16:34:16.1281270Z remote: Counting objects:  63% (26/41)        
+2023-04-25T16:34:16.1281555Z remote: Counting objects:  65% (27/41)        
+2023-04-25T16:34:16.1281824Z remote: Counting objects:  68% (28/41)        
+2023-04-25T16:34:16.1282115Z remote: Counting objects:  70% (29/41)        
+2023-04-25T16:34:16.1282388Z remote: Counting objects:  73% (30/41)        
+2023-04-25T16:34:16.1282683Z remote: Counting objects:  75% (31/41)        
+2023-04-25T16:34:16.1282955Z remote: Counting objects:  78% (32/41)        
+2023-04-25T16:34:16.1283231Z remote: Counting objects:  80% (33/41)        
+2023-04-25T16:34:16.1283506Z remote: Counting objects:  82% (34/41)        
+2023-04-25T16:34:16.1283776Z remote: Counting objects:  85% (35/41)        
+2023-04-25T16:34:16.1284046Z remote: Counting objects:  87% (36/41)        
+2023-04-25T16:34:16.1284318Z remote: Counting objects:  90% (37/41)        
+2023-04-25T16:34:16.1284590Z remote: Counting objects:  92% (38/41)        
+2023-04-25T16:34:16.1284869Z remote: Counting objects:  95% (39/41)        
+2023-04-25T16:34:16.1285144Z remote: Counting objects:  97% (40/41)        
+2023-04-25T16:34:16.1285404Z remote: Counting objects: 100% (41/41)        
+2023-04-25T16:34:16.1285701Z remote: Counting objects: 100% (41/41), done.        
+2023-04-25T16:34:16.1286024Z remote: Compressing objects:   2% (1/36)        
+2023-04-25T16:34:16.1286331Z remote: Compressing objects:   5% (2/36)        
+2023-04-25T16:34:16.1286625Z remote: Compressing objects:   8% (3/36)        
+2023-04-25T16:34:16.1286920Z remote: Compressing objects:  11% (4/36)        
+2023-04-25T16:34:16.1287214Z remote: Compressing objects:  13% (5/36)        
+2023-04-25T16:34:16.1287501Z remote: Compressing objects:  16% (6/36)        
+2023-04-25T16:34:16.1287785Z remote: Compressing objects:  19% (7/36)        
+2023-04-25T16:34:16.1288073Z remote: Compressing objects:  22% (8/36)        
+2023-04-25T16:34:16.1288363Z remote: Compressing objects:  25% (9/36)        
+2023-04-25T16:34:16.1288659Z remote: Compressing objects:  27% (10/36)        
+2023-04-25T16:34:16.1289599Z remote: Compressing objects:  30% (11/36)        
+2023-04-25T16:34:16.1290102Z remote: Compressing objects:  33% (12/36)        
+2023-04-25T16:34:16.1290397Z remote: Compressing objects:  36% (13/36)        
+2023-04-25T16:34:16.1290687Z remote: Compressing objects:  38% (14/36)        
+2023-04-25T16:34:16.1290977Z remote: Compressing objects:  41% (15/36)        
+2023-04-25T16:34:16.1291257Z remote: Compressing objects:  44% (16/36)        
+2023-04-25T16:34:16.1291541Z remote: Compressing objects:  47% (17/36)        
+2023-04-25T16:34:16.1291825Z remote: Compressing objects:  50% (18/36)        
+2023-04-25T16:34:16.1292101Z remote: Compressing objects:  52% (19/36)        
+2023-04-25T16:34:16.1292386Z remote: Compressing objects:  55% (20/36)        
+2023-04-25T16:34:16.1292670Z remote: Compressing objects:  58% (21/36)        
+2023-04-25T16:34:16.1292952Z remote: Compressing objects:  61% (22/36)        
+2023-04-25T16:34:16.1293410Z remote: Compressing objects:  63% (23/36)        
+2023-04-25T16:34:16.1293704Z remote: Compressing objects:  66% (24/36)        
+2023-04-25T16:34:16.1293989Z remote: Compressing objects:  69% (25/36)        
+2023-04-25T16:34:16.1294277Z remote: Compressing objects:  72% (26/36)        
+2023-04-25T16:34:16.1294552Z remote: Compressing objects:  75% (27/36)        
+2023-04-25T16:34:16.1294838Z remote: Compressing objects:  77% (28/36)        
+2023-04-25T16:34:16.1295122Z remote: Compressing objects:  80% (29/36)        
+2023-04-25T16:34:16.1295397Z remote: Compressing objects:  83% (30/36)        
+2023-04-25T16:34:16.1295682Z remote: Compressing objects:  86% (31/36)        
+2023-04-25T16:34:16.1295968Z remote: Compressing objects:  88% (32/36)        
+2023-04-25T16:34:16.1298188Z remote: Compressing objects:  91% (33/36)        
+2023-04-25T16:34:16.1298712Z remote: Compressing objects:  94% (34/36)        
+2023-04-25T16:34:16.1299159Z remote: Compressing objects:  97% (35/36)        
+2023-04-25T16:34:16.1299436Z remote: Compressing objects: 100% (36/36)        
+2023-04-25T16:34:16.1299754Z remote: Compressing objects: 100% (36/36), done.        
+2023-04-25T16:34:16.1347996Z remote: Total 41 (delta 0), reused 15 (delta 0), pack-reused 0        
+2023-04-25T16:34:16.1451273Z From https://github.com/fundakol/pytest-jira-xray
+2023-04-25T16:34:16.1452193Z  * [new ref]         2878542e39759e8566641194229c24c7212e3d79 -> pull/71/merge
+2023-04-25T16:34:16.1476196Z ##[endgroup]
+2023-04-25T16:34:16.1476979Z ##[group]Determining the checkout info
+2023-04-25T16:34:16.1478347Z ##[endgroup]
+2023-04-25T16:34:16.1479470Z ##[group]Checking out the ref
+2023-04-25T16:34:16.1483213Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/71/merge
+2023-04-25T16:34:16.1542447Z Note: switching to 'refs/remotes/pull/71/merge'.
+2023-04-25T16:34:16.1542725Z 
+2023-04-25T16:34:16.1543740Z You are in 'detached HEAD' state. You can look around, make experimental
+2023-04-25T16:34:16.1544196Z changes and commit them, and you can discard any commits you make in this
+2023-04-25T16:34:16.1544612Z state without impacting any branches by switching back to a branch.
+2023-04-25T16:34:16.1545629Z 
+2023-04-25T16:34:16.1545811Z If you want to create a new branch to retain commits you create, you may
+2023-04-25T16:34:16.1546295Z do so (now or later) by using -c with the switch command. Example:
+2023-04-25T16:34:16.1546524Z 
+2023-04-25T16:34:16.1546713Z   git switch -c <new-branch-name>
+2023-04-25T16:34:16.1546890Z 
+2023-04-25T16:34:16.1547008Z Or undo this operation with:
+2023-04-25T16:34:16.1547177Z 
+2023-04-25T16:34:16.1547261Z   git switch -
+2023-04-25T16:34:16.1547401Z 
+2023-04-25T16:34:16.1547606Z Turn off this advice by setting config variable advice.detachedHead to false
+2023-04-25T16:34:16.1547851Z 
+2023-04-25T16:34:16.1565483Z HEAD is now at 2878542 Merge 019244aa79f9adc182ee138955cc50efe37df9b6 into 5c95acfab9bc3e88ff61cfcd75b2a15aa7e4c54b
+2023-04-25T16:34:16.1566408Z ##[endgroup]
+2023-04-25T16:34:16.1594673Z [command]/usr/bin/git log -1 --format='%H'
+2023-04-25T16:34:16.1621983Z '2878542e39759e8566641194229c24c7212e3d79'
+2023-04-25T16:34:16.1996535Z ##[group]Run actions/setup-python@v2
+2023-04-25T16:34:16.1996826Z with:
+2023-04-25T16:34:16.1997055Z   python-version: 3.8
+2023-04-25T16:34:16.1997529Z   token: ***
+2023-04-25T16:34:16.1997741Z ##[endgroup]
+2023-04-25T16:34:16.3582135Z Successfully setup CPython (3.8.16)
+2023-04-25T16:34:16.3730174Z ##[group]Run pip install tox coverage
+2023-04-25T16:34:16.3730601Z pip install tox coverage
+2023-04-25T16:34:16.3789698Z shell: /usr/bin/bash -e {0}
+2023-04-25T16:34:16.3789988Z env:
+2023-04-25T16:34:16.3790297Z   pythonLocation: /opt/hostedtoolcache/Python/3.8.16/x64
+2023-04-25T16:34:16.3790686Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.8.16/x64/lib
+2023-04-25T16:34:16.3790974Z ##[endgroup]
+2023-04-25T16:34:17.2665924Z Collecting tox
+2023-04-25T16:34:17.3026456Z   Downloading tox-4.5.0-py3-none-any.whl (148 kB)
+2023-04-25T16:34:17.3192153Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 149.0/149.0 kB 10.7 MB/s eta 0:00:00
+2023-04-25T16:34:17.8116430Z Collecting coverage
+2023-04-25T16:34:17.8204488Z   Downloading coverage-7.2.3-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (229 kB)
+2023-04-25T16:34:17.8294229Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 229.1/229.1 kB 34.8 MB/s eta 0:00:00
+2023-04-25T16:34:17.8951334Z Collecting cachetools>=5.3 (from tox)
+2023-04-25T16:34:17.9036265Z   Downloading cachetools-5.3.0-py3-none-any.whl (9.3 kB)
+2023-04-25T16:34:17.9264173Z Collecting chardet>=5.1 (from tox)
+2023-04-25T16:34:17.9350275Z   Downloading chardet-5.1.0-py3-none-any.whl (199 kB)
+2023-04-25T16:34:17.9407930Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 199.1/199.1 kB 63.9 MB/s eta 0:00:00
+2023-04-25T16:34:17.9743650Z Collecting colorama>=0.4.6 (from tox)
+2023-04-25T16:34:17.9830118Z   Downloading colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+2023-04-25T16:34:18.0238401Z Collecting filelock>=3.11 (from tox)
+2023-04-25T16:34:18.0342723Z   Downloading filelock-3.12.0-py3-none-any.whl (10 kB)
+2023-04-25T16:34:18.0736340Z Collecting packaging>=23.1 (from tox)
+2023-04-25T16:34:18.0829060Z   Downloading packaging-23.1-py3-none-any.whl (48 kB)
+2023-04-25T16:34:18.0877149Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 48.9/48.9 kB 18.0 MB/s eta 0:00:00
+2023-04-25T16:34:18.1179194Z Collecting platformdirs>=3.2 (from tox)
+2023-04-25T16:34:18.1261053Z   Downloading platformdirs-3.3.0-py3-none-any.whl (15 kB)
+2023-04-25T16:34:18.1557057Z Collecting pluggy>=1 (from tox)
+2023-04-25T16:34:18.1639605Z   Downloading pluggy-1.0.0-py2.py3-none-any.whl (13 kB)
+2023-04-25T16:34:18.1883536Z Collecting pyproject-api>=1.5.1 (from tox)
+2023-04-25T16:34:18.1969555Z   Downloading pyproject_api-1.5.1-py3-none-any.whl (12 kB)
+2023-04-25T16:34:18.2264632Z Collecting tomli>=2.0.1 (from tox)
+2023-04-25T16:34:18.2354390Z   Downloading tomli-2.0.1-py3-none-any.whl (12 kB)
+2023-04-25T16:34:18.3560079Z Collecting virtualenv>=20.21 (from tox)
+2023-04-25T16:34:18.3646584Z   Downloading virtualenv-20.22.0-py3-none-any.whl (3.2 MB)
+2023-04-25T16:34:18.3977802Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 107.4 MB/s eta 0:00:00
+2023-04-25T16:34:18.5142280Z Collecting distlib<1,>=0.3.6 (from virtualenv>=20.21->tox)
+2023-04-25T16:34:18.5225665Z   Downloading distlib-0.3.6-py2.py3-none-any.whl (468 kB)
+2023-04-25T16:34:18.5305201Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 468.5/468.5 kB 88.8 MB/s eta 0:00:00
+2023-04-25T16:34:18.7158430Z Installing collected packages: distlib, tomli, pluggy, platformdirs, packaging, filelock, coverage, colorama, chardet, cachetools, virtualenv, pyproject-api, tox
+2023-04-25T16:34:19.4426680Z Successfully installed cachetools-5.3.0 chardet-5.1.0 colorama-0.4.6 coverage-7.2.3 distlib-0.3.6 filelock-3.12.0 packaging-23.1 platformdirs-3.3.0 pluggy-1.0.0 pyproject-api-1.5.1 tomli-2.0.1 tox-4.5.0 virtualenv-20.22.0
+2023-04-25T16:34:19.5954894Z 
+2023-04-25T16:34:19.5955875Z [notice] A new release of pip is available: 22.0.4 -> 23.1.1
+2023-04-25T16:34:19.5956473Z [notice] To update, run: pip install --upgrade pip
+2023-04-25T16:34:19.6917641Z ##[group]Run python -m tox -e py38
+2023-04-25T16:34:19.6917904Z python -m tox -e py38
+2023-04-25T16:34:19.6970018Z shell: /usr/bin/bash -e {0}
+2023-04-25T16:34:19.6970220Z env:
+2023-04-25T16:34:19.6970479Z   pythonLocation: /opt/hostedtoolcache/Python/3.8.16/x64
+2023-04-25T16:34:19.6970798Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.8.16/x64/lib
+2023-04-25T16:34:19.6971041Z ##[endgroup]
+2023-04-25T16:34:20.2590382Z py38: install_deps> python -I -m pip install -r requirements-tests.txt
+2023-04-25T16:34:24.1007311Z .pkg: install_requires> python -I -m pip install 'setuptools>=45' 'setuptools_scm>=6.2' wheel
+2023-04-25T16:34:25.6650820Z .pkg: _optional_hooks> python /opt/hostedtoolcache/Python/3.8.16/x64/lib/python3.8/site-packages/pyproject_api/_backend.py True setuptools.build_meta
+2023-04-25T16:34:25.9215544Z .pkg: get_requires_for_build_sdist> python /opt/hostedtoolcache/Python/3.8.16/x64/lib/python3.8/site-packages/pyproject_api/_backend.py True setuptools.build_meta
+2023-04-25T16:34:26.0534839Z .pkg: freeze> python -m pip freeze --all
+2023-04-25T16:34:26.4119826Z .pkg: packaging==23.1,pip==23.1,setuptools==67.6.1,setuptools-scm==7.1.0,tomli==2.0.1,typing_extensions==4.5.0,wheel==0.40.0
+2023-04-25T16:34:26.4126223Z .pkg: prepare_metadata_for_build_wheel> python /opt/hostedtoolcache/Python/3.8.16/x64/lib/python3.8/site-packages/pyproject_api/_backend.py True setuptools.build_meta
+2023-04-25T16:34:26.5395546Z .pkg: build_sdist> python /opt/hostedtoolcache/Python/3.8.16/x64/lib/python3.8/site-packages/pyproject_api/_backend.py True setuptools.build_meta
+2023-04-25T16:34:26.6422753Z py38: install_package_deps> python -I -m pip install pytest requests
+2023-04-25T16:34:28.0403049Z py38: install_package> python -I -m pip install --force-reinstall --no-deps /home/runner/work/pytest-jira-xray/pytest-jira-xray/.tox/.tmp/package/1/pytest-jira-xray-0.1.dev1+g2878542.tar.gz
+2023-04-25T16:34:31.6562126Z py38: freeze> python -m pip freeze --all
+2023-04-25T16:34:32.0395629Z py38: attrs==23.1.0,certifi==2022.12.7,charset-normalizer==3.1.0,click==8.1.3,coverage==7.2.3,execnet==1.9.0,Flask==2.0.2,idna==3.4,iniconfig==2.0.0,itsdangerous==2.1.2,Jinja2==3.1.2,MarkupSafe==2.1.2,packaging==23.1,pip==23.1,pluggy==1.0.0,py==1.11.0,pytest==7.0.1,pytest-cov==3.0.0,pytest-forked==1.6.0,pytest-jira-xray @ file:///home/runner/work/pytest-jira-xray/pytest-jira-xray/.tox/.tmp/package/1/pytest-jira-xray-0.1.dev1%2Bg2878542.tar.gz#sha256=e8bc8bfae9512a40e530c2f3dce460e56d4cf94357f8e7446960dd5eb0fa094e,pytest-xdist==2.5.0,requests==2.28.2,setuptools==67.6.1,tomli==2.0.1,urllib3==1.26.15,Werkzeug==2.0.2,wheel==0.40.0
+2023-04-25T16:34:32.0404006Z py38: commands[0]> pytest tests -v
+2023-04-25T16:34:32.5419632Z ============================= test session starts ==============================
+2023-04-25T16:34:32.5420444Z platform linux -- Python 3.8.16, pytest-7.0.1, pluggy-1.0.0 -- /home/runner/work/pytest-jira-xray/pytest-jira-xray/.tox/py38/bin/python
+2023-04-25T16:34:32.5420853Z cachedir: .tox/py38/.pytest_cache
+2023-04-25T16:34:32.5421220Z rootdir: /home/runner/work/pytest-jira-xray/pytest-jira-xray
+2023-04-25T16:34:32.5421665Z plugins: cov-3.0.0, xdist-2.5.0, jira-xray-0.1.dev1+g2878542, forked-1.6.0
+2023-04-25T16:34:32.6740719Z collecting ... collected 27 items
+2023-04-25T16:34:32.6740902Z 
+2023-04-25T16:34:32.6797853Z tests/test_helper.py::test_testcase_returns_correct_status[PASS-PASS] PASSED [  3%]
+2023-04-25T16:34:32.6841531Z tests/test_helper.py::test_testcase_returns_correct_status[FAIL-FAIL] PASSED [  7%]
+2023-04-25T16:34:32.6842393Z tests/test_helper.py::test_testcase_returns_correct_status[ABORTED-ABORTED] PASSED [ 11%]
+2023-04-25T16:34:32.6843049Z tests/test_helper.py::test_status_builder_for_cloud_server_returns_correct_status[PASS-PASSED] PASSED [ 14%]
+2023-04-25T16:34:32.6843655Z tests/test_helper.py::test_status_builder_for_cloud_server_returns_correct_status[FAIL-FAILED] PASSED [ 18%]
+2023-04-25T16:34:32.6851908Z tests/test_helper.py::test_status_builder_for_cloud_server_returns_correct_status[ABORTED-ABORTED] PASSED [ 22%]
+2023-04-25T16:34:32.6861708Z tests/test_helper.py::test_merge_test_cases PASSED                       [ 25%]
+2023-04-25T16:34:32.6872457Z tests/test_helper.py::test_find_test_case PASSED                         [ 29%]
+2023-04-25T16:34:32.6882225Z tests/test_model.py::test_testcase_output_dictionary PASSED              [ 33%]
+2023-04-25T16:34:32.6902267Z tests/test_model.py::test_test_execution_output_dictionary PASSED        [ 37%]
+2023-04-25T16:34:32.6921087Z tests/test_model.py::test_test_execution_output_dictionary_with_test_plan_id PASSED [ 40%]
+2023-04-25T16:34:32.6939901Z tests/test_model.py::test_test_execution_output_dictionary_with_test_execution_id PASSED [ 44%]
+2023-04-25T16:34:32.6957138Z tests/test_model.py::test_test_execution_full_model PASSED               [ 48%]
+2023-04-25T16:34:32.6978741Z tests/test_model.py::test_test_execution_environ_model PASSED            [ 51%]
+2023-04-25T16:34:32.7458133Z tests/test_xray_plugin.py::test_help_message PASSED                      [ 55%]
+2023-04-25T16:34:32.8031194Z tests/test_xray_plugin.py::test_jira_xray_plugin[DC Server] PASSED       [ 59%]
+2023-04-25T16:34:32.8622566Z tests/test_xray_plugin.py::test_jira_xray_plugin[Cloud client secret] PASSED [ 62%]
+2023-04-25T16:34:32.9193972Z tests/test_xray_plugin.py::test_jira_xray_plugin[Cloud api key] PASSED   [ 66%]
+2023-04-25T16:34:32.9740469Z tests/test_xray_plugin.py::test_jira_xray_plugin_exports_to_file PASSED  [ 70%]
+2023-04-25T16:34:33.0283263Z tests/test_xray_plugin.py::test_if_user_can_modify_results_with_hooks PASSED [ 74%]
+2023-04-25T16:34:33.1321348Z tests/test_xray_plugin.py::test_if_user_can_attache_evidences FAILED     [ 77%]
+2023-04-25T16:34:33.1872598Z tests/test_xray_plugin.py::test_jira_xray_plugin_multiple_ids PASSED     [ 81%]
+2023-04-25T16:34:33.2618126Z tests/test_xray_plugin.py::test_jira_xray_plugin_multiple_ids_fail PASSED [ 85%]
+2023-04-25T16:34:33.3304389Z tests/test_xray_plugin.py::test_xray_with_all_test_types[no_xdist] PASSED [ 88%]
+2023-04-25T16:34:33.9238598Z tests/test_xray_plugin.py::test_xray_with_all_test_types[xdist] PASSED   [ 92%]
+2023-04-25T16:34:33.9818223Z tests/test_xray_plugin.py::test_if_tests_without_xray_id_are_not_included PASSED [ 96%]
+2023-04-25T16:34:34.4569185Z tests/test_xray_plugin.py::test_duplicated_ids PASSED                    [100%]
+2023-04-25T16:34:34.4569573Z 
+2023-04-25T16:34:34.4569784Z =================================== FAILURES ===================================
+2023-04-25T16:34:34.4570146Z ______________________ test_if_user_can_attache_evidences ______________________
+2023-04-25T16:34:34.4570404Z 
+2023-04-25T16:34:34.4570970Z xray_tests = <Testdir local('/tmp/pytest-of-runner/pytest-0/test_if_user_can_attache_evidences0')>
+2023-04-25T16:34:34.4571278Z 
+2023-04-25T16:34:34.4571485Z     def test_if_user_can_attache_evidences(xray_tests):
+2023-04-25T16:34:34.4571838Z         expected_tests = [
+2023-04-25T16:34:34.4572180Z             {'comment': '',
+2023-04-25T16:34:34.4572499Z              'evidences': [
+2023-04-25T16:34:34.4572774Z                  {
+2023-04-25T16:34:34.4573144Z                      'ContentType': 'plain/text',
+2023-04-25T16:34:34.4573541Z                      'data': 'ZXZpZGVuY2U=',
+2023-04-25T16:34:34.4573920Z                      'filename': 'test.log'
+2023-04-25T16:34:34.4574188Z                  },
+2023-04-25T16:34:34.4574429Z                  {
+2023-04-25T16:34:34.4574766Z                      'ContentType': 'image/png',
+2023-04-25T16:34:34.4575269Z                      'data': 'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAH'
+2023-04-25T16:34:34.4575904Z                              '0lEQVQIW2OcNm3afwY0wEi+ID8/PwOKdpCAjIwMAwBGOw558x9CSQAAAABJRU5ErkJggg==',
+2023-04-25T16:34:34.4576404Z                      'filename': 'screenshot.png'
+2023-04-25T16:34:34.4576685Z                  },
+2023-04-25T16:34:34.4576923Z                  {
+2023-04-25T16:34:34.4577321Z                      'ContentType': 'image/jpeg',
+2023-04-25T16:34:34.4578145Z                      'data': '/9j/4AAQSkZJRgABAQAAAQABAAD/4QBiRXhpZgAATU0AKgAAAAgABQESAAMAAAABAAEAAAEa'
+2023-04-25T16:34:34.4578864Z                              'AAUAAAABAAAASgEbAAUAAAABAAAAUgEoAAMAAAABAAEAAAITAAMAAAABAAEAAAAAAAAAAAABA'
+2023-04-25T16:34:34.4579583Z                              'AAAAQAAAAEAAAAB/9sAQwADAgICAgIDAgICAwMDAwQGBAQEBAQIBgYFBgkICgoJCAkJCgwPDAo'
+2023-04-25T16:34:34.4580240Z                              'LDgsJCQ0RDQ4PEBAREAoMEhMSEBMPEBAQ/8AACwgABQAFAQERAP/EABQAAQAAAAAAAAAAAAAAAA'
+2023-04-25T16:34:34.4580928Z                              'AAAAf/xAAcEAACAgIDAAAAAAAAAAAAAAABAgMGBBEAE2H/2gAIAQEAAD8AXKtVorDFkSSZjw9LKoCoDvYPvP/Z',
+2023-04-25T16:34:34.4581439Z                      'filename': 'screenshot.jpeg'
+2023-04-25T16:34:34.4581733Z                  }
+2023-04-25T16:34:34.4581975Z              ],
+2023-04-25T16:34:34.4582291Z              'status': 'PASS',
+2023-04-25T16:34:34.4582636Z              'testKey': 'JIRA-1'}
+2023-04-25T16:34:34.4582902Z         ]
+2023-04-25T16:34:34.4583136Z     
+2023-04-25T16:34:34.4583505Z         xray_file = xray_tests.tmpdir.join('xray.json')
+2023-04-25T16:34:34.4583856Z         xray_tests.makeconftest(f"""
+2023-04-25T16:34:34.4584155Z             import pytest
+2023-04-25T16:34:34.4584464Z             from pytest_xray import evidence
+2023-04-25T16:34:34.4584863Z     
+2023-04-25T16:34:34.4585165Z             @pytest.hookimpl(hookwrapper=True)
+2023-04-25T16:34:34.4585523Z             def pytest_runtest_makereport(item, call):
+2023-04-25T16:34:34.4585833Z                 outcome = yield
+2023-04-25T16:34:34.4586146Z                 report = outcome.get_result()
+2023-04-25T16:34:34.4586493Z                 evidences = getattr(report, "evidences", [])
+2023-04-25T16:34:34.4586831Z                 if report.when == "call":
+2023-04-25T16:34:34.4587132Z                     evidences.append(
+2023-04-25T16:34:34.4587573Z                         evidence.text(data='evidence', filename="test.log")
+2023-04-25T16:34:34.4588057Z                     )
+2023-04-25T16:34:34.4588330Z                     evidences.append(
+2023-04-25T16:34:34.4588624Z                         evidence.png(
+2023-04-25T16:34:34.4589066Z                             data=open('{RESOURCE_DIR}/screenshot.png', 'rb').read(),
+2023-04-25T16:34:34.4589507Z                             filename='screenshot.png'
+2023-04-25T16:34:34.4589793Z                         )
+2023-04-25T16:34:34.4590055Z                     )
+2023-04-25T16:34:34.4590324Z                     evidences.append(
+2023-04-25T16:34:34.4590618Z                         evidence.jpeg(
+2023-04-25T16:34:34.4591056Z                             data=open('{RESOURCE_DIR}/screenshot.jpeg', 'rb').read(),
+2023-04-25T16:34:34.4591496Z                             filename='screenshot.jpeg'
+2023-04-25T16:34:34.4591792Z                         )
+2023-04-25T16:34:34.4592045Z                     )
+2023-04-25T16:34:34.4592334Z                     report.evidences = evidences
+2023-04-25T16:34:34.4592623Z         """)
+2023-04-25T16:34:34.4593057Z         result = xray_tests.runpytest('--jira-xray', '--xraypath', str(xray_file))
+2023-04-25T16:34:34.4593836Z         assert result.ret == 0
+2023-04-25T16:34:34.4594172Z         xray_result = json.load(xray_file.open())
+2023-04-25T16:34:34.4594574Z         assert 'tests' in xray_result
+2023-04-25T16:34:34.4594981Z >       assert xray_result['tests'] == expected_tests
+2023-04-25T16:34:34.4595571Z E       AssertionError: assert [{'comment': ...y': 'JIRA-1'}] == [{'comment': ...y': 'JIRA-1'}]
+2023-04-25T16:34:34.4598312Z E         At index 0 diff: {'testKey': 'JIRA-1', 'status': 'PASS', 'comment': '', 'evidences': [{'data': 'ZXZpZGVuY2U=', 'filename': 'test.log', 'contentType': 'plain/text'}, {'data': 'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAH0lEQVQIW2OcNm3afwY0wEi+ID8/PwOKdpCAjIwMAwBGOw558x9CSQAAAABJRU5ErkJggg==', 'filename': 'screenshot.png', 'contentType': 'image/png'}, {'data': '/9j/4AAQSkZJRgABAQAAAQABAAD/4QBiRXhpZgAATU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgEoAAMAAAABAAEAAAITAAMAAAABAAEAAAAAAAAAAAABAAAAAQAAAAEAAAAB/9sAQwADAgICAgIDAgICAwMDAwQGBAQEBAQIBgYFBgkICgoJC...
+2023-04-25T16:34:34.4599637Z E         
+2023-04-25T16:34:34.4599969Z E         ...Full output truncated (25 lines hidden), use '-vv' to show
+2023-04-25T16:34:34.4600157Z 
+2023-04-25T16:34:34.4600465Z /home/runner/work/pytest-jira-xray/pytest-jira-xray/tests/test_xray_plugin.py:174: AssertionError
+2023-04-25T16:34:34.4600974Z ----------------------------- Captured stdout call -----------------------------
+2023-04-25T16:34:34.4601294Z ============================= test session starts ==============================
+2023-04-25T16:34:34.4601675Z platform linux -- Python 3.8.16, pytest-7.0.1, pluggy-1.0.0
+2023-04-25T16:34:34.4602099Z rootdir: /tmp/pytest-of-runner/pytest-0/test_if_user_can_attache_evidences0
+2023-04-25T16:34:34.4602553Z plugins: cov-3.0.0, xdist-2.5.0, jira-xray-0.1.dev1+g2878542, forked-1.6.0
+2023-04-25T16:34:34.4602811Z collected 1 item
+2023-04-25T16:34:34.4602943Z 
+2023-04-25T16:34:34.4603090Z test_if_user_can_attache_evidences.py .                                  [100%]
+2023-04-25T16:34:34.4603272Z 
+2023-04-25T16:34:34.4603624Z - Generated XRAY execution report file: /tmp/pytest-of-runner/pytest-0/test_if_user_can_attache_evidences0/xray.json -
+2023-04-25T16:34:34.4604016Z ============================== 1 passed in 0.01s ===============================
+2023-04-25T16:34:34.4604285Z =========================== short test summary info ============================
+2023-04-25T16:34:34.4604707Z FAILED tests/test_xray_plugin.py::test_if_user_can_attache_evidences - Assert...
+2023-04-25T16:34:34.4605023Z ========================= 1 failed, 26 passed in 1.92s =========================
+2023-04-25T16:34:34.5317036Z py38: exit 1 (2.49 seconds) /home/runner/work/pytest-jira-xray/pytest-jira-xray> pytest tests -v pid=1809
+2023-04-25T16:34:34.5345932Z .pkg: _exit> python /opt/hostedtoolcache/Python/3.8.16/x64/lib/python3.8/site-packages/pyproject_api/_backend.py True setuptools.build_meta
+2023-04-25T16:34:34.5596787Z   py38: FAIL code 1 (14.63=setup[12.14]+cmd[2.49] seconds)
+2023-04-25T16:34:34.5597323Z   evaluation failed :( (14.72 seconds)
+2023-04-25T16:34:34.5907016Z ##[error]Process completed with exit code 1.
+2023-04-25T16:34:34.5971146Z Post job cleanup.
+2023-04-25T16:34:34.7290810Z [command]/usr/bin/git version
+2023-04-25T16:34:34.7334863Z git version 2.40.0
+2023-04-25T16:34:34.7381580Z Temporarily overriding HOME='/home/runner/work/_temp/e146d139-d467-4d5f-8e86-83649c71e7d8' before making global git config changes
+2023-04-25T16:34:34.7382337Z Adding repository directory to the temporary git global config as a safe directory
+2023-04-25T16:34:34.7383477Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/pytest-jira-xray/pytest-jira-xray
+2023-04-25T16:34:34.7422289Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2023-04-25T16:34:34.7474958Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2023-04-25T16:34:34.7701356Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2023-04-25T16:34:34.7726945Z http.https://github.com/.extraheader
+2023-04-25T16:34:34.7736119Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2023-04-25T16:34:34.7768509Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2023-04-25T16:34:34.8242322Z Cleaning up orphan processes

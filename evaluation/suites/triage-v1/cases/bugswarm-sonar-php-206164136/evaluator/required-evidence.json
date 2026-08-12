@@ -1,0 +1,18 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-1501-1600",
+    "repo:phpsensor-java:lines-0101-0200",
+    "repo:phpsensortest-java:lines-0301-0400",
+    "repo:phpsensortest-java:lines-0401-0456",
+    "repo:phptestutils-java:lines-0001-0057",
+    "repo:phpunit-junit-report-xml:lines-0001-0055",
+    "repo:phpunitservice-java:lines-0001-0099",
+    "repo:phpunittestfilereport-java:lines-0001-0100",
+    "repo:phpunittestresultimporter-java:lines-0001-0044"
+  ],
+  "optional_evidence_ids": [
+    "repo:phpunit-coverage-xml:lines-0001-0055",
+    "repo:travis-yml:lines-0001-0022"
+  ]
+}

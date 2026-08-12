@@ -1,0 +1,85 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "ctco/cukes",
+    "revision_kind": "git_commit",
+    "exact_revision": "b483e1a8f261b80a66291a42fc455256b0b5059c"
+  },
+  "files": [
+    {
+      "path": "cukes-core/pom.xml",
+      "sha256": "2edf0fc83a364a5f47a45426c5d4f3ac518a9054b67515e4b49fe8c9c866e0f5",
+      "size_bytes": 2516
+    },
+    {
+      "path": "cukes-core/src/main/java/lv/ctco/cukes/core/CukesOptions.java",
+      "sha256": "348bec12950e0bcc71104bed78652d9f43fdb761c4fb36b6a0bd6ed2aa44922c",
+      "size_bytes": 1319
+    },
+    {
+      "path": "cukes-core/src/main/java/lv/ctco/cukes/core/internal/context/GlobalWorld.java",
+      "sha256": "e110bbc246651795a213381c8064e7bfeec513d96079105c91318180dc94c57d",
+      "size_bytes": 2596
+    },
+    {
+      "path": "cukes-core/src/main/java/lv/ctco/cukes/core/internal/context/GlobalWorldFacade.java",
+      "sha256": "3896dac6994289dd8ae452bf4af616bd7b8e83f92c7c5ad54b3f39449de9b44c",
+      "size_bytes": 1511
+    },
+    {
+      "path": "cukes-core/src/main/java/lv/ctco/cukes/core/internal/di/SingletonObjectFactory.java",
+      "sha256": "ee397ae251f95aa282e5acc11627b44b689a3700888140093d8608592373e284",
+      "size_bytes": 2782
+    },
+    {
+      "path": "cukes-core/src/main/java/lv/ctco/cukes/core/internal/matchers/EndsWithRegexp.java",
+      "sha256": "420bd95181d4754d2bbb3400e1ec691619f6bc664c84b3038bd365939414b203",
+      "size_bytes": 782
+    },
+    {
+      "path": "cukes-http/pom.xml",
+      "sha256": "3eceb34df91da1a80495bb0c099ceae8999ba00810d2ee24a2f909abe1904c25",
+      "size_bytes": 1336
+    },
+    {
+      "path": "cukes-http/src/main/java/lv/ctco/cukes/http/facade/HttpAssertionFacadeImpl.java",
+      "sha256": "9521817a4c97498023b6b3ec6ce0afbd4690a6e6067f27e7a207ec674b68bc33",
+      "size_bytes": 8654
+    },
+    {
+      "path": "cukes-http/src/main/java/lv/ctco/cukes/http/logging/HttpLoggingPlugin.java",
+      "sha256": "88a329e218934d08887a6e151e1495a721ed4c26083a4f1a7a1f79ed329cf551",
+      "size_bytes": 5177
+    },
+    {
+      "path": "cukes-http/src/main/java/lv/ctco/cukes/http/matchers/StatusCodeMatcher.java",
+      "sha256": "b52f01492ec07cb8510a3c31e101399f2294d1872331e3f2086ce3941bb08510",
+      "size_bytes": 1637
+    },
+    {
+      "path": "cukes-http/src/test/java/lv/ctco/cukes/http/CustomMatchers.java",
+      "sha256": "5b1f8a2176d7bc3b044fd56db9e40ae3ba51c894bf48db5b9c88393d81845d71",
+      "size_bytes": 1440
+    },
+    {
+      "path": "cukes-http/src/test/java/lv/ctco/cukes/http/facade/HttpAssertionFacadeImplTest.java",
+      "sha256": "76a5e95fdf3c97711adba4ee688b6ca7950429528fd6f2b9309ab9b7caf20db7",
+      "size_bytes": 6981
+    },
+    {
+      "path": "cukes-http/src/test/java/lv/ctco/cukes/http/logging/HttpLoggingPluginTest.java",
+      "sha256": "10ddeca07c7a05659809335e1fb4d4caf89682aa35bae6e815cfa0d362990395",
+      "size_bytes": 2480
+    },
+    {
+      "path": "cukes-http/src/test/java/lv/ctco/cukes/http/matchers/EndsWithRegexpTest.java",
+      "sha256": "8697f09b9a97918e33cb1a934673ca34015e4963754c839529259abbf2b013b8",
+      "size_bytes": 1260
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "de1eaa93b8c70906fd4d9c724581146dcd23b66c9ad1eb4a7e715b6ef624e780",
+      "size_bytes": 12410
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "case_schema_version": "2",
+  "case_id": "odrepair-dubbo-737f7a7e",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "Authentic ODRepair order-dependent-test record committed at https://github.com/TestingResearchIllinois/idoft/blob/main/odr-tests.csv ; rows selected by exact revision 737f7a7ea67832d7f17517326fb2491d0a086dd7, header retained, no row altered. Upstream exact revision: https://github.com/apache/incubator-dubbo/commit/737f7a7ea67832d7f17517326fb2491d0a086dd7 (repository since renamed to apache/dubbo).",
+    "license_or_permission": "Apache-2.0 upstream repository; IDoFT/ODRepair dataset is a public research record."
+  },
+  "curation": {
+    "created_by": "Issue #15 targeted replacement construction round",
+    "review_status": "human_reviewed",
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; taxonomy fit PASS; Runtime Discriminative Value ADEQUATE - lower end, which must not be rewritten upward. Order-dependent victim: RpcContextTest.testAsync leaves a started AsyncContext in the thread-local RpcContext, and AbstractProxyInvoker then returns the polluter's stale async future instead of the synchronous result. The ODRepair record is the authentic detector observation; the fix PR and its prose are curator-side validation only and are absent from every Physical Artifact. Rated at the lower end because the record names the polluter, so polluter identification is not measured here - this Case measures mechanism reconstruction. NOT a Formal Freeze and NOT frozen Formal Suite membership: Canonicalization Profile v1 is not frozen, no Suite Manifest exists, and coordinates and fingerprint remain provisional-pre-freeze."
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "Selected the committed ODRepair record rows whose SHA Detected equals the exact revision under study, retaining the original header line and every selected row byte-for-byte. No field was rewritten, redacted or reordered, and no text was added. Benchmark answer-key material - the IDoFT pr-data.csv fix/PR columns - was never included.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "97c5550b6098739d1061206970551a4f0e1290b7e7c01eee959222773d9a8b62"
+}

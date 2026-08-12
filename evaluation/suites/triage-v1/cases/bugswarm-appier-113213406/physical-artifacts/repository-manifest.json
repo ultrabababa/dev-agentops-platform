@@ -1,0 +1,40 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "hivesolutions/appier",
+    "revision_kind": "git_commit",
+    "exact_revision": "2b7fc2f824696a408d6c857fb98bab593c4def41"
+  },
+  "files": [
+    {
+      "path": ".travis.yml",
+      "sha256": "2fb3cf71885f2acdcc7cf3ac191a9cbfbc5a0eeb50160f54af61d3c3885db99d",
+      "size_bytes": 832
+    },
+    {
+      "path": "requirements.txt",
+      "sha256": "e8a29b10caf66723d8a8ac3485bedbb9721c5f6ae136a46734e50b5a9155c698",
+      "size_bytes": 16
+    },
+    {
+      "path": "setup.py",
+      "sha256": "42ac3760ad47d3aef9c45420d1320e9b6f0399fa942f45a87e835db7690e8b15",
+      "size_bytes": 2627
+    },
+    {
+      "path": "src/appier/base.py",
+      "sha256": "47345a3a357e0f9a024dc6b71531b5643d24b33fdd7f357a463fe5a76abcd60c",
+      "size_bytes": 144523
+    },
+    {
+      "path": "src/appier/data.py",
+      "sha256": "73818e1fd419969a6daea484294114809b889f81923c8e811f40e2d38d74674c",
+      "size_bytes": 7517
+    },
+    {
+      "path": "src/appier/test/model.py",
+      "sha256": "39caec83252dbc98ac375f86ee8da53fcc37a9d6cf900a098b81c57c8e8b55a6",
+      "size_bytes": 5830
+    }
+  ]
+}

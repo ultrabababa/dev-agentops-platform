@@ -1,0 +1,41 @@
+{
+  "case_schema_version": "2",
+  "case_id": "github-node-issue-61762",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "Authentic historical failure: nodejs/node GitHub Actions run 22532700362, job/check run 65274588187 (workflow 'Test macOS', job 'test-macOS', event pull_request, completed 2026-03-01T01:56:34Z) at https://github.com/nodejs/node/actions/runs/22532700362/job/65274588187 . raw.log is the verbatim GitHub Check Run failure annotation recorded against test/parallel/test-debugger-exceptions.js; the full Actions job log is no longer retrievable (API returns HTTP 410, log retention expired) and was not reconstructed. REVISION IDENTITY -- Actual executed revision: a GitHub ephemeral pull-request merge revision (refs/pull/65153/merge), whose exact merge SHA is NO LONGER RECOVERABLE; the workflow used actions/checkout with no explicit ref, so a pull_request event checks out that merge tree rather than the pull-request head, and the ref has since been regenerated for a newer head (it now resolves to 929712c2e0bdb098010be4686c552c7946470d44). Recovery was attempted through the workflow-run payload (head_sha, head_commit.id, head_commit.tree_id), the check-run record, and the commit check-suites, and every field reports only the pull-request head; no GitHub primary metadata retains the historical merge SHA. Recoverable repository revision, and the value declared in repository-manifest.json: 3c08a48c24c39ad4dee6d95c5c800246f300525e, the run head commit. Relationship: every frozen Physical Universe repository member is independently proven byte-equivalent to the actual executed merge state, because 3c08a48c24c39ad4dee6d95c5c800246f300525e changes only deps/googletest paths, its parent 6964b539806e3b2103dd6b65572287b8a615f5d3 landed on main at committer date 2026-02-28T14:40:38Z, and no commit touching any manifest-declared member has a committer date between that time and the run start; the two era commits that touch declared members, 76ba280051824dd9b80a4eb0ea38a613282df8e5 and 4f04a36bba7f4970d0c7f1d875896fa480dfed45, were both confirmed ancestors of the declared revision. Byte equivalence for the declared members is therefore established, while the executed revision identity itself remains unrecoverable; the declared revision must not be read as the executed revision. Related upstream flaky-test tracking issue: https://github.com/nodejs/node/issues/61762 (the console excerpt in its body names no test file and is not used as this Case's failure artifact). Curator-only causal verification source, deliberately absent from Physical Artifacts: https://github.com/nodejs/node/pull/62055 .",
+    "license_or_permission": "Node.js upstream LICENSE begins with MIT terms and includes third-party notices; public GitHub Actions Check Run annotation and public exact-revision repository content, used with upstream attribution."
+  },
+  "curation": {
+    "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan; source chain repaired by Claude under the Human-approved N17 repair directive",
+    "review_status": "human_reviewed",
+    "reviewed_by": "REJECTED by package-content Human Review: REPLACE_FOR_LOW_DISCRIMINATIVE_VALUE. Layer 1 Scientific Validity PASS; Layer 2 Runtime Discriminative Value FAIL. This package is NOT a Formal Suite member and must not be frozen. It is retained only as review history, a rejection record, and a negative calibration example. The literal loader value human_reviewed is required by Schema V2 and here records that Human Review completed with a rejection; it does not assert admission. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/n17-review.md."
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy; sanitization itself was reviewed and accepted, but the Case was subsequently rejected for low Runtime Discriminative Value and is not a Formal Suite member",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "Copied the GitHub Check Run failure annotation message verbatim and appended a single trailing newline for POSIX text-file convention. No ANSI or other control bytes were present, so none were removed, and no line was added, removed, reordered, truncated or rewritten. Ephemeral runner ports, websocket session identifiers and the public runner directory name are retained because they are authentic public CI output and contain no credential or private identifier.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "3f0f80d8fcf25cda9e2422c2cd926cbef2ce55b593f7b71da72e2fa2c51b2f1e"
+}

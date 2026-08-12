@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "lint_or_type_failure",
+  "acceptable_failure_types": [],
+  "summary": "mypy rejects a raise_for_status call in Requester.getStream because the guard preceding it does not narrow the value to a type that has that method.",
+  "root_cause": "__requestEncode is annotated to return Tuple[int, Dict[str, Any], Union[str, object]], so its third result is statically just object. The guard is 'isinstance(output, RequestsResponse) or hasattr(output, \"iter_content\")'. Only the isinstance branch establishes that the value is a RequestsResponse; the hasattr branch guarantees nothing beyond the presence of iter_content. Inside the body mypy therefore knows only what both branches guarantee, which is iter_content and not raise_for_status. That is why output.iter_content(...) on the following line remains valid while output.raise_for_status() is unsafe, and why exactly one error is reported. RequestsResponse itself does define raise_for_status, so the wrapper is not at fault: the disjunctive guard simply does not establish the type that call needs.",
+  "recommended_action": "Narrow the value with a single isinstance check against RequestsResponse before calling raise_for_status, or tighten __requestEncode's return annotation so the third element is not typed as bare object."
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-0601-0673",
+    "repo:requester-py:lines-0901-1000",
+    "repo:requester-py:lines-1001-1100",
+    "repo:requester-py:lines-0101-0200"
+  ],
+  "optional_evidence_ids": [
+    "repo:pyproject-toml:lines-0001-0100",
+    "repo:types-txt:lines-0001-0004",
+    "repo:lint-yml:lines-0001-0058"
+  ]
+}

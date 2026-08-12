@@ -1,0 +1,41 @@
+{
+  "case_schema_version": "2",
+  "case_id": "bugswarm-pytest-jira-xray-13013454823",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "https://www.bugswarm.org/artifact-logs/13013454823/raw/ ; upstream exact/relevant revision: https://github.com/fundakol/pytest-jira-xray/commit/019244aa79f9adc182ee138955cc50efe37df9b6",
+    "license_or_permission": "Apache-2.0 upstream repository; public BugSwarm historical failed-job attribution. Passing revision is a sibling from a common base, not a direct child fix."
+  },
+  "curation": {
+    "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan",
+    "review_status": "human_reviewed",
+    "reviewed_by": "REJECTED by package-content Human Review: UNDERDETERMINED_GT_AND_LOW_DISCRIMINATIVE_VALUE. Layer 1 is NOT recorded as a clean PASS. The artifacts are authentic and byte-identical to the exact revision, but the frozen evidence proves only that the implementation emits contentType while the fixtures expect ContentType; it does not establish which side is stale or regressed, so the Ground Truth claim that the test oracle is stale is underdetermined by the Physical Universe. Layer 2 Runtime Discriminative Value LOW: both key spellings appear in the log, so the mismatch is visible in the observation and the repository only confirms which side emits which. Not salvaged. NOT a Formal Suite member; retained only as a rejection record. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/n22-review.md."
+  },
+  "sanitization": {
+    "status": "reviewed_sanitized",
+    "reviewed_by": "Issue #15 source-only sanitization policy; package-content Human Review remains pending",
+    "transformations": [
+      {
+        "artifact_path": "physical-artifacts/raw.log",
+        "description": "Removed ANSI/control noise only; retained the complete or naturally bounded authentic historical failure observation without changing failure semantics.",
+        "semantics_preserving": true
+      }
+    ]
+  },
+  "case_fingerprint": "14fc476bb06fb46ec4775583590e087094a968414a35b0d1fe3eaaded8c6143b"
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-0901-1000",
+    "log:raw-log:lines-3301-3400",
+    "repo:github-workflows-parity-yml:lines-0601-0700"
+  ],
+  "optional_evidence_ids": [
+    "repo:github-workflows-parity-yml:lines-0501-0600"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-0601-0676",
+    "repo:test-requirements-test-txt:lines-0001-0003",
+    "repo:test-test-f90nml-py:lines-0001-0100",
+    "repo:travis-yml:lines-0001-0023"
+  ],
+  "optional_evidence_ids": [
+    "repo:setup-py:lines-0001-0045"
+  ]
+}

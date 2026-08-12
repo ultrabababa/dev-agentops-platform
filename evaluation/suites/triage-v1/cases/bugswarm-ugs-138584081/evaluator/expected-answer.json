@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "config_or_environment_failure",
+  "acceptable_failure_types": [],
+  "summary": "A modal-dialog unit test errors on a headless CI worker with no X11 DISPLAY.",
+  "root_cause": "MacroHelperTest invokes a JOptionPane path in an environment without a graphical display. The test's GUI requirement is incompatible with the headless CI runtime.",
+  "recommended_action": "Exclude or separately run the modal GUI test under a display-capable environment, or inject a non-GUI prompt abstraction for ordinary CI."
+}

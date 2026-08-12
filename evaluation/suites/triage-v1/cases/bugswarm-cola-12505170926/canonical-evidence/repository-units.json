@@ -1,0 +1,95 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:chargeservicetest-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/cola-samples/charge/src/test/java/com/huawei/charging/ChargeServiceTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "f3d91ee33db03b441b4467689391b55b27229572029a1eadf8a9e7095e2d0418"
+    },
+    {
+      "evidence_id": "repo:chargeservicetest-java:lines-0101-0111",
+      "source": "physical-artifacts/repository/cola-samples/charge/src/test/java/com/huawei/charging/ChargeServiceTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 111
+      },
+      "content_sha256": "1a133f0b2aa0e99b25f951b3b6d389be3726453bb6bdd0f4311709bed70f580e"
+    },
+    {
+      "evidence_id": "repo:chargerecordrepotest-java:lines-0001-0050",
+      "source": "physical-artifacts/repository/cola-samples/charge/src/test/java/com/huawei/charging/ChargeRecordRepoTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 50
+      },
+      "content_sha256": "eb288a2afe4838485110069b71da7ac64bb275daea6a0483a1aa73e421c5ae0e"
+    },
+    {
+      "evidence_id": "repo:propertytest-java:lines-0001-0038",
+      "source": "physical-artifacts/repository/cola-samples/charge/src/test/java/com/huawei/charging/PropertyTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 38
+      },
+      "content_sha256": "d4db4f3e6b1843722d188f4e3040602e108099a595fdc774a82e0594845422f5"
+    },
+    {
+      "evidence_id": "repo:application-java:lines-0001-0012",
+      "source": "physical-artifacts/repository/cola-samples/charge/src/main/java/com/huawei/charging/Application.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 12
+      },
+      "content_sha256": "f1a9b7593111256d2696d17f1c679a847ea669db955dc103e65a3cf7c6e2f894"
+    },
+    {
+      "evidence_id": "repo:application-yml:lines-0001-0015",
+      "source": "physical-artifacts/repository/cola-samples/charge/src/main/resources/application.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 15
+      },
+      "content_sha256": "294813f89c507b55b53b1c7b8a1b65538bba364883348f53b85b553bb617d05f"
+    },
+    {
+      "evidence_id": "repo:application-test-yml:lines-0001-0015",
+      "source": "physical-artifacts/repository/cola-samples/charge/src/test/resources/application-test.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 15
+      },
+      "content_sha256": "0ffab409ad1c181c2798e489ee34f856023ccf21ff11d3e1dc060fec76fd908d"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0074",
+      "source": "physical-artifacts/repository/cola-samples/charge/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 74
+      },
+      "content_sha256": "69ed5beac6dce0bfa2e437245cc6130967cc862bd75e17d3c6608696ebcdce7a"
+    },
+    {
+      "evidence_id": "repo:ci-yaml:lines-0001-0026",
+      "source": "physical-artifacts/repository/.github/workflows/ci.yaml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 26
+      },
+      "content_sha256": "3803ed4c4c0b6f96112a42279162f83481d70731f401eba7b332b31e491a08ac"
+    }
+  ]
+}

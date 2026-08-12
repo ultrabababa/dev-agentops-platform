@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "config_or_environment_failure",
+  "acceptable_failure_types": [],
+  "summary": "The Gradle build reaches the signArchives task and fails because no signatory is configured, even though this CI job only assembles artifacts and never publishes them.",
+  "root_cause": "The build applies the publishing script to every build, and that script signs the archives configuration unconditionally rather than only on a publish or upload task path. The CI environment supplies no signing identity, so once signArchives enters the task graph of an ordinary assemble it fails with no configured signatory.",
+  "recommended_action": "Make archive signing conditional on the upload or publish task path, or on the signing credentials being present, so that ordinary CI builds that only assemble artifacts do not depend on a signing identity."
+}

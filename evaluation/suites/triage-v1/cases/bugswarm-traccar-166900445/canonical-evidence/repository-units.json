@@ -1,0 +1,75 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "231a0beeabd2c7d63996d01d9cfe935379478245a79e3359b9d0e1af89ff9d8a"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0101-0200",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "a1645b7f9bfc8309aa78f8efde2b7a29f29b5adbaf96849cd0f29c5bd2acbe14"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0201-0245",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 245
+      },
+      "content_sha256": "a8aba293ad70806c9b83a32bc754c5697464682422795d3c8139705b200d69f7"
+    },
+    {
+      "evidence_id": "repo:src-org-traccar-notification-notificationmail-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/src/org/traccar/notification/NotificationMail.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "a7746a18f7648b230a1b1609bfffa6a502d0c2bbb70b5b8f4e501e292b5dcec5"
+    },
+    {
+      "evidence_id": "repo:src-org-traccar-notification-notificationmail-java:lines-0101-0132",
+      "source": "physical-artifacts/repository/src/org/traccar/notification/NotificationMail.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 132
+      },
+      "content_sha256": "1093d09f95cec86e332c3aa3d7b9da9ee8ddc1aa6802dcf7b464edcfecf250a4"
+    },
+    {
+      "evidence_id": "repo:test-org-traccar-notification-notificiationmailtest-java:lines-0001-0059",
+      "source": "physical-artifacts/repository/test/org/traccar/notification/NotificiationMailTest.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 59
+      },
+      "content_sha256": "ce7661a9aaab5e976e63aead8fc72a1eda1451c1083fff853a0388e370b5d1e9"
+    },
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0003",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 3
+      },
+      "content_sha256": "495892ec54f288891d85c810b7d34cdf2b7f970802491e2bd7de9d1b8d26ba9b"
+    }
+  ]
+}

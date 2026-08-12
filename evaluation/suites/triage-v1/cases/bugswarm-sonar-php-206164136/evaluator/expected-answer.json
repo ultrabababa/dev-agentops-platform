@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "test_assertion_failure",
+  "acceptable_failure_types": [],
+  "summary": "The SonarLint feature-gating test fails because it asserts a TESTS measure for a file the configured PHPUnit report never mentions.",
+  "root_cause": "At PHPSensorTest.java:419 the test registers Monkey.php as a TEST input file and, after switching the context to a non-SonarLint runtime, asserts that CoreMetrics.TESTS is saved for it. TESTS is only written by PhpUnitTestFileReport.saveTestMeasures, and only for a file the PHPUnit tests report names: getUnitTestInputFile resolves the report's own file path against TEST-typed PHP files, returning null otherwise. The configured report phpunit-junit-report.xml names MegaAppTest.php and src/App*Test.php and contains no entry for Monkey.php, so no report object and therefore no TESTS measure is ever produced for it. The SonarLint gate in PHPSensor.inSonarQube is not responsible: the test sets a SonarQube runtime, so processCoverage does run.",
+  "recommended_action": "Assert against a test file the configured PHPUnit report actually contains, or register the input file under a path the report names, so the tests importer can resolve it."
+}

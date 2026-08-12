@@ -1,0 +1,25 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "traccar/traccar",
+    "revision_kind": "git_commit",
+    "exact_revision": "64e149b69750fdc6f150a18e39a3df1ba76ccc24"
+  },
+  "files": [
+    {
+      "path": ".gitmodules",
+      "sha256": "ea5d5708942aace403c6b0ba3a0da1559250ec4c2deea8cba4168f588a983be5",
+      "size_bytes": 93
+    },
+    {
+      "path": ".travis.yml",
+      "sha256": "495892ec54f288891d85c810b7d34cdf2b7f970802491e2bd7de9d1b8d26ba9b",
+      "size_bytes": 33
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "a9d2f177329a3545a708f32e796bfabe4384b50890ed789f6bacda7bf455958b",
+      "size_bytes": 9452
+    }
+  ]
+}

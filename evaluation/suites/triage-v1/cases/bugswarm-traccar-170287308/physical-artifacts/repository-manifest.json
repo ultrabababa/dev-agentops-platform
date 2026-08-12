@@ -1,0 +1,40 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "traccar/traccar",
+    "revision_kind": "git_commit",
+    "exact_revision": "4216e038468184a58e9fa10cb9eaff28450de743"
+  },
+  "files": [
+    {
+      "path": ".travis.yml",
+      "sha256": "495892ec54f288891d85c810b7d34cdf2b7f970802491e2bd7de9d1b8d26ba9b",
+      "size_bytes": 33
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "a9d2f177329a3545a708f32e796bfabe4384b50890ed789f6bacda7bf455958b",
+      "size_bytes": 9452
+    },
+    {
+      "path": "src/org/traccar/protocol/UproProtocol.java",
+      "sha256": "9e3b580c993a79380f31f6e81c02a3e73ffbdc6e8e5e70afe82aa83feed146bd",
+      "size_bytes": 1751
+    },
+    {
+      "path": "src/org/traccar/protocol/UproProtocolDecoder.java",
+      "sha256": "31ffddb99b52508e5336c19e8cfb8f78a7d03e83418a86dbc50604da57f47091",
+      "size_bytes": 2963
+    },
+    {
+      "path": "test/org/traccar/ProtocolTest.java",
+      "sha256": "e8e248a8b0e7063568bb7cb117464ecbeaac667aaf914a6bfb3ff953dc869413",
+      "size_bytes": 8444
+    },
+    {
+      "path": "test/org/traccar/protocol/UproProtocolDecoderTest.java",
+      "sha256": "7b78aaba18a13ea40164dd52ce78d98b4ad44a114f2fc0da6bce5313a323faed",
+      "size_bytes": 1185
+    }
+  ]
+}

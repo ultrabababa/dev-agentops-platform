@@ -1,0 +1,425 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:github-workflows-test-macos-yml:lines-0001-0100",
+      "source": "physical-artifacts/repository/.github/workflows/test-macos.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "c32fce306a5d14464f44c1b854d43e9813dd9854deb8f4ad2e3988959ea240f1"
+    },
+    {
+      "evidence_id": "repo:github-workflows-test-macos-yml:lines-0101-0142",
+      "source": "physical-artifacts/repository/.github/workflows/test-macos.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 142
+      },
+      "content_sha256": "71cd3895cf7abf728a0070c1135421c5df2d3065f860d9a28cc7f5e5e7746735"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-client-js:lines-0001-0100",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_client.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "2001345c2403cae1235468f424a429319bbfb2e0855b2f3f6fe38691aac2364c"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-client-js:lines-0101-0200",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_client.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "d9a31429d2cc6ac2355b1a0fe2dbe65bddb985f0c39ea706b2041c713724d30e"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-client-js:lines-0201-0300",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_client.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "b158336e337fc1d2083de99f43729de9be53d55f7f27b33a01a987f9ab34c6ea"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-client-js:lines-0301-0354",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_client.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 354
+      },
+      "content_sha256": "29902109d201a13d505d2e273f23d971e7a4d54ce731bc334794b0325cd42adc"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-js:lines-0001-0100",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "555aed6b00f9dffa9b047f9ec0aa32035635292830ea77811f6219f91c721e6c"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-js:lines-0101-0200",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "22366e78e9d4b637fd16be10c0a9cfa4d2bfb3716daae66fdfc4bcfca48c683c"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-js:lines-0201-0300",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "76d93a439acab2abe332925343a6502a74eba14816b194e65b3c7a1517c1b522"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-js:lines-0301-0363",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 363
+      },
+      "content_sha256": "2ee04cc842633a38ab3bd829e5d415a5ed0a34aa0099232d0954ccf1ba039208"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-repl-js:lines-0001-0100",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_repl.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "856c51af83a42310588f076a7f8be0e46cc53018c1005735dca5479b598acf34"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-repl-js:lines-0101-0200",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_repl.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "abbc7f483d47233f90bfa71d11c2aff24595f42e729e16e86ee05d72d2784199"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-repl-js:lines-0201-0300",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_repl.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "ae95b3d98d0011c468002d8d82276d0b89d0a27c99b1665ecc5b4c915d9171e6"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-repl-js:lines-0301-0400",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_repl.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "a404de53e24f0e03afab2b23cea75c6bd41ebdaf37ee96d796db9ac193e55742"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-repl-js:lines-0401-0500",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_repl.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "5ccc2cc8f5c2ac424aa22c0c5700b8b6a865b28d775d8f0fd55d7050ebb023af"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-repl-js:lines-0501-0600",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_repl.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "ffb0a4f67561aa501964006d043fdd17f8160548097a3492228a84ce23666f3c"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-repl-js:lines-0601-0700",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_repl.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 700
+      },
+      "content_sha256": "c44753c570fff0974d7abe90d491180b338c5736895f5726f6d7208e64f17930"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-repl-js:lines-0701-0800",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_repl.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 701,
+        "end_line": 800
+      },
+      "content_sha256": "fc9f3b59b9f94fc6e837bf58cea1f5fb7a64a4b15065700253df7a70e570c054"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-repl-js:lines-0801-0900",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_repl.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 801,
+        "end_line": 900
+      },
+      "content_sha256": "d05f8051c7e5ca299968c47044930798d28317e5dc8cf21043db1b307ca06c84"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-repl-js:lines-0901-1000",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_repl.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 901,
+        "end_line": 1000
+      },
+      "content_sha256": "dc2ef098743d91d06a65f5ad3522e41ee433c493a4a9f9b778dc303be10f62ea"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-repl-js:lines-1001-1100",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_repl.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1001,
+        "end_line": 1100
+      },
+      "content_sha256": "2f5b516d55340ccf2d8ab184594a4dd22fa6dc214bca88a160c63b3babbedbc6"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-repl-js:lines-1101-1200",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_repl.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1101,
+        "end_line": 1200
+      },
+      "content_sha256": "e875810d047b3c318ef26c08af1dc20fbb34f875c1844ffa8e0f4d5ec77a26be"
+    },
+    {
+      "evidence_id": "repo:lib-internal-debugger-inspect-repl-js:lines-1201-1227",
+      "source": "physical-artifacts/repository/lib/internal/debugger/inspect_repl.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1201,
+        "end_line": 1227
+      },
+      "content_sha256": "ff8af2b4cbaef35158d4b6a4dd89a49635fad83ef750599170ce21d40fbeccea"
+    },
+    {
+      "evidence_id": "repo:test-common-debugger-js:lines-0001-0100",
+      "source": "physical-artifacts/repository/test/common/debugger.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "9c1d19b35766e1df475f67f8f8cdf263f260b037571cf8c5d11ec05591dc3ac5"
+    },
+    {
+      "evidence_id": "repo:test-common-debugger-js:lines-0101-0190",
+      "source": "physical-artifacts/repository/test/common/debugger.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 190
+      },
+      "content_sha256": "8af7bbe308bda9d083883665cf9754dc0abc2799f89d8e21d74983fb63751814"
+    },
+    {
+      "evidence_id": "repo:test-common-fixtures-js:lines-0001-0060",
+      "source": "physical-artifacts/repository/test/common/fixtures.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 60
+      },
+      "content_sha256": "d2888d150463380169cd553b4289d37136a88b0ec96bc484ed2b1a15a9b31630"
+    },
+    {
+      "evidence_id": "repo:test-common-index-js:lines-0001-0100",
+      "source": "physical-artifacts/repository/test/common/index.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "a5139c11d3334280cbc4f7e29c1f605cd3e23da4e7a42108f385826a96b33372"
+    },
+    {
+      "evidence_id": "repo:test-common-index-js:lines-0101-0200",
+      "source": "physical-artifacts/repository/test/common/index.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "5b77783c08e32eb8033dcb182aaff63b87be02217ae64201d4d941ca3df0a443"
+    },
+    {
+      "evidence_id": "repo:test-common-index-js:lines-0201-0300",
+      "source": "physical-artifacts/repository/test/common/index.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 300
+      },
+      "content_sha256": "099367859a8d84c4ebe10918491797aed5eed7d5ed4183420dabf6b899daeda5"
+    },
+    {
+      "evidence_id": "repo:test-common-index-js:lines-0301-0400",
+      "source": "physical-artifacts/repository/test/common/index.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 301,
+        "end_line": 400
+      },
+      "content_sha256": "6b27376758a10c5b845cf755b7879b8139d525cc407ad74ac0a4b2d2665eb889"
+    },
+    {
+      "evidence_id": "repo:test-common-index-js:lines-0401-0500",
+      "source": "physical-artifacts/repository/test/common/index.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 401,
+        "end_line": 500
+      },
+      "content_sha256": "7569280e12b43840c26089c233ab4e730beac5863c858994da4f8a222fd536e7"
+    },
+    {
+      "evidence_id": "repo:test-common-index-js:lines-0501-0600",
+      "source": "physical-artifacts/repository/test/common/index.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 501,
+        "end_line": 600
+      },
+      "content_sha256": "e106638946170cedbbca46a8f0120b9166a903244052daf61050259fe00dc505"
+    },
+    {
+      "evidence_id": "repo:test-common-index-js:lines-0601-0700",
+      "source": "physical-artifacts/repository/test/common/index.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 601,
+        "end_line": 700
+      },
+      "content_sha256": "a598e9aa2178efd5f02c33c2fa64ff3663800523e47b98032f5f0cc38dd56a4e"
+    },
+    {
+      "evidence_id": "repo:test-common-index-js:lines-0701-0800",
+      "source": "physical-artifacts/repository/test/common/index.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 701,
+        "end_line": 800
+      },
+      "content_sha256": "f8631be1efea1548b063985b2c1b802c90364eb70460707d74ca00c9e1e8fd6e"
+    },
+    {
+      "evidence_id": "repo:test-common-index-js:lines-0801-0900",
+      "source": "physical-artifacts/repository/test/common/index.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 801,
+        "end_line": 900
+      },
+      "content_sha256": "f5a4347cf415c235ef567f34432f3c0f4825123f281e5f9551ff1a91a0219baa"
+    },
+    {
+      "evidence_id": "repo:test-common-index-js:lines-0901-1000",
+      "source": "physical-artifacts/repository/test/common/index.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 901,
+        "end_line": 1000
+      },
+      "content_sha256": "1f22057f471617f89a13057696c948e17987a0ef3a1b2f3d97650393052fa9b3"
+    },
+    {
+      "evidence_id": "repo:test-common-index-js:lines-1001-1100",
+      "source": "physical-artifacts/repository/test/common/index.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1001,
+        "end_line": 1100
+      },
+      "content_sha256": "f28056c8452f220af9c06319cf7947f33d9458f549b89a584862674027a88dea"
+    },
+    {
+      "evidence_id": "repo:test-common-index-js:lines-1101-1106",
+      "source": "physical-artifacts/repository/test/common/index.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1101,
+        "end_line": 1106
+      },
+      "content_sha256": "bb3fea3e74ccb10b03283169a291aba2478a131166b0fed10ddf4c2a2730bc7a"
+    },
+    {
+      "evidence_id": "repo:test-fixtures-debugger-exceptions-js:lines-0001-0010",
+      "source": "physical-artifacts/repository/test/fixtures/debugger/exceptions.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 10
+      },
+      "content_sha256": "d775aaec49183cedef3e3aafc18aea29cc60257ba470262d111040fdb145c780"
+    },
+    {
+      "evidence_id": "repo:test-parallel-test-debugger-exceptions-js:lines-0001-0058",
+      "source": "physical-artifacts/repository/test/parallel/test-debugger-exceptions.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 58
+      },
+      "content_sha256": "8f0462894ffb18fbe26fb26d715a8fe4e784df2db16c7babb1158c863189528e"
+    },
+    {
+      "evidence_id": "repo:test-parallel-test-debugger-restart-message-js:lines-0001-0043",
+      "source": "physical-artifacts/repository/test/parallel/test-debugger-restart-message.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 43
+      },
+      "content_sha256": "dc9c187415456ac47c67ca92301b2a2d826b092324a4c514039f428e2fb5267c"
+    },
+    {
+      "evidence_id": "repo:test-parallel-test-debugger-run-after-quit-restart-js:lines-0001-0085",
+      "source": "physical-artifacts/repository/test/parallel/test-debugger-run-after-quit-restart.js",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 85
+      },
+      "content_sha256": "1fa16b32265db0b3cda1bee48e1edb908b9ae9b28b555d7573a71d336dd6f7e5"
+    }
+  ]
+}

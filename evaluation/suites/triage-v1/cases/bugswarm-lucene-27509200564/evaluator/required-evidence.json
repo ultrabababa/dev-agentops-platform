@@ -1,0 +1,19 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-0801-0900",
+    "repo:indexutils-java:lines-0301-0400",
+    "repo:mockdirectorywrapper-java:lines-0801-0900",
+    "repo:lucenetestcase-java:lines-1701-1800",
+    "repo:overviewtestbase-java:lines-0001-0097",
+    "repo:lucenetestcase-java:lines-1301-1400",
+    "repo:lucenetestcase-java:lines-1401-1500",
+    "repo:lucenetestcase-java:lines-0801-0900"
+  ],
+  "optional_evidence_ids": [
+    "repo:testoverviewimpl-java:lines-0001-0100",
+    "repo:overviewimpl-java:lines-0001-0100",
+    "repo:run-checks-all-yml:lines-0001-0067",
+    "repo:indexutils-java:lines-0001-0100"
+  ]
+}

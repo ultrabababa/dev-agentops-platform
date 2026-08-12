@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "config_or_environment_failure",
+  "acceptable_failure_types": [],
+  "summary": "CI cannot initialize the traccar-web submodule and exhausts three SSH authentication retries.",
+  "root_cause": "The submodule URL uses the SSH git@github.com transport, but the keyless CI checkout environment has no matching private key. The repository transport configuration is incompatible with CI.",
+  "recommended_action": "Use a public HTTPS or relative Git submodule URL that does not require a deploy key for public CI checkout."
+}

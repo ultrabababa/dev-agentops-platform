@@ -1,0 +1,95 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "repo:travis-yml:lines-0001-0008",
+      "source": "physical-artifacts/repository/.travis.yml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 8
+      },
+      "content_sha256": "37c99cb2e941d8cd82847efd4c0b5d189cc6e5ff9aaf9200e5bd7433ec5499f0"
+    },
+    {
+      "evidence_id": "repo:baragondata-pom-xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/BaragonData/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "258fa2f81c0268c88c14a0b1f6dbaa2610d250777f7287fb44b583e24fd8283a"
+    },
+    {
+      "evidence_id": "repo:baragondata-pom-xml:lines-0101-0139",
+      "source": "physical-artifacts/repository/BaragonData/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 139
+      },
+      "content_sha256": "3f2f9ee295e273c3654fa01d711fba60129cff637ceb95a249ad56aa091c9d8f"
+    },
+    {
+      "evidence_id": "repo:baragondata-src-main-java-com-hubspot-baragon-data-baragonstatedatastore-java:lines-0001-0100",
+      "source": "physical-artifacts/repository/BaragonData/src/main/java/com/hubspot/baragon/data/BaragonStateDatastore.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "c679a564216bb3ffc557c32296cdf9e54447952e6b1ade416c4bd23bf47a46a6"
+    },
+    {
+      "evidence_id": "repo:baragondata-src-main-java-com-hubspot-baragon-data-baragonstatedatastore-java:lines-0101-0200",
+      "source": "physical-artifacts/repository/BaragonData/src/main/java/com/hubspot/baragon/data/BaragonStateDatastore.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "71942284195a0056b934860f4e243ce55d7ceb78707612b583adce7e6c678109"
+    },
+    {
+      "evidence_id": "repo:baragondata-src-main-java-com-hubspot-baragon-data-baragonstatedatastore-java:lines-0201-0280",
+      "source": "physical-artifacts/repository/BaragonData/src/main/java/com/hubspot/baragon/data/BaragonStateDatastore.java",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 280
+      },
+      "content_sha256": "9be80ce57e8c20f16a60b943c0451abc3022e7d22ee97a013f27e57d9b83eac7"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0001-0100",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "71454fafb9ef4de3c10802b5c5cbfbf488633cd523becf1911a4f078a00875c6"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0101-0200",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 200
+      },
+      "content_sha256": "1559da744826f150d469de3fa27e8b1e85538e2f92d455c00f6b86929414603a"
+    },
+    {
+      "evidence_id": "repo:pom-xml:lines-0201-0218",
+      "source": "physical-artifacts/repository/pom.xml",
+      "span": {
+        "type": "line_range",
+        "start_line": 201,
+        "end_line": 218
+      },
+      "content_sha256": "5389ac5a9e2b0de686ae54f653b568cbed9f7e97ff38ccf0a7407f5231f26324"
+    }
+  ]
+}

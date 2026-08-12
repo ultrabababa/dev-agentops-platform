@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "primary_failure_type": "timeout_or_flaky_failure",
+  "acceptable_failure_types": [],
+  "summary": "A subagent test intermittently reads mock call metadata before the background thread has populated it.",
+  "root_cause": "The implementation publishes the subagent in the shared list before starting its background thread, while the test treats list growth as completion and immediately indexes mock_create_thread.call_args. Scheduler interleaving can leave call_args as None.",
+  "recommended_action": "Synchronize the test with completion of the spawned subagent thread before inspecting mock call arguments."
+}

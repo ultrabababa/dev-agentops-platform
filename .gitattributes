@@ -1,0 +1,3 @@
+# Frozen upstream logs and exact-revision repository snapshots intentionally
+# preserve source whitespace. Keep whitespace checks enabled for authored files.
+evaluation/suites/triage-v1/cases/**/physical-artifacts/** -whitespace

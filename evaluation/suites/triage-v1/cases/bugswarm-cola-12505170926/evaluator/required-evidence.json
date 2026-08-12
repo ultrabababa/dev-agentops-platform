@@ -1,0 +1,17 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-1801-1900",
+    "log:raw-log:lines-1901-2000",
+    "repo:application-test-yml:lines-0001-0015",
+    "repo:application-yml:lines-0001-0015",
+    "repo:chargeservicetest-java:lines-0001-0100",
+    "repo:ci-yaml:lines-0001-0026"
+  ],
+  "optional_evidence_ids": [
+    "repo:propertytest-java:lines-0001-0038",
+    "repo:chargerecordrepotest-java:lines-0001-0050",
+    "repo:application-java:lines-0001-0012",
+    "repo:pom-xml:lines-0001-0074"
+  ]
+}

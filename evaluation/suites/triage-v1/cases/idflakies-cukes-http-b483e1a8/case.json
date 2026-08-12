@@ -1,0 +1,35 @@
+{
+  "case_schema_version": "2",
+  "case_id": "idflakies-cukes-http-b483e1a8",
+  "artifacts": {
+    "raw_log": "physical-artifacts/raw.log",
+    "repository_manifest": "physical-artifacts/repository-manifest.json",
+    "repository_root": "physical-artifacts/repository",
+    "log_units": "canonical-evidence/log-units.json",
+    "repository_units": "canonical-evidence/repository-units.json",
+    "required_evidence": "evaluator/required-evidence.json",
+    "expected_answer": "evaluator/expected-answer.json"
+  },
+  "forbidden_actions": [
+    "edit_code",
+    "rerun_ci",
+    "create_pull_request",
+    "deploy"
+  ],
+  "provenance": {
+    "source_type": "public_permitted_source",
+    "source_url_or_construction_note": "AUTHENTIC BENCHMARK FAILURE RECORD WITH A PINNED EXECUTED REVISION. physical-artifacts/raw.log is byte-identical (1,935 bytes) to the complete committed file https://github.com/UT-SE-Research/iDFlakies/blob/master/scripts/flaky-lists-files/cukes-http , which contains exactly this one detection record and nothing else, so the artifact is complete rather than excerpted. -- EXACT EXECUTED / FAILING REVISION: b483e1a8f261b80a66291a42fc455256b0b5059c. This is not inferred from dates. The iDFlakies subject list scripts/idfProjects1.csv has the header '#Project,SHA,module,expectedFlakyTests' and the row 'https://github.com/ctco/cukes,b483e1a8f261b80a66291a42fc455256b0b5059c,cukes-http,1', so the benchmark checked out and executed exactly this pinned SHA. The upstream commit date 2018-11-06 and the record's testRunId timestamps (1688181858373 and 1688181866086, i.e. 2023-07-01T03:24:18Z and 2023-07-01T03:24:26Z) differ for that reason and are consistent: iDFlakies runs pinned revisions, not repository HEAD. No failure-era-snapshot category is needed for this Case. -- RECORD SEMANTICS: 'name' is the victim test; 'intended' is a run order whose result is PASS; 'revealed' is a run order whose result is FAILURE and which lists the tests executed before the victim; 'type' OD means order-dependent. The record carries no exception, stack trace or assertion output, so the failure mode itself must be derived from the run orders plus repository state rather than read off the artifact. -- CURATOR-ONLY material, deliberately absent from Physical Artifacts: scripts/idfProjectsMinimizer.csv in the same iDFlakies repository names the minimized polluter for this victim, and scripts/idfProjectsFixer.csv records the iFixFlakies outcome. Both are the benchmark's own answer key and must never enter the Agent-visible workspace; neither is included here.",
+    "license_or_permission": "Apache-2.0 upstream repository; public iDFlakies committed benchmark-record attribution."
+  },
+  "curation": {
+    "created_by": "OpenAI Codex under the Human-approved Issue #15 bulk pre-freeze construction plan; Physical Universe and Evidence Ground Truth revised by Claude under the Human-approved N01 review directive",
+    "review_status": "human_reviewed",
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value ADEQUATE (lower end). Reviewed against Issue #15 Candidate Selection, Source Artifact Eligibility, and full package-content review covering provenance, Physical Universe scope, independent causal reconstruction, Failure Type, Expected Answer observed-versus-derived wording, Required-Evidence inclusion-minimality by removal proof, leakage, and shortcut analysis. THIS IS NOT A FORMAL FREEZE: Canonicalization Profile v1 is not frozen, no Suite Manifest exists, and the Canonical coordinates and Case fingerprint remain provisional-pre-freeze and may be mechanically rebuilt. Authoritative record: evaluation/suites/triage-v1/BULK-DRAFT-REVIEW.md and evaluation/suites/triage-v1/reviews/n01-review.md."
+  },
+  "sanitization": {
+    "status": "reviewed_no_changes",
+    "reviewed_by": "Issue #15 source-only sanitization policy; reviewed and ACCEPTED by package-content Human Review. physical-artifacts/raw.log is byte-identical to the complete upstream iDFlakies record: 1,935 bytes, LF-only, no CR and no other control bytes. Nothing was removed, added, reordered, truncated or rewritten. An earlier draft's metadata wrongly claimed ANSI/control removal; no control bytes ever existed in this artifact. Repository members are byte-identical to the pinned executed revision. The record contains no credential or private identifier.",
+    "transformations": []
+  },
+  "case_fingerprint": "6465db63f1d2dc0ab64eb469dfa5c95d5749304228b7e666e0fc6e0e15b6ea43"
+}

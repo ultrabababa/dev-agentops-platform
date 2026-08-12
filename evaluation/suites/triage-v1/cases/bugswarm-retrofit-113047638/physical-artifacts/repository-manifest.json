@@ -1,0 +1,120 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "square/retrofit",
+    "revision_kind": "git_commit",
+    "exact_revision": "323ffc8f00b19dba98873e77a77c25ec7f89f56c"
+  },
+  "files": [
+    {
+      "path": "retrofit/src/main/java/retrofit2/BuiltInConverters.java",
+      "sha256": "9adeaac26437cc10b0b41e685d12d69d65adba1efaa5e1707fb4cbfa542aae7b",
+      "size_bytes": 3725
+    },
+    {
+      "path": "retrofit/src/main/java/retrofit2/Call.java",
+      "sha256": "59261e8e7f11117989c5d71ee3a2d61940f0af218374bde5d8eeb423f433ee67",
+      "size_bytes": 2650
+    },
+    {
+      "path": "retrofit/src/main/java/retrofit2/Converter.java",
+      "sha256": "7862392369bd7f7cb770fc05a0a219f9e108386aed04fbbdd66a2982274ea82e",
+      "size_bytes": 3171
+    },
+    {
+      "path": "retrofit/src/main/java/retrofit2/MethodHandler.java",
+      "sha256": "30a9f4b3de7681d4820bd17ebf6c681890f10ca3936467e4153e056da85db199",
+      "size_bytes": 3488
+    },
+    {
+      "path": "retrofit/src/main/java/retrofit2/OkHttpCall.java",
+      "sha256": "f5432dcb5086723dee730bfaa5919ccebb302cb9664f8726e0afec61779a67fc",
+      "size_bytes": 8302
+    },
+    {
+      "path": "retrofit/src/main/java/retrofit2/Platform.java",
+      "sha256": "6bf4f307ffec1b46f1a3607ce950eb80c9faaddb869d07a632faa8a7e9746ac9",
+      "size_bytes": 5024
+    },
+    {
+      "path": "retrofit/src/main/java/retrofit2/RequestAction.java",
+      "sha256": "3387b241eab508d7812cdfe75dc67537ef58d09145d50e6348397f5e15416af9",
+      "size_bytes": 9316
+    },
+    {
+      "path": "retrofit/src/main/java/retrofit2/RequestBuilder.java",
+      "sha256": "cb4fb71703b6b731fe1c95490777d9725ec27a020c50fd5ac42c2a7aaffae737",
+      "size_bytes": 7535
+    },
+    {
+      "path": "retrofit/src/main/java/retrofit2/RequestFactory.java",
+      "sha256": "2ab797add46b582d1a5004f75b7ae80d47cf228b6c5ff5c385b59cfa2cc9b97e",
+      "size_bytes": 2307
+    },
+    {
+      "path": "retrofit/src/main/java/retrofit2/RequestFactoryParser.java",
+      "sha256": "f1d102e249299ef64e26d1042508291eb87d09fc5a9a224edfdc3bcc7e96a378",
+      "size_bytes": 25528
+    },
+    {
+      "path": "retrofit/src/main/java/retrofit2/Retrofit.java",
+      "sha256": "35dae0e4b5c5716e6b424232f9d23c4ee15a21394551d46bfc26d2a35e28acbc",
+      "size_bytes": 21977
+    },
+    {
+      "path": "retrofit/src/main/java/retrofit2/Utils.java",
+      "sha256": "c6f820d91959909da4abaf09a6c794988bdd678ec6b4a67f241170b777003436",
+      "size_bytes": 4694
+    },
+    {
+      "path": "retrofit/src/main/java/retrofit2/http/Body.java",
+      "sha256": "5a658fe4c0e2d9833cdc4cac1ac5f9a5d60f617eb9861c16919c4e1b1322d77b",
+      "size_bytes": 1690
+    },
+    {
+      "path": "retrofit/src/main/java/retrofit2/http/GET.java",
+      "sha256": "87e802fd3c3da26e3b60ce83708cc8e8b75c2f9e74ec6643f40637b1f73cfdec",
+      "size_bytes": 1365
+    },
+    {
+      "path": "retrofit/src/main/java/retrofit2/http/POST.java",
+      "sha256": "45f69f6bf85daba08b1b92a658c44fa7ab2ab6b691e715af53591ed079d37f94",
+      "size_bytes": 1367
+    },
+    {
+      "path": "retrofit-converters/protobuf/src/main/java/retrofit2/converter/protobuf/ProtoConverterFactory.java",
+      "sha256": "c8c774078e91d1d8f218861a86e79253bb2095bcfea349f755773d2982745bcb",
+      "size_bytes": 2411
+    },
+    {
+      "path": "retrofit-converters/protobuf/src/main/java/retrofit2/converter/protobuf/ProtoRequestBodyConverter.java",
+      "sha256": "eadcc47a53255f80f14b0c5b69fdbf4c2e87b8576b425126c54cde92451251c2",
+      "size_bytes": 1253
+    },
+    {
+      "path": "retrofit-converters/protobuf/src/main/java/retrofit2/converter/protobuf/ProtoResponseBodyConverter.java",
+      "sha256": "35d62abef667616e4e22a48b7cd133291fac972830b48730bda56414b72d290f",
+      "size_bytes": 1404
+    },
+    {
+      "path": "retrofit-converters/protobuf/src/test/java/retrofit2/converter/protobuf/ProtoConverterFactoryTest.java",
+      "sha256": "c6a6a23d84f195a0cc346d5619b015d8585b01848d92b1c930e76575c7d1ba9f",
+      "size_bytes": 5099
+    },
+    {
+      "path": "retrofit-converters/protobuf/src/test/java/retrofit2/converter/protobuf/PhoneProtos.java",
+      "sha256": "736c167103a9040c758abe6d979e1b474b646937eaa520f028401b9118670bcf",
+      "size_bytes": 17243
+    },
+    {
+      "path": "retrofit-converters/protobuf/pom.xml",
+      "sha256": "551230b16ebbbcf0632c6605c1ac685700bb7353ac3cb2952cb922f60b90e985",
+      "size_bytes": 1329
+    },
+    {
+      "path": ".travis.yml",
+      "sha256": "b68b177f4a73124a581e70ffe9096d7c11625cf610ff240839322b83c902f558",
+      "size_bytes": 601
+    }
+  ]
+}

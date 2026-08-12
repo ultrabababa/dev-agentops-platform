@@ -1,0 +1,9 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-0001-0001",
+    "repo:tests-test-tools-subagent-py:lines-0801-0900",
+    "repo:gptme-tools-subagent-api-py:lines-0301-0400"
+  ],
+  "optional_evidence_ids": []
+}

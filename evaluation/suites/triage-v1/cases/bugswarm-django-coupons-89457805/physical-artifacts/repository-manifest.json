@@ -1,0 +1,45 @@
+{
+  "schema_version": "1",
+  "upstream_repository": {
+    "identity": "byteweaver/django-coupons",
+    "revision_kind": "git_commit",
+    "exact_revision": "4776a4e472e3a14cf475e95f0e146fc3f79b50eb"
+  },
+  "files": [
+    {
+      "path": ".travis.yml",
+      "sha256": "6e971c4ab0c9e1945269150f7c0d053443326140f1cf51210f1e5c2917071e82",
+      "size_bytes": 272
+    },
+    {
+      "path": "coupons/forms.py",
+      "sha256": "c8e786365187c54822b2e5b655b9e57bda66fa06e740707dfab25d485703e70e",
+      "size_bytes": 2624
+    },
+    {
+      "path": "coupons/models.py",
+      "sha256": "5e5f6344ab24256d399e68eee8110d3e3ff289146276c947c8f45b99d1b72f7c",
+      "size_bytes": 5074
+    },
+    {
+      "path": "coupons/tests/test_use_cases.py",
+      "sha256": "a89861b7ab77b4f1572c26b7b7a02d75234096274c6eb49dff81d543a99d68ae",
+      "size_bytes": 3223
+    },
+    {
+      "path": "requirements.txt",
+      "sha256": "2b01326c218eeb5310e8a6bdd1f411bc1898a6bed2e780c52b6e30f0f57400c1",
+      "size_bytes": 85
+    },
+    {
+      "path": "setup.py",
+      "sha256": "28899a1bcdf98cecb1932b063e963f30bd5e1ed4c545d7bdb26e0a466ef06d51",
+      "size_bytes": 902
+    },
+    {
+      "path": "tox.ini",
+      "sha256": "f2ec3d5dbd7561fd190c3b50e656f1381d86144e2bf5d35b7f760e22d1248646",
+      "size_bytes": 970
+    }
+  ]
+}
