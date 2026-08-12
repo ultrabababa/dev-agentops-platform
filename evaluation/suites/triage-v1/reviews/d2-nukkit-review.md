@@ -1,10 +1,10 @@
 # D2 — bugswarm-nukkit-94403868 — construction and Human Review record
 
-> **Layer 1 `PASS`** · **Layer 2 `BORDERLINE-ADEQUATE`** — **below the `ADEQUATE` estimate recorded at screening.** Constructed and reviewed in the targeted replacement round, awaiting Human disposition.
+> **FINAL DISPOSITION: `HUMAN REVIEW PASS`.** Layer 1 `PASS`, Layer 2 **`BORDERLINE-ADEQUATE`** — **below the `ADEQUATE` estimate recorded at screening**, and not to be rewritten upward.
 > **NOT a Formal Freeze and NOT frozen Formal Suite membership.**
 
 **Failure type:** `dependency_or_install_failure`, `acceptable_failure_types: []`.
-**Fingerprint:** `44605a3b8c30d05676f7b4ad2209e7d6337207d39abed396a5a266ccc8459348`.
+**Fingerprint:** `ac12b54f00ffb96e7ac7a9766185b848b96d080911ec9b819c18ebe2e6079966` (supersedes `44605a3b…` after the Human PASS status update; no evidence or artifact changed).
 **Slot:** one of two `dependency_or_install_failure` replacements.
 
 ## 1. The instruction that gated construction — the dependency established from the manifest
@@ -67,8 +67,10 @@ Five units are Optional, including `LevelDB.java:0001-0100`, `Server.java:0301-0
 
 **The Expected Answer's direction, stated carefully.** `root_cause` is determined by the frozen evidence: source imports a library no manifest declares. `recommended_action` is the better-supported of two defensible remedies — the sources are in the main source set and are compiled unconditionally, so declaring the dependency is the direct fix. The alternative (exclude or remove the unfinished provider) is coherent and is recorded here rather than suppressed. This is a weaker form of the N22 hazard: the diagnosis is determined, the remedy is not uniquely determined.
 
-## 7. Disposition
+## 7. Disposition — decided
 
-**Recommended `HUMAN REVIEW PASS`, at `BORDERLINE-ADEQUATE`**, as one `dependency_or_install_failure` replacement — with the explicit alternative that the Human may prefer to substitute the recorded reserve **D3 `orbit/orbit` job `126506070`**, which carries a stronger competing hypothesis in the form of an earlier `[ERROR] Invalid use of await` that does not fail the build.
+**`HUMAN REVIEW PASS`, at `BORDERLINE-ADEQUATE`**, as one `dependency_or_install_failure` replacement.
+
+**D2 is retained by Human decision and is not replaced by the D3 `orbit/orbit` reserve** — the expected benefit did not justify another full construction cycle. The reserve remains recorded in `REPLACEMENT-CANDIDATES.md` should the slot need revisiting.
 
 This Case was not salvaged aggressively: nothing was pruned, no distractor was added, and the rating was lowered rather than the package adjusted to protect it. Not a Formal Freeze; Formal Suite membership is not frozen.

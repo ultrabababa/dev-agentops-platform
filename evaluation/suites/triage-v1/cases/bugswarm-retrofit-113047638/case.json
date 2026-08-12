@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "Issue #15 targeted replacement construction round",
     "review_status": "human_reviewed",
-    "reviewed_by": "STATUS: constructed in the Issue #15 targeted replacement round; package-content Human Review COMPLETE by the constructing reviewer, awaiting Human disposition. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value ADEQUATE - lower end, which must not be rewritten upward. The Maven summary names only serializeNullThrows out of 307 tests and contains zero assertion-message characters. ProtoRequestBodyConverter does throw the expected exception and RequestAction.Body does invoke the converter when ignoreNull is false, so both obvious hypotheses are refuted; MethodHandler.invoke and OkHttpCall.createRawCall show the request is not constructed until request, execute or enqueue. The authentic Travis branch name jw/pass-null-to-converters is preserved and assessed as a weak, partly misleading leak. NOT a Formal Freeze and NOT frozen Formal Suite membership."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "b54adda01eef4534f6322051ba6e661a7f8aae4bf5b8cff27d33103550effc32"
+  "case_fingerprint": "72cbfcde3063ed5fbf8b8ecea57479edbabdbb6d7c753d71a7b57b71a7fac67b"
 }

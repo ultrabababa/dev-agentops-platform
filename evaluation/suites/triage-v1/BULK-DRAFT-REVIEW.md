@@ -168,11 +168,18 @@ The first three candidates, chosen because their open questions could materially
 Schema V2 packages and reviewed. Records: `reviews/c2-blueflood-review.md`, `reviews/a1-retrofit-review.md`,
 `reviews/d2-nukkit-review.md`. **None is a Formal Freeze and Formal Suite membership is not frozen.**
 
+**All three are `HUMAN REVIEW PASS`.**
+
 | Case | Slot | Layer 1 | Layer 2 | Open question outcome |
 |---|---|---|---|---|
 | `bugswarm-blueflood-80881330` | `config_or_environment_failure` | `PASS` | **`ADEQUATE`** | Resolved for the Case — `events_mapping.json` is a repository file |
 | `bugswarm-retrofit-113047638` | `test_assertion_failure` | `PASS` | **`ADEQUATE — lower end`** | Branch-name leak preserved; assessed weak and partly misleading |
-| `bugswarm-nukkit-94403868` | `dependency_or_install_failure` | `PASS` | **`BORDERLINE-ADEQUATE`** | Dependency established from the manifests; **rating lowered from the screening estimate** |
+| `bugswarm-nukkit-94403868` | `dependency_or_install_failure` | `PASS` | **`BORDERLINE-ADEQUATE`** | Dependency established from the manifests; **rating lowered from the screening estimate**. Retained by Human decision; **not** replaced by the D3 reserve |
+
+Two Evidence/Ground-Truth alignment fixes were applied at Human review, neither changing a rating: C2 promoted the
+test unit carrying `tearDownClass` to Required so its secondary-symptom claim is entailed, and A1 promoted
+`MethodHandler` to Required so the claim that invoking the service method only creates the `Call` is entailed. A1's
+workspace was **not** widened to the sibling converter modules.
 
 Three findings worth carrying into the remaining six:
 

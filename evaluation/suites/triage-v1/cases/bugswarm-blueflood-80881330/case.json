@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "Issue #15 targeted replacement construction round",
     "review_status": "human_reviewed",
-    "reviewed_by": "STATUS: constructed in the Issue #15 targeted replacement round; package-content Human Review COMPLETE by the constructing reviewer, awaiting Human disposition. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value ADEQUATE. The observation reports only that creating index 'events' failed inside DocumentMapperParser; the decisive token graphite_event occurs zero times in the log. Diagnosis requires composing three repository files: the test registers events_mapping.json under Elasticsearch type 'metrics', that document's root type is 'graphite_event', and EventElasticSearchIO.ES_TYPE shows 'graphite_event' is the type the events index actually stores, which settles the direction of the mismatch. A sibling metrics_mapping.json rooted at 'metrics' remains a genuine competing hypothesis. NOT a Formal Freeze and NOT frozen Formal Suite membership: Canonicalization Profile v1 is not frozen, no Suite Manifest exists, and coordinates and fingerprint remain provisional-pre-freeze."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "c5e566a81cbb8cac12a5cd761ed2d954057628d1f969a553b97af3685b087a36"
+  "case_fingerprint": "c050468ee2ebd27659c825adcc9307c1256e48f594faf57852206d02c11b93dc"
 }

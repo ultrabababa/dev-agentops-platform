@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "Issue #15 targeted replacement construction round",
     "review_status": "human_reviewed",
-    "reviewed_by": "STATUS: constructed in the Issue #15 targeted replacement round; package-content Human Review COMPLETE by the constructing reviewer, awaiting Human disposition. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; Runtime Discriminative Value BORDERLINE-ADEQUATE, downgraded from the ADEQUATE screening estimate and not to be rewritten upward. The missing dependency is established from build.gradle and pom.xml together with the LevelDB.java imports, not from the log download list. javac quotes the offending imports into the log, so LevelDB.java fails a strict removal test and Required is two units. Retained by Human decision rather than replaced with the D3 orbit reserve. NOT a Formal Freeze and NOT frozen Formal Suite membership."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "44605a3b8c30d05676f7b4ad2209e7d6337207d39abed396a5a266ccc8459348"
+  "case_fingerprint": "ac12b54f00ffb96e7ac7a9766185b848b96d080911ec9b819c18ebe2e6079966"
 }

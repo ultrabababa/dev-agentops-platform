@@ -1,10 +1,10 @@
 # A1 — bugswarm-retrofit-113047638 — construction and Human Review record
 
-> **Layer 1 `PASS`** · **Layer 2 `ADEQUATE — lower end`** · constructed and reviewed in the targeted replacement round, awaiting Human disposition.
+> **FINAL DISPOSITION: `HUMAN REVIEW PASS`.** Layer 1 `PASS`, Layer 2 **`ADEQUATE — lower end`**, which must not be rewritten upward.
 > **NOT a Formal Freeze and NOT frozen Formal Suite membership.** `Canonicalization Profile v1` is unfrozen, no Suite Manifest exists, and all coordinates and the fingerprint are `provisional-pre-freeze`.
 
 **Failure type:** `test_assertion_failure`, `acceptable_failure_types: []`.
-**Fingerprint:** `b54adda01eef4534f6322051ba6e661a7f8aae4bf5b8cff27d33103550effc32`.
+**Fingerprint:** `72cbfcde3063ed5fbf8b8ecea57479edbabdbb6d7c753d71a7b57b71a7fac67b` (supersedes `b54adda0…` after the Required promotion in §4).
 **Slot:** one of two `test_assertion_failure` replacements.
 
 ## 1. Authenticity and provenance
@@ -42,7 +42,7 @@ Measured against the assertion-disclosure screen, this block contains **zero mes
 
 The oracle assumes eager request construction that the call pipeline does not perform. The product behaves as designed; the test's expectation is wrong.
 
-## 4. Required Evidence — 6 units, each removal-tested
+## 4. Required Evidence — 7 units, each removal-tested
 
 | Required unit | What only it supplies | Removal test |
 |---|---|---|
@@ -51,9 +51,10 @@ The oracle assumes eager request construction that the call pipeline does not pe
 | `repo:protoconverterfactorytest-java:lines-0001-0100` | `@Body(ignoreNull = false)` on the service method | Remove: it is unknown whether the converter should be invoked for null at all |
 | `repo:protorequestbodyconverter-java:lines-0001-0034` | That the converter does throw the exact expected message | Remove: "the converter is missing its null check" stays alive, inverting the diagnosis |
 | `repo:requestaction-java:lines-0201-0275` | That `ignoreNull = false` genuinely reaches the converter | Remove: "the framework ignores `ignoreNull`" stays alive, again inverting the fix |
+| `repo:methodhandler-java:lines-0001-0083` | That `invoke()` creates and adapts an `OkHttpCall` and returns it, without constructing the request | Remove: the claim that `service.post(null)` *only* creates the Call is not entailed — the step between the proxy call and `OkHttpCall` is unaccounted for |
 | `repo:okhttpcall-java:lines-0101-0200` | That the request is built in `createRawCall`, reached only from `request`/`execute`/`enqueue` | Remove: the actual mechanism is unavailable |
 
-The last three exist to settle **direction**, not merely to establish the mismatch — the recorded N22 hazard. Seven further units are Optional.
+`MethodHandler` was promoted from Optional at Human review: without it the Ground Truth claim that invoking the service method only creates the `Call` is not strictly entailed, since nothing else in the Required set covers the proxy-to-`OkHttpCall` step. Three of the seven units exist to settle **direction** rather than merely establish the mismatch — the recorded N22 hazard. Six further units are Optional.
 
 ## 5. Shortcut and leakage review — including the branch-name leak
 
@@ -65,7 +66,7 @@ The discovery ledger required this to be preserved and assessed rather than remo
 
 **A stronger, unavoidable hint sits inside the failing test file.** `.execute()` appears three times in `ProtoConverterFactoryTest.java` — `serializeAndDeserialize`, `deserializeEmpty` and `deserializeWrongValue` all drive the call — while `serializeNullThrows` does not. An attentive Agent can reach the *remedy* from the Required test unit alone. It cannot reach the *root cause* that way; explaining why the omission matters still requires `OkHttpCall`.
 
-**A note on the workspace bound, recorded because it is a judgement.** Seven sibling converter modules exist in the same reactor, and four of them (`gson`, `jackson`, `moshi`, `scalars`) call `.execute()` in their null-body tests. Those modules are outside this Case's Physical Universe because the stated bound is the failing module plus the request-construction path it exercises plus the job configuration — the same rule applied to C2, and consistent with how earlier Cases were bounded. **This bound was not chosen to hide the hint:** the equivalent contrast is already present inside the Required test unit, so widening the workspace would not disclose anything materially new. The situation is recorded here so the Human can widen it if they disagree.
+**A note on the workspace bound — Human decision: not widened.** Seven sibling converter modules exist in the same reactor, and four of them (`gson`, `jackson`, `moshi`, `scalars`) call `.execute()` in their null-body tests. Those modules are outside this Case's Physical Universe because the stated bound is the failing module plus the request-construction path it exercises plus the job configuration — the same rule applied to C2, and consistent with how earlier Cases were bounded. **This bound was not chosen to hide the hint:** the equivalent contrast is already present inside the Required test unit, so widening the workspace would not disclose anything materially new. The Human reviewed this and confirmed the bound stands, on the ground that the equivalent `.execute()` contrast is already visible in the current natural workspace.
 
 Answer-prose scan otherwise clean: the only `TODO` / `should be` hits are in `Retrofit.java` and concern unrelated matters. `createRawCall` occurs zero times in the log.
 
@@ -76,12 +77,16 @@ Answer-prose scan otherwise clean: the only `TODO` / `should be` hits are in `Re
 | `raw.log` | 2,385 lines / 146,352 bytes |
 | Repository | 22 files / 131,479 bytes |
 | Canonical units | 71 (24 log + 47 repo) |
-| Required / Optional | 6 / 7 |
+| Required / Optional | 7 / 6 |
 
 Localisation is genuinely hard: one named test among 307, with no message of any kind. The diagnosis then requires refuting two plausible hypotheses across two files before the real mechanism can be found in a third. Both refuted hypotheses are the ones the branch name encourages.
 
 It is rated at the **lower end** rather than plainly `ADEQUATE` because the remedy — drive the call — is reachable from the failing test file alone by noticing the `.execute()` contrast. The Case still separates runtimes that pattern-match from runtimes that explain, since `root_cause` and Evidence Hit both require the three direction-settling units. The rating must not be rewritten upward.
 
-## 7. Disposition
+## 7. Disposition — decided
 
-**Recommended `HUMAN REVIEW PASS`** as one `test_assertion_failure` replacement, Layer 1 `PASS`, Layer 2 `ADEQUATE — lower end`. Not a Formal Freeze; Formal Suite membership is not frozen.
+**`HUMAN REVIEW PASS`** as one `test_assertion_failure` replacement, Layer 1 `PASS`, Layer 2 **`ADEQUATE — lower end`**. The rating must not be rewritten upward.
+
+One Evidence/Ground-Truth alignment fix was applied at Human review: `MethodHandler` was promoted to Required (§4). The workspace was **not** widened to the sibling converter modules.
+
+This is a **review pass, not a Formal Freeze**: `Canonicalization Profile v1` is unfrozen, no Suite Manifest exists, and Formal Suite membership is not frozen.

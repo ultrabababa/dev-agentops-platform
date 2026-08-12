@@ -1,10 +1,10 @@
 # C2 — bugswarm-blueflood-80881330 — construction and Human Review record
 
-> **Layer 1 `PASS`** · **Layer 2 `ADEQUATE`** · constructed and reviewed in the targeted replacement round, awaiting Human disposition.
+> **FINAL DISPOSITION: `HUMAN REVIEW PASS`.** Layer 1 `PASS`, Layer 2 **`ADEQUATE`**.
 > **NOT a Formal Freeze and NOT frozen Formal Suite membership.** `Canonicalization Profile v1` is unfrozen, no Suite Manifest exists, and all coordinates and the fingerprint are `provisional-pre-freeze`.
 
 **Failure type:** `config_or_environment_failure`, `acceptable_failure_types: []`.
-**Fingerprint:** `c5e566a81cbb8cac12a5cd761ed2d954057628d1f969a553b97af3685b087a36`.
+**Fingerprint:** `c050468ee2ebd27659c825adcc9307c1256e48f594faf57852206d02c11b93dc` (supersedes `c5e566a8…` after the Required promotion in §5).
 **Slot:** one of two `config_or_environment_failure` replacements.
 
 ## 1. The open question that gated construction — resolved in favour of the Case
@@ -43,7 +43,7 @@ Notably the rule admits `metrics_mapping.json` and `metrics_mapping_v1.json`, wh
 6. An Elasticsearch mapping body must be rooted at the type it defines. Registering a `graphite_event` body under type `metrics` leaves an unrecognised root-level object, which `DocumentMapperParser` rejects — matching frame 2 exactly.
 7. `raw.log:7862-7863` — `NullPointerException at HttpAnnotationsEndToEndTest.tearDownClass(HttpAnnotationsEndToEndTest.java:157)`. `@BeforeClass` failed before assigning `httpQueryService`, so `@AfterClass` dereferences null. A pure secondary symptom that inflates the error count from one to two.
 
-## 5. Required Evidence — 4 units, each removal-tested
+## 5. Required Evidence — 5 units, each removal-tested
 
 | Required unit | What only it supplies | Removal test |
 |---|---|---|
@@ -51,17 +51,18 @@ Notably the rule admits `metrics_mapping.json` and `metrics_mapping_v1.json`, wh
 | `repo:httpannotationsendtoendtest-java:lines-0001-0100` | That the mapping is registered under type `"metrics"`, and which resource is loaded | Remove: neither the type name nor the resource is knowable |
 | `repo:events-mapping-json:lines-0001-0027` | That the document's root type is `graphite_event` | Remove: the mismatch cannot be established |
 | `repo:eventelasticsearchio-java:lines-0001-0100` | `ES_TYPE = "graphite_event"` — which side of the mismatch is correct | Remove: the mismatch is still visible, but the **direction** is not. "Change the mapping's root key to metrics" becomes equally defensible |
+| `repo:httpannotationsendtoendtest-java:lines-0101-0159` | `tearDownClass` at `:153-158`, which dereferences `httpQueryService` and `esSetup` that `setUp` never assigned | Remove: the Expected Answer's claim that the second error is a teardown artefact of the first is no longer supported by the Required set |
 
 The fourth unit is included specifically because of the recorded N22 hazard: a Required set can establish a mismatch without entailing the direction its Expected Answer asserts. Here the direction is carried by an explicit Required unit.
 
-Six units are Optional, including both sibling mapping resources and `index_settings.json`.
+The fifth unit was promoted from Optional at Human review: the Expected Answer explains the secondary `NullPointerException`, and that claim must be entailed by the Required set rather than merely consistent with it. Five units remain Optional, including both sibling mapping resources and `index_settings.json`.
 
 ## 6. Shortcut and leakage review
 
 - **`graphite_event` occurs zero times in the log.** The decisive token exists only in the repository, in exactly the two files that establish the mismatch and its direction. There is no grep from the observation to the answer.
 - The log's only structural hint is `DocumentMapperParser`, four occurrences, all stack frames.
 - **A real competing hypothesis survives into the workspace.** `metrics_mapping.json` is rooted at `"metrics"`, so "the test loaded the wrong file — it should have loaded `metrics_mapping.json`" is a coherent reading that the evidence must defeat. Only `ES_TYPE` settles it, because the index under construction is the events index.
-- **A second competing hypothesis is endorsed by the source itself.** BugSwarm classifies this artifact `Flaky` with stability 4/5, i.e. the dataset's own metadata suggests an unreliable Elasticsearch. The stack frame is what refutes it.
+- **A second competing hypothesis is available from the artifacts themselves.** An embedded Elasticsearch that failed to start or was not ready is the natural first reading of "exception when executing request create index". Nothing in the observation rules it out except the throwing frame, which sits in the mapping parser rather than in transport or cluster-state code. *(Curator-side diagnostic context only, not part of the Physical Universe and not visible to an Agent: BugSwarm classifies this artifact `Flaky` with stability 4/5. That metadata played no part in the diagnosis and is not evidence for or against any hypothesis.)*
 - The `blueflood-elasticsearch` module ran no tests in this job (`raw.log:6802-6805` goes straight from surefire to jar), so the readiness hypothesis is **not** eliminated by a passing sibling. It is eliminated by the throwing frame and by structural comparison with the production mapping — which is why both sibling mappings are retained as Optional evidence.
 - Answer-prose scan: the two `TODO` / `should be` hits in the workspace are in `ScheduleContext.java`, `CoreConfig.java` and `HttpMetricsIngestionServer.java` and concern thread-safety, a Riemann host comment and a configurable timeout. None mentions Elasticsearch, mappings or types.
 
@@ -72,12 +73,16 @@ Six units are Optional, including both sibling mapping resources and `index_sett
 | `raw.log` | 7,930 lines / 314,411 bytes |
 | Repository | 20 files / 77,760 bytes |
 | Canonical units | 112 (80 log + 32 repo) |
-| Required / Optional | 4 / 6 |
+| Required / Optional | 5 / 5 |
 
 The observation states that creating an index failed and gives one library frame. It does not name the mapping, the type, the resource file or the inconsistency. Reaching the diagnosis requires composing three repository files, eliminating two live competing hypotheses — one of which the dataset's own metadata asserts — and deciding the direction of a two-sided mismatch. That is what the category is supposed to measure, and it is the property `config_or_environment_failure` candidates almost always lack.
 
 **Residual, recorded honestly.** That an ES mapping body must be rooted at its type is domain knowledge, not an artifact fact; the frozen evidence supports the diagnosis but does not prove it in isolation. The structural identity between `events_mapping.json` and the production `metrics_mapping.json` — same `_routing.required`, same not-analyzed string properties — is what makes "the mapping style is invalid for this ES version" unattractive, and that comparison is available in the workspace.
 
-## 8. Disposition
+## 8. Disposition — decided
 
-**Recommended `HUMAN REVIEW PASS`** as one `config_or_environment_failure` replacement, Layer 1 `PASS`, Layer 2 `ADEQUATE`. Not a Formal Freeze; Formal Suite membership is not frozen.
+**`HUMAN REVIEW PASS`** as one `config_or_environment_failure` replacement, Layer 1 `PASS`, Layer 2 **`ADEQUATE`**.
+
+One Evidence/Ground-Truth alignment fix was applied at Human review: the second test unit carrying `tearDownClass` was promoted to Required so the Expected Answer's secondary-symptom claim is fully supported (§5). The rating is unchanged by that fix.
+
+This is a **review pass, not a Formal Freeze**: `Canonicalization Profile v1` is unfrozen, no Suite Manifest exists, and Formal Suite membership is not frozen.
