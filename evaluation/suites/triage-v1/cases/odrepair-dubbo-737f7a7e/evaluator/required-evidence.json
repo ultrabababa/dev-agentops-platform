@@ -1,0 +1,23 @@
+{
+  "schema_version": "1",
+  "required_evidence_ids": [
+    "log:raw-log:lines-0101-0186",
+    "repo:abstractproxytest-java:lines-0001-0073",
+    "repo:rpccontexttest-java:lines-0101-0164",
+    "repo:abstractproxyinvoker-java:lines-0001-0100",
+    "repo:rpccontext-java:lines-0001-0100",
+    "repo:rpccontext-java:lines-0701-0733",
+    "repo:asyncrpcresult-java:lines-0001-0100"
+  ],
+  "optional_evidence_ids": [
+    "repo:javassistproxyfactorytest-java:lines-0001-0027",
+    "repo:jdkproxyfactorytest-java:lines-0001-0027",
+    "repo:asynccontext-java:lines-0001-0086",
+    "repo:asynccontextimpl-java:lines-0001-0084",
+    "repo:demoserviceimpl-java:lines-0001-0100",
+    "repo:rpcresult-java:lines-0001-0093",
+    "repo:javassistproxyfactory-java:lines-0001-0052",
+    "repo:pom-xml:lines-0001-0048",
+    "repo:travis-yml:lines-0001-0020"
+  ]
+}

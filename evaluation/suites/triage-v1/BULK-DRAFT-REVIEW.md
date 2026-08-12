@@ -162,6 +162,33 @@ This is therefore the **primary screening question at Candidate Discovery**, app
 suite now contradicts them three times over: B02 has the lowest Required share in the suite (1.3 %) and is the hardest Case;
 N22 has the highest of its group (21.4 %) and is `LOW`.
 
+### Final flaky slot filled — odrepair-dubbo-737f7a7e
+
+The last open slot is constructed from a Human-validated candidate: `apache/incubator-dubbo` at
+`737f7a7ea67832d7f17517326fb2491d0a086dd7`, victim
+`JavassistProxyFactoryTest.testGetInvoker`, polluter `RpcContextTest.testAsync`. Layer 1 `PASS`, Layer 2
+**`ADEQUATE — lower end`**. Record: `reviews/f5-dubbo-review.md`. **Awaiting Human disposition; nothing frozen.**
+
+The observation is the committed **ODRepair** order-dependent-test record, rows selected by exact revision from
+`TestingResearchIllinois/idoft/odr-tests.csv` with the header retained and every row byte-for-byte. `odr-tests.csv` was
+chosen over IDoFT's `pr-data.csv` precisely because the latter carries `PR Link` and `Status` columns naming the fix;
+that file is **curator-side validation only** and appears in no Physical Artifact. Verified: `pull/6314`, `6314` and
+`Accepted` occur zero times across the log and all 15 members. This is the recorded N01 answer-key rule applied to a
+second benchmark.
+
+**Two reusable points.**
+
+- **A benchmark record can be an acceptable observation without any exception text** — N01's precedent — provided it
+  names the victim *and* the failing order. N06 was replaced for having an empty revealed order; this record names both,
+  so it clears that bar while still carrying no stack or assertion output.
+- **When the detector record names the polluter, polluter identification is no longer measured.** That is inherent to
+  the ODRepair format and is why this Case is rated at the lower end: it measures mechanism reconstruction, whereas N01
+  measures polluter discrimination among seven authentic candidates. The two flaky Cases are complementary rather than
+  redundant.
+
+Taxonomy fit is clean here in a way F1's is not: the V1 taxonomy names *"order-dependent test"* directly, and the
+nondeterminism is the execution order itself rather than an inference from reproduction metadata.
+
 ### Round 2 Human review — four PASS, F1 repaired
 
 C1, A2, L1 and D1 are **`HUMAN REVIEW PASS`** at `ADEQUATE`, after four Evidence/Ground-Truth alignment fixes that

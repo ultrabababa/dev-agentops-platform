@@ -169,3 +169,10 @@ not retained to preserve category count, and B08 already fills the suite-level e
 L3 opentelemetry-python, D3 orbit 126506070, D4 quart, D5 autopep8, D6 HikariCP, C3 TwelveMonkeys. **F4 HikariCP is
 withdrawn as a flaky reserve** for the same reason as F2 and F3 — its recorded profile (`AbstractMethodError`) points at a
 dependency ABI mismatch, not nondeterminism.
+
+**Final flaky slot — filled outside this ledger.** The second `timeout_or_flaky_failure` slot was filled by a
+Human-validated candidate that did not come from the BugSwarm pool: `apache/incubator-dubbo` at `737f7a7e…`, victim
+`JavassistProxyFactoryTest.testGetInvoker`, polluter `RpcContextTest.testAsync`, sourced from the committed ODRepair
+record in `TestingResearchIllinois/idoft/odr-tests.csv`. This vindicates the recommendation recorded in
+`reviews/flaky-slot-2-record.md` — that order-dependent-test benchmarks, not CI-log reproduction metadata, are the right
+source for this category. **All nine replacement slots now have a constructed Case.**

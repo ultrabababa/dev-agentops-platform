@@ -1,0 +1,25 @@
+{
+  "schema_version": "1",
+  "units": [
+    {
+      "evidence_id": "log:raw-log:lines-0001-0100",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 1,
+        "end_line": 100
+      },
+      "content_sha256": "a28568e023dcfe4204aa7d1cca5444e6fc7146f39b3a2a2fec98f0b85be0a699"
+    },
+    {
+      "evidence_id": "log:raw-log:lines-0101-0186",
+      "source": "physical-artifacts/raw.log",
+      "span": {
+        "type": "line_range",
+        "start_line": 101,
+        "end_line": 186
+      },
+      "content_sha256": "5c4dabc05faca6527045d2e950198098a47a576880e6eef8db492cfa3db715b9"
+    }
+  ]
+}
