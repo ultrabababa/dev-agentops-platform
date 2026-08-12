@@ -1,10 +1,10 @@
 # F6 — odrepair-remoting-abf0455a — construction and Human Review record
 
-> **Layer 1 `PASS`** · **Layer 2 `ADEQUATE`** · constructed from a Human-validated candidate and a Human-supplied immutable ODRepair artifact. Awaiting Human disposition.
+> **FINAL DISPOSITION: `HUMAN REVIEW PASS`.** Layer 1 `PASS`, taxonomy fit `PASS`, Layer 2 **`ADEQUATE`**.
 > **NOT a Formal Freeze and NOT frozen Formal Suite membership.** `Canonicalization Profile v1` is unfrozen, no Suite Manifest exists, and all coordinates and the fingerprint are `provisional-pre-freeze`.
 
 **Failure type:** `timeout_or_flaky_failure`, `acceptable_failure_types: []`. **Slot:** the 20th Case.
-**Fingerprint:** `5f335a33e447df8f2014ce1ff89554e5a8c8845fac5c354182f3b5e104e79c34`.
+**Fingerprint:** `df9c85a41f882750f7b0da585dc0ddc6ae2d16699aac67dae72336674abf7490` (supersedes `5f335a33…` after the Human PASS status update; no evidence or artifact changed).
 
 ## 1. Correction of record
 
@@ -128,7 +128,9 @@ difficulty sits.
 **Taxonomy fit is clean.** The V1 taxonomy names *"order-dependent test"* directly, and the observation states the
 order-conditioned outcomes explicitly.
 
-## 8. Disposition
+## 8. Disposition — decided
 
-**Recommended `HUMAN REVIEW PASS`**, Layer 1 `PASS`, Layer 2 `ADEQUATE`. Not a Formal Freeze; Formal Suite membership is
-not frozen.
+**`HUMAN REVIEW PASS`** as the 20th Case. Layer 1 `PASS`, taxonomy fit `PASS`, Layer 2 **`ADEQUATE`**.
+
+This is a **review pass, not a Formal Freeze**: `Canonicalization Profile v1` is unfrozen, no Suite Manifest exists, and
+Formal Suite membership is not frozen.

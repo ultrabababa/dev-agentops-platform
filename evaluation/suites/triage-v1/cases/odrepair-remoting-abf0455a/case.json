@@ -24,7 +24,7 @@
   "curation": {
     "created_by": "Issue #15 targeted replacement construction round",
     "review_status": "human_reviewed",
-    "reviewed_by": "STATUS: constructed from a Human-validated candidate and a Human-supplied immutable ODRepair artifact; package-content review COMPLETE by the constructing reviewer, awaiting Human disposition. The flaky-lists.json detector record is the authentic Agent-visible observation; jenkinsci/remoting PR 706 and ODRepair experiments/data/results.csv are curator-side corroboration only and appear in no Physical Artifact. NOT a Formal Freeze and NOT frozen Formal Suite membership."
+    "reviewed_by": "PACKAGE-CONTENT HUMAN REVIEW: PASS. Scientific Validity PASS; taxonomy fit PASS; Runtime Discriminative Value ADEQUATE. Order-dependent victim: the polluter writes the invalid regex Z{100,0} into a ClassFilter overrides file, ClassFilter's static initializer rethrows the Pattern.compile failure as an Error, and an Error escaping a static initializer leaves the class permanently erroneous, so the polluter's @After clearProperty cannot restore it and the victim errors when it instantiates TestFilter, a ClassFilter subclass. The ODRepair flaky-lists.json record is the authentic Agent-visible observation, frozen byte-identical with no transformation; jenkinsci/remoting PR 706 and ODRepair results.csv are curator-side corroboration only and appear in no Physical Artifact. NOT a Formal Freeze and NOT frozen Formal Suite membership: Canonicalization Profile v1 is not frozen, no Suite Manifest exists, and coordinates and fingerprint remain provisional-pre-freeze."
   },
   "sanitization": {
     "status": "reviewed_sanitized",
@@ -37,5 +37,5 @@
       }
     ]
   },
-  "case_fingerprint": "5f335a33e447df8f2014ce1ff89554e5a8c8845fac5c354182f3b5e104e79c34"
+  "case_fingerprint": "df9c85a41f882750f7b0da585dc0ddc6ae2d16699aac67dae72336674abf7490"
 }

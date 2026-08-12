@@ -1,7 +1,7 @@
 {
   "schema_version": "1",
   "required_evidence_ids": [
-    "log:ci-lines-0572-0601:maven-antrun-verify",
+    "log:raw-log:lines-0501-0600",
     "repo:equals-avoid-null-check.java:lines-0401-0500"
   ],
   "optional_evidence_ids": [

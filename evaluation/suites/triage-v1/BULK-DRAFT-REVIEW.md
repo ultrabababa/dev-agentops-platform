@@ -162,6 +162,29 @@ This is therefore the **primary screening question at Candidate Discovery**, app
 suite now contradicts them three times over: B02 has the lowest Required share in the suite (1.3 %) and is the hardest Case;
 N22 has the highest of its group (21.4 %) and is `LOW`.
 
+### Pre-freeze normalisation — B04 canonicalised to fixed-100
+
+**B04 was the suite's last legacy exception and is now normalised.** Its `raw.log` carried **11 semantic units**
+(`log:ci-lines-0068-0362:git-checkout` and similar) rather than Canonicalization Profile v1's fixed-100 windows. It now
+carries **7 fixed-100 units**: `0001-0100` … `0501-0600`, `0601-0619`.
+
+**Required Evidence re-derived, not merely remapped.** The legacy Required log unit was `0572-0601`, which straddles two
+fixed-100 windows. Reading the artifact, every decisive line sits at or below 600 — the Checkstyle violation naming
+`EqualsAvoidNullCheck.java` at `:580`, `BUILD FAILURE` at `:583`, and `ant-phase-verify.xml:50: Checkstyle failed: Got 1
+errors and 0 warnings` at `:590`. Window `0601-0619` holds only `[Help 1]` boilerplate, the shell exit line and Travis
+cache-upload noise, and is therefore **not** Required. Required is `log:raw-log:lines-0501-0600` plus the unchanged
+`repo:equals-avoid-null-check.java:lines-0401-0500`.
+
+**Nothing else about B04 changed**: `raw.log` is byte-identical, its 33 repository units are untouched, Optional
+Evidence, Expected Answer semantics, rating and workspace are unchanged. Fingerprint
+`89a8f9a08f0dcb26…` → `94a4a06e5e9dc860…`.
+
+**Suite-wide fixed-100 validation over the exact 20 Formal candidates: PASS, 0 failures.** Every case was checked for
+declared-versus-on-disk membership, SHA-256 and size of every member, contiguous gap-free fixed-100 windows starting at
+line 1 for every canonical source, resolved unit content hashes, Required/Optional referential integrity and
+disjointness, non-empty Required, declared-versus-calculated fingerprint equality, and agreement between each Case's
+`primary_failure_type` and its taxonomy slot.
+
 ### Suite status — 20th Case constructed
 
 **`odrepair-remoting-abf0455a` fills the 20th slot.** `jenkinsci/remoting` @ `abf0455a68ad6c52a57e912bb89d51f883f77542`,
