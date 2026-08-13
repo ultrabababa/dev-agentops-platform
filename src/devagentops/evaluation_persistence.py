@@ -71,7 +71,41 @@ def persist_finalizing_run(
             )
             for event in trace_events:
                 _insert_trace_event(connection, event)
-            for result in case_results:
+            case_metadata = {
+                item["case_id"]: item
+                for item in manifest["evaluation_suite"]["cases"]
+            }
+            for sequence, result in enumerate(case_results, start=1):
+                outcome = result.get("outcome", {"status": "scored"})
+                connection.execute(
+                    text(
+                        "INSERT INTO evaluation_case_outcomes "
+                        "(run_id, case_id, sequence, suite_weight, "
+                        "evaluation_failure_type, status, failure_code, "
+                        "failure_stage, failure_message) VALUES "
+                        "(:run_id, :case_id, :sequence, :suite_weight, "
+                        ":evaluation_failure_type, :status, :failure_code, "
+                        ":failure_stage, :failure_message)"
+                    ),
+                    {
+                        "run_id": manifest["run_id"],
+                        "case_id": result["case_id"],
+                        "sequence": sequence,
+                        "suite_weight": result.get(
+                            "weight",
+                            case_metadata[result["case_id"]]["weight"],
+                        ),
+                        "evaluation_failure_type": result.get(
+                            "evaluation_failure_type"
+                        ),
+                        "status": outcome["status"],
+                        "failure_code": outcome.get("failure_code"),
+                        "failure_stage": outcome.get("failure_stage"),
+                        "failure_message": outcome.get("failure_message"),
+                    },
+                )
+                if outcome["status"] != "scored":
+                    continue
                 candidate_document = result.get(
                     "candidate_document",
                     result["report"],
@@ -182,6 +216,7 @@ def complete_run(
     database_path: Path,
     *,
     run_completed_event: dict[str, Any],
+    status: str = "completed",
 ) -> None:
     engine = create_database_engine(database_path)
     try:
@@ -189,12 +224,13 @@ def complete_run(
             _insert_trace_event(connection, run_completed_event)
             connection.execute(
                 text(
-                    "UPDATE evaluation_runs SET status = 'completed', "
+                    "UPDATE evaluation_runs SET status = :status, "
                     "completed_at = :completed_at WHERE run_id = :run_id"
                 ),
                 {
                     "completed_at": run_completed_event["occurred_at"],
                     "run_id": run_completed_event["run_id"],
+                    "status": status,
                 },
             )
     except SQLAlchemyError as exc:
@@ -214,6 +250,10 @@ def mark_run_failed(
     try:
         with engine.begin() as connection:
             parameters = {"run_id": failure_event["run_id"]}
+            connection.execute(
+                text("DELETE FROM evaluation_case_outcomes WHERE run_id = :run_id"),
+                parameters,
+            )
             connection.execute(
                 text("DELETE FROM evaluation_case_scores WHERE run_id = :run_id"),
                 parameters,
