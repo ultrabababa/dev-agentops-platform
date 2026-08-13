@@ -67,3 +67,20 @@ When delegating:
 - Require concise evidence: relevant paths and symbols, commands or tests run, results, and caveats. Treat a subagent report as input, not as proof; the main agent must inspect the resulting diff and verify important claims before accepting it.
 - For UI bugs, establish the actual service URL and reproduce the problem before assigning a fixer. Browser reproduction and read-only code mapping may run independently, but only one agent should implement the fix after evidence identifies the failing path.
 - Do not delegate merely to reduce use of the main model. Subagents have their own context and tool costs, so use them only when the task structure justifies the coordination overhead.
+
+## Issue worktree workflow
+
+Use one dedicated Git worktree per implementation Issue.
+
+- Keep the primary repository checkout on `main`. Do not implement Issues directly in the primary checkout.
+- Before starting a new Issue, update the primary `main` checkout with `git fetch origin` and a fast-forward-only pull.
+- Create a dedicated branch and worktree from the current `main`. Prefer a worktree directory named `issue-<number>-<slug>`.
+- Keep one primary branch and one primary worktree per Issue unless there is a concrete reason to split the work.
+- Treat the worktree as the ownership boundary for the Issue. Before editing, verify the current worktree path, branch, and working-tree status.
+- If the current checkout is `main` or belongs to another Issue, stop and switch to or create the correct Issue worktree before making changes.
+- Run Claude Code, Codex, or other implementation agents from the Issue worktree, not from the primary `main` checkout.
+- Do not modify another active Issue's worktree.
+- Before removing any worktree, inspect `git status --short`. Never discard tracked, staged, or untracked files without first determining whether they are still needed.
+- After the PR is merged, update `main`, verify the Issue worktree is clean, remove the worktree, prune worktree metadata, and delete the obsolete local and remote Issue branches.
+- If normal branch deletion reports that a branch is not fully merged, do not immediately force-delete it. Verify the PR state and commit ancestry first.
+- Use `/private/tmp` worktrees only for disposable review, reproduction, or experimental work. Use the persistent `dev-agentops-worktrees/` directory for normal Issue implementation.
