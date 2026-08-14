@@ -5,8 +5,8 @@ from pathlib import Path
 import pytest
 
 from devagentops.cli import main
-from devagentops.component_registry import freeze_component
-from devagentops.evaluation_suite import (
+from devagentops.evaluation.components import freeze_component
+from devagentops.evaluation.suite import (
     EvaluationSuiteError,
     calculate_case_fingerprint,
     calculate_suite_fingerprint,

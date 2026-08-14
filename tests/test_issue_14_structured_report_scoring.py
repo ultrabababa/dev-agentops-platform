@@ -5,13 +5,13 @@ from pathlib import Path
 import pytest
 
 from devagentops.cli import main
-from devagentops.evaluation_suite import (
+from devagentops.evaluation.suite import (
     EvaluationSuiteError,
     calculate_case_fingerprint,
     load_case_package,
 )
-from devagentops.scoring import evaluate_case_report
-from devagentops.structured_report import (
+from devagentops.scoring.case import evaluate_case_report
+from devagentops.scoring.report import (
     MIN_RECOMMENDED_ACTION_NON_WHITESPACE_CHARS,
 )
 

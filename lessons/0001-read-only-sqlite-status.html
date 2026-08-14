@@ -32,7 +32,7 @@
   <h1>实现不会创建数据库的 <code>status</code></h1>
   <p class="lede">这一课只学一个工程不变量：<strong>观察状态不应该改变状态</strong>。完成后，你会亲手实现一个只读 SQLite 检查器，并用测试证明它不会制造数据库文件。</p>
 
-  <div class="card warning"><strong>学习规则：</strong>第一次测试通过前，不打开 <code>src/devagentops/storage.py</code>。现成实现是课后的对照答案，不是起点。</div>
+  <div class="card warning"><strong>学习规则：</strong>第一次测试通过前，不打开 <code>src/devagentops/storage/database.py</code>。现成实现是课后的对照答案，不是起点。</div>
 
   <h2>1. 先预测，不运行</h2>
   <p>数据库路径是 <code>/tmp/demo/missing.db</code>，目录和文件都不存在。下面两种实现有何不同？</p>

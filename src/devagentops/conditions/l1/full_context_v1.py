@@ -6,14 +6,14 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from devagentops.component_registry import ComponentManifest
-from devagentops.model_provider import (
+from devagentops.evaluation.components import ComponentManifest
+from devagentops.providers.siliconflow_v1 import (
     ModelProvider,
     ModelRequest,
     ModelResponse,
     TokenCount,
 )
-from devagentops.runtime_workspace import RuntimeCaseWorkspace
+from devagentops.runtime.workspace import RuntimeCaseWorkspace
 
 
 RUNTIME_INPUT_SERIALIZATION_VERSION = "full_context_runtime_input_v1"

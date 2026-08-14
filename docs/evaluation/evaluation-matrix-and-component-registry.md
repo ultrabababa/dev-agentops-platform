@@ -607,5 +607,5 @@ ID 和 Version 负责提供人类可读名称，Fingerprint 负责提供内容�
 - [V1 Failure Type Taxonomy 与 Offline Case Policy](v1-failure-type-taxonomy-and-case-policy.md)
 - [V1 PRD](../prd/devagentops-v1-agentops-evaluation-baseline.md)
 - [Component Manifest 与命令参考](../../components/README.md)
-- 实现：`src/devagentops/evaluation_matrix.py`、`src/devagentops/component_registry.py`、`src/devagentops/evaluation_suite.py`、`src/devagentops/scoring.py`、`src/devagentops/cli.py`
+- 实现：`src/devagentops/evaluation/matrix_v1.py`、`src/devagentops/evaluation/components.py`、`src/devagentops/evaluation/suite.py`、`src/devagentops/scoring/case.py`、`src/devagentops/cli.py`
 - 契约测试：`tests/test_issue_4_evaluation_matrix.py`、`tests/test_issue_5_component_registry.py`、`tests/test_issue_6_evaluation_suite.py`、`tests/test_issue_14_structured_report_scoring.py`、`tests/test_issue_22_case_schema_v2.py`

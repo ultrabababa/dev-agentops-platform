@@ -4,14 +4,14 @@ import sqlite3
 from pathlib import Path
 from types import SimpleNamespace
 
-import devagentops.evaluation_run as evaluation_run
+import devagentops.evaluation.run as evaluation_run
 from devagentops.cli import main
-from devagentops.evaluation_artifacts import EvaluationArtifactError
-from devagentops.evaluation_suite import (
+from devagentops.evaluation.artifacts import EvaluationArtifactError
+from devagentops.evaluation.suite import (
     calculate_case_fingerprint,
     calculate_suite_fingerprint,
 )
-from devagentops.storage import StorageError
+from devagentops.storage.database import StorageError
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]

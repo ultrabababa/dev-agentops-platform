@@ -7,7 +7,7 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
-from devagentops.evaluation_suite import FAILURE_TYPES
+from devagentops.evaluation.suite import FAILURE_TYPES
 
 
 REPORT_SCHEMA_VERSION = "1"

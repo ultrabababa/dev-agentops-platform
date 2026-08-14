@@ -5,19 +5,19 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from devagentops.component_registry import resolve_frozen_component_manifest
-from devagentops.evaluation_artifacts import (
+from devagentops.evaluation.components import resolve_frozen_component_manifest
+from devagentops.evaluation.artifacts import (
     EvaluationArtifactError,
     write_evaluation_artifacts,
 )
-from devagentops.evaluation_persistence import (
+from devagentops.evaluation.persistence import (
     canonical_sha256,
     complete_run,
     mark_run_failed,
     persist_finalizing_run,
 )
-from devagentops.evaluation_preflight import run_formal_eval_doctor
-from devagentops.evaluation_run import (
+from devagentops.evaluation.preflight import run_formal_eval_doctor
+from devagentops.evaluation.run import (
     L1_MODEL_CONFIGURATION,
     L1_PROMPT_VERSION,
     EvaluationRunError,
@@ -27,7 +27,7 @@ from devagentops.evaluation_run import (
     _now,
     _trace_event,
 )
-from devagentops.full_context_one_shot import (
+from devagentops.conditions.l1.full_context_v1 import (
     CONTEXT_LIMIT_TOKENS,
     MAX_OUTPUT_TOKENS,
     RUNTIME_INPUT_SERIALIZATION_VERSION,
@@ -35,17 +35,17 @@ from devagentops.full_context_one_shot import (
     FullContextOneShotError,
     run_full_context_one_shot,
 )
-from devagentops.model_provider import (
+from devagentops.providers.siliconflow_v1 import (
     QWEN3_5_4B_TOKEN_COUNT_METHOD,
     QWEN3_5_4B_TOKENIZER_REVISION,
     QWEN3_5_4B_TOKENIZER_SHA256,
     ModelProviderError,
     create_model_provider,
 )
-from devagentops.runtime_workspace import RuntimeCaseWorkspace, RuntimeWorkspaceError
-from devagentops.scoring import evaluate_case_report
-from devagentops.storage import StorageError, initialize_database
-from devagentops.structured_report import REPORT_SCHEMA_VERSION
+from devagentops.runtime.workspace import RuntimeCaseWorkspace, RuntimeWorkspaceError
+from devagentops.scoring.case import evaluate_case_report
+from devagentops.storage.database import StorageError, initialize_database
+from devagentops.scoring.report import REPORT_SCHEMA_VERSION
 
 
 def run_case_subset_debug(

@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from devagentops.cli import main
-from devagentops.component_registry import (
+from devagentops.evaluation.components import (
     COMPONENT_TYPES,
     ComponentRegistryError,
     component_fingerprint,

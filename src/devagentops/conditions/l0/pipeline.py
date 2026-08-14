@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from devagentops.runtime_workspace import RuntimeCaseWorkspace
+from devagentops.runtime.workspace import RuntimeCaseWorkspace
 
 
 PIPELINE_VERSION = "deterministic_pytest_assertion_v1"

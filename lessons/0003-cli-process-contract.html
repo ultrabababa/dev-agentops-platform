@@ -32,7 +32,7 @@
   <h1>实现 CLI 的进程契约</h1>
   <p class="lede">CLI 是 Runtime 的输入适配器。它不负责数据库细节，只负责把字符串解析成调用、把结果编码成 JSON，并用退出码告诉脚本成功还是失败。</p>
 
-  <div class="card warning"><strong>学习规则：</strong>第一次让三个练习测试通过前，不打开 <code>src/devagentops/cli.py</code>。可以阅读你已经掌握的 <code>storage.py</code>，因为它是这次要调用的下层边界。</div>
+  <div class="card warning"><strong>学习规则：</strong>第一次让三个练习测试通过前，不打开 <code>src/devagentops/cli.py</code>。可以阅读你已经掌握的 <code>storage/database.py</code>，因为它是这次要调用的下层边界。</div>
 
   <h2>0. 先读懂函数签名</h2>
   <pre><code>def main(argv: Sequence[str] | None = None) -&gt; int:</code></pre>

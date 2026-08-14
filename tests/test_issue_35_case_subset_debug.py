@@ -2,12 +2,12 @@ import json
 import sqlite3
 from pathlib import Path
 
-import devagentops.evaluation_debug as evaluation_debug
+import devagentops.evaluation.debug as evaluation_debug
 import pytest
 from devagentops.cli import main
-from devagentops.evaluation_preflight import run_formal_eval_doctor
-from devagentops.evaluation_suite import load_evaluation_suite
-from devagentops.model_provider import ModelProviderError, ModelResponse, TokenCount
+from devagentops.evaluation.preflight import run_formal_eval_doctor
+from devagentops.evaluation.suite import load_evaluation_suite
+from devagentops.providers.siliconflow_v1 import ModelProviderError, ModelResponse, TokenCount
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]

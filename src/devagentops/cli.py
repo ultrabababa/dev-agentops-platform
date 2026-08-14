@@ -6,26 +6,30 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
-from devagentops.component_registry import (
+from devagentops.evaluation.components import (
     ComponentRegistryError,
     freeze_component,
     load_component_manifest,
 )
 from devagentops.config import DEFAULT_DATABASE_PATH
-from devagentops.evaluation_matrix import (
+from devagentops.evaluation.matrix import (
     EvaluationMatrixError,
     load_evaluation_matrix,
 )
-from devagentops.evaluation_debug import run_case_subset_debug
-from devagentops.evaluation_preflight import run_formal_eval_doctor
-from devagentops.evaluation_run import EvaluationRunError, run_evaluation
-from devagentops.evaluation_suite import (
+from devagentops.evaluation.debug import run_case_subset_debug
+from devagentops.evaluation.preflight import run_formal_eval_doctor
+from devagentops.evaluation.run import EvaluationRunError, run_evaluation
+from devagentops.evaluation.suite import (
     EvaluationSuiteError,
     load_case_package,
 )
-from devagentops.scoring import evaluate_case_report
-from devagentops.storage import StorageError, initialize_database, inspect_database
-from devagentops.structured_report import ReportInputError, load_candidate_report_json
+from devagentops.scoring.case import evaluate_case_report
+from devagentops.storage.database import (
+    StorageError,
+    initialize_database,
+    inspect_database,
+)
+from devagentops.scoring.report import ReportInputError, load_candidate_report_json
 
 
 def _database_path(value: str) -> Path:

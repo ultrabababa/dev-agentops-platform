@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from devagentops.evaluation_matrix import EvaluationMatrix, load_evaluation_matrix
-from devagentops.evaluation_suite import (
+from devagentops.evaluation.matrix import EvaluationMatrix, load_evaluation_matrix
+from devagentops.evaluation.suite import (
     EvaluationSuite,
     load_evaluation_suite,
     validate_matrix_suite_references,

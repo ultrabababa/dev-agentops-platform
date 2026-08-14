@@ -5,9 +5,9 @@ from pathlib import Path
 import pytest
 from alembic import command
 
-import devagentops.storage as storage
+import devagentops.storage.database as storage
 from devagentops.cli import main
-from devagentops.storage import StorageError, initialize_database, inspect_database
+from devagentops.storage.database import StorageError, initialize_database, inspect_database
 
 
 def test_initialize_database_creates_schema_and_parent_directories(tmp_path: Path):

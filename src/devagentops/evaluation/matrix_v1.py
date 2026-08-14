@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from devagentops.component_registry import validate_component_references
+from devagentops.evaluation.components import validate_component_references
 
 
 class EvaluationMatrixError(RuntimeError):
