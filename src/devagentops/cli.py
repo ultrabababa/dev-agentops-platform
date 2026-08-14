@@ -16,6 +16,7 @@ from devagentops.evaluation_matrix import (
     EvaluationMatrixError,
     load_evaluation_matrix,
 )
+from devagentops.evaluation_debug import run_case_subset_debug
 from devagentops.evaluation_preflight import run_formal_eval_doctor
 from devagentops.evaluation_run import EvaluationRunError, run_evaluation
 from devagentops.evaluation_suite import (
@@ -150,6 +151,52 @@ def build_parser() -> argparse.ArgumentParser:
         default=Path(".devagentops/evaluation-artifacts"),
         help="Ignored directory for generated JSON and Markdown artifacts.",
     )
+    debug_parser = eval_subcommands.add_parser(
+        "debug",
+        help="Run an explicit L1 Case subset for exploratory diagnosis.",
+    )
+    debug_parser.add_argument(
+        "--matrix",
+        type=Path,
+        required=True,
+        help="Path to a repository-defined L1 debug matrix JSON file.",
+    )
+    debug_parser.add_argument(
+        "--registry",
+        type=Path,
+        required=True,
+        help="Path to the repository component registry used for formal preflight.",
+    )
+    debug_parser.add_argument(
+        "--suite",
+        type=Path,
+        required=True,
+        help="Path to the explicit evaluation suite manifest.",
+    )
+    debug_parser.add_argument(
+        "--condition",
+        required=True,
+        help="ID of the resolved L1 debug condition to run.",
+    )
+    debug_parser.add_argument(
+        "--case",
+        dest="case_ids",
+        action="append",
+        default=[],
+        help="Case ID to include; repeat for an explicit subset.",
+    )
+    debug_parser.add_argument(
+        "--database",
+        type=_database_path,
+        default=DEFAULT_DATABASE_PATH,
+        help=f"SQLite file path (default: {DEFAULT_DATABASE_PATH}).",
+    )
+    debug_parser.add_argument(
+        "--artifacts-dir",
+        type=Path,
+        default=Path(".devagentops/evaluation-artifacts"),
+        help="Ignored directory for generated JSON and Markdown artifacts.",
+    )
 
     component_parser = subcommands.add_parser(
         "component",
@@ -196,6 +243,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    exit_code = 0
 
     try:
         if args.command == "db" and args.db_command == "init":
@@ -238,6 +286,18 @@ def main(argv: Sequence[str] | None = None) -> int:
                 database_path=args.database,
                 artifacts_dir=args.artifacts_dir,
             )
+        elif args.command == "eval" and args.eval_command == "debug":
+            status = run_case_subset_debug(
+                matrix_path=args.matrix,
+                registry_path=args.registry,
+                suite_path=args.suite,
+                condition_id=args.condition,
+                case_ids=args.case_ids,
+                database_path=args.database,
+                artifacts_dir=args.artifacts_dir,
+            )
+            if status["status"] == "completed_with_case_failures":
+                exit_code = 1
         elif args.command == "component" and args.component_command == "validate":
             status = load_component_manifest(args.manifest).validation_result()
         elif args.command == "component" and args.component_command == "freeze":
@@ -273,4 +333,4 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     payload = status if isinstance(status, dict) else status.as_dict()
     print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
-    return 0
+    return exit_code

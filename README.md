@@ -142,6 +142,8 @@ Issue #4 与 #5 共同定义了可复现的正式评测配置：Matrix 解析 De
   --report path/to/report.json
 ```
 
+冻结 Suite 的 L1 子集可以通过 `eval debug` 做探索性调试；完整命令、失败续跑、SQLite outcome 与 Metric Vector preview 语义见 [L1 Case Subset Debug Runs](docs/evaluation/case-subset-debug-runs.md)。该入口不产生 Formal Evaluation、Quality Gate、Leaderboard、Badcase 或 regression 结论。
+
 配置、数据和 Fingerprint 规则见 [Evaluation Matrix、Component Registry 与 Offline Evaluation Suite](docs/evaluation/evaluation-matrix-and-component-registry.md)；Runtime capability attribution 见 [Runtime Capability Ladder 与 Model-backed Diagnostic Conditions](docs/evaluation/runtime-capability-ladder.md)；Evidence Universe、Canonical Evidence 与条件访问语义见 [Formal Evaluation Methodology：Evidence Universe 与 Access Conditions](docs/evaluation/formal-evaluation-methodology.md)；报告校验、单 Case 指标、CLI 和信任边界见 [Structured Triage Report 校验与单 Case 确定性评分](docs/evaluation/structured-triage-report-and-per-case-scoring.md)；Oracle 配对条件与 Gap 解释见 [Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap](docs/evaluation/oracle-evidence-diagnostic-condition.md)。具体 Component Manifest 字段和 Freeze 命令也可查阅 [components/README.md](components/README.md)。
 
 运行后端与前端测试及前端生产构建：

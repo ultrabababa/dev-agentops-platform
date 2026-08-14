@@ -1,0 +1,26 @@
+{
+  "matrix_id": "l1-case-subset-debug",
+  "matrix_version": "1",
+  "schema_version": "1",
+  "conditions": [
+    {
+      "id": "l1-case-subset-debug-v1",
+      "type": "candidate",
+      "runtime_variant": "full_context_one_shot",
+      "suite": "triage-suite-v1",
+      "evaluation_method": "triage-method-v1",
+      "model": {
+        "provider": "siliconflow",
+        "model": "Qwen/Qwen3.5-4B"
+      },
+      "components": {
+        "prompt": "structured-triage-task-contract-v1"
+      },
+      "budgets": {
+        "context_limit_tokens": 262144,
+        "max_output_tokens": 1024
+      },
+      "repeats": 1
+    }
+  ]
+}

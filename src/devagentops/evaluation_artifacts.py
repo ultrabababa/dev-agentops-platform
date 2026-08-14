@@ -51,6 +51,8 @@ def write_evaluation_artifacts(
 
 def _render_markdown(document: dict[str, Any]) -> str:
     manifest = document["manifest"]
+    if manifest.get("run_kind") == "case_subset_debug":
+        return _render_debug_markdown(document)
     if document["status"] == "failed":
         failure = document["failure"]
         trace = "\n".join(
@@ -122,4 +124,114 @@ def _render_markdown(document: dict[str, Any]) -> str:
         f"{metric_rows}\n\n"
         "## Lifecycle Trace\n\n"
         f"{trace}\n"
+    )
+
+
+def _render_debug_markdown(document: dict[str, Any]) -> str:
+    manifest = document["manifest"]
+    results = document["case_results"]
+    scored_count = sum(
+        result["outcome"]["status"] == "scored" for result in results
+    )
+    failed_count = len(results) - scored_count
+    sections = []
+    for result in results:
+        outcome = result["outcome"]
+        lines = [
+            f"## Case `{result['case_id']}`",
+            "",
+            f"- Outcome: `{outcome['status']}`",
+            f"- Suite weight: `{result['weight']}`",
+            f"- Evaluation Failure Type: `{result['evaluation_failure_type']}`",
+        ]
+        if outcome["status"] == "execution_failed":
+            lines.extend(
+                [
+                    f"- Failure code: `{outcome['failure_code']}`",
+                    f"- Failure stage: `{outcome['failure_stage']}`",
+                    "",
+                    outcome["failure_message"],
+                ]
+            )
+        else:
+            lines.extend(
+                [
+                    f"- Report valid: `{result['validation']['valid']}`",
+                    "",
+                    "### Metric Vector",
+                    "",
+                    "| Metric | Value |",
+                    "|---|---:|",
+                    *(
+                        f"| `{name}` | {value} |"
+                        for name, value in result["quality_metrics"].items()
+                    ),
+                ]
+            )
+        sections.append("\n".join(lines))
+    trace = "\n".join(
+        f"{event['sequence']}. `{event['event_type']}`"
+        + (f" — `{event['case_id']}`" if event["case_id"] else "")
+        for event in document["trace"]
+    )
+    preview_section = _render_metric_preview(document["metric_preview"])
+    return (
+        "# DevAgentOps Case Subset Debug Run\n\n"
+        "## Run Summary\n\n"
+        f"- Run ID: `{document['run_id']}`\n"
+        f"- Status: `{document['status']}`\n"
+        f"- Condition: `{manifest['selected_condition_id']}`\n"
+        f"- Runtime: `{manifest['runtime_variant']}`\n"
+        f"- Selected Cases: `{len(results)}`\n"
+        f"- Scored Cases: `{scored_count}`\n"
+        f"- Failed Cases: `{failed_count}`\n"
+        "- Formal Evaluation: `false`\n"
+        "- Quality Gate Qualification: `false`\n\n"
+        + preview_section
+        + "\n\n"
+        + "\n\n".join(sections)
+        + "\n\n## Lifecycle Trace\n\n"
+        + trace
+        + "\n"
+    )
+
+
+def _render_metric_preview(preview: dict[str, Any]) -> str:
+    coverage = preview["coverage"]
+
+    def metric_table(metric_vector: dict[str, Any] | None) -> str:
+        if metric_vector is None:
+            return "No scored Cases are available for this preview."
+        rows = "\n".join(
+            f"| `{name}` | {value} |" for name, value in metric_vector.items()
+        )
+        return "| Metric | Value |\n|---|---:|\n" + rows
+
+    groups = []
+    for group in preview["by_failure_type"]:
+        group_coverage = group["coverage"]
+        groups.append(
+            f"### Failure Type `{group['failure_type']}`\n\n"
+            f"- Selected Cases: `{group_coverage['selected_case_count']}`\n"
+            f"- Scored Cases: `{group_coverage['scored_case_count']}`\n"
+            f"- Failed Cases: `{group_coverage['failed_case_count']}`\n"
+            f"- Selected Weight: `{group_coverage['selected_weight']}`\n"
+            f"- Scored Weight: `{group_coverage['scored_weight']}`\n"
+            f"- Failed Weight: `{group_coverage['failed_weight']}`\n\n"
+            + metric_table(group["metric_vector"])
+        )
+    return (
+        "## Metric Vector Preview\n\n"
+        f"- Status: `{preview['status']}`\n"
+        f"- Selected Cases: `{coverage['selected_case_count']}`\n"
+        f"- Scored Cases: `{coverage['scored_case_count']}`\n"
+        f"- Failed Cases: `{coverage['failed_case_count']}`\n"
+        f"- Selected Weight: `{coverage['selected_weight']}`\n"
+        f"- Scored Weight: `{coverage['scored_weight']}`\n"
+        f"- Failed Weight: `{coverage['failed_weight']}`\n"
+        "- Scope: `debug-only metric preview`\n\n"
+        "### Overall\n\n"
+        + metric_table(preview["overall"]["metric_vector"])
+        + "\n\n"
+        + "\n\n".join(groups)
     )
