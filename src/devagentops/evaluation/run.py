@@ -802,3 +802,21 @@ def _code_revision() -> str:
             code="invalid_code_revision",
         )
     return revision
+
+
+def _git_dirty() -> bool:
+    repository_root = Path(__file__).resolve().parents[3]
+    try:
+        result = subprocess.run(
+            ["git", "status", "--porcelain", "--untracked-files=normal"],
+            cwd=repository_root,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise EvaluationRunError(
+            "could not resolve the evaluation worktree state",
+            code="git_dirty_state_unavailable",
+        ) from exc
+    return bool(result.stdout)

@@ -13,6 +13,11 @@ from devagentops.providers.siliconflow_v1 import (
     ModelResponse,
     TokenCount,
 )
+from devagentops.providers.contracts import (
+    CompletionObservation,
+    CompletionProvider,
+    LogicalCompletionRequest,
+)
 from devagentops.runtime.workspace import RuntimeCaseWorkspace
 
 
@@ -106,7 +111,19 @@ class FullContextOneShotResult:
     prompt_sha256: str
     token_count: TokenCount
     context_limit_tokens: int
-    response: ModelResponse
+    response: ModelResponse | CompletionObservation
+
+
+@dataclass(frozen=True)
+class ConfiguredL1Treatment:
+    provider_id: str
+    model: str
+    reasoning: dict[str, Any]
+    generation: dict[str, Any]
+    context_limit_tokens: int
+    max_completion_tokens: int
+    task_contract_version: str
+    output_contract_prompt_suffix: str
 
 
 def serialize_complete_runtime_input(
@@ -227,5 +244,84 @@ def run_full_context_one_shot(
         prompt_sha256=prompt_sha256,
         token_count=token_count,
         context_limit_tokens=CONTEXT_LIMIT_TOKENS,
+        response=response,
+    )
+
+
+def run_configured_full_context_one_shot(
+    workspace: RuntimeCaseWorkspace,
+    prompt: ComponentManifest,
+    provider: CompletionProvider,
+    treatment: ConfiguredL1Treatment,
+    *,
+    before_model_call: Callable[[dict[str, Any]], None] | None = None,
+) -> FullContextOneShotResult:
+    """Run L1 with an explicit v2 treatment without changing the frozen v1 path."""
+    if prompt.component_type != "prompt" or prompt.component_version != (
+        treatment.task_contract_version
+    ):
+        raise FullContextOneShotError(
+            "configured L1 treatment references a different Task Contract",
+            code="invalid_l1_prompt_component",
+        )
+    if prompt.behavior.get("variables") != ["runtime_input"]:
+        raise FullContextOneShotError(
+            "L1 Task Contract must declare only runtime_input",
+            code="invalid_l1_prompt_variables",
+        )
+    runtime_input = serialize_complete_runtime_input(workspace)
+    try:
+        prompt_text = prompt.behavior["template"].format(
+            runtime_input=runtime_input.text
+        )
+    except (KeyError, ValueError) as exc:
+        raise FullContextOneShotError(
+            "L1 Task Contract could not be rendered",
+            code="l1_prompt_render_failed",
+        ) from exc
+    prompt_text += treatment.output_contract_prompt_suffix
+    request = LogicalCompletionRequest(
+        model=treatment.model,
+        messages=({"role": "user", "content": prompt_text},),
+        reasoning=treatment.reasoning,
+        generation=treatment.generation,
+        tools=None,
+    )
+    token_count = provider.count_input_tokens(request)
+    if (
+        token_count.input_tokens + treatment.max_completion_tokens
+        > treatment.context_limit_tokens
+    ):
+        raise FullContextOneShotError(
+            "complete L1 request exceeds the configured model context capability",
+            code="l1_context_infeasible",
+        )
+    prompt_sha256 = hashlib.sha256(prompt_text.encode("utf-8")).hexdigest()
+    if before_model_call is not None:
+        before_model_call(
+            {
+                "provider": treatment.provider_id,
+                "model": treatment.model,
+                "prompt_sha256": prompt_sha256,
+                "runtime_input_sha256": runtime_input.sha256,
+                "runtime_input_byte_count": runtime_input.byte_count,
+                "input_tokens": token_count.input_tokens,
+                "token_count_method": token_count.method,
+                "max_output_tokens": treatment.max_completion_tokens,
+                "logical_call_number": 1,
+            }
+        )
+    response = provider.complete(request)
+    try:
+        candidate_document: Any = json.loads(response.visible_output)
+    except json.JSONDecodeError:
+        candidate_document = response.visible_output
+    return FullContextOneShotResult(
+        candidate_document=candidate_document,
+        runtime_input=runtime_input,
+        prompt_text=prompt_text,
+        prompt_sha256=prompt_sha256,
+        token_count=token_count,
+        context_limit_tokens=treatment.context_limit_tokens,
         response=response,
     )
