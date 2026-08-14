@@ -39,6 +39,7 @@ from devagentops.evaluation.persistence import (
     persist_failed_run,
     persist_finalizing_sample_run,
 )
+from devagentops.evaluation.progress import EvaluationProgressReporter
 from devagentops.evaluation.trace import TraceRecorder
 from devagentops.providers.minimax_v1 import create_minimax_provider
 from devagentops.scoring.report import REPORT_SCHEMA_VERSION
@@ -107,7 +108,14 @@ def run_formal_evaluation_v2(
         run_configuration_fingerprint=run_configuration_fingerprint,
         planned_sample_count=len(planned_samples),
     )
-    recorder = TraceRecorder(run_id)
+    progress = EvaluationProgressReporter(
+        total_samples=len(planned_samples),
+        max_case_concurrency=execution_policy["max_case_concurrency"],
+    )
+    recorder = TraceRecorder(
+        run_id,
+        event_listener=progress.on_event,
+    )
     recorder.record("run_started", occurred_at=started_at)
     executor = ConfiguredL1ConditionExecutor(
         prompt=prompt,
