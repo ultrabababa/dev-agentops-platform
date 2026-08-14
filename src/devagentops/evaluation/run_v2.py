@@ -9,6 +9,8 @@ from devagentops.conditions.l1.development_output_contract import (
 )
 from devagentops.conditions.l1.executor import ConfiguredL1ConditionExecutor
 from devagentops.conditions.l1.full_context_v1 import ConfiguredL1Treatment
+from devagentops.conditions.l2.development_workflow_v1 import ConfiguredL2Treatment
+from devagentops.conditions.l2.executor import ConfiguredL2ConditionExecutor
 from devagentops.evaluation.aggregation import (
     aggregate_case,
     aggregate_failure_types,
@@ -117,25 +119,60 @@ def run_formal_evaluation_v2(
         event_listener=progress.on_event,
     )
     recorder.record("run_started", occurred_at=started_at)
-    executor = ConfiguredL1ConditionExecutor(
-        prompt=prompt,
-        treatment=ConfiguredL1Treatment(
-            provider_id=treatment["provider"]["id"],
-            model=treatment["model"],
-            reasoning=treatment["reasoning"],
-            generation=treatment["generation"],
-            context_limit_tokens=treatment["context"]["context_window_tokens"],
-            max_completion_tokens=treatment["generation"][
-                "max_completion_tokens"
-            ],
-            task_contract_version=TASK_CONTRACT_VERSION,
-            output_contract_prompt_suffix=output_contract_prompt_suffix(),
-        ),
-        provider_factory=lambda: create_minimax_provider(
-            base_url=treatment["provider"]["base_url"],
-            timeout_seconds=execution_policy["request_timeout_seconds"],
-        ),
+    provider_factory = lambda: create_minimax_provider(
+        base_url=treatment["provider"]["base_url"],
+        timeout_seconds=execution_policy["request_timeout_seconds"],
     )
+
+    runtime_variant = effective["runtime_variant"]
+
+    if runtime_variant == "full_context_one_shot":
+        executor = ConfiguredL1ConditionExecutor(
+            prompt=prompt,
+            treatment=ConfiguredL1Treatment(
+                provider_id=treatment["provider"]["id"],
+                model=treatment["model"],
+                reasoning=treatment["reasoning"],
+                generation=treatment["generation"],
+                context_limit_tokens=treatment["context"][
+                    "context_window_tokens"
+                ],
+                max_completion_tokens=treatment["generation"][
+                    "max_completion_tokens"
+                ],
+                task_contract_version=TASK_CONTRACT_VERSION,
+                output_contract_prompt_suffix=output_contract_prompt_suffix(),
+            ),
+            provider_factory=provider_factory,
+        )
+    elif runtime_variant == "fixed_model_workflow":
+        executor = ConfiguredL2ConditionExecutor(
+            prompt=prompt,
+            treatment=ConfiguredL2Treatment(
+                provider_id=treatment["provider"]["id"],
+                model=treatment["model"],
+                reasoning=treatment["reasoning"],
+                generation=treatment["generation"],
+                context_limit_tokens=treatment["context"][
+                    "context_window_tokens"
+                ],
+                max_completion_tokens=treatment["generation"][
+                    "max_completion_tokens"
+                ],
+                task_contract_version=TASK_CONTRACT_VERSION,
+                final_output_contract_prompt_suffix=(
+                    output_contract_prompt_suffix()
+                ),
+            ),
+            provider_factory=provider_factory,
+        )
+    else:
+        from devagentops.evaluation.run import EvaluationRunError
+
+        raise EvaluationRunError(
+            f"unsupported Matrix v2 formal runtime variant: {runtime_variant}",
+            code="unsupported_v2_runtime_variant",
+        )
     try:
         results = execute_sample_plan(
             planned_samples,
@@ -299,11 +336,25 @@ def _manifest(
     planned_sample_count: int,
 ) -> dict[str, Any]:
     effective = condition.effective_condition
+    runtime_variant = effective["runtime_variant"]
+
+    experiment_identity = (
+        "l1-development-treatment-milestone"
+        if runtime_variant == "full_context_one_shot"
+        else "l2-development-treatment-integration"
+    )
+
+    tool_protocol_reason = (
+        "full_context_one_shot_has_no_tools"
+        if runtime_variant == "full_context_one_shot"
+        else "fixed_model_workflow_has_no_tools"
+    )
+
     return {
         "manifest_schema_version": "2",
         "run_id": run_id,
         "run_kind": "formal_full_suite",
-        "experiment_identity": "l1-development-treatment-milestone",
+        "experiment_identity": experiment_identity,
         "code_revision": code_revision,
         "git_dirty": git_dirty,
         "matrix": {
@@ -354,7 +405,7 @@ def _manifest(
         },
         "tool_call_protocol": {
             "applicability": "not_applicable",
-            "reason": "full_context_one_shot_has_no_tools",
+            "reason": tool_protocol_reason,
         },
         "formal_semantics": {
             "formal_evaluation": True,
