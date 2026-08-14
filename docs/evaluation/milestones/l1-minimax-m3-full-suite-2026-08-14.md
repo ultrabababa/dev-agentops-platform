@@ -88,6 +88,24 @@ Aggregation is Case-first:
 
 Samples are not flattened directly into Suite metrics.
 
+### Suite Weight Normalization
+
+`triage-suite-v1` stores relative unit weights rather than pre-normalized
+probability weights: all 20 Cases have weight `1`, so the frozen configured
+Suite weight is `20.0`.
+
+Suite aggregation therefore uses the fixed configured weighted mean:
+
+`sum(case_metric * frozen_weight) / configured_suite_weight`
+
+The denominator is the frozen configured total and does not change with sample
+success or failure. This is fixed normalization of relative Suite weights, not
+failure-driven renormalization.
+
+Accordingly, `quality_suite_weight_coverage` is reported as available frozen
+weight divided by configured frozen weight, and is `1.0` for this complete
+20-Case Run.
+
 ## By Failure Type
 
 ### `test_assertion_failure`
