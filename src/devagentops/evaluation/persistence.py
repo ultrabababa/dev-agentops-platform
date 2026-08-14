@@ -154,6 +154,145 @@ def persist_finalizing_run(
         engine.dispose()
 
 
+def persist_finalizing_sample_run(
+    database_path: Path,
+    *,
+    manifest: dict[str, Any],
+    trace_events: list[dict[str, Any]],
+    sample_results: list[dict[str, Any]],
+    started_at: str,
+) -> None:
+    sample_sequences = [result["sample_sequence"] for result in sample_results]
+    if sample_sequences != sorted(sample_sequences) or len(sample_sequences) != len(
+        set(sample_sequences)
+    ):
+        raise ValueError("sample results must have unique deterministic sequence order")
+    engine = create_database_engine(database_path)
+    try:
+        with engine.begin() as connection:
+            connection.execute(
+                text(
+                    "INSERT INTO evaluation_runs "
+                    "(run_id, status, condition_id, runtime_variant, suite_id, "
+                    "suite_version, condition_fingerprint, code_revision, started_at) "
+                    "VALUES (:run_id, 'finalizing', :condition_id, :runtime_variant, "
+                    ":suite_id, :suite_version, :condition_fingerprint, "
+                    ":code_revision, :started_at)"
+                ),
+                {
+                    "run_id": manifest["run_id"],
+                    "condition_id": manifest["selected_condition_id"],
+                    "runtime_variant": manifest["runtime_variant"],
+                    "suite_id": manifest["evaluation_suite"]["suite_id"],
+                    "suite_version": manifest["evaluation_suite"]["suite_version"],
+                    "condition_fingerprint": manifest["condition_fingerprint"],
+                    "code_revision": manifest["code_revision"],
+                    "started_at": started_at,
+                },
+            )
+            connection.execute(
+                text(
+                    "INSERT INTO evaluation_run_manifests "
+                    "(run_id, schema_version, manifest_json, manifest_sha256) "
+                    "VALUES (:run_id, :schema_version, :manifest_json, "
+                    ":manifest_sha256)"
+                ),
+                {
+                    "run_id": manifest["run_id"],
+                    "schema_version": manifest["manifest_schema_version"],
+                    "manifest_json": canonical_json(manifest),
+                    "manifest_sha256": canonical_sha256(manifest),
+                },
+            )
+            for event in trace_events:
+                _insert_trace_event(connection, event)
+            case_metadata = {
+                item["case_id"]: item
+                for item in manifest["evaluation_suite"]["cases"]
+            }
+            for result in sample_results:
+                outcome = result["outcome"]
+                parameters = {
+                    "run_id": manifest["run_id"],
+                    "case_id": result["case_id"],
+                    "repeat_index": result["repeat_index"],
+                    "sample_sequence": result["sample_sequence"],
+                    "suite_weight": result.get(
+                        "weight",
+                        case_metadata[result["case_id"]]["weight"],
+                    ),
+                    "evaluation_failure_type": result.get(
+                        "evaluation_failure_type"
+                    ),
+                    "status": outcome["status"],
+                    "failure_code": outcome.get("failure_code"),
+                    "failure_stage": outcome.get("failure_stage"),
+                    "failure_message": outcome.get("failure_message"),
+                }
+                connection.execute(
+                    text(
+                        "INSERT INTO evaluation_sample_outcomes "
+                        "(run_id, case_id, repeat_index, sample_sequence, "
+                        "suite_weight, evaluation_failure_type, status, "
+                        "failure_code, failure_stage, failure_message) VALUES "
+                        "(:run_id, :case_id, :repeat_index, :sample_sequence, "
+                        ":suite_weight, :evaluation_failure_type, :status, "
+                        ":failure_code, :failure_stage, :failure_message)"
+                    ),
+                    parameters,
+                )
+                if outcome["status"] != "scored":
+                    continue
+                candidate_document = result.get(
+                    "candidate_document",
+                    result["report"],
+                )
+                connection.execute(
+                    text(
+                        "INSERT INTO evaluation_sample_reports "
+                        "(run_id, case_id, repeat_index, schema_version, valid, "
+                        "report_json, validation_json, report_sha256) VALUES "
+                        "(:run_id, :case_id, :repeat_index, :schema_version, :valid, "
+                        ":report_json, :validation_json, :report_sha256)"
+                    ),
+                    {
+                        "run_id": manifest["run_id"],
+                        "case_id": result["case_id"],
+                        "repeat_index": result["repeat_index"],
+                        "schema_version": manifest[
+                            "structured_report_schema_version"
+                        ],
+                        "valid": result["validation"]["valid"],
+                        "report_json": canonical_json(candidate_document),
+                        "validation_json": canonical_json(result["validation"]),
+                        "report_sha256": canonical_sha256(candidate_document),
+                    },
+                )
+                connection.execute(
+                    text(
+                        "INSERT INTO evaluation_sample_scores "
+                        "(run_id, case_id, repeat_index, evaluation_method, "
+                        "metrics_json, diagnostics_json) VALUES "
+                        "(:run_id, :case_id, :repeat_index, :evaluation_method, "
+                        ":metrics_json, :diagnostics_json)"
+                    ),
+                    {
+                        "run_id": manifest["run_id"],
+                        "case_id": result["case_id"],
+                        "repeat_index": result["repeat_index"],
+                        "evaluation_method": manifest["evaluation_method"],
+                        "metrics_json": canonical_json(result["quality_metrics"]),
+                        "diagnostics_json": canonical_json(
+                            result["evidence_diagnostics"]
+                        ),
+                    },
+                )
+    except SQLAlchemyError as exc:
+        raise StorageError(f"Failed to persist evaluation sample run: {exc}") from exc
+    finally:
+        engine.dispose()
+
+
 def persist_failed_run(
     database_path: Path,
     *,
@@ -251,6 +390,18 @@ def mark_run_failed(
         with engine.begin() as connection:
             parameters = {"run_id": failure_event["run_id"]}
             connection.execute(
+                text("DELETE FROM evaluation_sample_scores WHERE run_id = :run_id"),
+                parameters,
+            )
+            connection.execute(
+                text("DELETE FROM evaluation_sample_reports WHERE run_id = :run_id"),
+                parameters,
+            )
+            connection.execute(
+                text("DELETE FROM evaluation_sample_outcomes WHERE run_id = :run_id"),
+                parameters,
+            )
+            connection.execute(
                 text("DELETE FROM evaluation_case_outcomes WHERE run_id = :run_id"),
                 parameters,
             )
@@ -293,15 +444,16 @@ def _insert_trace_event(connection, event: dict[str, Any]) -> None:
     connection.execute(
         text(
             "INSERT INTO evaluation_trace_events "
-            "(run_id, sequence, event_type, case_id, occurred_at, payload_json) "
-            "VALUES (:run_id, :sequence, :event_type, :case_id, :occurred_at, "
-            ":payload_json)"
+            "(run_id, sequence, event_type, case_id, repeat_index, occurred_at, "
+            "payload_json) VALUES (:run_id, :sequence, :event_type, :case_id, "
+            ":repeat_index, :occurred_at, :payload_json)"
         ),
         {
             "run_id": event["run_id"],
             "sequence": event["sequence"],
             "event_type": event["event_type"],
             "case_id": event["case_id"],
+            "repeat_index": event.get("repeat_index"),
             "occurred_at": event["occurred_at"],
             "payload_json": canonical_json(event["payload"]),
         },

@@ -519,7 +519,7 @@ def test_debug_continues_after_case_execution_failure_and_returns_non_success(
     with sqlite3.connect(database_path) as connection:
         assert connection.execute(
             "SELECT value FROM devagentops_metadata WHERE key = 'schema_version'"
-        ).fetchone() == ("3",)
+        ).fetchone() == ("4",)
         assert connection.execute(
             "SELECT status FROM evaluation_runs"
         ).fetchone() == ("completed_with_case_failures",)

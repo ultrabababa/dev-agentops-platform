@@ -72,8 +72,8 @@
         }
       },
       "execution_policy": {
-        "repeat_count": 1,
-        "max_case_concurrency": 1,
+        "repeat_count": 3,
+        "max_case_concurrency": 6,
         "retry_count": 0,
         "request_timeout_seconds": 600
       }

@@ -128,6 +128,8 @@ def _render_markdown(document: dict[str, Any]) -> str:
 
 
 def _render_debug_markdown(document: dict[str, Any]) -> str:
+    if "sample_results" in document:
+        return _render_sample_debug_markdown(document)
     manifest = document["manifest"]
     results = document["case_results"]
     scored_count = sum(
@@ -223,6 +225,112 @@ def _render_debug_markdown(document: dict[str, Any]) -> str:
         "- Quality Gate Qualification: `false`\n\n"
         + preview_section
         + "\n\n"
+        + "\n\n".join(sections)
+        + "\n\n## Lifecycle Trace\n\n"
+        + trace
+        + "\n"
+    )
+
+
+def _render_sample_debug_markdown(document: dict[str, Any]) -> str:
+    manifest = document["manifest"]
+    results = document["sample_results"]
+    scored_count = sum(
+        result["outcome"]["status"] == "scored" for result in results
+    )
+    failed_count = len(results) - scored_count
+    sections: list[str] = []
+    for result in results:
+        outcome = result["outcome"]
+        lines = [
+            (
+                f"## Sample `{result['sample_sequence']}` — Case "
+                f"`{result['case_id']}` Repeat `{result['repeat_index']}`"
+            ),
+            "",
+            f"- Outcome: `{outcome['status']}`",
+            f"- Suite weight: `{result['weight']}`",
+            f"- Evaluation Failure Type: `{result['evaluation_failure_type']}`",
+        ]
+        if outcome["status"] == "execution_failed":
+            lines.extend(
+                [
+                    f"- Failure code: `{outcome['failure_code']}`",
+                    f"- Failure stage: `{outcome['failure_stage']}`",
+                    "",
+                    outcome["failure_message"],
+                ]
+            )
+        else:
+            observation = result["provider_observation"]
+            assessment = result["context_assessment"]
+            lines.extend(
+                [
+                    f"- Report valid: `{result['validation']['valid']}`",
+                    "",
+                    "### Sample Metric Vector",
+                    "",
+                    "| Metric | Value |",
+                    "|---|---:|",
+                    *(
+                        f"| `{name}` | {value} |"
+                        for name, value in result["quality_metrics"].items()
+                    ),
+                    "",
+                    "### Provider Observation",
+                    "",
+                    f"- Provider request ID: `{observation['provider_request_id']}`",
+                    f"- Returned model: `{observation['returned_model']}`",
+                    f"- Usage: `{json.dumps(observation['usage'], sort_keys=True)}`",
+                    f"- Finish reason: `{observation['finish_reason']}`",
+                    f"- Latency milliseconds: `{observation['latency_ms']}`",
+                    f"- Exact local input tokens: `{assessment['input_tokens']}`",
+                    f"- Token-count method: `{assessment['method']}`",
+                    "- Reasoning metadata: "
+                    f"`{json.dumps(observation['reasoning'], sort_keys=True)}`",
+                ]
+            )
+        sections.append("\n".join(lines))
+    trace = "\n".join(
+        f"{event['sequence']}. `{event['event_type']}`"
+        + (f" — `{event['case_id']}`" if event["case_id"] else "")
+        + (
+            f" repeat `{event['repeat_index']}`"
+            if event.get("repeat_index") is not None
+            else ""
+        )
+        for event in document["trace"]
+    )
+    preview = document["metric_preview"]
+    coverage = preview["coverage"]
+    return (
+        "# DevAgentOps Repeated Sample Debug Run\n\n"
+        "## Run Summary\n\n"
+        f"- Run ID: `{document['run_id']}`\n"
+        f"- Status: `{document['status']}`\n"
+        f"- Condition: `{manifest['selected_condition_id']}`\n"
+        f"- Runtime: `{manifest['runtime_variant']}`\n"
+        f"- Matrix schema: `{manifest['matrix']['schema_version']}`\n"
+        f"- Provider: `{manifest['treatment']['provider']['id']}`\n"
+        f"- Model: `{manifest['treatment']['model']}`\n"
+        f"- Treatment fingerprint: `{manifest['treatment_fingerprint']}`\n"
+        f"- Condition fingerprint: `{manifest['condition_fingerprint']}`\n"
+        f"- Execution policy fingerprint: "
+        f"`{manifest['execution_policy_fingerprint']}`\n"
+        f"- Run configuration fingerprint: "
+        f"`{manifest['run_configuration_fingerprint']}`\n"
+        f"- Code revision: `{manifest['code_revision']}`\n"
+        f"- Git dirty: `{str(manifest['git_dirty']).lower()}`\n"
+        f"- Selected Cases: `{len(manifest['case_selection']['case_ids'])}`\n"
+        f"- Planned Samples: `{coverage['planned_sample_count']}`\n"
+        f"- Scored Samples: `{scored_count}`\n"
+        f"- Failed Samples: `{failed_count}`\n"
+        "- Formal Evaluation: `false`\n"
+        "- Quality Gate Qualification: `false`\n\n"
+        "## Aggregation\n\n"
+        f"- Status: `{preview['status']}`\n"
+        f"- Scope: `{preview['scope']}`\n"
+        f"- Reason: {preview['reason']}\n\n"
         + "\n\n".join(sections)
         + "\n\n## Lifecycle Trace\n\n"
         + trace
