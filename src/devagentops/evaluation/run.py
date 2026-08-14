@@ -106,6 +106,17 @@ def run_evaluation(
             f"evaluation condition does not exist: {condition_id}",
             code="unknown_evaluation_condition",
         )
+    if preflight.matrix.schema_version == "2":
+        from devagentops.evaluation.run_v2 import run_formal_evaluation_v2
+
+        return run_formal_evaluation_v2(
+            matrix=preflight.matrix,
+            suite=preflight.suite,
+            condition=condition,
+            registry_path=registry_path,
+            database_path=database_path,
+            artifacts_dir=artifacts_dir,
+        )
     condition_identity = condition.as_dict()
     effective = condition.effective_condition
     runtime_variant = effective["runtime_variant"]

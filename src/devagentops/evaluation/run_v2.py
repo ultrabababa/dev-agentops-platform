@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -8,8 +7,13 @@ from uuid import uuid4
 from devagentops.conditions.l1.development_output_contract import (
     output_contract_prompt_suffix,
 )
-from devagentops.conditions.l1.full_context_v1 import ConfiguredL1Treatment
 from devagentops.conditions.l1.executor import ConfiguredL1ConditionExecutor
+from devagentops.conditions.l1.full_context_v1 import ConfiguredL1Treatment
+from devagentops.evaluation.aggregation import (
+    aggregate_case,
+    aggregate_failure_types,
+    aggregate_suite,
+)
 from devagentops.evaluation.artifacts import (
     EvaluationArtifactError,
     write_evaluation_artifacts,
@@ -19,15 +23,15 @@ from devagentops.evaluation.development_treatment import (
     TASK_CONTRACT_VERSION,
     validate_minimax_development_condition,
 )
-from devagentops.evaluation.matrix_v2 import (
-    EvaluationMatrixV2,
-    ResolvedConditionV2,
-    calculate_run_configuration_fingerprint,
-)
 from devagentops.evaluation.execution import (
     ExecutionPolicy,
     execute_sample_plan,
     plan_samples,
+)
+from devagentops.evaluation.matrix_v2 import (
+    EvaluationMatrixV2,
+    ResolvedConditionV2,
+    calculate_run_configuration_fingerprint,
 )
 from devagentops.evaluation.persistence import (
     complete_run,
@@ -35,54 +39,52 @@ from devagentops.evaluation.persistence import (
     persist_failed_run,
     persist_finalizing_sample_run,
 )
-from devagentops.evaluation.run import (
-    EvaluationRunError,
-    _code_revision,
-    _failure_event,
-    _git_dirty,
-    _now,
-)
 from devagentops.evaluation.trace import TraceRecorder
-from devagentops.providers.minimax_v1 import (
-    create_minimax_provider,
-)
+from devagentops.providers.minimax_v1 import create_minimax_provider
 from devagentops.scoring.report import REPORT_SCHEMA_VERSION
 from devagentops.storage.database import StorageError, initialize_database
 
 
-def run_case_subset_debug_v2(
+def run_formal_evaluation_v2(
     *,
     matrix: EvaluationMatrixV2,
     suite,
     condition: ResolvedConditionV2,
-    selected_cases: Sequence,
     registry_path: Path,
     database_path: Path,
     artifacts_dir: Path,
 ) -> dict[str, Any]:
     effective = condition.effective_condition
-    validate_minimax_development_condition(effective, len(selected_cases))
+    validate_minimax_development_condition(effective, len(suite.cases))
+    if effective["suite"] != suite.suite_id:
+        from devagentops.evaluation.run import EvaluationRunError
+
+        raise EvaluationRunError(
+            "Matrix v2 formal condition does not reference the loaded Suite",
+            code="formal_suite_mismatch",
+        )
     treatment = effective["treatment"]
     execution_policy = effective["execution_policy"]
-    selected_case_ids = [suite_case.case_id for suite_case in selected_cases]
     code_revision = _code_revision()
     git_dirty = _git_dirty()
+    selected_cases = [
+        {
+            "case_id": item.case_id,
+            "case_fingerprint": item.package.case_fingerprint,
+            "weight": item.weight,
+        }
+        for item in suite.cases
+    ]
     run_configuration_fingerprint = calculate_run_configuration_fingerprint(
         matrix,
         condition,
         suite_fingerprint=suite.suite_fingerprint,
-        selected_cases=[
-            {
-                "case_id": item.case_id,
-                "case_fingerprint": item.package.case_fingerprint,
-                "weight": item.weight,
-            }
-            for item in selected_cases
-        ],
+        selected_cases=selected_cases,
         code_revision=code_revision,
         git_dirty=git_dirty,
+        run_kind="formal_full_suite",
     )
-    task_contract_prompt = resolve_frozen_component_manifest(
+    prompt = resolve_frozen_component_manifest(
         registry_path,
         "prompt",
         TASK_CONTRACT_VERSION,
@@ -92,14 +94,13 @@ def run_case_subset_debug_v2(
     started_at = _now()
     planned_samples = plan_samples(
         run_id=run_id,
-        suite_cases=selected_cases,
+        suite_cases=suite.cases,
         repeat_count=execution_policy["repeat_count"],
     )
     manifest = _manifest(
         matrix=matrix,
         suite=suite,
         condition=condition,
-        selected_case_ids=selected_case_ids,
         run_id=run_id,
         code_revision=code_revision,
         git_dirty=git_dirty,
@@ -108,19 +109,20 @@ def run_case_subset_debug_v2(
     )
     recorder = TraceRecorder(run_id)
     recorder.record("run_started", occurred_at=started_at)
-    configured_treatment = ConfiguredL1Treatment(
-        provider_id=treatment["provider"]["id"],
-        model=treatment["model"],
-        reasoning=treatment["reasoning"],
-        generation=treatment["generation"],
-        context_limit_tokens=treatment["context"]["context_window_tokens"],
-        max_completion_tokens=treatment["generation"]["max_completion_tokens"],
-        task_contract_version=TASK_CONTRACT_VERSION,
-        output_contract_prompt_suffix=output_contract_prompt_suffix(),
-    )
     executor = ConfiguredL1ConditionExecutor(
-        prompt=task_contract_prompt,
-        treatment=configured_treatment,
+        prompt=prompt,
+        treatment=ConfiguredL1Treatment(
+            provider_id=treatment["provider"]["id"],
+            model=treatment["model"],
+            reasoning=treatment["reasoning"],
+            generation=treatment["generation"],
+            context_limit_tokens=treatment["context"]["context_window_tokens"],
+            max_completion_tokens=treatment["generation"][
+                "max_completion_tokens"
+            ],
+            task_contract_version=TASK_CONTRACT_VERSION,
+            output_contract_prompt_suffix=output_contract_prompt_suffix(),
+        ),
         provider_factory=lambda: create_minimax_provider(
             base_url=treatment["provider"]["base_url"],
             timeout_seconds=execution_policy["request_timeout_seconds"],
@@ -137,60 +139,74 @@ def run_case_subset_debug_v2(
                 retry_count=execution_policy["retry_count"],
             ),
         )
+        sample_results = [result.data for result in results]
+        by_case = {
+            suite_case.case_id: [
+                result
+                for result in sample_results
+                if result["case_id"] == suite_case.case_id
+            ]
+            for suite_case in suite.cases
+        }
+        case_aggregates = tuple(
+            aggregate_case(run_id, suite_case, by_case[suite_case.case_id])
+            for suite_case in suite.cases
+        )
+        suite_aggregate = aggregate_suite(run_id, suite, case_aggregates)
+        failure_type_aggregates = aggregate_failure_types(
+            run_id,
+            suite,
+            case_aggregates,
+        )
     except Exception as exc:
-        failure_message = (
-            "Condition execution stopped because of an unexpected run-level error"
-        )
-        recorder.record(
-            "failure",
-            payload={"code": "execution_engine_failed", "stage": "execution_engine"},
-        )
-        persist_failed_run(
+        _persist_run_level_failure(
             database_path,
-            manifest=manifest,
-            trace_events=list(recorder.snapshot()),
-            started_at=started_at,
-            failure_code="execution_engine_failed",
-            failure_message=failure_message,
+            manifest,
+            recorder,
+            started_at,
+            code="formal_execution_failed",
+            stage="formal_execution",
         )
+        from devagentops.evaluation.run import EvaluationRunError
+
         raise EvaluationRunError(
-            failure_message,
-            code="execution_engine_failed",
+            "Formal Matrix v2 execution stopped because of a run-level error",
+            code="formal_execution_failed",
         ) from exc
-    sample_results = [result.data for result in results]
+
     failed_count = sum(result.status == "execution_failed" for result in results)
-    scored_count = len(results) - failed_count
     final_status = (
         "completed" if failed_count == 0 else "completed_with_sample_failures"
     )
-    metric_preview = {
-        "status": "aggregation_deferred",
-        "scope": "sample_level_only",
-        "reason": "Sample-to-Case-to-Suite aggregation is deferred",
-        "coverage": {
-            "planned_sample_count": len(results),
-            "scored_sample_count": scored_count,
-            "failed_sample_count": failed_count,
-        },
-    }
     run_completed_event = recorder.record(
         "run_completed",
         payload={
             "status": final_status,
-            "selected_case_count": len(selected_cases),
+            "case_count": len(suite.cases),
             "planned_sample_count": len(results),
-            "scored_sample_count": scored_count,
+            "scored_sample_count": len(results) - failed_count,
             "failed_sample_count": failed_count,
+            "suite_quality_status": suite_aggregate.quality_status,
         },
     )
     trace = list(recorder.snapshot())
-    persist_finalizing_sample_run(
-        database_path,
-        manifest=manifest,
-        trace_events=trace[:-1],
-        sample_results=sample_results,
-        started_at=started_at,
-    )
+    try:
+        persist_finalizing_sample_run(
+            database_path,
+            manifest=manifest,
+            trace_events=trace[:-1],
+            sample_results=sample_results,
+            started_at=started_at,
+            case_aggregates=[item.as_dict() for item in case_aggregates],
+            suite_aggregate=suite_aggregate.as_dict(),
+            failure_type_aggregates=[
+                item.as_dict() for item in failure_type_aggregates
+            ],
+        )
+    except StorageError as exc:
+        from devagentops.evaluation.run import EvaluationRunError
+
+        raise EvaluationRunError(str(exc), code="run_persistence_failed") from exc
     try:
         complete_run(
             database_path,
@@ -198,6 +214,8 @@ def run_case_subset_debug_v2(
             status=final_status,
         )
     except StorageError as exc:
+        from devagentops.evaluation.run import EvaluationRunError, _failure_event
+
         failure_event = _failure_event(
             trace[:-1],
             run_id,
@@ -210,20 +228,27 @@ def run_case_subset_debug_v2(
             failure_code="run_finalization_failed",
             failure_message=str(exc),
         )
+
         raise EvaluationRunError(str(exc), code="run_finalization_failed") from exc
 
     document = {
-        "artifact_schema_version": "2",
+        "artifact_schema_version": "3",
         "run_id": run_id,
         "status": final_status,
         "manifest": manifest,
         "trace": trace,
         "sample_results": sample_results,
-        "metric_preview": metric_preview,
+        "case_aggregates": [item.as_dict() for item in case_aggregates],
+        "suite_aggregate": suite_aggregate.as_dict(),
+        "failure_type_aggregates": [
+            item.as_dict() for item in failure_type_aggregates
+        ],
     }
     try:
         artifact_paths = write_evaluation_artifacts(artifacts_dir, document)
     except EvaluationArtifactError as exc:
+        from devagentops.evaluation.run import EvaluationRunError, _failure_event
+
         failure_event = _failure_event(
             trace,
             run_id,
@@ -241,8 +266,9 @@ def run_case_subset_debug_v2(
         "status": final_status,
         "run_id": run_id,
         "condition_id": condition.condition_id,
-        "selected_case_ids": selected_case_ids,
-        "metric_preview": metric_preview,
+        "case_count": len(suite.cases),
+        "planned_sample_count": len(results),
+        "suite_quality_status": suite_aggregate.quality_status,
         "fingerprints": {
             "treatment": condition.treatment_fingerprint,
             "condition": condition.condition_fingerprint,
@@ -258,7 +284,6 @@ def _manifest(
     matrix: EvaluationMatrixV2,
     suite,
     condition: ResolvedConditionV2,
-    selected_case_ids: list[str],
     run_id: str,
     code_revision: str,
     git_dirty: bool,
@@ -269,7 +294,8 @@ def _manifest(
     return {
         "manifest_schema_version": "2",
         "run_id": run_id,
-        "run_kind": "case_subset_debug",
+        "run_kind": "formal_full_suite",
+        "experiment_identity": "l1-development-treatment-milestone",
         "code_revision": code_revision,
         "git_dirty": git_dirty,
         "matrix": {
@@ -298,11 +324,17 @@ def _manifest(
                     "case_schema_version": item.package.case_schema_version,
                     "case_fingerprint": item.package.case_fingerprint,
                     "weight": item.weight,
+                    "failure_type": (
+                        item.package.expected_answer.primary_failure_type
+                    ),
                 }
                 for item in suite.cases
             ],
         },
-        "case_selection": {"mode": "explicit_subset", "case_ids": selected_case_ids},
+        "case_selection": {
+            "mode": "full_suite",
+            "case_ids": [item.case_id for item in suite.cases],
+        },
         "sample_plan": {
             "planned_sample_count": planned_sample_count,
             "ordering": "suite_case_order_then_repeat_index",
@@ -316,9 +348,48 @@ def _manifest(
             "applicability": "not_applicable",
             "reason": "full_context_one_shot_has_no_tools",
         },
-        "debug_semantics": {
-            "formal_evaluation": False,
-            "quality_gate_qualification": False,
+        "formal_semantics": {
+            "formal_evaluation": True,
+            "full_suite": True,
             "leaderboard_eligible": False,
+            "final_benchmark_freeze": False,
         },
     }
+
+
+def _persist_run_level_failure(
+    database_path: Path,
+    manifest: dict[str, Any],
+    recorder: TraceRecorder,
+    started_at: str,
+    *,
+    code: str,
+    stage: str,
+) -> None:
+    recorder.record("failure", payload={"code": code, "stage": stage})
+    persist_failed_run(
+        database_path,
+        manifest=manifest,
+        trace_events=list(recorder.snapshot()),
+        started_at=started_at,
+        failure_code=code,
+        failure_message="Formal Matrix v2 run failed before finalization",
+    )
+
+
+def _code_revision() -> str:
+    from devagentops.evaluation.run import _code_revision as historical_code_revision
+
+    return historical_code_revision()
+
+
+def _git_dirty() -> bool:
+    from devagentops.evaluation.run import _git_dirty as historical_git_dirty
+
+    return historical_git_dirty()
+
+
+def _now() -> str:
+    from devagentops.evaluation.run import _now as historical_now
+
+    return historical_now()

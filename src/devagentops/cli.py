@@ -290,6 +290,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 database_path=args.database,
                 artifacts_dir=args.artifacts_dir,
             )
+            if status["status"] == "completed_with_sample_failures":
+                exit_code = 1
         elif args.command == "eval" and args.eval_command == "debug":
             status = run_case_subset_debug(
                 matrix_path=args.matrix,

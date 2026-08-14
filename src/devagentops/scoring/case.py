@@ -31,6 +31,9 @@ class CaseQualityMetrics:
         }
 
 
+CASE_QUALITY_METRIC_NAMES = tuple(CaseQualityMetrics.__dataclass_fields__)
+
+
 @dataclass(frozen=True)
 class EvidenceDiagnostics:
     """Counts only; unknown_evidence_count is the number of distinct unknown IDs."""

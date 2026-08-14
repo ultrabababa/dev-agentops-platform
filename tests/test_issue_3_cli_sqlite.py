@@ -18,7 +18,7 @@ def test_initialize_database_creates_schema_and_parent_directories(tmp_path: Pat
     assert database_path.is_file()
     assert status.exists is True
     assert status.initialized is True
-    assert status.schema_version == "4"
+    assert status.schema_version == "5"
     assert "alembic_version" in status.tables
     assert "devagentops_metadata" in status.tables
     assert {
@@ -28,6 +28,9 @@ def test_initialize_database_creates_schema_and_parent_directories(tmp_path: Pat
         "evaluation_sample_outcomes",
         "evaluation_sample_reports",
         "evaluation_sample_scores",
+        "evaluation_case_aggregates",
+        "evaluation_suite_aggregates",
+        "evaluation_failure_type_aggregates",
         "evaluation_trace_events",
     } <= set(status.tables)
 
@@ -43,10 +46,10 @@ def test_initialize_database_is_idempotent(tmp_path: Path):
         metadata_rows = connection.execute(
             "SELECT key, value FROM devagentops_metadata"
         ).fetchall()
-    assert metadata_rows == [("schema_version", "4")]
+    assert metadata_rows == [("schema_version", "5")]
 
 
-def test_schema_2_database_with_existing_run_upgrades_to_schema_4(tmp_path: Path):
+def test_schema_2_database_with_existing_run_upgrades_to_schema_5(tmp_path: Path):
     database_path = tmp_path / "devagentops.db"
     config = storage._alembic_config(database_path)
     command.upgrade(config, "0002")
@@ -72,7 +75,7 @@ def test_schema_2_database_with_existing_run_upgrades_to_schema_4(tmp_path: Path
 
     status = initialize_database(database_path)
 
-    assert status.schema_version == "4"
+    assert status.schema_version == "5"
     assert {
         "evaluation_case_outcomes",
         "evaluation_sample_outcomes",
@@ -87,7 +90,7 @@ def test_schema_2_database_with_existing_run_upgrades_to_schema_4(tmp_path: Path
         ]
 
 
-def test_schema_3_database_with_existing_case_outcome_upgrades_to_schema_4(
+def test_schema_3_database_with_existing_case_outcome_upgrades_to_schema_5(
     tmp_path: Path,
 ):
     database_path = tmp_path / "devagentops.db"
@@ -142,7 +145,7 @@ def test_schema_3_database_with_existing_case_outcome_upgrades_to_schema_4(
 
     status = initialize_database(database_path)
 
-    assert status.schema_version == "4"
+    assert status.schema_version == "5"
     with sqlite3.connect(database_path) as connection:
         assert connection.execute(
             "SELECT run_id, status FROM evaluation_runs"
@@ -174,7 +177,7 @@ def test_schema_3_database_with_existing_case_outcome_upgrades_to_schema_4(
         ]
 
 
-def test_schema_4_sample_tables_are_queryable_without_changing_historical_tables(
+def test_schema_5_sample_tables_are_queryable_without_changing_historical_tables(
     tmp_path: Path,
 ):
     database_path = tmp_path / "devagentops.db"
@@ -336,6 +339,78 @@ def test_schema_4_downgrade_removes_sample_columns_and_tables(tmp_path: Path):
             )
         }
     assert "repeat_index" not in trace_columns
+
+
+def test_schema_4_to_5_preserves_raw_samples_and_schema_5_downgrades_cleanly(
+    tmp_path: Path,
+):
+    database_path = tmp_path / "devagentops.db"
+    config = storage._alembic_config(database_path)
+    command.upgrade(config, "0004")
+    run_id = "00000000-0000-0000-0000-000000000005"
+    with sqlite3.connect(database_path) as connection:
+        connection.execute(
+            "INSERT INTO evaluation_runs "
+            "(run_id, status, condition_id, runtime_variant, suite_id, "
+            "suite_version, condition_fingerprint, code_revision, started_at) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                run_id,
+                "completed_with_sample_failures",
+                "condition",
+                "full_context_one_shot",
+                "suite",
+                "1",
+                "a" * 64,
+                "b" * 40,
+                "2026-08-13T00:00:00Z",
+            ),
+        )
+        connection.execute(
+            "INSERT INTO evaluation_sample_outcomes "
+            "(run_id, case_id, repeat_index, sample_sequence, suite_weight, "
+            "status, failure_code, failure_stage, failure_message) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                run_id,
+                "case-a",
+                0,
+                1,
+                1.0,
+                "execution_failed",
+                "provider_error",
+                "provider",
+                "sanitized",
+            ),
+        )
+
+    status = initialize_database(database_path)
+
+    assert status.schema_version == "5"
+    assert {
+        "evaluation_case_aggregates",
+        "evaluation_suite_aggregates",
+        "evaluation_failure_type_aggregates",
+    } <= set(status.tables)
+    with sqlite3.connect(database_path) as connection:
+        assert connection.execute(
+            "SELECT case_id, repeat_index, status FROM evaluation_sample_outcomes"
+        ).fetchall() == [("case-a", 0, "execution_failed")]
+        assert connection.execute(
+            "SELECT COUNT(*) FROM evaluation_case_aggregates"
+        ).fetchone() == (0,)
+
+    command.downgrade(config, "0004")
+
+    status = inspect_database(database_path)
+    assert status.schema_version == "4"
+    assert "evaluation_case_aggregates" not in status.tables
+    assert "evaluation_suite_aggregates" not in status.tables
+    assert "evaluation_failure_type_aggregates" not in status.tables
+    with sqlite3.connect(database_path) as connection:
+        assert connection.execute(
+            "SELECT case_id, repeat_index, status FROM evaluation_sample_outcomes"
+        ).fetchall() == [("case-a", 0, "execution_failed")]
 
 
 def test_database_directory_is_rejected_as_an_invalid_path(tmp_path: Path):

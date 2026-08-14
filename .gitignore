@@ -9,4 +9,5 @@ __pycache__/
 *.py[cod]
 build/
 dist/
+artifacts/evaluation-milestones/
 docs/issues-notes/

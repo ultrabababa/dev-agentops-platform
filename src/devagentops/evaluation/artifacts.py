@@ -51,6 +51,8 @@ def write_evaluation_artifacts(
 
 def _render_markdown(document: dict[str, Any]) -> str:
     manifest = document["manifest"]
+    if manifest.get("run_kind") == "formal_full_suite":
+        return _render_formal_v2_markdown(document)
     if manifest.get("run_kind") == "case_subset_debug":
         return _render_debug_markdown(document)
     if document["status"] == "failed":
@@ -230,6 +232,146 @@ def _render_debug_markdown(document: dict[str, Any]) -> str:
         + trace
         + "\n"
     )
+
+
+def _render_formal_v2_markdown(document: dict[str, Any]) -> str:
+    manifest = document["manifest"]
+    suite = document["suite_aggregate"]
+    samples = document["sample_results"]
+    failed = [
+        sample for sample in samples if sample["outcome"]["status"] == "execution_failed"
+    ]
+    invalid = [
+        sample
+        for sample in samples
+        if sample["outcome"]["status"] == "scored"
+        and not sample["validation"]["valid"]
+    ]
+    suite_metrics = _metric_table(suite["metric_vector"])
+    type_sections = []
+    for aggregate in document["failure_type_aggregates"]:
+        type_sections.append(
+            f"### `{aggregate['failure_type']}`\n\n"
+            f"- Cases: `{aggregate['case_count']}`\n"
+            f"- Configured Suite weight: `{aggregate['configured_suite_weight']}`\n"
+            f"- Execution coverage: `{aggregate['execution_coverage']}`\n"
+            f"- Protocol validity: `{aggregate['protocol_validity_rate']}`\n"
+            f"- Quality Case coverage: `{aggregate['quality_case_coverage']}`\n"
+            f"- Quality status: `{aggregate['quality_status']}`\n\n"
+            + _metric_table(aggregate["metric_vector"])
+        )
+    case_rows = "\n".join(
+        "| `{case_id}` | `{failure_type}` | {suite_weight} | {scored}/"
+        "{requested} | {execution_coverage} | {protocol_validity_rate} | "
+        "`{quality_status}` |".format(
+            case_id=item["case_id"],
+            failure_type=item["failure_type"],
+            suite_weight=item["suite_weight"],
+            scored=item["scored_sample_count"],
+            requested=item["requested_sample_count"],
+            execution_coverage=item["execution_coverage"],
+            protocol_validity_rate=item["protocol_validity_rate"],
+            quality_status=item["quality_status"],
+        )
+        for item in document["case_aggregates"]
+    )
+    case_details = "\n\n".join(
+        f"### `{item['case_id']}`\n\n"
+        f"- Case fingerprint: `{item['case_fingerprint']}`\n"
+        f"- Scored repeat indices: "
+        f"`{json.dumps(item['scored_repeat_indices'])}`\n"
+        f"- Failed repeat indices: "
+        f"`{json.dumps(item['failed_repeat_indices'])}`\n"
+        f"- Aggregation: `{item['aggregation_method']}` "
+        f"version `{item['aggregation_version']}`\n\n"
+        + _metric_table(item["metric_vector"])
+        for item in document["case_aggregates"]
+    )
+    failure_lines = "\n".join(
+        f"- Case `{sample['case_id']}` repeat `{sample['repeat_index']}`: "
+        f"`{sample['outcome']['failure_code']}` at "
+        f"`{sample['outcome']['failure_stage']}`"
+        for sample in failed
+    ) or "- None"
+    invalid_lines = "\n".join(
+        f"- Case `{sample['case_id']}` repeat `{sample['repeat_index']}`"
+        for sample in invalid
+    ) or "- None"
+    trace_lines = "\n".join(
+        f"{event['sequence']}. `{event['event_type']}`"
+        + (f" — `{event['case_id']}`" if event["case_id"] else "")
+        + (
+            f" repeat `{event['repeat_index']}`"
+            if event.get("repeat_index") is not None
+            else ""
+        )
+        for event in document["trace"]
+    )
+    return (
+        "# DevAgentOps Formal L1 Milestone Evaluation\n\n"
+        "## Run Identity\n\n"
+        f"- Run ID: `{document['run_id']}`\n"
+        f"- Status: `{document['status']}`\n"
+        f"- Code revision: `{manifest['code_revision']}`\n"
+        f"- Git dirty: `{str(manifest['git_dirty']).lower()}`\n"
+        f"- Matrix: `{manifest['matrix']['matrix_id']}` "
+        f"version `{manifest['matrix']['matrix_version']}`\n"
+        f"- Treatment fingerprint: `{manifest['treatment_fingerprint']}`\n"
+        f"- Condition fingerprint: `{manifest['condition_fingerprint']}`\n"
+        f"- Execution Policy fingerprint: "
+        f"`{manifest['execution_policy_fingerprint']}`\n"
+        f"- Run Configuration fingerprint: "
+        f"`{manifest['run_configuration_fingerprint']}`\n"
+        f"- Suite fingerprint: "
+        f"`{manifest['evaluation_suite']['suite_fingerprint']}`\n\n"
+        "## Sampling\n\n"
+        f"- Cases: `{suite['total_case_count']}`\n"
+        f"- Repeats per Case: "
+        f"`{manifest['execution_policy']['repeat_count']}`\n"
+        f"- Planned samples: `{suite['requested_sample_count']}`\n"
+        f"- Scored samples: `{suite['scored_sample_count']}`\n"
+        f"- Execution-failed samples: "
+        f"`{suite['execution_failed_sample_count']}`\n\n"
+        "## Coverage\n\n"
+        f"- Execution coverage: `{suite['execution_coverage']}`\n"
+        f"- Protocol validity: `{suite['protocol_validity_rate']}`\n"
+        f"- Quality Case coverage: `{suite['quality_case_coverage']}`\n"
+        f"- Quality Suite-weight coverage: "
+        f"`{suite['quality_suite_weight_coverage']}`\n"
+        f"- Diagnostic quality status: `{suite['quality_status']}`\n\n"
+        "## Suite Metric Vector\n\n"
+        + suite_metrics
+        + "\n\n## By Failure Type\n\n"
+        + "\n\n".join(type_sections)
+        + "\n\n## Per-Case Aggregates\n\n"
+        "| Case | Failure Type | Weight | Scored / Requested | Execution "
+        "Coverage | Protocol Validity | Quality |\n"
+        "|---|---|---:|---:|---:|---:|---|\n"
+        + case_rows
+        + "\n\n## Per-Case Diagnostic Detail\n\n"
+        + case_details
+        + "\n\n## Execution Failures\n\n"
+        + failure_lines
+        + "\n\n## Protocol-Invalid Observations\n\n"
+        + invalid_lines
+        + "\n\n## Lifecycle Trace\n\n"
+        + trace_lines
+        + "\n\n## Experimental Limitations\n\n"
+        "This is an L1 development-treatment milestone experiment. It is "
+        "not the final frozen L1-L4 benchmark and is not leaderboard-qualified.\n"
+    )
+
+
+def _metric_table(metric_vector: dict[str, float] | None) -> str:
+    if metric_vector is None:
+        return (
+            "Diagnostic quality is unavailable because at least one Case has "
+            "no scored sample."
+        )
+    rows = "\n".join(
+        f"| `{name}` | {value} |" for name, value in metric_vector.items()
+    )
+    return "| Metric | Value |\n|---|---:|\n" + rows
 
 
 def _render_sample_debug_markdown(document: dict[str, Any]) -> str:
