@@ -236,6 +236,26 @@ def _render_debug_markdown(document: dict[str, Any]) -> str:
 
 def _render_formal_v2_markdown(document: dict[str, Any]) -> str:
     manifest = document["manifest"]
+
+    if manifest["runtime_variant"] == "full_context_one_shot":
+        formal_title = "# DevAgentOps Formal L1 Milestone Evaluation\n\n"
+        limitations = (
+            "This is an L1 development-treatment milestone experiment. It is "
+            "not the final frozen L1-L4 benchmark and is not leaderboard-qualified.\n"
+        )
+    elif manifest["runtime_variant"] == "fixed_model_workflow":
+        formal_title = "# DevAgentOps Formal L2 Development Evaluation\n\n"
+        limitations = (
+            "This is an L2 development-treatment integration evaluation. It is "
+            "not the final frozen L1-L4 benchmark and is not leaderboard-qualified.\n"
+        )
+    else:
+        formal_title = "# DevAgentOps Formal Evaluation\n\n"
+        limitations = (
+            "This is a development evaluation. It is not the final frozen "
+            "L1-L4 benchmark and is not leaderboard-qualified.\n"
+        )
+
     suite = document["suite_aggregate"]
     samples = document["sample_results"]
     failed = [
@@ -308,8 +328,8 @@ def _render_formal_v2_markdown(document: dict[str, Any]) -> str:
         for event in document["trace"]
     )
     return (
-        "# DevAgentOps Formal L1 Milestone Evaluation\n\n"
-        "## Run Identity\n\n"
+        formal_title
+        + "## Run Identity\n\n"
         f"- Run ID: `{document['run_id']}`\n"
         f"- Status: `{document['status']}`\n"
         f"- Code revision: `{manifest['code_revision']}`\n"
@@ -357,8 +377,7 @@ def _render_formal_v2_markdown(document: dict[str, Any]) -> str:
         + "\n\n## Lifecycle Trace\n\n"
         + trace_lines
         + "\n\n## Experimental Limitations\n\n"
-        "This is an L1 development-treatment milestone experiment. It is "
-        "not the final frozen L1-L4 benchmark and is not leaderboard-qualified.\n"
+        + limitations
     )
 
 

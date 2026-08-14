@@ -33,9 +33,14 @@ def validate_minimax_development_condition(
     from devagentops.evaluation.run import EvaluationRunError
 
     policy = effective["execution_policy"]
-    if effective["runtime_variant"] != "full_context_one_shot" or case_count < 1:
+    runtime_variant = effective["runtime_variant"]
+    if (
+        runtime_variant
+        not in {"full_context_one_shot", "fixed_model_workflow"}
+        or case_count < 1
+    ):
         raise EvaluationRunError(
-            "Matrix v2 MiniMax development run requires at least one L1 Case",
+            "Matrix v2 MiniMax development run requires at least one supported Case",
             code="unsupported_v2_debug_shape",
         )
     if policy["retry_count"] != 0:
@@ -68,21 +73,58 @@ def validate_minimax_development_condition(
                 code="unsupported_v2_treatment",
             )
     contracts = treatment["contracts"]
-    if contracts["task"] != {
-        "component_type": "prompt",
-        "version": TASK_CONTRACT_VERSION,
-        "fingerprint": TASK_CONTRACT_FINGERPRINT,
-    } or contracts["output"] != {
-        "id": OUTPUT_CONTRACT_ID,
-        "version": OUTPUT_CONTRACT_VERSION,
-        "prompt_suffix_sha256": OUTPUT_CONTRACT_PROMPT_SHA256,
-        "schema_version": "1",
-        "schema_sha256": OUTPUT_SCHEMA_SHA256,
-    } or contracts["runtime_input"] != {"version": RUNTIME_INPUT_SERIALIZATION_VERSION}:
+    common_contracts = {
+        "task": {
+            "component_type": "prompt",
+            "version": TASK_CONTRACT_VERSION,
+            "fingerprint": TASK_CONTRACT_FINGERPRINT,
+        },
+        "output": {
+            "id": OUTPUT_CONTRACT_ID,
+            "version": OUTPUT_CONTRACT_VERSION,
+            "prompt_suffix_sha256": OUTPUT_CONTRACT_PROMPT_SHA256,
+            "schema_version": "1",
+            "schema_sha256": OUTPUT_SCHEMA_SHA256,
+        },
+        "runtime_input": {
+            "version": RUNTIME_INPUT_SERIALIZATION_VERSION,
+        },
+    }
+
+    if any(
+        contracts.get(name) != value
+        for name, value in common_contracts.items()
+    ):
         raise EvaluationRunError(
-            "unsupported Issue #39 contract identity",
+            "unsupported MiniMax development contract identity",
             code="unsupported_v2_contract_identity",
         )
+
+    if runtime_variant == "full_context_one_shot":
+        if set(contracts) != set(common_contracts):
+            raise EvaluationRunError(
+                "unsupported L1 MiniMax development contract identity",
+                code="unsupported_v2_contract_identity",
+            )
+    else:
+        from devagentops.conditions.l2.development_workflow_v1 import (
+            WORKFLOW_FINGERPRINT,
+            WORKFLOW_VERSION,
+        )
+
+        expected_workflow = {
+            "version": WORKFLOW_VERSION,
+            "fingerprint": WORKFLOW_FINGERPRINT,
+        }
+
+        if (
+            set(contracts) != {*common_contracts, "workflow"}
+            or contracts.get("workflow") != expected_workflow
+        ):
+            raise EvaluationRunError(
+                "unsupported L2 MiniMax development workflow identity",
+                code="unsupported_v2_contract_identity",
+            )
     context = treatment["context"]
     tokenizer = context["tokenizer"]
     if (

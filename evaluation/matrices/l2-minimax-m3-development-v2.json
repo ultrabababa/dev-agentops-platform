@@ -1,0 +1,86 @@
+{
+  "matrix_id": "l2-minimax-m3-development",
+  "matrix_version": "2",
+  "schema_version": "2",
+  "conditions": [
+    {
+      "id": "l2-minimax-m3-adaptive-development-v1",
+      "type": "candidate",
+      "runtime_variant": "fixed_model_workflow",
+      "suite": "triage-suite-v1",
+      "evaluation_method": "triage-method-v1",
+      "treatment": {
+        "provider": {
+          "id": "minimax-official",
+          "transport": "openai-compatible-chat-completions",
+          "profile": "minimax-official-v1",
+          "base_url": "https://api.minimaxi.com/v1"
+        },
+        "model": "MiniMax-M3",
+        "reasoning": {
+          "thinking": {
+            "type": "adaptive"
+          },
+          "reasoning_split": true
+        },
+        "generation": {
+          "temperature": 0,
+          "max_completion_tokens": 65536,
+          "n": 1,
+          "stream": false,
+          "response_format": {
+            "mode": "omitted"
+          }
+        },
+        "contracts": {
+          "task": {
+            "component_type": "prompt",
+            "version": "structured-triage-task-contract-v1",
+            "fingerprint": "d96154bc6a5aa436c84f291c16848daec60bdbf1be250dcedc4b115f4b7c4988"
+          },
+          "output": {
+            "id": "structured-triage-report-json-clarification",
+            "version": "development-v1",
+            "prompt_suffix_sha256": "621391d3d9a93997165105df4a1942b3cbc91e8a50f85bc1766225d5efdf1405",
+            "schema_version": "1",
+            "schema_sha256": "475b42d2cbedc00a68fff1d21993073fcf2aa7a549db7176951462b33e6a9224"
+          },
+          "runtime_input": {
+            "version": "full_context_runtime_input_v1"
+          },
+          "workflow": {
+            "version": "fixed-model-workflow-minimax-development-v1",
+            "fingerprint": "adeac998a5ab0c74bdfb3540a5517b6c86c1e5b835379e55f24daf2766bff40d"
+          }
+        },
+        "context": {
+          "assessment": "exact",
+          "method": "minimax_m3_official_chat_template_adaptive_v1",
+          "context_window_tokens": 1000000,
+          "advertised_maximum_tokens": 1000000,
+          "guaranteed_minimum_label": "512K",
+          "policy": "advertised_maximum_total_context",
+          "reservation_rule": "input_tokens + max_completion_tokens <= context_window_tokens",
+          "source": {
+            "url": "https://www.minimax.io/models/text/m3",
+            "accessed_on": "2026-08-14",
+            "contract_version": "minimax-m3-api-context-2026-08-14"
+          },
+          "tokenizer": {
+            "repository": "MiniMaxAI/MiniMax-M3",
+            "revision": "f0e1c1e04d40177e4673a22097036854f536e9c0",
+            "tokenizer_sha256": "bb1f1626cf01448f1e3b6036d0a061ffc66c91d9046aada14ea23a5441b5ad6e",
+            "chat_template_sha256": "11421244f67553498e5c8112dae02802025bcc4305ec45ad380af95c96f9fe64",
+            "renderer": "jinja2-3.1.6-sandbox-trim-lstrip-v1"
+          }
+        }
+      },
+      "execution_policy": {
+        "repeat_count": 3,
+        "max_case_concurrency": 6,
+        "retry_count": 0,
+        "request_timeout_seconds": 600
+      }
+    }
+  ]
+}
