@@ -85,7 +85,6 @@ def run_case_subset_debug(
             registry_path=registry_path,
             database_path=database_path,
             artifacts_dir=artifacts_dir,
-            metric_preview_builder=_build_metric_preview,
         )
     _validate_l1_debug_condition(effective)
     selected_cases = _select_cases(preflight.suite.cases, case_ids)

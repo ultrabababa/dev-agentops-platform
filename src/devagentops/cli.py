@@ -300,7 +300,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                 database_path=args.database,
                 artifacts_dir=args.artifacts_dir,
             )
-            if status["status"] == "completed_with_case_failures":
+            if status["status"] in {
+                "completed_with_case_failures",
+                "completed_with_sample_failures",
+            }:
                 exit_code = 1
         elif args.command == "component" and args.component_command == "validate":
             status = load_component_manifest(args.manifest).validation_result()

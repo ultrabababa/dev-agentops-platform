@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import hashlib
-from collections.abc import Callable, Sequence
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -16,9 +15,8 @@ from devagentops.conditions.l1.development_output_contract import (
 from devagentops.conditions.l1.full_context_v1 import (
     RUNTIME_INPUT_SERIALIZATION_VERSION,
     ConfiguredL1Treatment,
-    FullContextOneShotError,
-    run_configured_full_context_one_shot,
 )
+from devagentops.conditions.l1.executor import ConfiguredL1ConditionExecutor
 from devagentops.evaluation.artifacts import (
     EvaluationArtifactError,
     write_evaluation_artifacts,
@@ -29,21 +27,25 @@ from devagentops.evaluation.matrix_v2 import (
     ResolvedConditionV2,
     calculate_run_configuration_fingerprint,
 )
+from devagentops.evaluation.execution import (
+    ExecutionPolicy,
+    execute_sample_plan,
+    plan_samples,
+)
 from devagentops.evaluation.persistence import (
-    canonical_sha256,
     complete_run,
     mark_run_failed,
-    persist_finalizing_run,
+    persist_failed_run,
+    persist_finalizing_sample_run,
 )
 from devagentops.evaluation.run import (
     EvaluationRunError,
-    _append_event,
     _code_revision,
     _failure_event,
     _git_dirty,
     _now,
-    _trace_event,
 )
+from devagentops.evaluation.trace import TraceRecorder
 from devagentops.providers.minimax_v1 import (
     MINIMAX_M3_CHAT_TEMPLATE_SHA256,
     MINIMAX_M3_TOKENIZER_REPOSITORY,
@@ -51,9 +53,6 @@ from devagentops.providers.minimax_v1 import (
     MINIMAX_M3_TOKENIZER_SHA256,
     create_minimax_provider,
 )
-from devagentops.providers.openai_compatible import OpenAICompatibleTransportError
-from devagentops.runtime.workspace import RuntimeCaseWorkspace, RuntimeWorkspaceError
-from devagentops.scoring.case import evaluate_case_report
 from devagentops.scoring.report import REPORT_SCHEMA_VERSION
 from devagentops.storage.database import StorageError, initialize_database
 
@@ -74,10 +73,9 @@ def run_case_subset_debug_v2(
     registry_path: Path,
     database_path: Path,
     artifacts_dir: Path,
-    metric_preview_builder: Callable[[list[dict[str, Any]]], dict[str, Any]],
 ) -> dict[str, Any]:
     effective = condition.effective_condition
-    _validate_issue_39_condition(effective, len(selected_cases))
+    _validate_issue_41_condition(effective, len(selected_cases))
     treatment = effective["treatment"]
     execution_policy = effective["execution_policy"]
     selected_case_ids = [suite_case.case_id for suite_case in selected_cases]
@@ -106,6 +104,11 @@ def run_case_subset_debug_v2(
     initialize_database(database_path)
     run_id = str(uuid4())
     started_at = _now()
+    planned_samples = plan_samples(
+        run_id=run_id,
+        suite_cases=selected_cases,
+        repeat_count=execution_policy["repeat_count"],
+    )
     manifest = _manifest(
         matrix=matrix,
         suite=suite,
@@ -115,181 +118,91 @@ def run_case_subset_debug_v2(
         code_revision=code_revision,
         git_dirty=git_dirty,
         run_configuration_fingerprint=run_configuration_fingerprint,
+        planned_sample_count=len(planned_samples),
     )
-
-    suite_case = selected_cases[0]
-    case_id = suite_case.case_id
-    trace: list[dict[str, Any]] = []
-    _append_event(trace, run_id, "run_started", started_at, payload={})
-    _append_event(trace, run_id, "case_started", _now(), case_id=case_id)
-    _append_event(trace, run_id, "l1_execution_started", _now(), case_id=case_id)
-    case_results: list[dict[str, Any]] = []
-    try:
-        workspace = RuntimeCaseWorkspace.from_package(suite_case.package)
-        provider = create_minimax_provider(
+    recorder = TraceRecorder(run_id)
+    recorder.record("run_started", occurred_at=started_at)
+    configured_treatment = ConfiguredL1Treatment(
+        provider_id=treatment["provider"]["id"],
+        model=treatment["model"],
+        reasoning=treatment["reasoning"],
+        generation=treatment["generation"],
+        context_limit_tokens=treatment["context"]["context_window_tokens"],
+        max_completion_tokens=treatment["generation"]["max_completion_tokens"],
+        task_contract_version=TASK_CONTRACT_VERSION,
+        output_contract_prompt_suffix=output_contract_prompt_suffix(),
+    )
+    executor = ConfiguredL1ConditionExecutor(
+        prompt=task_contract_prompt,
+        treatment=configured_treatment,
+        provider_factory=lambda: create_minimax_provider(
             base_url=treatment["provider"]["base_url"],
             timeout_seconds=execution_policy["request_timeout_seconds"],
-        )
-        l1_result = run_configured_full_context_one_shot(
-            workspace,
-            task_contract_prompt,
-            provider,
-            ConfiguredL1Treatment(
-                provider_id=treatment["provider"]["id"],
-                model=treatment["model"],
-                reasoning=treatment["reasoning"],
-                generation=treatment["generation"],
-                context_limit_tokens=treatment["context"]["context_window_tokens"],
-                max_completion_tokens=treatment["generation"][
-                    "max_completion_tokens"
-                ],
-                task_contract_version=TASK_CONTRACT_VERSION,
-                output_contract_prompt_suffix=output_contract_prompt_suffix(),
-            ),
-            before_model_call=lambda payload: _append_event(
-                trace,
-                run_id,
-                "model_call_started",
-                _now(),
-                case_id=case_id,
-                payload={**payload, "attempt": 1, "retry_count": 0},
-            ),
-        )
-    except (
-        FullContextOneShotError,
-        OpenAICompatibleTransportError,
-        RuntimeWorkspaceError,
-    ) as exc:
-        failure_code = getattr(exc, "code", "l1_execution_failed")
-        stage = (
-            "context_feasibility"
-            if failure_code == "l1_context_infeasible"
-            else "model_provider"
-            if isinstance(exc, OpenAICompatibleTransportError)
-            else "l1_execution"
-        )
-        payload = {
-            "code": failure_code,
-            "stage": stage,
-            "actual_call_count": sum(
-                event["event_type"] == "model_call_started" for event in trace
-            ),
-            "retry_count": 0,
-        }
-        if isinstance(exc, OpenAICompatibleTransportError) and exc.http_status:
-            payload["http_status"] = exc.http_status
-        _append_event(trace, run_id, "failure", _now(), case_id=case_id, payload=payload)
-        case_results.append(
-            _failed_result(suite_case, failure_code, stage, str(exc))
-        )
-        _append_event(trace, run_id, "case_failed", _now(), case_id=case_id)
-    else:
-        response = l1_result.response
-        reasoning_metadata = _reasoning_metadata(response.reasoning_output)
-        _append_event(
-            trace,
-            run_id,
-            "model_call_completed",
-            _now(),
-            case_id=case_id,
-            payload={
-                "logical_call_number": 1,
-                "provider_request_id": response.provider_request_id,
-                "returned_model": response.returned_model,
-                "usage": response.usage,
-                "latency_ms": response.latency_ms,
-                "finish_reason": response.finish_reason,
-                "visible_output": response.visible_output,
-                "reasoning_observation": reasoning_metadata,
-                "actual_call_count": 1,
-                "retry_count": 0,
-            },
-        )
-        candidate_document = l1_result.candidate_document
-        _append_event(
-            trace,
-            run_id,
-            "report_submitted",
-            _now(),
-            case_id=case_id,
-            payload={
-                "report_schema_version": REPORT_SCHEMA_VERSION,
-                "candidate_report_sha256": canonical_sha256(candidate_document),
-            },
-        )
-        score = evaluate_case_report(candidate_document, suite_case.package)
-        case_results.append(
-            {
-                "case_id": case_id,
-                "case_fingerprint": suite_case.package.case_fingerprint,
-                "weight": suite_case.weight,
-                "evaluation_failure_type": (
-                    suite_case.package.expected_answer.primary_failure_type
-                ),
-                "outcome": {"status": "scored"},
-                "report": (
-                    score.structured_report.as_dict()
-                    if score.structured_report is not None
-                    else None
-                ),
-                "validation": score.validation.as_dict(),
-                "quality_metrics": score.quality_metrics.as_dict(),
-                "evidence_diagnostics": score.evidence_diagnostics.as_dict(),
-                "candidate_document": candidate_document,
-                "visible_output": response.visible_output,
-                "provider_observation": {
-                    "provider_request_id": response.provider_request_id,
-                    "returned_model": response.returned_model,
-                    "usage": response.usage,
-                    "finish_reason": response.finish_reason,
-                    "latency_ms": response.latency_ms,
-                    "reasoning": reasoning_metadata,
-                },
-                "context_assessment": {
-                    "input_tokens": l1_result.token_count.input_tokens,
-                    "method": l1_result.token_count.method,
-                    "exact": True,
-                    "context_window_tokens": l1_result.context_limit_tokens,
-                    "reserved_completion_tokens": treatment["generation"][
-                        "max_completion_tokens"
-                    ],
-                },
-            }
-        )
-        _append_event(
-            trace,
-            run_id,
-            "evaluation_completed",
-            _now(),
-            case_id=case_id,
-            payload={"quality_metrics": case_results[0]["quality_metrics"]},
-        )
-        _append_event(trace, run_id, "case_completed", _now(), case_id=case_id)
-
-    final_status = (
-        "completed"
-        if case_results[0]["outcome"]["status"] == "scored"
-        else "completed_with_case_failures"
+        ),
     )
-    metric_preview = metric_preview_builder(case_results)
-    run_completed_event = _trace_event(
-        run_id=run_id,
-        sequence=len(trace) + 1,
-        event_type="run_completed",
-        occurred_at=_now(),
-        case_id=None,
+    try:
+        results = execute_sample_plan(
+            planned_samples,
+            executor=executor,
+            recorder=recorder,
+            policy=ExecutionPolicy(
+                repeat_count=execution_policy["repeat_count"],
+                max_case_concurrency=execution_policy["max_case_concurrency"],
+                retry_count=execution_policy["retry_count"],
+            ),
+        )
+    except Exception as exc:
+        failure_message = (
+            "Condition execution stopped because of an unexpected run-level error"
+        )
+        recorder.record(
+            "failure",
+            payload={"code": "execution_engine_failed", "stage": "execution_engine"},
+        )
+        persist_failed_run(
+            database_path,
+            manifest=manifest,
+            trace_events=list(recorder.snapshot()),
+            started_at=started_at,
+            failure_code="execution_engine_failed",
+            failure_message=failure_message,
+        )
+        raise EvaluationRunError(
+            failure_message,
+            code="execution_engine_failed",
+        ) from exc
+    sample_results = [result.data for result in results]
+    failed_count = sum(result.status == "execution_failed" for result in results)
+    scored_count = len(results) - failed_count
+    final_status = (
+        "completed" if failed_count == 0 else "completed_with_sample_failures"
+    )
+    metric_preview = {
+        "status": "aggregation_deferred",
+        "scope": "sample_level_only",
+        "reason": "Sample-to-Case-to-Suite aggregation is deferred",
+        "coverage": {
+            "planned_sample_count": len(results),
+            "scored_sample_count": scored_count,
+            "failed_sample_count": failed_count,
+        },
+    }
+    run_completed_event = recorder.record(
+        "run_completed",
         payload={
             "status": final_status,
-            "selected_case_count": 1,
-            "scored_case_count": int(final_status == "completed"),
-            "failed_case_count": int(final_status != "completed"),
+            "selected_case_count": len(selected_cases),
+            "planned_sample_count": len(results),
+            "scored_sample_count": scored_count,
+            "failed_sample_count": failed_count,
         },
     )
-    persist_finalizing_run(
+    trace = list(recorder.snapshot())
+    persist_finalizing_sample_run(
         database_path,
         manifest=manifest,
-        trace_events=trace,
-        case_results=case_results,
+        trace_events=trace[:-1],
+        sample_results=sample_results,
         started_at=started_at,
     )
     try:
@@ -300,7 +213,7 @@ def run_case_subset_debug_v2(
         )
     except StorageError as exc:
         failure_event = _failure_event(
-            trace,
+            trace[:-1],
             run_id,
             failure_code="run_finalization_failed",
             stage="persistence",
@@ -318,8 +231,8 @@ def run_case_subset_debug_v2(
         "run_id": run_id,
         "status": final_status,
         "manifest": manifest,
-        "trace": [*trace, run_completed_event],
-        "case_results": case_results,
+        "trace": trace,
+        "sample_results": sample_results,
         "metric_preview": metric_preview,
     }
     try:
@@ -364,6 +277,7 @@ def _manifest(
     code_revision: str,
     git_dirty: bool,
     run_configuration_fingerprint: str,
+    planned_sample_count: int,
 ) -> dict[str, Any]:
     effective = condition.effective_condition
     return {
@@ -403,6 +317,10 @@ def _manifest(
             ],
         },
         "case_selection": {"mode": "explicit_subset", "case_ids": selected_case_ids},
+        "sample_plan": {
+            "planned_sample_count": planned_sample_count,
+            "ordering": "suite_case_order_then_repeat_index",
+        },
         "structured_report_schema_version": REPORT_SCHEMA_VERSION,
         "model_configuration": {
             "provider": effective["treatment"]["provider"]["id"],
@@ -412,7 +330,6 @@ def _manifest(
             "applicability": "not_applicable",
             "reason": "full_context_one_shot_has_no_tools",
         },
-        "repeat_index": 0,
         "debug_semantics": {
             "formal_evaluation": False,
             "quality_gate_qualification": False,
@@ -421,20 +338,16 @@ def _manifest(
     }
 
 
-def _validate_issue_39_condition(effective: dict[str, Any], case_count: int) -> None:
+def _validate_issue_41_condition(effective: dict[str, Any], case_count: int) -> None:
     policy = effective["execution_policy"]
-    if effective["runtime_variant"] != "full_context_one_shot" or case_count != 1:
+    if effective["runtime_variant"] != "full_context_one_shot" or case_count < 1:
         raise EvaluationRunError(
-            "Matrix v2 MiniMax development run requires exactly one L1 Case",
+            "Matrix v2 MiniMax development run requires at least one L1 Case",
             code="unsupported_v2_debug_shape",
         )
-    if {key: policy[key] for key in ("repeat_count", "max_case_concurrency", "retry_count")} != {
-        "repeat_count": 1,
-        "max_case_concurrency": 1,
-        "retry_count": 0,
-    }:
+    if policy["retry_count"] != 0:
         raise EvaluationRunError(
-            "Issue #39 execution policy requires 1/1/0",
+            "Matrix v2 execution engine does not support retries",
             code="unsupported_v2_execution_policy",
         )
     treatment = effective["treatment"]
@@ -493,34 +406,3 @@ def _validate_issue_39_condition(effective: dict[str, Any], case_count: int) -> 
             "unsupported Issue #39 context assessment identity",
             code="unsupported_v2_context_identity",
         )
-
-
-def _reasoning_metadata(reasoning_output: str | None) -> dict[str, Any]:
-    if reasoning_output is None:
-        return {"present": False, "character_count": 0, "sha256": None}
-    return {
-        "present": True,
-        "character_count": len(reasoning_output),
-        "sha256": hashlib.sha256(reasoning_output.encode("utf-8")).hexdigest(),
-    }
-
-
-def _failed_result(suite_case, code: str, stage: str, message: str) -> dict[str, Any]:
-    return {
-        "case_id": suite_case.case_id,
-        "case_fingerprint": suite_case.package.case_fingerprint,
-        "weight": suite_case.weight,
-        "evaluation_failure_type": suite_case.package.expected_answer.primary_failure_type,
-        "outcome": {
-            "status": "execution_failed",
-            "failure_code": code,
-            "failure_stage": stage,
-            "failure_message": message,
-        },
-        "report": None,
-        "validation": None,
-        "quality_metrics": None,
-        "evidence_diagnostics": None,
-        "candidate_document": None,
-        "visible_output": None,
-    }

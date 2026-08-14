@@ -383,7 +383,7 @@ def test_matrix_v2_minimax_fake_provider_cli_e2e_is_auditable_and_secret_free(
 
     output = json.loads(capsys.readouterr().out)
     assert output["status"] == "completed"
-    assert len(provider.requests) == 1
+    assert len(provider.requests) == 3
     request = provider.requests[0]
     assert request.generation["response_format"] == {"mode": "omitted"}
     artifact_path = Path(output["artifacts"]["json"])
@@ -396,15 +396,26 @@ def test_matrix_v2_minimax_fake_provider_cli_e2e_is_auditable_and_secret_free(
     assert len(manifest["condition_fingerprint"]) == 64
     assert len(manifest["execution_policy_fingerprint"]) == 64
     assert len(manifest["run_configuration_fingerprint"]) == 64
-    completed = next(
-        event for event in artifact["trace"] if event["event_type"] == "model_call_completed"
+    completed = [
+        event
+        for event in artifact["trace"]
+        if event["event_type"] == "model_call_completed"
+    ]
+    assert len(completed) == 3
+    assert all(
+        event["payload"]["provider_request_id"] == "minimax-request-39"
+        for event in completed
     )
-    assert completed["payload"]["provider_request_id"] == "minimax-request-39"
-    assert completed["payload"]["usage"]["prompt_tokens"] == 1000
-    assert completed["payload"]["reasoning_observation"]["present"] is True
-    assert "reasoning_output" not in completed["payload"]
-    assert artifact["case_results"][0]["outcome"] == {"status": "scored"}
-    assert artifact["case_results"][0]["context_assessment"]["input_tokens"] == 1000
+    assert all(event["payload"]["usage"]["prompt_tokens"] == 1000 for event in completed)
+    assert all(event["payload"]["reasoning_observation"]["present"] for event in completed)
+    assert all("reasoning_output" not in event["payload"] for event in completed)
+    assert [
+        result["outcome"] for result in artifact["sample_results"]
+    ] == [{"status": "scored"}] * 3
+    assert all(
+        result["context_assessment"]["input_tokens"] == 1000
+        for result in artifact["sample_results"]
+    )
     markdown = Path(output["artifacts"]["markdown"]).read_text(encoding="utf-8")
     assert "Treatment fingerprint" in markdown
     assert "Run configuration fingerprint" in markdown
@@ -415,11 +426,11 @@ def test_matrix_v2_minimax_fake_provider_cli_e2e_is_auditable_and_secret_free(
             "SELECT status FROM evaluation_runs"
         ).fetchone() == ("completed",)
         assert connection.execute(
-            "SELECT status FROM evaluation_case_outcomes"
-        ).fetchone() == ("scored",)
+            "SELECT status FROM evaluation_sample_outcomes ORDER BY sample_sequence"
+        ).fetchall() == [("scored",), ("scored",), ("scored",)]
         assert connection.execute(
-            "SELECT COUNT(*) FROM evaluation_reports"
-        ).fetchone() == (1,)
+            "SELECT COUNT(*) FROM evaluation_sample_reports"
+        ).fetchone() == (3,)
         manifest_json = connection.execute(
             "SELECT manifest_json FROM evaluation_run_manifests"
         ).fetchone()[0]
@@ -460,13 +471,19 @@ def test_matrix_v2_context_infeasible_makes_zero_provider_calls(
     output = json.loads(capsys.readouterr().out)
     assert provider.requests == []
     artifact = json.loads(Path(output["artifacts"]["json"]).read_text())
-    assert artifact["case_results"][0]["outcome"]["failure_code"] == (
-        "l1_context_infeasible"
+    assert all(
+        result["outcome"]["failure_code"] == "l1_context_infeasible"
+        for result in artifact["sample_results"]
     )
     assert not any(
         event["event_type"] == "model_call_started" for event in artifact["trace"]
     )
     with sqlite3.connect(database) as connection:
         assert connection.execute(
-            "SELECT status, failure_code FROM evaluation_case_outcomes"
-        ).fetchone() == ("execution_failed", "l1_context_infeasible")
+            "SELECT status, failure_code FROM evaluation_sample_outcomes "
+            "ORDER BY sample_sequence"
+        ).fetchall() == [
+            ("execution_failed", "l1_context_infeasible"),
+            ("execution_failed", "l1_context_infeasible"),
+            ("execution_failed", "l1_context_infeasible"),
+        ]
