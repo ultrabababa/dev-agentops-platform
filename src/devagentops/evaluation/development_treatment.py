@@ -11,6 +11,10 @@ from devagentops.conditions.l1.development_output_contract import (
 from devagentops.conditions.l1.full_context_v1 import (
     RUNTIME_INPUT_SERIALIZATION_VERSION,
 )
+from devagentops.conditions.oracle.evidence_v1 import (
+    ORACLE_RUNTIME_INPUT_SERIALIZATION_VERSION,
+    oracle_evidence_delivery_contract,
+)
 from devagentops.providers.minimax_v1 import (
     MINIMAX_M3_CHAT_TEMPLATE_SHA256,
     MINIMAX_M3_TOKENIZER_REPOSITORY,
@@ -36,7 +40,11 @@ def validate_minimax_development_condition(
     runtime_variant = effective["runtime_variant"]
     if (
         runtime_variant
-        not in {"full_context_one_shot", "fixed_model_workflow"}
+        not in {
+            "full_context_one_shot",
+            "fixed_model_workflow",
+            "model_one_shot",
+        }
         or case_count < 1
     ):
         raise EvaluationRunError(
@@ -86,45 +94,48 @@ def validate_minimax_development_condition(
             "schema_version": "1",
             "schema_sha256": OUTPUT_SCHEMA_SHA256,
         },
+    }
+
+    l1_contracts = {
+        **common_contracts,
         "runtime_input": {
             "version": RUNTIME_INPUT_SERIALIZATION_VERSION,
         },
     }
 
-    if any(
-        contracts.get(name) != value
-        for name, value in common_contracts.items()
-    ):
-        raise EvaluationRunError(
-            "unsupported MiniMax development contract identity",
-            code="unsupported_v2_contract_identity",
-        )
-
     if runtime_variant == "full_context_one_shot":
-        if set(contracts) != set(common_contracts):
-            raise EvaluationRunError(
-                "unsupported L1 MiniMax development contract identity",
-                code="unsupported_v2_contract_identity",
-            )
-    else:
+        expected_contracts = l1_contracts
+        contract_label = "L1"
+    elif runtime_variant == "fixed_model_workflow":
         from devagentops.conditions.l2.development_workflow_v1 import (
             WORKFLOW_FINGERPRINT,
             WORKFLOW_VERSION,
         )
 
-        expected_workflow = {
-            "version": WORKFLOW_VERSION,
-            "fingerprint": WORKFLOW_FINGERPRINT,
+        expected_contracts = {
+            **l1_contracts,
+            "workflow": {
+                "version": WORKFLOW_VERSION,
+                "fingerprint": WORKFLOW_FINGERPRINT,
+            },
         }
+        contract_label = "L2"
+    else:
+        expected_contracts = {
+            **common_contracts,
+            "runtime_input": {
+                "version": ORACLE_RUNTIME_INPUT_SERIALIZATION_VERSION,
+            },
+            "evidence_delivery": oracle_evidence_delivery_contract(),
+        }
+        contract_label = "Oracle"
 
-        if (
-            set(contracts) != {*common_contracts, "workflow"}
-            or contracts.get("workflow") != expected_workflow
-        ):
-            raise EvaluationRunError(
-                "unsupported L2 MiniMax development workflow identity",
-                code="unsupported_v2_contract_identity",
-            )
+    if contracts != expected_contracts:
+        raise EvaluationRunError(
+            f"unsupported {contract_label} MiniMax development contract identity",
+            code="unsupported_v2_contract_identity",
+        )
+
     context = treatment["context"]
     tokenizer = context["tokenizer"]
     if (

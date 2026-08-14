@@ -17,10 +17,10 @@ ORACLE_EVIDENCE_PACK_VERSION = "oracle_evidence_pack_v1"
 # Intentionally answer-neutral and condition-neutral because this value is
 # model-visible. The model should receive selected source evidence without
 # being told that the selection came from an Oracle / Required-Evidence path.
-ORACLE_RUNTIME_INPUT_SERIALIZATION_VERSION = "selected_evidence_runtime_input_v1"
+ORACLE_RUNTIME_INPUT_SERIALIZATION_VERSION = "selected_evidence_runtime_input_v2"
 
 ORACLE_EVIDENCE_DELIVERY_ID = "oracle_required_evidence_delivery"
-ORACLE_EVIDENCE_DELIVERY_VERSION = "1"
+ORACLE_EVIDENCE_DELIVERY_VERSION = "2"
 
 
 class OracleEvidenceError(RuntimeError):
@@ -69,7 +69,6 @@ class OracleEvidencePack:
             "case": {
                 "case_id": self.case_id,
                 "case_schema_version": self.case_schema_version,
-                "case_fingerprint": self.case_fingerprint,
                 "forbidden_actions": list(self.forbidden_actions),
             },
             "evidence_items": [

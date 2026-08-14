@@ -11,6 +11,12 @@ from devagentops.conditions.l1.executor import ConfiguredL1ConditionExecutor
 from devagentops.conditions.l1.full_context_v1 import ConfiguredL1Treatment
 from devagentops.conditions.l2.development_workflow_v1 import ConfiguredL2Treatment
 from devagentops.conditions.l2.executor import ConfiguredL2ConditionExecutor
+from devagentops.conditions.oracle.executor import (
+    ConfiguredOracleConditionExecutor,
+)
+from devagentops.conditions.oracle.one_shot_v1 import (
+    ConfiguredOracleTreatment,
+)
 from devagentops.evaluation.aggregation import (
     aggregate_case,
     aggregate_failure_types,
@@ -162,6 +168,33 @@ def run_formal_evaluation_v2(
                 task_contract_version=TASK_CONTRACT_VERSION,
                 final_output_contract_prompt_suffix=(
                     output_contract_prompt_suffix()
+                ),
+            ),
+            provider_factory=provider_factory,
+        )
+    elif runtime_variant == "model_one_shot":
+        executor = ConfiguredOracleConditionExecutor(
+            prompt=prompt,
+            treatment=ConfiguredOracleTreatment(
+                provider_id=treatment["provider"]["id"],
+                model=treatment["model"],
+                reasoning=treatment["reasoning"],
+                generation=treatment["generation"],
+                context_limit_tokens=treatment["context"][
+                    "context_window_tokens"
+                ],
+                max_completion_tokens=treatment["generation"][
+                    "max_completion_tokens"
+                ],
+                task_contract_version=TASK_CONTRACT_VERSION,
+                output_contract_prompt_suffix=(
+                    output_contract_prompt_suffix()
+                ),
+                runtime_input_serialization_version=(
+                    treatment["contracts"]["runtime_input"]["version"]
+                ),
+                evidence_delivery_contract=(
+                    treatment["contracts"]["evidence_delivery"]
                 ),
             ),
             provider_factory=provider_factory,
@@ -338,17 +371,17 @@ def _manifest(
     effective = condition.effective_condition
     runtime_variant = effective["runtime_variant"]
 
-    experiment_identity = (
-        "l1-development-treatment-milestone"
-        if runtime_variant == "full_context_one_shot"
-        else "l2-development-treatment-integration"
-    )
+    experiment_identity = {
+        "full_context_one_shot": "l1-development-treatment-milestone",
+        "fixed_model_workflow": "l2-development-treatment-integration",
+        "model_one_shot": "oracle-evidence-diagnostic-development",
+    }[runtime_variant]
 
-    tool_protocol_reason = (
-        "full_context_one_shot_has_no_tools"
-        if runtime_variant == "full_context_one_shot"
-        else "fixed_model_workflow_has_no_tools"
-    )
+    tool_protocol_reason = {
+        "full_context_one_shot": "full_context_one_shot_has_no_tools",
+        "fixed_model_workflow": "fixed_model_workflow_has_no_tools",
+        "model_one_shot": "oracle_model_one_shot_has_no_tools",
+    }[runtime_variant]
 
     return {
         "manifest_schema_version": "2",

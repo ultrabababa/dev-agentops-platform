@@ -46,13 +46,13 @@
             "schema_sha256": "475b42d2cbedc00a68fff1d21993073fcf2aa7a549db7176951462b33e6a9224"
           },
           "runtime_input": {
-            "version": "selected_evidence_runtime_input_v1"
+            "version": "selected_evidence_runtime_input_v2"
           },
           "evidence_delivery": {
             "id": "oracle_required_evidence_delivery",
-            "version": "1",
+            "version": "2",
             "pack_version": "oracle_evidence_pack_v1",
-            "runtime_input_serialization_version": "selected_evidence_runtime_input_v1",
+            "runtime_input_serialization_version": "selected_evidence_runtime_input_v2",
             "selection": "required_evidence_ids_as_set",
             "ordering": "canonical_source_start_end_evidence_id",
             "source_resolution": "canonical_line_range_exact_bytes_v1",

@@ -23,3 +23,23 @@ __all__ = [
     "resolve_oracle_evidence_pack",
     "serialize_oracle_evidence_pack",
 ]
+
+from devagentops.conditions.oracle.executor import (
+    ConfiguredOracleConditionExecutor,
+)
+from devagentops.conditions.oracle.one_shot_v1 import (
+    RUNTIME_VARIANT,
+    ConfiguredOracleTreatment,
+    OracleOneShotError,
+    OracleOneShotResult,
+    run_configured_oracle_one_shot,
+)
+
+__all__ += [
+    "ConfiguredOracleConditionExecutor",
+    "ConfiguredOracleTreatment",
+    "OracleOneShotError",
+    "OracleOneShotResult",
+    "RUNTIME_VARIANT",
+    "run_configured_oracle_one_shot",
+]

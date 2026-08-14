@@ -249,6 +249,15 @@ def _render_formal_v2_markdown(document: dict[str, Any]) -> str:
             "This is an L2 development-treatment integration evaluation. It is "
             "not the final frozen L1-L4 benchmark and is not leaderboard-qualified.\n"
         )
+    elif manifest["runtime_variant"] == "model_one_shot":
+        formal_title = (
+            "# DevAgentOps Formal Oracle Evidence Diagnostic Evaluation\n\n"
+        )
+        limitations = (
+            "This is an Oracle Evidence diagnostic development evaluation. "
+            "Oracle is orthogonal to the capability ladder and is not an "
+            "Agent Product Runtime or leaderboard-qualified benchmark.\n"
+        )
     else:
         formal_title = "# DevAgentOps Formal Evaluation\n\n"
         limitations = (
