@@ -107,26 +107,26 @@ def calculate_run_configuration_fingerprint(
     selected_cases: list[dict[str, Any]],
     code_revision: str,
     git_dirty: bool,
+    run_kind: str | None = None,
 ) -> str:
-    return canonical_sha256(
-        {
-            "matrix": {
-                "matrix_id": matrix.matrix_id,
-                "matrix_version": matrix.matrix_version,
-                "schema_version": matrix.schema_version,
-            },
-            "condition_id": condition.condition_id,
-            "condition_fingerprint": condition.condition_fingerprint,
-            "treatment_fingerprint": condition.treatment_fingerprint,
-            "execution_policy_fingerprint": (
-                condition.execution_policy_fingerprint
-            ),
-            "suite_fingerprint": suite_fingerprint,
-            "selected_cases": selected_cases,
-            "code_revision": code_revision,
-            "git_dirty": git_dirty,
-        }
-    )
+    identity = {
+        "matrix": {
+            "matrix_id": matrix.matrix_id,
+            "matrix_version": matrix.matrix_version,
+            "schema_version": matrix.schema_version,
+        },
+        "condition_id": condition.condition_id,
+        "condition_fingerprint": condition.condition_fingerprint,
+        "treatment_fingerprint": condition.treatment_fingerprint,
+        "execution_policy_fingerprint": condition.execution_policy_fingerprint,
+        "suite_fingerprint": suite_fingerprint,
+        "selected_cases": selected_cases,
+        "code_revision": code_revision,
+        "git_dirty": git_dirty,
+    }
+    if run_kind is not None:
+        identity["run_kind"] = run_kind
+    return canonical_sha256(identity)
 
 
 def load_evaluation_matrix_v2(

@@ -161,12 +161,24 @@ def persist_finalizing_sample_run(
     trace_events: list[dict[str, Any]],
     sample_results: list[dict[str, Any]],
     started_at: str,
+    case_aggregates: list[dict[str, Any]] | None = None,
+    suite_aggregate: dict[str, Any] | None = None,
+    failure_type_aggregates: list[dict[str, Any]] | None = None,
 ) -> None:
     sample_sequences = [result["sample_sequence"] for result in sample_results]
     if sample_sequences != sorted(sample_sequences) or len(sample_sequences) != len(
         set(sample_sequences)
     ):
         raise ValueError("sample results must have unique deterministic sequence order")
+    aggregate_inputs = (
+        case_aggregates,
+        suite_aggregate,
+        failure_type_aggregates,
+    )
+    if any(value is not None for value in aggregate_inputs) and not all(
+        value is not None for value in aggregate_inputs
+    ):
+        raise ValueError("formal aggregate persistence requires all aggregate layers")
     engine = create_database_engine(database_path)
     try:
         with engine.begin() as connection:
@@ -287,6 +299,13 @@ def persist_finalizing_sample_run(
                         ),
                     },
                 )
+            if case_aggregates is not None:
+                _insert_formal_aggregates(
+                    connection,
+                    case_aggregates=case_aggregates,
+                    suite_aggregate=suite_aggregate,
+                    failure_type_aggregates=failure_type_aggregates,
+                )
     except SQLAlchemyError as exc:
         raise StorageError(f"Failed to persist evaluation sample run: {exc}") from exc
     finally:
@@ -390,6 +409,21 @@ def mark_run_failed(
         with engine.begin() as connection:
             parameters = {"run_id": failure_event["run_id"]}
             connection.execute(
+                text(
+                    "DELETE FROM evaluation_failure_type_aggregates "
+                    "WHERE run_id = :run_id"
+                ),
+                parameters,
+            )
+            connection.execute(
+                text("DELETE FROM evaluation_suite_aggregates WHERE run_id = :run_id"),
+                parameters,
+            )
+            connection.execute(
+                text("DELETE FROM evaluation_case_aggregates WHERE run_id = :run_id"),
+                parameters,
+            )
+            connection.execute(
                 text("DELETE FROM evaluation_sample_scores WHERE run_id = :run_id"),
                 parameters,
             )
@@ -458,3 +492,109 @@ def _insert_trace_event(connection, event: dict[str, Any]) -> None:
             "payload_json": canonical_json(event["payload"]),
         },
     )
+
+
+def _insert_formal_aggregates(
+    connection,
+    *,
+    case_aggregates: list[dict[str, Any]],
+    suite_aggregate: dict[str, Any] | None,
+    failure_type_aggregates: list[dict[str, Any]] | None,
+) -> None:
+    if suite_aggregate is None or failure_type_aggregates is None:
+        raise ValueError("formal aggregate persistence requires all aggregate layers")
+    for case_sequence, aggregate in enumerate(case_aggregates, start=1):
+        connection.execute(
+            text(
+                "INSERT INTO evaluation_case_aggregates "
+                "(run_id, case_id, case_sequence, case_fingerprint, failure_type, "
+                "suite_weight, aggregation_method, aggregation_version, "
+                "requested_sample_count, scored_sample_count, "
+                "execution_failed_sample_count, execution_coverage, "
+                "protocol_valid_sample_count, protocol_invalid_sample_count, "
+                "protocol_validity_rate, quality_status, metrics_json, "
+                "scored_repeat_indices_json, failed_repeat_indices_json) VALUES "
+                "(:run_id, :case_id, :case_sequence, :case_fingerprint, "
+                ":failure_type, :suite_weight, :aggregation_method, "
+                ":aggregation_version, :requested_sample_count, "
+                ":scored_sample_count, :execution_failed_sample_count, "
+                ":execution_coverage, :protocol_valid_sample_count, "
+                ":protocol_invalid_sample_count, :protocol_validity_rate, "
+                ":quality_status, :metrics_json, :scored_repeat_indices_json, "
+                ":failed_repeat_indices_json)"
+            ),
+            {
+                **aggregate,
+                "case_sequence": case_sequence,
+                "metrics_json": (
+                    canonical_json(aggregate["metric_vector"])
+                    if aggregate["metric_vector"] is not None
+                    else None
+                ),
+                "scored_repeat_indices_json": canonical_json(
+                    aggregate["scored_repeat_indices"]
+                ),
+                "failed_repeat_indices_json": canonical_json(
+                    aggregate["failed_repeat_indices"]
+                ),
+            },
+        )
+    connection.execute(
+        text(
+            "INSERT INTO evaluation_suite_aggregates "
+            "(run_id, suite_id, suite_version, suite_fingerprint, "
+            "aggregation_method, aggregation_version, configured_suite_weight, "
+            "total_case_count, requested_sample_count, scored_sample_count, "
+            "execution_failed_sample_count, execution_coverage, "
+            "protocol_valid_sample_count, protocol_invalid_sample_count, "
+            "protocol_validity_rate, cases_with_quality, cases_without_quality, "
+            "quality_case_coverage, quality_suite_weight_coverage, quality_status, "
+            "metrics_json) VALUES (:run_id, :suite_id, :suite_version, "
+            ":suite_fingerprint, :aggregation_method, :aggregation_version, "
+            ":configured_suite_weight, :total_case_count, :requested_sample_count, "
+            ":scored_sample_count, :execution_failed_sample_count, "
+            ":execution_coverage, :protocol_valid_sample_count, "
+            ":protocol_invalid_sample_count, :protocol_validity_rate, "
+            ":cases_with_quality, :cases_without_quality, :quality_case_coverage, "
+            ":quality_suite_weight_coverage, :quality_status, :metrics_json)"
+        ),
+        {
+            **suite_aggregate,
+            "metrics_json": (
+                canonical_json(suite_aggregate["metric_vector"])
+                if suite_aggregate["metric_vector"] is not None
+                else None
+            ),
+        },
+    )
+    for type_sequence, aggregate in enumerate(failure_type_aggregates, start=1):
+        connection.execute(
+            text(
+                "INSERT INTO evaluation_failure_type_aggregates "
+                "(run_id, failure_type, type_sequence, aggregation_method, "
+                "aggregation_version, case_count, configured_suite_weight, "
+                "requested_sample_count, scored_sample_count, "
+                "execution_failed_sample_count, execution_coverage, "
+                "protocol_valid_sample_count, protocol_invalid_sample_count, "
+                "protocol_validity_rate, cases_with_quality, cases_without_quality, "
+                "quality_case_coverage, quality_suite_weight_coverage, "
+                "quality_status, metrics_json) VALUES (:run_id, :failure_type, "
+                ":type_sequence, :aggregation_method, :aggregation_version, "
+                ":case_count, :configured_suite_weight, :requested_sample_count, "
+                ":scored_sample_count, :execution_failed_sample_count, "
+                ":execution_coverage, :protocol_valid_sample_count, "
+                ":protocol_invalid_sample_count, :protocol_validity_rate, "
+                ":cases_with_quality, :cases_without_quality, "
+                ":quality_case_coverage, :quality_suite_weight_coverage, "
+                ":quality_status, :metrics_json)"
+            ),
+            {
+                **aggregate,
+                "type_sequence": type_sequence,
+                "metrics_json": (
+                    canonical_json(aggregate["metric_vector"])
+                    if aggregate["metric_vector"] is not None
+                    else None
+                ),
+            },
+        )
