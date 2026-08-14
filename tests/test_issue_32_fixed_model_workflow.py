@@ -5,12 +5,12 @@ import shutil
 import sqlite3
 from pathlib import Path
 
-import devagentops.evaluation_run as evaluation_run
+import devagentops.evaluation.run as evaluation_run
 import pytest
-from devagentops.component_registry import load_component_manifest
+from devagentops.evaluation.components import load_component_manifest
 from devagentops.cli import main
-from devagentops.evaluation_suite import load_case_package
-from devagentops.fixed_model_workflow import (
+from devagentops.evaluation.suite import load_case_package
+from devagentops.conditions.l2.fixed_workflow_v1 import (
     COMPLETE_RUNTIME_INPUT_SERIALIZER_FINGERPRINT,
     EVIDENCE_ANALYSIS_CONTROL,
     EVIDENCE_ANALYSIS_CONTROL_FINGERPRINT,
@@ -23,16 +23,16 @@ from devagentops.fixed_model_workflow import (
     FixedModelWorkflowError,
     run_fixed_model_workflow,
 )
-from devagentops.full_context_one_shot import (
+from devagentops.conditions.l1.full_context_v1 import (
     STRUCTURED_TRIAGE_REPORT_JSON_SCHEMA,
 )
-from devagentops.model_provider import (
+from devagentops.providers.siliconflow_v1 import (
     ModelProviderError,
     ModelResponse,
     SiliconFlowProvider,
     TokenCount,
 )
-from devagentops.runtime_workspace import RuntimeCaseWorkspace
+from devagentops.runtime.workspace import RuntimeCaseWorkspace
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]

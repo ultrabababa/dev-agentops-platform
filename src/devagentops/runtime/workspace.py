@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from devagentops.evaluation_suite import OfflineCasePackage, PublicCaseView
+from devagentops.evaluation.suite import OfflineCasePackage, PublicCaseView
 
 
 class RuntimeWorkspaceError(RuntimeError):

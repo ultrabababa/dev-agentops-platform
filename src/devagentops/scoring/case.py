@@ -3,8 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from devagentops.evaluation_suite import OfflineCasePackage
-from devagentops.structured_report import (
+from devagentops.evaluation.suite import OfflineCasePackage
+from devagentops.scoring.report import (
     CandidateReportAnalysis,
     REQUIRED_FIELDS_COMPLETENESS_DENOMINATOR,
     ReportValidationResult,

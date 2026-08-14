@@ -5,24 +5,24 @@ import sqlite3
 import urllib.error
 from pathlib import Path
 
-import devagentops.evaluation_run as evaluation_run
+import devagentops.evaluation.run as evaluation_run
 import pytest
 from devagentops.cli import main
-from devagentops.component_registry import component_fingerprint, load_component_manifest
-from devagentops.evaluation_suite import load_case_package
-from devagentops.full_context_one_shot import serialize_complete_runtime_input
-from devagentops.full_context_one_shot import (
+from devagentops.evaluation.components import component_fingerprint, load_component_manifest
+from devagentops.evaluation.suite import load_case_package
+from devagentops.conditions.l1.full_context_v1 import serialize_complete_runtime_input
+from devagentops.conditions.l1.full_context_v1 import (
     STRUCTURED_TRIAGE_REPORT_JSON_SCHEMA,
     run_full_context_one_shot,
 )
-from devagentops.model_provider import (
+from devagentops.providers.siliconflow_v1 import (
     ModelProviderError,
     ModelRequest,
     ModelResponse,
     SiliconFlowProvider,
     TokenCount,
 )
-from devagentops.runtime_workspace import RuntimeCaseWorkspace
+from devagentops.runtime.workspace import RuntimeCaseWorkspace
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]

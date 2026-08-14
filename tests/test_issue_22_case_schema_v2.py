@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from devagentops.cli import main
-from devagentops.evaluation_suite import (
+from devagentops.evaluation.suite import (
     EvaluationSuiteError,
     calculate_case_fingerprint,
     load_case_package,

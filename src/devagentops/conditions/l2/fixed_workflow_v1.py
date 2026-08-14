@@ -6,8 +6,8 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from devagentops.component_registry import ComponentManifest
-from devagentops.full_context_one_shot import (
+from devagentops.evaluation.components import ComponentManifest
+from devagentops.conditions.l1.full_context_v1 import (
     CONTEXT_LIMIT_TOKENS,
     MAX_OUTPUT_TOKENS,
     MODEL,
@@ -16,13 +16,13 @@ from devagentops.full_context_one_shot import (
     RuntimeInputSerialization,
     serialize_complete_runtime_input,
 )
-from devagentops.model_provider import (
+from devagentops.providers.siliconflow_v1 import (
     ModelProvider,
     ModelRequest,
     ModelResponse,
     TokenCount,
 )
-from devagentops.runtime_workspace import RuntimeCaseWorkspace
+from devagentops.runtime.workspace import RuntimeCaseWorkspace
 
 
 RUNTIME_VARIANT = "fixed_model_workflow"

@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 from devagentops import __version__
 from devagentops.api import app, create_app
 from devagentops.cli import main
-from devagentops.storage import initialize_database
+from devagentops.storage.database import initialize_database
 
 client = TestClient(app)
 

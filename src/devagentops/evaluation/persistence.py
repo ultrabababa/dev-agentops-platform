@@ -8,7 +8,7 @@ from typing import Any
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
-from devagentops.storage import StorageError, create_database_engine
+from devagentops.storage.database import StorageError, create_database_engine
 
 
 def canonical_json(value: Any) -> str:

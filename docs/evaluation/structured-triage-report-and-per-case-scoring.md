@@ -473,9 +473,9 @@ CLI 输出不包含 Expected Answer，也不包含 Retrieval、Tool Path、Aggre
 
 主要实现：
 
-- `src/devagentops/structured_report.py`；
-- `src/devagentops/scoring.py`；
-- `src/devagentops/evaluation_suite.py`；
+- `src/devagentops/scoring/report.py`；
+- `src/devagentops/scoring/case.py`；
+- `src/devagentops/evaluation/suite.py`；
 - `src/devagentops/cli.py`。
 
 测试：

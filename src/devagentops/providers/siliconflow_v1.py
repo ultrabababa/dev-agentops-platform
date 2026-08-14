@@ -22,7 +22,7 @@ QWEN3_5_4B_TOKEN_COUNT_METHOD = (
     "qwen3_5_4b_official_tokenizer_chat_template_v1"
 )
 QWEN3_5_4B_TOKENIZER_PATH = (
-    Path(__file__).parent / "assets" / "qwen3_5_4b_tokenizer.json"
+    Path(__file__).parent.parent / "assets" / "qwen3_5_4b_tokenizer.json"
 )
 
 

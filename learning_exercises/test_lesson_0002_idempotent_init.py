@@ -3,7 +3,7 @@
 import sqlite3
 from pathlib import Path
 
-from devagentops.storage import initialize_database
+from devagentops.storage.database import initialize_database
 
 
 def test_repeated_initialization_preserves_existing_data(tmp_path: Path):
