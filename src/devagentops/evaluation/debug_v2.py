@@ -481,7 +481,7 @@ def _validate_issue_39_condition(effective: dict[str, Any], case_count: int) -> 
     tokenizer = context["tokenizer"]
     if (
         context["assessment"] != "exact"
-        or context["context_window_tokens"] != 512000
+        or context["context_window_tokens"] != 1000000
         or context["source"]["url"] != CONTEXT_SOURCE_URL
         or tokenizer["repository"] != MINIMAX_M3_TOKENIZER_REPOSITORY
         or tokenizer["revision"] != MINIMAX_M3_TOKENIZER_REVISION

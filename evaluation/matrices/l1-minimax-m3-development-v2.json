@@ -52,10 +52,10 @@
         "context": {
           "assessment": "exact",
           "method": "minimax_m3_official_chat_template_adaptive_v1",
-          "context_window_tokens": 512000,
+          "context_window_tokens": 1000000,
           "advertised_maximum_tokens": 1000000,
           "guaranteed_minimum_label": "512K",
-          "policy": "conservative_decimal_guaranteed_minimum_total_context",
+          "policy": "advertised_maximum_total_context",
           "reservation_rule": "input_tokens + max_completion_tokens <= context_window_tokens",
           "source": {
             "url": "https://www.minimax.io/models/text/m3",

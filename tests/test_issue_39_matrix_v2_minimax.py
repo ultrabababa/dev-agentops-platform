@@ -444,7 +444,7 @@ def test_matrix_v2_context_infeasible_makes_zero_provider_calls(
     monkeypatch,
     capsys,
 ) -> None:
-    provider = _FakeMiniMaxProvider(input_tokens=500000)
+    provider = _FakeMiniMaxProvider(input_tokens=950000)
     monkeypatch.setattr(
         evaluation_debug_v2,
         "create_minimax_provider",
