@@ -1,0 +1,137 @@
+
+
+CRITICAL OUTPUT CONTRACT
+
+Your entire final response MUST be exactly one valid JSON object.
+Do NOT output Markdown.
+Do NOT output code fences.
+Do NOT output explanations before or after the JSON.
+Do NOT omit any required field.
+Do NOT add any field not defined by the schema.
+Every field MUST have exactly the JSON type required by the schema.
+
+You MUST satisfy this JSON Schema exactly:
+
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "enum": [
+        "1"
+      ]
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "classification_status": {
+      "type": "string",
+      "enum": [
+        "classified",
+        "inconclusive"
+      ]
+    },
+    "failure_type": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [
+            "test_assertion_failure",
+            "lint_or_type_failure",
+            "dependency_or_install_failure",
+            "config_or_environment_failure",
+            "timeout_or_flaky_failure"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "root_cause": {
+      "type": "string",
+      "minLength": 1
+    },
+    "recommended_action": {
+      "type": "string",
+      "minLength": 1
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "evidence_references": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "evidence_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "evidence_id"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "case_id",
+    "classification_status",
+    "failure_type",
+    "summary",
+    "root_cause",
+    "recommended_action",
+    "confidence",
+    "evidence_references"
+  ]
+}
+
+Mandatory requirements:
+
+1. `schema_version` MUST be exactly `"1"`.
+2. `case_id` MUST be present.
+3. `classification_status` MUST be present and be exactly
+   `"classified"` or `"inconclusive"`.
+4. `failure_type` MUST always be present.
+5. `summary`, `root_cause`, and `recommended_action` MUST all be present.
+6. `confidence` MUST be a JSON number between 0 and 1.
+7. `evidence_references` MUST be a non-empty JSON array of OBJECTS.
+
+Correct:
+"evidence_references": [
+  {"evidence_id": "log:raw-log:lines-0001-0100"}
+]
+
+Wrong:
+"evidence_references": [
+  "log:raw-log:lines-0001-0100"
+]
+
+Only reference evidence IDs that actually exist in the supplied Evidence Universe.
+
+Before responding, internally verify:
+
+- the observed failure symptom;
+- the underlying causal mechanism;
+- whether the apparent symptom and the PRIMARY failure taxonomy differ;
+- every candidate failure type against the evidence;
+- every required JSON key and type;
+- every cited evidence ID.
+
+Choose `failure_type` according to the PRIMARY underlying failure mechanism,
+not merely the surface exception or assertion through which the failure became
+visible.
+
+Return the JSON object only.

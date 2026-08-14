@@ -168,6 +168,23 @@ def _render_debug_markdown(document: dict[str, Any]) -> str:
                     ),
                 ]
             )
+            if manifest.get("manifest_schema_version") == "2":
+                observation = result["provider_observation"]
+                assessment = result["context_assessment"]
+                lines.extend(
+                    [
+                        "",
+                        "### Provider Observation",
+                        "",
+                        f"- Provider request ID: `{observation['provider_request_id']}`",
+                        f"- Returned model: `{observation['returned_model']}`",
+                        f"- Usage: `{json.dumps(observation['usage'], sort_keys=True)}`",
+                        f"- Finish reason: `{observation['finish_reason']}`",
+                        f"- Latency milliseconds: `{observation['latency_ms']}`",
+                        f"- Exact local input tokens: `{assessment['input_tokens']}`",
+                        f"- Token-count method: `{assessment['method']}`",
+                    ]
+                )
         sections.append("\n".join(lines))
     trace = "\n".join(
         f"{event['sequence']}. `{event['event_type']}`"
@@ -175,6 +192,21 @@ def _render_debug_markdown(document: dict[str, Any]) -> str:
         for event in document["trace"]
     )
     preview_section = _render_metric_preview(document["metric_preview"])
+    v2_identity = ""
+    if manifest.get("manifest_schema_version") == "2":
+        v2_identity = (
+            f"- Matrix schema: `{manifest['matrix']['schema_version']}`\n"
+            f"- Provider: `{manifest['treatment']['provider']['id']}`\n"
+            f"- Model: `{manifest['treatment']['model']}`\n"
+            f"- Treatment fingerprint: `{manifest['treatment_fingerprint']}`\n"
+            f"- Condition fingerprint: `{manifest['condition_fingerprint']}`\n"
+            f"- Execution policy fingerprint: "
+            f"`{manifest['execution_policy_fingerprint']}`\n"
+            f"- Run configuration fingerprint: "
+            f"`{manifest['run_configuration_fingerprint']}`\n"
+            f"- Code revision: `{manifest['code_revision']}`\n"
+            f"- Git dirty: `{str(manifest['git_dirty']).lower()}`\n"
+        )
     return (
         "# DevAgentOps Case Subset Debug Run\n\n"
         "## Run Summary\n\n"
@@ -182,6 +214,8 @@ def _render_debug_markdown(document: dict[str, Any]) -> str:
         f"- Status: `{document['status']}`\n"
         f"- Condition: `{manifest['selected_condition_id']}`\n"
         f"- Runtime: `{manifest['runtime_variant']}`\n"
+        + v2_identity
+        +
         f"- Selected Cases: `{len(results)}`\n"
         f"- Scored Cases: `{scored_count}`\n"
         f"- Failed Cases: `{failed_count}`\n"

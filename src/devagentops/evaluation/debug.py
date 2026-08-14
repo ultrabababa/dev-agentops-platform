@@ -73,6 +73,20 @@ def run_case_subset_debug(
             code="unknown_evaluation_condition",
         )
     effective = condition.effective_condition
+    if preflight.matrix.schema_version == "2":
+        from devagentops.evaluation.debug_v2 import run_case_subset_debug_v2
+
+        selected_cases = _select_cases(preflight.suite.cases, case_ids)
+        return run_case_subset_debug_v2(
+            matrix=preflight.matrix,
+            suite=preflight.suite,
+            condition=condition,
+            selected_cases=selected_cases,
+            registry_path=registry_path,
+            database_path=database_path,
+            artifacts_dir=artifacts_dir,
+            metric_preview_builder=_build_metric_preview,
+        )
     _validate_l1_debug_condition(effective)
     selected_cases = _select_cases(preflight.suite.cases, case_ids)
     task_contract_prompt = resolve_frozen_component_manifest(
