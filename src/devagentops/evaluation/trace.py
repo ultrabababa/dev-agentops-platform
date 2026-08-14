@@ -1,19 +1,29 @@
 from __future__ import annotations
 
 import threading
+from copy import deepcopy
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, Callable
 
 from devagentops.evaluation.execution import SampleIdentity
+
+
+EventListener = Callable[[dict[str, Any]], None]
 
 
 class TraceRecorder:
     """Run-scoped, thread-safe recorder for concurrent sample execution."""
 
-    def __init__(self, run_id: str) -> None:
+    def __init__(
+        self,
+        run_id: str,
+        *,
+        event_listener: EventListener | None = None,
+    ) -> None:
         self._run_id = run_id
         self._lock = threading.Lock()
         self._events: list[dict[str, Any]] = []
+        self._event_listener = event_listener
 
     def record(
         self,
@@ -25,11 +35,17 @@ class TraceRecorder:
         payload: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         event_payload = dict(payload or {})
+
         if identity is not None:
             if case_id is not None and case_id != identity.case_id:
                 raise ValueError("trace case_id does not match sample identity")
+
             case_id = identity.case_id
-            event_payload.setdefault("sample_sequence", identity.sample_sequence)
+            event_payload.setdefault(
+                "sample_sequence",
+                identity.sample_sequence,
+            )
+
         with self._lock:
             event = {
                 "run_id": self._run_id,
@@ -42,8 +58,25 @@ class TraceRecorder:
                 "occurred_at": occurred_at or _now(),
                 "payload": event_payload,
             }
+
             self._events.append(event)
-            return dict(event)
+
+            # The listener receives an independent deep copy so it cannot
+            # mutate the canonical stored Trace event.
+            listener_event = (
+                deepcopy(event)
+                if self._event_listener is not None
+                else None
+            )
+
+            # Preserve the historical record() return shape/behavior.
+            result = dict(event)
+
+        # Never invoke external/listener code while holding the Trace lock.
+        if listener_event is not None:
+            self._event_listener(listener_event)
+
+        return result
 
     def snapshot(self) -> tuple[dict[str, Any], ...]:
         with self._lock:
@@ -51,4 +84,8 @@ class TraceRecorder:
 
 
 def _now() -> str:
-    return datetime.now(UTC).isoformat(timespec="microseconds").replace("+00:00", "Z")
+    return (
+        datetime.now(UTC)
+        .isoformat(timespec="microseconds")
+        .replace("+00:00", "Z")
+    )

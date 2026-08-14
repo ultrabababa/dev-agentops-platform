@@ -77,7 +77,10 @@ def test_formal_cli_runs_full_suite_through_shared_engine_and_persists_aggregate
     )
 
     assert exit_code == 0
-    output = json.loads(capsys.readouterr().out)
+    captured = capsys.readouterr()
+    output = json.loads(captured.out)
+    assert "Evaluation: 60 samples | concurrency=6" in captured.err
+    assert captured.err.count("] scored ") == 60
     artifact = json.loads(Path(output["artifacts"]["json"]).read_text())
     markdown = Path(output["artifacts"]["markdown"]).read_text()
     assert output["status"] == "completed"
