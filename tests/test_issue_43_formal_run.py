@@ -44,7 +44,6 @@ class _FakeProvider:
             usage=TokenUsage(input_tokens=1000, output_tokens=10),
             stop_reason="stop",
             raw_stop_reason="stop",
-            latency_ms=5,
         )
 
 

@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import json
 import socket
-import time
 import urllib.error
 import urllib.request
 from typing import Any
 
+from devagentops.providers.contracts import CompletionProviderError
 
-class OpenAICompatibleTransportError(RuntimeError):
+
+class OpenAICompatibleTransportError(CompletionProviderError):
     def __init__(
         self,
         message: str,
@@ -16,9 +17,27 @@ class OpenAICompatibleTransportError(RuntimeError):
         code: str,
         http_status: int | None = None,
     ) -> None:
-        super().__init__(message)
-        self.code = code
-        self.http_status = http_status
+        retry_disposition = (
+            "timeout"
+            if code == "model_provider_timeout"
+            else "ordinary"
+            if code in {
+                "model_provider_transport_error",
+                "model_provider_rate_limited",
+            }
+            or (
+                code == "model_provider_http_error"
+                and http_status is not None
+                and http_status >= 500
+            )
+            else "nonretryable"
+        )
+        super().__init__(
+            message,
+            code=code,
+            retry_disposition=retry_disposition,
+            http_status=http_status,
+        )
 
 
 class OpenAICompatibleChatCompletionsTransport:
@@ -40,7 +59,7 @@ class OpenAICompatibleChatCompletionsTransport:
         self._api_key = api_key
         self._timeout_seconds = timeout_seconds
 
-    def complete(self, payload: dict[str, Any]) -> tuple[dict[str, Any], int]:
+    def complete(self, payload: dict[str, Any]) -> dict[str, Any]:
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         request = urllib.request.Request(
             self._endpoint,
@@ -51,7 +70,6 @@ class OpenAICompatibleChatCompletionsTransport:
             },
             method="POST",
         )
-        started = time.monotonic()
         try:
             with urllib.request.urlopen(
                 request,
@@ -89,7 +107,6 @@ class OpenAICompatibleChatCompletionsTransport:
                 "OpenAI-compatible request failed before a completion was returned",
                 code="model_provider_transport_error",
             ) from exc
-        latency_ms = round((time.monotonic() - started) * 1000)
         try:
             document = json.loads(raw_response)
         except json.JSONDecodeError as exc:
@@ -102,4 +119,4 @@ class OpenAICompatibleChatCompletionsTransport:
                 "OpenAI-compatible provider returned an invalid response envelope",
                 code="model_provider_protocol_error",
             )
-        return document, latency_ms
+        return document

@@ -21,6 +21,7 @@ from devagentops.providers.contracts import (
     ExactTokenCount,
     LogicalCompletionRequest,
 )
+from devagentops.providers.execution import execute_completion_request
 from devagentops.runtime.messages import AssistantMessage, UserMessage, assistant_text
 
 
@@ -56,6 +57,7 @@ class OracleOneShotResult:
     token_count: ExactTokenCount
     context_limit_tokens: int
     response: AssistantMessage
+    latency_ms: int
 
 
 def run_configured_oracle_one_shot(
@@ -152,7 +154,8 @@ def run_configured_oracle_one_shot(
             }
         )
 
-    response = provider.complete(request)
+    execution = execute_completion_request(provider, request)
+    response = execution.assistant
     visible_output = assistant_text(response)
 
     try:
@@ -170,4 +173,5 @@ def run_configured_oracle_one_shot(
         token_count=token_count,
         context_limit_tokens=treatment.context_limit_tokens,
         response=response,
+        latency_ms=execution.latency_ms,
     )

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -12,6 +13,8 @@ from devagentops.evaluation.development_treatment import (
 )
 from devagentops.runtime.tool_policy import BASELINE_TOOL_POLICY
 from devagentops.runtime.tools import TOOL_DEFINITIONS
+from devagentops.conditions.l4.react_condition import validate_l4_tool_registry
+from devagentops.runtime.react import ReactInfrastructureError
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -55,6 +58,20 @@ def test_l4_matrix_resolves_all_four_frozen_component_identities() -> None:
     assert contracts["runtime"]["max_steps"] == 100
     assert condition.effective_condition["execution_policy"]["retry_count"] == 3
     validate_minimax_development_condition(condition.effective_condition, case_count=1)
+
+
+def test_l4_tool_registry_semantic_drift_is_rejected() -> None:
+    manifest = resolve_frozen_component_manifest(
+        REGISTRY, "tool_registry", "l4-investigation-tools-v1"
+    )
+    drifted_behavior = json.loads(json.dumps(manifest.behavior))
+    drifted_behavior["tools"][0]["semantics"]["max_lines"] = 1999
+    drifted = replace(manifest, behavior=drifted_behavior)
+
+    with pytest.raises(ReactInfrastructureError) as captured:
+        validate_l4_tool_registry(drifted)
+
+    assert captured.value.code == "invalid_l4_tool_registry"
 
 
 @pytest.mark.parametrize(

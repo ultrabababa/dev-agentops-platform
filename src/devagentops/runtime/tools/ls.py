@@ -45,10 +45,12 @@ def execute_ls(
     ordered = sorted(entries)
     limited = ordered[:limit]
     notice = f"[truncated: ls returned first {len(limited)} of {len(ordered)} entries]"
-    content, byte_truncated = bounded_lines(limited, truncation_notice=notice)
     count_truncated = len(ordered) > len(limited)
-    if count_truncated and not byte_truncated:
-        content += notice + "\n"
+    content, byte_truncated = bounded_lines(
+        limited,
+        truncation_notice=notice,
+        already_truncated=count_truncated,
+    )
     truncated = count_truncated or byte_truncated
     return ToolExecutionResult(
         content=content,

@@ -65,7 +65,6 @@ class FakeProvider:
                 "reasoning_content": "private provider reasoning",
                 "reasoning_details": [{"text": "private provider reasoning"}],
             },
-            latency_ms=1,
         )
 
 
@@ -135,6 +134,13 @@ def test_l4_condition_reuses_sample_trace_scorer_and_separate_trajectory() -> No
     assert result.trajectory[1]["provider_fields"]["reasoning_details"] == [
         {"text": "private provider reasoning"}
     ]
+    assert "latency_ms" not in result.trajectory[1]
+    completed = next(
+        event
+        for event in recorder.snapshot()
+        if event["event_type"] == "model_call_completed"
+    )
+    assert isinstance(completed["payload"]["latency_ms"], int)
     trace_json = json.dumps(recorder.snapshot())
     assert "private provider reasoning" not in trace_json
     assert report not in trace_json

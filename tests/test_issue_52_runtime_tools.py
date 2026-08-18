@@ -52,6 +52,15 @@ def test_read_rejects_traversal_and_oversized_single_line() -> None:
     assert exc_info.value.code == "source_line_too_large"
 
 
+def test_read_rejects_line_that_cannot_fit_with_progress_envelope() -> None:
+    workspace = FakeWorkspace(raw_log="x" * (MAX_TOOL_RESULT_BYTES - 20))
+
+    with pytest.raises(ExpectedToolError) as exc_info:
+        execute_read(workspace, path="/raw.log", offset=1)
+
+    assert exc_info.value.code == "source_line_too_large"
+
+
 def test_grep_is_deterministic_marks_context_and_caps_source_lines() -> None:
     workspace = FakeWorkspace(
         files={"z.py": "before\nneedle " + "x" * 800 + "\nafter\n"}
@@ -78,6 +87,20 @@ def test_grep_match_limit_is_visible_and_metadata_records_truncation() -> None:
     assert result.metadata["match_count"] == 2
 
 
+def test_grep_utf8_byte_cap_truncates_before_match_count_cap() -> None:
+    source_line = "needle " + "界" * 490
+    workspace = FakeWorkspace(
+        raw_log="\n".join(source_line for _ in range(100))
+    )
+
+    result = execute_grep(workspace, pattern="needle", path="/raw.log")
+
+    assert result.metadata["match_count"] == 100
+    assert result.truncated is True
+    assert "[truncated:" in result.content
+    assert len(result.content.encode("utf-8")) <= MAX_TOOL_RESULT_BYTES
+
+
 def test_find_and_ls_include_dotfiles_without_gitignore_filtering() -> None:
     workspace = FakeWorkspace()
     found = execute_find(workspace, pattern="repository/**")
@@ -96,3 +119,29 @@ def test_find_and_ls_count_truncation_is_visible() -> None:
     listed = execute_ls(workspace, path="/repository", limit=3)
     assert found.truncated and "first 3" in found.content
     assert listed.truncated and "first 3" in listed.content
+
+
+def test_find_utf8_byte_cap_truncates_before_result_count_cap() -> None:
+    workspace = FakeWorkspace(
+        files={f"{'界' * 100}-{index:03}.txt": "x" for index in range(600)}
+    )
+
+    result = execute_find(workspace, pattern="repository/*")
+
+    assert result.metadata["total_matches"] == 600
+    assert result.truncated is True
+    assert "[truncated:" in result.content
+    assert len(result.content.encode("utf-8")) <= MAX_TOOL_RESULT_BYTES
+
+
+def test_ls_utf8_byte_cap_truncates_before_entry_count_cap() -> None:
+    workspace = FakeWorkspace(
+        files={f"{'界' * 100}-{index:03}.txt": "x" for index in range(400)}
+    )
+
+    result = execute_ls(workspace, path="/repository")
+
+    assert result.metadata["total_entries"] == 400
+    assert result.truncated is True
+    assert "[truncated:" in result.content
+    assert len(result.content.encode("utf-8")) <= MAX_TOOL_RESULT_BYTES

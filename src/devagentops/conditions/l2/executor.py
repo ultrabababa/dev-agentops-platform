@@ -18,10 +18,8 @@ from devagentops.evaluation.execution import (
     SampleResult,
 )
 from devagentops.evaluation.persistence import canonical_sha256
-from devagentops.providers.contracts import CompletionProvider
-from devagentops.providers.openai_compatible import (
-    OpenAICompatibleTransportError,
-)
+from devagentops.providers.contracts import CompletionProvider, CompletionProviderError
+from devagentops.providers.execution import ProviderRequestFailed
 from devagentops.runtime.workspace import (
     RuntimeCaseWorkspace,
     RuntimeWorkspaceError,
@@ -101,7 +99,8 @@ class ConfiguredL2ConditionExecutor:
 
         except (
             ConfiguredFixedModelWorkflowError,
-            OpenAICompatibleTransportError,
+            CompletionProviderError,
+            ProviderRequestFailed,
             RuntimeWorkspaceError,
         ) as exc:
             failure_code = getattr(
@@ -124,7 +123,7 @@ class ConfiguredL2ConditionExecutor:
 
             elif isinstance(
                 exc,
-                OpenAICompatibleTransportError,
+                (CompletionProviderError, ProviderRequestFailed),
             ):
                 failure_stage = (
                     current_stage
@@ -155,7 +154,7 @@ class ConfiguredL2ConditionExecutor:
             if (
                 isinstance(
                     exc,
-                    OpenAICompatibleTransportError,
+                    (CompletionProviderError, ProviderRequestFailed),
                 )
                 and exc.http_status
             ):
@@ -216,7 +215,7 @@ class ConfiguredL2ConditionExecutor:
                 "finish_reason": (
                     stage.response.stop_reason
                 ),
-                "latency_ms": stage.response.latency_ms,
+                "latency_ms": stage.latency_ms,
                 "reasoning": _reasoning_metadata(
                     assistant_thinking(stage.response)
                 ),
@@ -291,7 +290,7 @@ class ConfiguredL2ConditionExecutor:
                     final_stage.response.stop_reason
                 ),
                 "latency_ms": (
-                    final_stage.response.latency_ms
+                    final_stage.latency_ms
                 ),
                 "reasoning": _reasoning_metadata(
                     assistant_thinking(final_stage.response)

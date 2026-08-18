@@ -11,8 +11,7 @@ from devagentops.evaluation.execution import (
     PlannedSample,
     SampleResult,
 )
-from devagentops.providers.contracts import CompletionProvider
-from devagentops.providers.openai_compatible import OpenAICompatibleTransportError
+from devagentops.providers.contracts import CompletionProvider, CompletionProviderError
 from devagentops.runtime.messages import (
     ToolDefinition,
     assistant_thinking,
@@ -25,7 +24,7 @@ from devagentops.runtime.react import (
     run_react,
 )
 from devagentops.runtime.tool_policy import BASELINE_TOOL_POLICY
-from devagentops.runtime.tools import TOOL_DEFINITIONS
+from devagentops.runtime.tools import TOOL_DEFINITIONS, TOOL_SEMANTICS
 from devagentops.runtime.workspace import RuntimeCaseWorkspace, RuntimeWorkspaceError
 from devagentops.scoring.case import evaluate_case_report
 from devagentops.scoring.report import REPORT_SCHEMA_VERSION
@@ -99,7 +98,7 @@ class ConfiguredL4ConditionExecutor:
         except (
             ReactInfrastructureError,
             RuntimeWorkspaceError,
-            OpenAICompatibleTransportError,
+            CompletionProviderError,
         ) as exc:
             if isinstance(exc, ReactInfrastructureError):
                 messages = exc.messages
@@ -107,7 +106,7 @@ class ConfiguredL4ConditionExecutor:
                 stage = exc.stage
                 steps = exc.steps
                 request_attempts = exc.request_attempts
-            elif isinstance(exc, OpenAICompatibleTransportError):
+            elif isinstance(exc, CompletionProviderError):
                 failure_code = exc.code
                 stage = "model_provider"
                 steps = 0
@@ -179,7 +178,7 @@ class ConfiguredL4ConditionExecutor:
                     "usage": response.usage.as_dict(),
                     "finish_reason": response.stop_reason,
                     "raw_finish_reason": response.raw_stop_reason,
-                    "latency_ms": response.latency_ms,
+                    "latency_ms": runtime_result.final_latency_ms,
                     "reasoning": _reasoning_metadata(
                         assistant_thinking(response)
                     ),
@@ -250,24 +249,31 @@ class ConfiguredL4ConditionExecutor:
                 steps=0,
                 request_attempts=0,
             )
-        tools = tuple(
-            ToolDefinition(
-                name=item["name"],
-                description=item["description"],
-                parameters=item["parameters"],
-            )
-            for item in self.tool_registry.behavior["tools"]
+        return validate_l4_tool_registry(self.tool_registry)
+
+
+def validate_l4_tool_registry(
+    tool_registry: ComponentManifest,
+) -> tuple[ToolDefinition, ...]:
+    expected_tools = [
+        {
+            "name": definition.name,
+            "description": definition.description,
+            "parameters": definition.parameters,
+            "semantics": TOOL_SEMANTICS[definition.name],
+        }
+        for definition in TOOL_DEFINITIONS
+    ]
+    if tool_registry.behavior != {"tools": expected_tools}:
+        raise ReactInfrastructureError(
+            "L4 Tool Registry semantics differ from Runtime implementation",
+            code="invalid_l4_tool_registry",
+            stage="l4_execution",
+            messages=(),
+            steps=0,
+            request_attempts=0,
         )
-        if tools != TOOL_DEFINITIONS:
-            raise ReactInfrastructureError(
-                "L4 Tool Registry provider contracts differ from Runtime tools",
-                code="invalid_l4_tool_registry",
-                stage="l4_execution",
-                messages=(),
-                steps=0,
-                request_attempts=0,
-            )
-        return tools
+    return TOOL_DEFINITIONS
 
 
 def _reasoning_metadata(reasoning: str | None) -> dict[str, Any]:

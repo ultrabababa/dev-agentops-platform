@@ -45,10 +45,12 @@ def execute_find(
     matches = [item for item in in_scope if fnmatch.fnmatch(item.lstrip("/"), pattern)]
     limited = matches[:limit]
     notice = f"[truncated: find returned first {len(limited)} of {len(matches)} results]"
-    content, byte_truncated = bounded_lines(limited, truncation_notice=notice)
     count_truncated = len(matches) > len(limited)
-    if count_truncated and not byte_truncated:
-        content += notice + "\n"
+    content, byte_truncated = bounded_lines(
+        limited,
+        truncation_notice=notice,
+        already_truncated=count_truncated,
+    )
     if not limited:
         content = "no results\n"
     truncated = count_truncated or byte_truncated

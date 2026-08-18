@@ -120,3 +120,74 @@ def test_sample_persistence_writes_exact_trajectory_separately_from_trace(tmp_pa
             ).scalar_one() == 0
     finally:
         engine.dispose()
+
+
+def test_execution_failed_sample_persists_partial_trajectory(tmp_path) -> None:
+    database = tmp_path / "failed-partial-trajectory.db"
+    initialize_database(database)
+    manifest = {
+        "run_id": "run-failed-52",
+        "selected_condition_id": "l4",
+        "runtime_variant": "self_built_react",
+        "evaluation_suite": {
+            "suite_id": "suite",
+            "suite_version": "1",
+            "cases": [{"case_id": "case", "weight": 1.0}],
+        },
+        "condition_fingerprint": "a" * 64,
+        "code_revision": "b" * 40,
+        "manifest_schema_version": "2",
+        "structured_report_schema_version": "1",
+        "evaluation_method": "triage-method-v1",
+    }
+    partial_trajectory = (
+        {"role": "user", "content": "initial"},
+        {
+            "role": "assistant",
+            "content": [{"type": "tool_call", "id": "call-1", "name": "read"}],
+        },
+    )
+    persist_finalizing_sample_run(
+        database,
+        manifest=manifest,
+        trace_events=[],
+        sample_results=[
+            {
+                "case_id": "case",
+                "repeat_index": 0,
+                "sample_sequence": 1,
+                "weight": 1.0,
+                "evaluation_failure_type": "test_assertion_failure",
+                "outcome": {
+                    "status": "execution_failed",
+                    "failure_code": "tool_execution_failed",
+                    "failure_stage": "runtime",
+                    "failure_message": "unexpected defect",
+                },
+            }
+        ],
+        started_at="now",
+        sample_trajectories={("case", 0): partial_trajectory},
+    )
+
+    engine = create_database_engine(database)
+    try:
+        with engine.connect() as connection:
+            assert connection.execute(
+                text(
+                    "SELECT status FROM evaluation_sample_outcomes "
+                    "WHERE run_id='run-failed-52'"
+                )
+            ).scalar_one() == "execution_failed"
+            roles = connection.execute(
+                text(
+                    "SELECT message_role FROM evaluation_sample_trajectory_messages "
+                    "WHERE run_id='run-failed-52' ORDER BY message_index"
+                )
+            ).scalars().all()
+            assert roles == ["user", "assistant"]
+            assert connection.execute(
+                text("SELECT COUNT(*) FROM evaluation_sample_reports")
+            ).scalar_one() == 0
+    finally:
+        engine.dispose()

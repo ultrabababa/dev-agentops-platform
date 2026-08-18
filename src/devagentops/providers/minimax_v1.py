@@ -11,6 +11,7 @@ from jinja2.sandbox import ImmutableSandboxedEnvironment
 from tokenizers import Tokenizer
 
 from devagentops.providers.contracts import (
+    CompletionProviderError,
     ExactTokenCount,
     LogicalCompletionRequest,
 )
@@ -51,7 +52,7 @@ from devagentops.providers.openai_compatible import (
 
 
 class ChatCompletionsTransport(Protocol):
-    def complete(self, payload: dict[str, Any]) -> tuple[dict[str, Any], int]: ...
+    def complete(self, payload: dict[str, Any]) -> dict[str, Any]: ...
 
 
 @dataclass(frozen=True)
@@ -119,7 +120,7 @@ class MiniMaxProvider:
 
     def complete(self, request: LogicalCompletionRequest) -> AssistantMessage:
         serialized = self._serialize_request(request)
-        document, latency_ms = self._transport.complete(serialized.payload)
+        document = self._transport.complete(serialized.payload)
         _validate_provider_status(document)
         try:
             choice = document["choices"][0]
@@ -154,7 +155,6 @@ class MiniMaxProvider:
             stop_reason=stop_reason,
             raw_stop_reason=raw_stop_reason,
             provider_fields=provider_fields,
-            latency_ms=latency_ms,
         )
 
     @staticmethod
@@ -266,6 +266,7 @@ def _serialize_messages(
         })
         if (
             "reasoning_content" not in wire_message
+            and "reasoning_details" not in wire_message
             and (thinking := assistant_thinking(message)) is not None
         ):
             wire_message["reasoning_content"] = thinking
@@ -454,20 +455,36 @@ def _validate_provider_status(document: dict[str, Any]) -> None:
     if base_resp is None:
         return
     if not isinstance(base_resp, dict):
-        raise OpenAICompatibleTransportError(
+        raise CompletionProviderError(
             "MiniMax returned an invalid provider status object",
             code="model_provider_protocol_error",
+            retry_disposition="nonretryable",
         )
     status_code = base_resp.get("status_code")
     if not isinstance(status_code, int) or isinstance(status_code, bool):
-        raise OpenAICompatibleTransportError(
+        raise CompletionProviderError(
             "MiniMax returned an invalid provider status code",
             code="model_provider_protocol_error",
+            retry_disposition="nonretryable",
         )
     if status_code != 0:
-        raise OpenAICompatibleTransportError(
+        retry_disposition = (
+            "timeout"
+            if status_code == 1001
+            else "ordinary"
+            if status_code in {1000, 1002, 1024, 1033}
+            else "nonretryable"
+        )
+        raise CompletionProviderError(
             f"MiniMax rejected the request with provider status {status_code}",
-            code="model_provider_error",
+            code=(
+                "model_provider_timeout"
+                if retry_disposition == "timeout"
+                else "model_provider_transient"
+                if retry_disposition == "ordinary"
+                else "model_provider_rejected"
+            ),
+            retry_disposition=retry_disposition,
         )
 
 

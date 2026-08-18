@@ -22,6 +22,7 @@ from devagentops.providers.contracts import (
     ExactTokenCount,
     LogicalCompletionRequest,
 )
+from devagentops.providers.execution import execute_completion_request
 from devagentops.runtime.messages import (
     AssistantMessage,
     UserMessage,
@@ -219,6 +220,7 @@ class ConfiguredStageCallResult:
     control_fingerprint: str
     token_count: ExactTokenCount
     response: AssistantMessage
+    latency_ms: int
 
 
 @dataclass(frozen=True)
@@ -463,7 +465,8 @@ def _execute_stage(
             }
         )
 
-    response = provider.complete(request)
+    execution = execute_completion_request(provider, request)
+    response = execution.assistant
 
     return ConfiguredStageCallResult(
         stage_id=stage_id,
@@ -477,6 +480,7 @@ def _execute_stage(
         control_fingerprint=control_fingerprint,
         token_count=token_count,
         response=response,
+        latency_ms=execution.latency_ms,
     )
 
 
@@ -495,7 +499,7 @@ def _notify_model_call_completed(
             "provider_request_id": stage.response.response_id,
             "returned_model": stage.response.response_model,
             "usage": stage.response.usage.as_dict(),
-            "latency_ms": stage.response.latency_ms,
+            "latency_ms": stage.latency_ms,
             "finish_reason": stage.response.stop_reason,
             "visible_output": assistant_text(stage.response),
             "reasoning_observation": _reasoning_metadata(

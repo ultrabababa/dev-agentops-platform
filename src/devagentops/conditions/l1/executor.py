@@ -17,8 +17,8 @@ from devagentops.evaluation.execution import (
     SampleResult,
 )
 from devagentops.evaluation.persistence import canonical_sha256
-from devagentops.providers.contracts import CompletionProvider
-from devagentops.providers.openai_compatible import OpenAICompatibleTransportError
+from devagentops.providers.contracts import CompletionProvider, CompletionProviderError
+from devagentops.providers.execution import ProviderRequestFailed
 from devagentops.runtime.workspace import RuntimeCaseWorkspace, RuntimeWorkspaceError
 from devagentops.runtime.messages import assistant_text, assistant_thinking
 from devagentops.scoring.case import evaluate_case_report
@@ -66,7 +66,8 @@ class ConfiguredL1ConditionExecutor:
             )
         except (
             FullContextOneShotError,
-            OpenAICompatibleTransportError,
+            CompletionProviderError,
+            ProviderRequestFailed,
             RuntimeWorkspaceError,
         ) as exc:
             failure_code = getattr(exc, "code", "l1_execution_failed")
@@ -74,7 +75,7 @@ class ConfiguredL1ConditionExecutor:
                 "context_feasibility"
                 if failure_code == "l1_context_infeasible"
                 else "model_provider"
-                if isinstance(exc, OpenAICompatibleTransportError)
+                if isinstance(exc, (CompletionProviderError, ProviderRequestFailed))
                 else "l1_execution"
             )
             payload: dict[str, Any] = {
@@ -83,7 +84,10 @@ class ConfiguredL1ConditionExecutor:
                 "actual_call_count": actual_call_count,
                 "retry_count": 0,
             }
-            if isinstance(exc, OpenAICompatibleTransportError) and exc.http_status:
+            if (
+                isinstance(exc, (CompletionProviderError, ProviderRequestFailed))
+                and exc.http_status
+            ):
                 payload["http_status"] = exc.http_status
             recorder.record("failure", identity=identity, payload=payload)
             return SampleResult(
@@ -111,7 +115,7 @@ class ConfiguredL1ConditionExecutor:
                 "provider_request_id": response.response_id,
                 "returned_model": response.response_model,
                 "usage": response.usage.as_dict(),
-                "latency_ms": response.latency_ms,
+                "latency_ms": l1_result.latency_ms,
                 "finish_reason": response.stop_reason,
                 "visible_output": visible_output,
                 "reasoning_observation": reasoning_metadata,
@@ -154,7 +158,7 @@ class ConfiguredL1ConditionExecutor:
                 "returned_model": response.response_model,
                 "usage": response.usage.as_dict(),
                 "finish_reason": response.stop_reason,
-                "latency_ms": response.latency_ms,
+                "latency_ms": l1_result.latency_ms,
                 "reasoning": reasoning_metadata,
             },
             "context_assessment": {

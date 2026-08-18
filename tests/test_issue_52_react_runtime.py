@@ -5,8 +5,7 @@ from dataclasses import dataclass
 
 import pytest
 
-from devagentops.providers.contracts import ExactTokenCount
-from devagentops.providers.openai_compatible import OpenAICompatibleTransportError
+from devagentops.providers.contracts import CompletionProviderError, ExactTokenCount
 from devagentops.runtime.messages import (
     AssistantMessage,
     TextContent,
@@ -94,7 +93,6 @@ def assistant(*blocks, stop_reason="tool_use") -> AssistantMessage:
         stop_reason=stop_reason,
         raw_stop_reason="tool_calls" if stop_reason == "tool_use" else stop_reason,
         provider_fields={"reasoning_details": [{"text": "opaque"}]},
-        latency_ms=7,
     )
 
 
@@ -283,8 +281,38 @@ def test_expected_domain_error_recovers_but_unexpected_tool_error_is_infrastruct
     assert exc_info.value.code == "tool_execution_failed"
 
 
+def test_agent_visible_tool_error_content_obeys_utf8_byte_cap() -> None:
+    provider = SequenceProvider(
+        [
+            assistant(call("huge", "界" * 20_000, {})),
+            assistant(TextContent(valid_report()), stop_reason="stop"),
+        ]
+    )
+    events = []
+
+    result = run_react(
+        workspace=FakeWorkspace(),
+        provider=provider,
+        configuration=config(),
+        initial_user_message=initial(),
+        on_event=lambda event, payload: events.append((event, payload)),
+        sleep=lambda _: None,
+    )
+
+    error_result = result.messages[2]
+    assert isinstance(error_result, ToolResultMessage)
+    assert len(error_result.content.encode("utf-8")) <= 50 * 1024
+    assert "[truncated: ToolResult exceeded 50 KiB]" in error_result.content
+    error_event = next(payload for event, payload in events if event == "tool_call_error")
+    assert error_event["truncated"] is True
+
+
 def test_same_request_retry_success_preserves_conversation_and_uses_backoff() -> None:
-    failure = OpenAICompatibleTransportError("temporary", code="model_provider_transport_error")
+    failure = CompletionProviderError(
+        "temporary",
+        code="model_provider_transport_error",
+        retry_disposition="ordinary",
+    )
     provider = SequenceProvider(
         [failure, failure, assistant(TextContent(valid_report()), stop_reason="stop")]
     )
@@ -301,7 +329,11 @@ def test_same_request_retry_success_preserves_conversation_and_uses_backoff() ->
 
 def test_retry_exhaustion_is_provider_request_infrastructure_failure() -> None:
     failures = [
-        OpenAICompatibleTransportError("temporary", code="model_provider_transport_error")
+        CompletionProviderError(
+            "temporary",
+            code="model_provider_transport_error",
+            retry_disposition="ordinary",
+        )
         for _ in range(4)
     ]
     provider = SequenceProvider(failures)
@@ -319,8 +351,16 @@ def test_retry_exhaustion_is_provider_request_infrastructure_failure() -> None:
 def test_timeout_retries_once_and_auth_failure_does_not_retry() -> None:
     timeout_provider = SequenceProvider(
         [
-            OpenAICompatibleTransportError("timeout", code="model_provider_timeout"),
-            OpenAICompatibleTransportError("timeout", code="model_provider_timeout"),
+            CompletionProviderError(
+                "timeout",
+                code="model_provider_timeout",
+                retry_disposition="timeout",
+            ),
+            CompletionProviderError(
+                "timeout",
+                code="model_provider_timeout",
+                retry_disposition="timeout",
+            ),
         ]
     )
     backoffs = []
@@ -333,7 +373,11 @@ def test_timeout_retries_once_and_auth_failure_does_not_retry() -> None:
     assert backoffs == [2.0]
 
     auth_provider = SequenceProvider(
-        [OpenAICompatibleTransportError("denied", code="model_provider_credentials_missing")]
+        [CompletionProviderError(
+            "denied",
+            code="model_provider_credentials_missing",
+            retry_disposition="nonretryable",
+        )]
     )
     with pytest.raises(ReactInfrastructureError) as auth_error:
         run_react(

@@ -8,6 +8,7 @@ from devagentops.runtime.workspace import RuntimeCaseWorkspace
 
 
 MAX_TOOL_RESULT_BYTES = 50 * 1024
+TOOL_RESULT_TRUNCATION_NOTICE = "\n[truncated: ToolResult exceeded 50 KiB]\n"
 
 
 class ExpectedToolError(RuntimeError):
@@ -23,6 +24,15 @@ class ToolExecutionResult:
     content: str
     truncated: bool = False
     metadata: dict[str, Any] = field(default_factory=dict)
+
+
+def bound_tool_result_text(content: str) -> tuple[str, bool]:
+    encoded = content.encode("utf-8")
+    if len(encoded) <= MAX_TOOL_RESULT_BYTES:
+        return content, False
+    notice = TOOL_RESULT_TRUNCATION_NOTICE.encode("utf-8")
+    prefix = encoded[: MAX_TOOL_RESULT_BYTES - len(notice)]
+    return prefix.decode("utf-8", errors="ignore") + TOOL_RESULT_TRUNCATION_NOTICE, True
 
 
 def normalize_virtual_path(path: str | None, *, default: str = "/") -> str:
@@ -78,14 +88,26 @@ def bounded_lines(
     lines: Iterable[str],
     *,
     truncation_notice: str,
+    already_truncated: bool = False,
 ) -> tuple[str, bool]:
+    source_lines = tuple(lines)
     emitted: list[str] = []
-    notice_bytes = len((truncation_notice + "\n").encode("utf-8"))
-    for line in lines:
+    emitted_bytes = 0
+    notice = truncation_notice + "\n"
+    notice_bytes = len(notice.encode("utf-8"))
+    for index, line in enumerate(source_lines):
         rendered = line + "\n"
         encoded_size = len(rendered.encode("utf-8"))
-        if encoded_size + notice_bytes > MAX_TOOL_RESULT_BYTES:
-            emitted.append(truncation_notice)
-            return "\n".join(emitted) + "\n", True
+        has_unemitted_content = index < len(source_lines) - 1 or already_truncated
+        reserved_notice_bytes = notice_bytes if has_unemitted_content else 0
+        if (
+            emitted_bytes + encoded_size + reserved_notice_bytes
+            > MAX_TOOL_RESULT_BYTES
+        ):
+            return "".join(item + "\n" for item in emitted) + notice, True
         emitted.append(line)
-    return ("\n".join(emitted) + ("\n" if emitted else "")), False
+        emitted_bytes += encoded_size
+    content = "".join(item + "\n" for item in emitted)
+    if already_truncated:
+        content += notice
+    return content, already_truncated

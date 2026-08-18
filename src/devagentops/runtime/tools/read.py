@@ -56,6 +56,12 @@ def execute_read(
         continuation = f"[truncated: continue with offset={line_number}]"
         projected = "\n".join([*rendered, candidate, continuation]) + "\n"
         if len(projected.encode("utf-8")) > MAX_TOOL_RESULT_BYTES:
+            if emitted_count == 0:
+                raise ExpectedToolError(
+                    "a requested source line cannot fit inside the 50 KiB "
+                    "ToolResult envelope",
+                    code="source_line_too_large",
+                )
             truncated = True
             next_offset = line_number
             break

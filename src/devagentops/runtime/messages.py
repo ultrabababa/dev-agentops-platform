@@ -60,7 +60,6 @@ class AssistantMessage:
     stop_reason: Literal["stop", "length", "tool_use"]
     raw_stop_reason: str | None
     provider_fields: dict[str, JsonValue] = field(default_factory=dict)
-    latency_ms: int = 0
 
 
 @dataclass(frozen=True)
@@ -141,5 +140,4 @@ def message_to_dict(message: Message) -> dict[str, JsonValue]:
         "stop_reason": message.stop_reason,
         "raw_stop_reason": message.raw_stop_reason,
         "provider_fields": message.provider_fields,
-        "latency_ms": message.latency_ms,
     }

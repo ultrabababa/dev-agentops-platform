@@ -88,7 +88,6 @@ class SequenceCompletionProvider:
             ),
             stop_reason="stop",
             raw_stop_reason="stop",
-            latency_ms=10 + index,
         )
 
 
@@ -893,7 +892,6 @@ def test_l2_formal_cli_runs_20x3_with_exactly_two_calls_per_sample(
                 usage=TokenUsage(input_tokens=1000, output_tokens=10),
                 stop_reason="stop",
                 raw_stop_reason="stop",
-                latency_ms=5,
             )
 
     def provider_factory(**kwargs):

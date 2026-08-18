@@ -17,6 +17,7 @@ from devagentops.providers.contracts import (
     CompletionProvider,
     LogicalCompletionRequest,
 )
+from devagentops.providers.execution import execute_completion_request
 from devagentops.runtime.messages import (
     AssistantMessage,
     UserMessage,
@@ -116,6 +117,7 @@ class FullContextOneShotResult:
     token_count: TokenCount
     context_limit_tokens: int
     response: ModelResponse | AssistantMessage
+    latency_ms: int
 
 
 @dataclass(frozen=True)
@@ -249,6 +251,7 @@ def run_full_context_one_shot(
         token_count=token_count,
         context_limit_tokens=CONTEXT_LIMIT_TOKENS,
         response=response,
+        latency_ms=response.latency_ms,
     )
 
 
@@ -314,7 +317,8 @@ def run_configured_full_context_one_shot(
                 "logical_call_number": 1,
             }
         )
-    response = provider.complete(request)
+    execution = execute_completion_request(provider, request)
+    response = execution.assistant
     visible_output = assistant_text(response)
     try:
         candidate_document: Any = json.loads(visible_output)
@@ -328,4 +332,5 @@ def run_configured_full_context_one_shot(
         token_count=token_count,
         context_limit_tokens=treatment.context_limit_tokens,
         response=response,
+        latency_ms=execution.latency_ms,
     )

@@ -96,10 +96,12 @@ def execute_grep(
         f"[truncated: grep returned {match_count} matches; "
         "narrow the query or use a smaller path]"
     )
-    content, byte_truncated = bounded_lines(output_lines, truncation_notice=notice)
+    content, byte_truncated = bounded_lines(
+        output_lines,
+        truncation_notice=notice,
+        already_truncated=match_limit_hit,
+    )
     truncated = match_limit_hit or byte_truncated
-    if match_limit_hit and not byte_truncated:
-        content += notice + "\n"
     if not output_lines:
         content = "no matches\n"
     return ToolExecutionResult(

@@ -11,7 +11,12 @@ from devagentops.providers.contracts import (
     ExactTokenCount,
     LogicalCompletionRequest,
 )
-from devagentops.providers.openai_compatible import OpenAICompatibleTransportError
+from devagentops.providers.execution import (
+    CompletionRequestAttempt,
+    CompletionRequestRetryPolicy,
+    ProviderRequestFailed,
+    execute_completion_request,
+)
 from devagentops.runtime.messages import (
     AssistantMessage,
     Message,
@@ -23,6 +28,7 @@ from devagentops.runtime.messages import (
 )
 from devagentops.runtime.tool_policy import evaluate_baseline_policy
 from devagentops.runtime.tools import TOOL_DEFINITIONS, ExpectedToolError, execute_tool
+from devagentops.runtime.tools._common import bound_tool_result_text
 from devagentops.runtime.workspace import RuntimeCaseWorkspace
 from devagentops.scoring.report import analyze_candidate_report
 
@@ -61,6 +67,7 @@ class ReactRuntimeResult:
     request_attempts: int
     token_counts: tuple[ExactTokenCount, ...]
     final_assistant: AssistantMessage | None
+    final_latency_ms: int | None
 
 
 class ReactInfrastructureError(RuntimeError):
@@ -143,6 +150,7 @@ def run_react(
     steps = 0
     request_attempts = 0
     final_assistant: AssistantMessage | None = None
+    final_latency_ms: int | None = None
 
     while True:
         if steps >= configuration.max_steps:
@@ -165,6 +173,7 @@ def run_react(
                 request_attempts=request_attempts,
                 token_counts=tuple(token_counts),
                 final_assistant=final_assistant,
+                final_latency_ms=final_latency_ms,
             )
 
         request = LogicalCompletionRequest(
@@ -201,15 +210,30 @@ def run_react(
             )
 
         try:
-            assistant, attempts = _complete_with_retry(
-                provider=provider,
-                request=request,
-                step=steps + 1,
-                input_tokens=token_count.input_tokens,
-                on_event=on_event,
+            execution = execute_completion_request(
+                provider,
+                request,
+                retry_policy=CompletionRequestRetryPolicy(
+                    ordinary_backoffs=ORDINARY_RETRY_BACKOFF_SECONDS,
+                    timeout_backoffs=TIMEOUT_RETRY_BACKOFF_SECONDS,
+                ),
+                before_attempt=lambda attempt_index: _emit(
+                    on_event,
+                    "model_call_started",
+                    {
+                        "step": steps + 1,
+                        "attempt_index": attempt_index,
+                        "input_tokens": token_count.input_tokens,
+                    },
+                ),
+                after_attempt=lambda attempt: _record_model_attempt(
+                    on_event,
+                    step=steps + 1,
+                    attempt=attempt,
+                ),
                 sleep=sleep,
             )
-        except _ProviderRequestExhausted as exc:
+        except ProviderRequestFailed as exc:
             request_attempts += exc.attempts
             raise ReactInfrastructureError(
                 "L4 provider request failed after same-request retry policy",
@@ -219,9 +243,11 @@ def run_react(
                 steps=steps,
                 request_attempts=request_attempts,
             ) from exc
-        request_attempts += attempts
+        assistant = execution.assistant
+        request_attempts += execution.attempts
         steps += 1
         final_assistant = assistant
+        final_latency_ms = execution.latency_ms
         messages = (*messages, assistant)
         calls = tool_calls(assistant)
 
@@ -264,6 +290,7 @@ def run_react(
                 request_attempts=request_attempts,
                 token_counts=tuple(token_counts),
                 final_assistant=assistant,
+                final_latency_ms=execution.latency_ms,
             )
 
         if assistant.stop_reason == "length":
@@ -322,12 +349,15 @@ def run_react(
         try:
             result = execute_tool(workspace, call.name, call.arguments)
         except ExpectedToolError as exc:
+            error_content, content_truncated = bound_tool_result_text(
+                f"{exc.code}: {exc}"
+            )
             messages = (
                 *messages,
                 ToolResultMessage(
                     tool_call_id=call.id,
                     tool_name=call.name,
-                    content=f"{exc.code}: {exc}",
+                    content=error_content,
                     is_error=True,
                 ),
             )
@@ -335,7 +365,7 @@ def run_react(
                 on_event,
                 "tool_call_error",
                 {"step": steps, "tool_call_id": call.id, "tool_name": call.name,
-                 "code": exc.code},
+                 "code": exc.code, "truncated": content_truncated},
             )
             continue
         except Exception as exc:
@@ -369,71 +399,41 @@ def run_react(
         )
 
 
-@dataclass(frozen=True)
-class _ProviderRequestExhausted(RuntimeError):
-    attempts: int
-
-
-def _complete_with_retry(
-    *,
-    provider: CompletionProvider,
-    request: LogicalCompletionRequest,
-    step: int,
-    input_tokens: int,
+def _record_model_attempt(
     on_event: RuntimeEventCallback | None,
-    sleep: Callable[[float], None],
-) -> tuple[AssistantMessage, int]:
-    attempt = 0
-    while True:
+    *,
+    step: int,
+    attempt: CompletionRequestAttempt,
+) -> None:
+    if attempt.error is not None:
         _emit(
             on_event,
-            "model_call_started",
-            {"step": step, "attempt_index": attempt, "input_tokens": input_tokens},
-        )
-        try:
-            assistant = provider.complete(request)
-        except OpenAICompatibleTransportError as exc:
-            _emit(
-                on_event,
-                "model_call_failed",
-                {"step": step, "attempt_index": attempt, "code": exc.code,
-                 "http_status": exc.http_status},
-            )
-            backoffs = _retry_backoffs(exc)
-            if attempt >= len(backoffs):
-                raise _ProviderRequestExhausted(attempts=attempt + 1) from exc
-            sleep(backoffs[attempt])
-            attempt += 1
-            continue
-        if not isinstance(assistant, AssistantMessage):
-            raise _ProviderRequestExhausted(attempts=attempt + 1)
-        _emit(
-            on_event,
-            "model_call_completed",
+            "model_call_failed",
             {
                 "step": step,
-                "attempt_index": attempt,
-                "response_id": assistant.response_id,
-                "returned_model": assistant.response_model,
-                "usage": assistant.usage.as_dict(),
-                "latency_ms": assistant.latency_ms,
-                "stop_reason": assistant.stop_reason,
-                "raw_stop_reason": assistant.raw_stop_reason,
+                "attempt_index": attempt.attempt_index,
+                "code": attempt.error.code,
+                "http_status": attempt.error.http_status,
+                "latency_ms": attempt.latency_ms,
             },
         )
-        return assistant, attempt + 1
-
-
-def _retry_backoffs(exc: OpenAICompatibleTransportError) -> tuple[float, ...]:
-    if exc.code == "model_provider_timeout":
-        return TIMEOUT_RETRY_BACKOFF_SECONDS
-    if exc.code in {"model_provider_transport_error", "model_provider_rate_limited"}:
-        return ORDINARY_RETRY_BACKOFF_SECONDS
-    if exc.code == "model_provider_http_error" and (
-        exc.http_status is not None and exc.http_status >= 500
-    ):
-        return ORDINARY_RETRY_BACKOFF_SECONDS
-    return ()
+        return
+    assert attempt.assistant is not None
+    assistant = attempt.assistant
+    _emit(
+        on_event,
+        "model_call_completed",
+        {
+            "step": step,
+            "attempt_index": attempt.attempt_index,
+            "response_id": assistant.response_id,
+            "returned_model": assistant.response_model,
+            "usage": assistant.usage.as_dict(),
+            "latency_ms": attempt.latency_ms,
+            "stop_reason": assistant.stop_reason,
+            "raw_stop_reason": assistant.raw_stop_reason,
+        },
+    )
 
 
 def _append_error_results(

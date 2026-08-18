@@ -21,10 +21,8 @@ from devagentops.evaluation.execution import (
     SampleResult,
 )
 from devagentops.evaluation.persistence import canonical_sha256
-from devagentops.providers.contracts import CompletionProvider
-from devagentops.providers.openai_compatible import (
-    OpenAICompatibleTransportError,
-)
+from devagentops.providers.contracts import CompletionProvider, CompletionProviderError
+from devagentops.providers.execution import ProviderRequestFailed
 from devagentops.scoring.case import evaluate_case_report
 from devagentops.scoring.report import REPORT_SCHEMA_VERSION
 from devagentops.runtime.messages import assistant_text, assistant_thinking
@@ -84,7 +82,8 @@ class ConfiguredOracleConditionExecutor:
         except (
             OracleEvidenceError,
             OracleOneShotError,
-            OpenAICompatibleTransportError,
+            CompletionProviderError,
+            ProviderRequestFailed,
         ) as exc:
             failure_code = getattr(
                 exc,
@@ -96,7 +95,7 @@ class ConfiguredOracleConditionExecutor:
                 stage = "context_feasibility"
             elif isinstance(
                 exc,
-                OpenAICompatibleTransportError,
+                (CompletionProviderError, ProviderRequestFailed),
             ):
                 stage = "model_provider"
             elif isinstance(exc, OracleEvidenceError):
@@ -114,7 +113,7 @@ class ConfiguredOracleConditionExecutor:
             if (
                 isinstance(
                     exc,
-                    OpenAICompatibleTransportError,
+                    (CompletionProviderError, ProviderRequestFailed),
                 )
                 and exc.http_status
             ):
@@ -156,7 +155,7 @@ class ConfiguredOracleConditionExecutor:
                 ),
                 "returned_model": response.response_model,
                 "usage": response.usage.as_dict(),
-                "latency_ms": response.latency_ms,
+                "latency_ms": oracle_result.latency_ms,
                 "finish_reason": response.stop_reason,
                 "visible_output": visible_output,
                 "reasoning_observation": reasoning_metadata,
@@ -223,7 +222,7 @@ class ConfiguredOracleConditionExecutor:
                 "returned_model": response.response_model,
                 "usage": response.usage.as_dict(),
                 "finish_reason": response.stop_reason,
-                "latency_ms": response.latency_ms,
+                "latency_ms": oracle_result.latency_ms,
                 "reasoning": reasoning_metadata,
             },
             "context_assessment": {

@@ -610,7 +610,6 @@ class _OracleFakeProvider:
             usage=TokenUsage(input_tokens=self.input_tokens, output_tokens=100),
             stop_reason="stop",
             raw_stop_reason="stop",
-            latency_ms=7,
         )
 
 
@@ -935,7 +934,6 @@ class _OracleFormalFakeProvider:
             usage=TokenUsage(input_tokens=1000, output_tokens=80),
             stop_reason="stop",
             raw_stop_reason="stop",
-            latency_ms=5,
         )
 
 

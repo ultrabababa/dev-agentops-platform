@@ -10,8 +10,16 @@ from devagentops.evaluation.matrix import EvaluationMatrixError, load_evaluation
 from devagentops.evaluation.matrix_v2 import calculate_run_configuration_fingerprint
 import devagentops.evaluation.debug_v2 as evaluation_debug_v2
 from devagentops.cli import main
-from devagentops.providers.contracts import ExactTokenCount
-from devagentops.providers.contracts import LogicalCompletionRequest
+from devagentops.providers.contracts import (
+    CompletionProviderError,
+    ExactTokenCount,
+    LogicalCompletionRequest,
+)
+from devagentops.providers.execution import (
+    CompletionRequestRetryPolicy,
+    ProviderRequestFailed,
+    execute_completion_request,
+)
 from devagentops.providers.minimax_v1 import (
     MINIMAX_M3_CHAT_TEMPLATE_SHA256,
     MINIMAX_M3_TOKENIZER_REVISION,
@@ -205,7 +213,17 @@ class _RecordingTransport:
 
     def complete(self, payload: dict):
         self.payloads.append(payload)
-        return self.response, 12
+        return self.response
+
+
+class _SequenceTransport:
+    def __init__(self, responses: list[dict]) -> None:
+        self.responses = list(responses)
+        self.payloads: list[dict] = []
+
+    def complete(self, payload: dict):
+        self.payloads.append(payload)
+        return self.responses.pop(0)
 
 
 def _logical_request() -> LogicalCompletionRequest:
@@ -478,15 +496,190 @@ def test_minimax_continuation_and_exact_counter_share_typed_serialization() -> N
     }]
 
 
+def test_minimax_reasoning_details_only_round_trips_without_synthetic_content() -> None:
+    reasoning_details = [
+        {"type": "text", "text": "opaque continuation"},
+        {"type": "encrypted", "data": "sentinel"},
+    ]
+    parsed = MiniMaxProvider(
+        transport=_RecordingTransport({
+            "id": "details-only",
+            "model": "MiniMax-M3",
+            "choices": [{
+                "message": {
+                    "content": "continue",
+                    "reasoning_details": reasoning_details,
+                },
+                "finish_reason": "stop",
+            }],
+            "usage": {},
+        })
+    ).complete(_logical_request())
+    replay_transport = _RecordingTransport()
+    replay_provider = MiniMaxProvider(transport=replay_transport)
+    replay_request = LogicalCompletionRequest(
+        model="MiniMax-M3",
+        messages=(UserMessage("first"), parsed, UserMessage("next")),
+        reasoning=_logical_request().reasoning,
+        generation=_logical_request().generation,
+    )
+
+    replay_provider.complete(replay_request)
+
+    replayed_assistant = replay_transport.payloads[0]["messages"][1]
+    assert replayed_assistant["reasoning_details"] == reasoning_details
+    assert "reasoning_content" not in replayed_assistant
+
+
 def test_minimax_nonzero_provider_status_is_not_a_successful_completion() -> None:
     provider = MiniMaxProvider(
         transport=_RecordingTransport(
             {"base_resp": {"status_code": 1004, "status_msg": "auth failed"}}
         )
     )
-    with pytest.raises(OpenAICompatibleTransportError) as captured:
+    with pytest.raises(CompletionProviderError) as captured:
         provider.complete(_logical_request())
-    assert captured.value.code == "model_provider_error"
+    assert captured.value.retry_disposition == "nonretryable"
+
+
+@pytest.mark.parametrize("status_code", [1000, 1002, 1024, 1033])
+def test_minimax_transient_provider_status_retries_same_logical_request(
+    status_code: int,
+) -> None:
+    success = _RecordingTransport().response
+    transport = _SequenceTransport([
+        {"base_resp": {"status_code": status_code, "status_msg": "temporary"}},
+        success,
+    ])
+    backoffs: list[float] = []
+
+    execution = execute_completion_request(
+        MiniMaxProvider(transport=transport),
+        _logical_request(),
+        retry_policy=CompletionRequestRetryPolicy(
+            ordinary_backoffs=(2.0, 4.0, 8.0),
+            timeout_backoffs=(2.0,),
+        ),
+        sleep=backoffs.append,
+    )
+
+    assert execution.attempts == 2
+    assert backoffs == [2.0]
+    assert transport.payloads[0] == transport.payloads[1]
+
+
+def test_minimax_timeout_provider_status_retries_only_once() -> None:
+    transport = _SequenceTransport([
+        {"base_resp": {"status_code": 1001, "status_msg": "timeout"}},
+        {"base_resp": {"status_code": 1001, "status_msg": "timeout"}},
+        _RecordingTransport().response,
+    ])
+    backoffs: list[float] = []
+
+    with pytest.raises(ProviderRequestFailed) as captured:
+        execute_completion_request(
+            MiniMaxProvider(transport=transport),
+            _logical_request(),
+            retry_policy=CompletionRequestRetryPolicy(
+                ordinary_backoffs=(2.0, 4.0, 8.0),
+                timeout_backoffs=(2.0,),
+            ),
+            sleep=backoffs.append,
+        )
+
+    assert captured.value.attempts == 2
+    assert backoffs == [2.0]
+    assert len(transport.payloads) == 2
+
+
+@pytest.mark.parametrize("status_code", [1004, 1008, 1026, 2013])
+def test_minimax_nonretryable_provider_status_does_not_retry(
+    status_code: int,
+) -> None:
+    transport = _SequenceTransport([
+        {"base_resp": {"status_code": status_code, "status_msg": "rejected"}},
+        _RecordingTransport().response,
+    ])
+
+    with pytest.raises(ProviderRequestFailed) as captured:
+        execute_completion_request(
+            MiniMaxProvider(transport=transport),
+            _logical_request(),
+            retry_policy=CompletionRequestRetryPolicy(
+                ordinary_backoffs=(2.0, 4.0, 8.0),
+                timeout_backoffs=(2.0,),
+            ),
+            sleep=lambda _: pytest.fail("nonretryable status must not sleep"),
+        )
+
+    assert captured.value.attempts == 1
+    assert len(transport.payloads) == 1
+
+
+@pytest.mark.parametrize(
+    "error",
+    [
+        OpenAICompatibleTransportError(
+            "rate limited", code="model_provider_rate_limited", http_status=429
+        ),
+        OpenAICompatibleTransportError(
+            "unavailable", code="model_provider_http_error", http_status=503
+        ),
+        OpenAICompatibleTransportError(
+            "network", code="model_provider_transport_error"
+        ),
+    ],
+)
+def test_openai_transport_transients_use_ordinary_retry(
+    error: OpenAICompatibleTransportError,
+) -> None:
+    class FailOnceProvider:
+        def __init__(self) -> None:
+            self.calls = 0
+
+        def complete(self, request):
+            self.calls += 1
+            if self.calls == 1:
+                raise error
+            return MiniMaxProvider(
+                transport=_RecordingTransport()
+            ).complete(request)
+
+    backoffs: list[float] = []
+    execution = execute_completion_request(
+        FailOnceProvider(),
+        _logical_request(),
+        retry_policy=CompletionRequestRetryPolicy(
+            ordinary_backoffs=(2.0, 4.0, 8.0),
+            timeout_backoffs=(2.0,),
+        ),
+        sleep=backoffs.append,
+    )
+
+    assert execution.attempts == 2
+    assert backoffs == [2.0]
+
+
+def test_openai_request_timeout_retries_only_once() -> None:
+    class AlwaysTimeoutProvider:
+        def complete(self, request):
+            raise OpenAICompatibleTransportError(
+                "timeout", code="model_provider_timeout"
+            )
+
+    backoffs: list[float] = []
+    with pytest.raises(ProviderRequestFailed) as captured:
+        execute_completion_request(
+            AlwaysTimeoutProvider(),
+            _logical_request(),
+            retry_policy=CompletionRequestRetryPolicy(
+                ordinary_backoffs=(2.0, 4.0, 8.0),
+                timeout_backoffs=(2.0,),
+            ),
+            sleep=backoffs.append,
+        )
+    assert captured.value.attempts == 2
+    assert backoffs == [2.0]
 
 
 class _FakeMiniMaxProvider:
@@ -524,7 +717,6 @@ class _FakeMiniMaxProvider:
             usage=TokenUsage(input_tokens=self.input_tokens, output_tokens=80),
             stop_reason="stop",
             raw_stop_reason="stop",
-            latency_ms=42,
         )
 
 

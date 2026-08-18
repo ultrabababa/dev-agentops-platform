@@ -4,9 +4,14 @@ from devagentops.runtime.tools._common import (
     ToolExecutionResult,
 )
 from devagentops.runtime.tools.find import execute_find
-from devagentops.runtime.tools.grep import execute_grep
-from devagentops.runtime.tools.ls import execute_ls
-from devagentops.runtime.tools.read import execute_read
+from devagentops.runtime.tools.find import MAX_FIND_RESULTS
+from devagentops.runtime.tools.grep import (
+    MAX_GREP_MATCHES,
+    MAX_SOURCE_LINE_CHARS,
+    execute_grep,
+)
+from devagentops.runtime.tools.ls import MAX_LS_ENTRIES, execute_ls
+from devagentops.runtime.tools.read import MAX_READ_LINES, execute_read
 from devagentops.runtime.messages import JsonValue, ToolDefinition
 from devagentops.runtime.workspace import RuntimeCaseWorkspace
 
@@ -85,6 +90,41 @@ TOOL_DEFINITIONS = (
     ),
 )
 
+TOOL_SEMANTICS: dict[str, dict[str, JsonValue]] = {
+    "read": {
+        "workspace": "agent_visible_virtual_paths_only",
+        "offset": "one_based",
+        "max_lines": MAX_READ_LINES,
+        "max_result_bytes": MAX_TOOL_RESULT_BYTES,
+        "continuation": "visible_next_offset",
+        "oversized_single_line": "bounded_error_no_byte_slicing",
+    },
+    "grep": {
+        "membership": "frozen_workspace_no_gitignore_reapplication",
+        "max_matches": MAX_GREP_MATCHES,
+        "max_source_line_characters": MAX_SOURCE_LINE_CHARS,
+        "max_result_bytes": MAX_TOOL_RESULT_BYTES,
+        "context_format": "match_colon_context_hyphen",
+        "ordering": "lexicographic_path_then_line",
+    },
+    "find": {
+        "membership": "frozen_workspace_no_gitignore_reapplication",
+        "matching": "glob_path",
+        "max_results": MAX_FIND_RESULTS,
+        "max_result_bytes": MAX_TOOL_RESULT_BYTES,
+        "ordering": "lexicographic_virtual_path",
+    },
+    "ls": {
+        "membership": "frozen_workspace_no_gitignore_reapplication",
+        "depth": "one_level",
+        "dotfiles": "included",
+        "directory_suffix": "/",
+        "max_entries": MAX_LS_ENTRIES,
+        "max_result_bytes": MAX_TOOL_RESULT_BYTES,
+        "ordering": "alphabetical",
+    },
+}
+
 
 def execute_tool(
     workspace: RuntimeCaseWorkspace,
@@ -155,6 +195,7 @@ __all__ = [
     "ExpectedToolError",
     "ToolExecutionResult",
     "TOOL_DEFINITIONS",
+    "TOOL_SEMANTICS",
     "execute_tool",
     "execute_find",
     "execute_grep",

@@ -365,7 +365,6 @@ def test_repository_cli_persists_repeated_samples_without_flattening(
                 usage=TokenUsage(input_tokens=1000, output_tokens=25),
                 stop_reason="stop",
                 raw_stop_reason="stop",
-                latency_ms=10,
             )
 
     def provider_factory(**kwargs):
@@ -499,7 +498,6 @@ def test_context_and_provider_failures_are_isolated_and_persisted_per_sample(
                 usage=TokenUsage(input_tokens=1000, output_tokens=10),
                 stop_reason="stop",
                 raw_stop_reason="stop",
-                latency_ms=10,
             )
 
     monkeypatch.setattr(
@@ -573,7 +571,6 @@ def test_artifact_failure_marks_run_failed_and_removes_sample_rows(
                 usage=TokenUsage(input_tokens=1000),
                 stop_reason="stop",
                 raw_stop_reason="stop",
-                latency_ms=1,
             )
 
     monkeypatch.setattr(
