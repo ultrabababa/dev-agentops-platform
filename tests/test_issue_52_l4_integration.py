@@ -117,7 +117,6 @@ def test_l4_condition_reuses_sample_trace_scorer_and_separate_trajectory() -> No
             tool_registry_version=L4_TOOL_REGISTRY_VERSION,
             tool_policy_version=L4_TOOL_POLICY_VERSION,
             output_contract_prompt_suffix=output_contract_prompt_suffix(),
-            max_steps=100,
         ),
         provider_factory=lambda: provider,
     )

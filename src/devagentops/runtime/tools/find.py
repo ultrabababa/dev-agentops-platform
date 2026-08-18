@@ -44,11 +44,12 @@ def execute_find(
         raise ExpectedToolError(f"workspace path does not exist: {base}", code="path_not_found")
     matches = [item for item in in_scope if fnmatch.fnmatch(item.lstrip("/"), pattern)]
     limited = matches[:limit]
-    notice = f"[truncated: find returned first {len(limited)} of {len(matches)} results]"
     count_truncated = len(matches) > len(limited)
-    content, byte_truncated = bounded_lines(
+    content, byte_truncated, emitted_count = bounded_lines(
         limited,
-        truncation_notice=notice,
+        truncation_notice=lambda count: (
+            f"[truncated: find returned first {count} of {len(matches)} results]"
+        ),
         already_truncated=count_truncated,
     )
     if not limited:
@@ -58,7 +59,7 @@ def execute_find(
         content=content,
         truncated=truncated,
         metadata={
-            "result_count": len(limited),
+            "result_count": emitted_count,
             "total_matches": len(matches),
             "truncation_reason": "count_or_byte_limit" if truncated else None,
         },

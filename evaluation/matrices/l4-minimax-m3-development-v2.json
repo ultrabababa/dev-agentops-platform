@@ -56,16 +56,6 @@
             "component_type": "tool_policy",
             "version": "l4-single-sequential-tool-policy-v1",
             "fingerprint": "fd218879f82d7c090304522e6c938102ee633e10eaa09733ffda99760db5c26c"
-          },
-          "runtime": {
-            "version": "self-built-react-runtime-v1",
-            "max_steps": 100,
-            "provider_request_retry": {
-              "ordinary_max_retries": 3,
-              "ordinary_backoff_seconds": [2, 4, 8],
-              "timeout_max_retries": 1,
-              "hidden_sdk_retries": 0
-            }
           }
         },
         "context": {

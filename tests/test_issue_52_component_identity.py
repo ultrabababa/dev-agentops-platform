@@ -8,6 +8,7 @@ import pytest
 
 from devagentops.evaluation.components import resolve_frozen_component_manifest
 from devagentops.evaluation.matrix import EvaluationMatrixError, load_evaluation_matrix
+from devagentops.evaluation.matrix_v2 import calculate_run_configuration_fingerprint
 from devagentops.evaluation.development_treatment import (
     validate_minimax_development_condition,
 )
@@ -55,9 +56,41 @@ def test_l4_matrix_resolves_all_four_frozen_component_identities() -> None:
     condition = matrix.conditions[0]
     assert condition.effective_condition["runtime_variant"] == "self_built_react"
     contracts = condition.effective_condition["treatment"]["contracts"]
-    assert contracts["runtime"]["max_steps"] == 100
+    assert "runtime" not in contracts
     assert condition.effective_condition["execution_policy"]["retry_count"] == 3
     validate_minimax_development_condition(condition.effective_condition, case_count=1)
+
+
+def test_l4_retry_policy_changes_execution_and_run_identity_only(tmp_path: Path) -> None:
+    baseline_document = json.loads(MATRIX.read_text(encoding="utf-8"))
+    changed_document = json.loads(MATRIX.read_text(encoding="utf-8"))
+    changed_document["conditions"][0]["execution_policy"]["retry_count"] = 2
+    baseline_path = tmp_path / "baseline.json"
+    changed_path = tmp_path / "changed.json"
+    baseline_path.write_text(json.dumps(baseline_document), encoding="utf-8")
+    changed_path.write_text(json.dumps(changed_document), encoding="utf-8")
+
+    baseline_matrix = load_evaluation_matrix(baseline_path, REGISTRY)
+    changed_matrix = load_evaluation_matrix(changed_path, REGISTRY)
+    baseline = baseline_matrix.conditions[0]
+    changed = changed_matrix.conditions[0]
+
+    assert baseline.treatment_fingerprint == changed.treatment_fingerprint
+    assert baseline.condition_fingerprint == changed.condition_fingerprint
+    assert baseline.execution_policy_fingerprint != changed.execution_policy_fingerprint
+    identity = {
+        "suite_fingerprint": "5" * 64,
+        "selected_cases": [
+            {"case_id": "case", "case_fingerprint": "6" * 64, "weight": 1.0}
+        ],
+        "code_revision": "a" * 40,
+        "git_dirty": False,
+    }
+    assert calculate_run_configuration_fingerprint(
+        baseline_matrix, baseline, **identity
+    ) != calculate_run_configuration_fingerprint(
+        changed_matrix, changed, **identity
+    )
 
 
 def test_l4_tool_registry_semantic_drift_is_rejected() -> None:

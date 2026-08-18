@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from pathlib import PurePosixPath
-from typing import Any, Iterable
+from typing import Any
 
 from devagentops.runtime.workspace import RuntimeCaseWorkspace
 
@@ -87,27 +88,35 @@ def read_virtual_file(workspace: RuntimeCaseWorkspace, path: str) -> str:
 def bounded_lines(
     lines: Iterable[str],
     *,
-    truncation_notice: str,
+    truncation_notice: str | Callable[[int], str],
     already_truncated: bool = False,
-) -> tuple[str, bool]:
+) -> tuple[str, bool, int]:
     source_lines = tuple(lines)
     emitted: list[str] = []
     emitted_bytes = 0
-    notice = truncation_notice + "\n"
-    notice_bytes = len(notice.encode("utf-8"))
+
+    def notice_for(count: int) -> str:
+        value = truncation_notice(count) if callable(truncation_notice) else truncation_notice
+        return value + "\n"
+
     for index, line in enumerate(source_lines):
         rendered = line + "\n"
         encoded_size = len(rendered.encode("utf-8"))
         has_unemitted_content = index < len(source_lines) - 1 or already_truncated
-        reserved_notice_bytes = notice_bytes if has_unemitted_content else 0
+        reserved_notice_bytes = (
+            len(notice_for(len(emitted) + 1).encode("utf-8"))
+            if has_unemitted_content
+            else 0
+        )
         if (
             emitted_bytes + encoded_size + reserved_notice_bytes
             > MAX_TOOL_RESULT_BYTES
         ):
-            return "".join(item + "\n" for item in emitted) + notice, True
+            content = "".join(item + "\n" for item in emitted)
+            return content + notice_for(len(emitted)), True, len(emitted)
         emitted.append(line)
         emitted_bytes += encoded_size
     content = "".join(item + "\n" for item in emitted)
     if already_truncated:
-        content += notice
-    return content, already_truncated
+        content += notice_for(len(emitted))
+    return content, already_truncated, len(emitted)

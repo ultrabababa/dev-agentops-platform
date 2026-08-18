@@ -46,7 +46,6 @@ class ConfiguredL4Treatment:
     tool_registry_version: str
     tool_policy_version: str
     output_contract_prompt_suffix: str
-    max_steps: int
 
 
 @dataclass(frozen=True)
@@ -87,7 +86,6 @@ class ConfiguredL4ConditionExecutor:
                     context_limit_tokens=self.treatment.context_limit_tokens,
                     max_completion_tokens=self.treatment.max_completion_tokens,
                     tools=tools,
-                    max_steps=self.treatment.max_steps,
                 ),
                 initial_user_message=initial_message,
                 on_event=lambda event_type, payload: recorder.record(

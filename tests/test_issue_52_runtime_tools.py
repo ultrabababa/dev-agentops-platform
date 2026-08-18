@@ -53,12 +53,25 @@ def test_read_rejects_traversal_and_oversized_single_line() -> None:
 
 
 def test_read_rejects_line_that_cannot_fit_with_progress_envelope() -> None:
-    workspace = FakeWorkspace(raw_log="x" * (MAX_TOOL_RESULT_BYTES - 20))
+    workspace = FakeWorkspace(
+        raw_log="x" * (MAX_TOOL_RESULT_BYTES - 20) + "\nnext"
+    )
 
     with pytest.raises(ExpectedToolError) as exc_info:
-        execute_read(workspace, path="/raw.log", offset=1)
+        execute_read(workspace, path="/raw.log", offset=1, limit=1)
 
     assert exc_info.value.code == "source_line_too_large"
+
+
+def test_read_final_line_does_not_reserve_unneeded_continuation_bytes() -> None:
+    line = "x" * (MAX_TOOL_RESULT_BYTES - 20)
+
+    result = execute_read(FakeWorkspace(raw_log=line), path="/raw.log")
+
+    assert result.truncated is False
+    assert result.metadata["next_offset"] is None
+    assert result.content.endswith(line + "\n")
+    assert len(result.content.encode("utf-8")) <= MAX_TOOL_RESULT_BYTES
 
 
 def test_grep_is_deterministic_marks_context_and_caps_source_lines() -> None:
@@ -130,7 +143,13 @@ def test_find_utf8_byte_cap_truncates_before_result_count_cap() -> None:
 
     assert result.metadata["total_matches"] == 600
     assert result.truncated is True
-    assert "[truncated:" in result.content
+    emitted_count = len(result.content.splitlines()) - 1
+    assert result.metadata["result_count"] == emitted_count
+    assert (
+        f"[truncated: find returned first {emitted_count} of 600 results]"
+        in result.content
+    )
+    assert emitted_count < 600
     assert len(result.content.encode("utf-8")) <= MAX_TOOL_RESULT_BYTES
 
 
@@ -143,5 +162,11 @@ def test_ls_utf8_byte_cap_truncates_before_entry_count_cap() -> None:
 
     assert result.metadata["total_entries"] == 400
     assert result.truncated is True
-    assert "[truncated:" in result.content
+    emitted_count = len(result.content.splitlines()) - 1
+    assert result.metadata["entry_count"] == emitted_count
+    assert (
+        f"[truncated: ls returned first {emitted_count} of 400 entries]"
+        in result.content
+    )
+    assert emitted_count < 400
     assert len(result.content.encode("utf-8")) <= MAX_TOOL_RESULT_BYTES

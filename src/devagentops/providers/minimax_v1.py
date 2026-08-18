@@ -59,7 +59,6 @@ class ChatCompletionsTransport(Protocol):
 class _SerializedMiniMaxRequest:
     payload: dict[str, Any]
     messages: tuple[dict[str, Any], ...]
-    template_messages: tuple[dict[str, Any], ...]
     tools: tuple[dict[str, Any], ...]
     thinking_mode: str
 
@@ -106,7 +105,7 @@ class MiniMaxProvider:
                     code="model_tokenizer_unavailable",
                 ) from exc
         rendered = self._chat_template.render(
-            messages=list(serialized.template_messages),
+            messages=list(_template_messages(serialized.messages)),
             tools=list(serialized.tools) or None,
             add_generation_prompt=True,
             thinking_mode=serialized.thinking_mode,
@@ -199,7 +198,6 @@ class MiniMaxProvider:
         return _SerializedMiniMaxRequest(
             payload=payload,
             messages=messages,
-            template_messages=_template_messages(messages),
             tools=tools,
             thinking_mode=request.reasoning["thinking"]["type"],
         )
@@ -314,6 +312,14 @@ def _template_messages(
     rendered_messages: list[dict[str, Any]] = []
     for message in messages:
         rendered = dict(message)
+        if (
+            "reasoning_content" not in rendered
+            and "reasoning_details" in rendered
+            and (reasoning := _reasoning_output(message)) is not None
+        ):
+            # The pinned template consumes reasoning_content, while the HTTP
+            # replay must preserve the provider's reasoning_details-only shape.
+            rendered["reasoning_content"] = reasoning
         calls = message.get("tool_calls")
         if isinstance(calls, list):
             rendered_calls: list[dict[str, Any]] = []
@@ -326,12 +332,21 @@ def _template_messages(
                         raw_arguments,
                         parse_constant=_reject_nonstandard_json_constant,
                     )
-                except (json.JSONDecodeError, ValueError):
-                    # The official template accepts structured arguments only.
-                    # Preserve malformed wire state in the HTTP payload while
-                    # rendering its non-repaired empty argument object locally.
-                    parsed = {}
-                function["arguments"] = parsed if isinstance(parsed, dict) else {}
+                except (json.JSONDecodeError, ValueError) as exc:
+                    raise CompletionProviderError(
+                        "exact MiniMax token counting is unqualified for malformed "
+                        "raw ToolCall history",
+                        code="exact_token_count_unqualified",
+                        retry_disposition="nonretryable",
+                    ) from exc
+                if not isinstance(parsed, dict):
+                    raise CompletionProviderError(
+                        "exact MiniMax token counting is unqualified for non-object "
+                        "raw ToolCall history",
+                        code="exact_token_count_unqualified",
+                        retry_disposition="nonretryable",
+                    )
+                function["arguments"] = parsed
                 rendered_call["function"] = function
                 rendered_calls.append(rendered_call)
             rendered["tool_calls"] = rendered_calls

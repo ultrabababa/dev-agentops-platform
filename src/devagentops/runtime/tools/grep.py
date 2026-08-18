@@ -96,7 +96,7 @@ def execute_grep(
         f"[truncated: grep returned {match_count} matches; "
         "narrow the query or use a smaller path]"
     )
-    content, byte_truncated = bounded_lines(
+    content, byte_truncated, _ = bounded_lines(
         output_lines,
         truncation_notice=notice,
         already_truncated=match_limit_hit,

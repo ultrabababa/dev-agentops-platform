@@ -44,11 +44,12 @@ def execute_ls(
         entries.add(name + ("/" if item in directories else ""))
     ordered = sorted(entries)
     limited = ordered[:limit]
-    notice = f"[truncated: ls returned first {len(limited)} of {len(ordered)} entries]"
     count_truncated = len(ordered) > len(limited)
-    content, byte_truncated = bounded_lines(
+    content, byte_truncated, emitted_count = bounded_lines(
         limited,
-        truncation_notice=notice,
+        truncation_notice=lambda count: (
+            f"[truncated: ls returned first {count} of {len(ordered)} entries]"
+        ),
         already_truncated=count_truncated,
     )
     truncated = count_truncated or byte_truncated
@@ -56,7 +57,7 @@ def execute_ls(
         content=content,
         truncated=truncated,
         metadata={
-            "entry_count": len(limited),
+            "entry_count": emitted_count,
             "total_entries": len(ordered),
             "truncation_reason": "count_or_byte_limit" if truncated else None,
         },

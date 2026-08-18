@@ -237,7 +237,6 @@ def run_formal_evaluation_v2(
                 tool_registry_version=L4_TOOL_REGISTRY_VERSION,
                 tool_policy_version=L4_TOOL_POLICY_VERSION,
                 output_contract_prompt_suffix=output_contract_prompt_suffix(),
-                max_steps=treatment["contracts"]["runtime"]["max_steps"],
             ),
             provider_factory=provider_factory,
         )

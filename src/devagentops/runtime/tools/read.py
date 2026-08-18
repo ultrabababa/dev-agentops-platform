@@ -53,8 +53,12 @@ def execute_read(
     emitted_count = 0
     for line_number, line in enumerate(selected, start=offset):
         candidate = f"{line_number}: {line}"
-        continuation = f"[truncated: continue with offset={line_number}]"
-        projected = "\n".join([*rendered, candidate, continuation]) + "\n"
+        projected_parts = [*rendered, candidate]
+        if line_number < total_lines:
+            projected_parts.append(
+                f"[truncated: continue with offset={line_number + 1}]"
+            )
+        projected = "\n".join(projected_parts) + "\n"
         if len(projected.encode("utf-8")) > MAX_TOOL_RESULT_BYTES:
             if emitted_count == 0:
                 raise ExpectedToolError(

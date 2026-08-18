@@ -419,6 +419,49 @@ def test_minimax_malformed_tool_arguments_remain_a_model_decision(
     assert call.raw_arguments == raw_arguments
 
 
+def test_minimax_malformed_raw_tool_history_refuses_exact_count_but_replays_wire() -> None:
+    raw_arguments = '{"path":'
+    assistant = AssistantMessage(
+        content=(
+            ToolCall(
+                id="call-bad",
+                name="read",
+                arguments=None,
+                raw_arguments=raw_arguments,
+            ),
+        ),
+        response_id="malformed-history",
+        response_model="MiniMax-M3",
+        usage=TokenUsage(),
+        stop_reason="tool_use",
+        raw_stop_reason="tool_calls",
+    )
+    request = LogicalCompletionRequest(
+        model="MiniMax-M3",
+        messages=(
+            UserMessage("inspect"),
+            assistant,
+            ToolResultMessage(
+                "call-bad", "read", "malformed tool arguments", True
+            ),
+        ),
+        reasoning=_logical_request().reasoning,
+        generation=_logical_request().generation,
+    )
+    transport = _RecordingTransport()
+    provider = MiniMaxProvider(transport=transport)
+
+    with pytest.raises(CompletionProviderError) as captured:
+        provider.count_input_tokens(request)
+
+    assert captured.value.code == "exact_token_count_unqualified"
+    assert captured.value.retry_disposition == "nonretryable"
+    provider.complete(request)
+    assert transport.payloads[0]["messages"][1]["tool_calls"][0]["function"][
+        "arguments"
+    ] == raw_arguments
+
+
 def test_minimax_continuation_and_exact_counter_share_typed_serialization() -> None:
     tool = ToolDefinition(
         name="read",
@@ -529,6 +572,48 @@ def test_minimax_reasoning_details_only_round_trips_without_synthetic_content() 
     replayed_assistant = replay_transport.payloads[0]["messages"][1]
     assert replayed_assistant["reasoning_details"] == reasoning_details
     assert "reasoning_content" not in replayed_assistant
+
+
+def test_minimax_exact_count_includes_reasoning_details_only_continuation() -> None:
+    reasoning_text = "reasoning-details-only-sentinel " * 30
+    parsed = MiniMaxProvider(
+        transport=_RecordingTransport({
+            "id": "details-only-count",
+            "model": "MiniMax-M3",
+            "choices": [{
+                "message": {
+                    "content": "continue",
+                    "reasoning_details": [{"type": "text", "text": reasoning_text}],
+                },
+                "finish_reason": "stop",
+            }],
+            "usage": {},
+        })
+    ).complete(_logical_request())
+    without_reasoning = AssistantMessage(
+        content=(TextContent("continue"),),
+        response_id=parsed.response_id,
+        response_model=parsed.response_model,
+        usage=parsed.usage,
+        stop_reason=parsed.stop_reason,
+        raw_stop_reason=parsed.raw_stop_reason,
+    )
+
+    def request_with(assistant_message: AssistantMessage) -> LogicalCompletionRequest:
+        return LogicalCompletionRequest(
+            model="MiniMax-M3",
+            messages=(UserMessage("first"), assistant_message, UserMessage("next")),
+            reasoning=_logical_request().reasoning,
+            generation=_logical_request().generation,
+        )
+
+    provider = MiniMaxProvider(transport=_RecordingTransport())
+    details_count = provider.count_input_tokens(request_with(parsed)).input_tokens
+    baseline_count = provider.count_input_tokens(
+        request_with(without_reasoning)
+    ).input_tokens
+
+    assert details_count > baseline_count
 
 
 def test_minimax_nonzero_provider_status_is_not_a_successful_completion() -> None:

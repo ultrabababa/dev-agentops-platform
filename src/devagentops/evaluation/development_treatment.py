@@ -41,18 +41,6 @@ L4_TOOL_POLICY_VERSION = "l4-single-sequential-tool-policy-v1"
 L4_TOOL_POLICY_FINGERPRINT = (
     "fd218879f82d7c090304522e6c938102ee633e10eaa09733ffda99760db5c26c"
 )
-L4_RUNTIME_CONTRACT = {
-    "version": "self-built-react-runtime-v1",
-    "max_steps": 100,
-    "provider_request_retry": {
-        "ordinary_max_retries": 3,
-        "ordinary_backoff_seconds": [2, 4, 8],
-        "timeout_max_retries": 1,
-        "hidden_sdk_retries": 0,
-    },
-}
-
-
 def validate_minimax_development_condition(
     effective: dict[str, Any],
     case_count: int,
@@ -173,7 +161,6 @@ def validate_minimax_development_condition(
                 "version": L4_TOOL_POLICY_VERSION,
                 "fingerprint": L4_TOOL_POLICY_FINGERPRINT,
             },
-            "runtime": L4_RUNTIME_CONTRACT,
         }
         contract_label = "L4"
 
