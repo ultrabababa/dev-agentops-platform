@@ -317,19 +317,19 @@ frozen aggregation semantics are not replaced by Human renormalization.
 
 ## Case-Level Taxonomy Stability
 
-`14/20` Cases achieved exact taxonomy classification in every scored repeat.
-The six non-perfect Cases were:
+`15/20` Cases achieved exact taxonomy classification across all scored repeats.
+Five Cases had taxonomy instability or persistent mismatch:
 
 - `bugswarm-traccar-221926468`: `2/3` exact
 - `bugswarm-traccar-166900445`: `2/3` exact
 - `bugswarm-blueflood-80881330`: `2/3` exact
 - `odrepair-dubbo-737f7a7e`: `2/3` exact
 - `odrepair-remoting-abf0455a`: `0/3` exact
-- `bugswarm-pygithub-36442425251`: `2/2` scored repeats exact, with repeat `2` lost to provider execution failure
 
-The PyGithub Case has a Case aggregate exact-match value of `1.0` under the
-frozen scored-repeat aggregation semantics; it is listed separately here
-because execution coverage was only `2/3`.
+Separately, `bugswarm-pygithub-36442425251` was `2/2` exact across its scored
+repeats, while repeat `2` was lost to the provider execution failure. Its Case
+aggregate exact-match value is therefore `1.0` under the frozen scored-repeat
+aggregation semantics, with execution coverage explicitly retained as `2/3`.
 
 ## L1 / L2 / L4 / Oracle Comparison
 
@@ -387,9 +387,9 @@ larger action/report surface exposed more citation/protocol failures.
 
 ### `github-osquery-issue-7718`: strongest positive L4 observation
 
-L1/L2/Oracle had persistent difficulty with this Case. Under L4, all three
-repeats selected the frozen `timeout_or_flaky_failure` taxonomy and achieved
-Evidence Hit Rates of `0.8`, `1.0`, and `1.0`.
+L2 and Oracle both had persistent taxonomy difficulty with this Case. Under L4,
+all three repeats selected the frozen `timeout_or_flaky_failure` taxonomy and
+achieved Evidence Hit Rates of `0.8`, `1.0`, and `1.0`.
 
 More importantly, all three L4 reports recovered the readiness race:
 
@@ -492,5 +492,4 @@ representative good/bad Cases.
 
 Review verdict: **PASS**
 
-Merge gate for the Issue #52 implementation: **APPROVE**, subject only to this
-milestone-document and ADR-0129 design-guide consistency closeout.
+Merge gate for the Issue #52 implementation: **APPROVE**.
