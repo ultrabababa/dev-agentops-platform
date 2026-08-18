@@ -2,87 +2,103 @@
 
 ## Status
 
-Accepted.
+Accepted. Refined for L4 by ADR 0128.
 
 ## Context
 
-An Offline Case Package can remain structurally valid while its Agent-visible evidence has been curated down to almost exactly the items referenced by `required_evidence_ids`. In that shape, a normal Fixed Pipeline, Retrieval, or ReAct condition begins too close to the Oracle Evidence condition: the curator has already performed evidence localization before the episode starts.
-
-This collapse weakens the experiment's ability to measure evidence localization, query formulation, retrieval, tool selection, adaptive investigation, context management, natural-distractor rejection, and stopping decisions. It also confuses physical Case artifacts with the stable evidence coordinates used by runtimes and scorers.
+A trustworthy Formal Case must not collapse the normal Agent's search space to the curator-known Required Evidence. At the same time, Physical Artifacts, stable citation coordinates and hidden evaluator labels must remain separate concepts.
 
 ## Decision
 
-Each Formal Case defines one frozen, offline, authentic, bounded-but-realistic **Evidence Universe**. The runtime-facing view of that universe is the **Investigation Workspace**. For the first Formal Suite, it contains a complete or naturally bounded historical log and the exact failing or otherwise relevant revision's bounded repository snapshot. The snapshot boundary is chosen from the plausible investigation neighborhood visible from the failure observation, not by working backward from the curator-known answer. It may contain natural neighboring information and distractors, but curators must not add synthetic irrelevant noise merely to manufacture difficulty or reduce the universe to the known root-cause region. Passing/fix artifacts remain curator-only causal-verification inputs and do not enter the Agent-visible workspace. Project Knowledge is not part of the Case Evidence Universe; a future experiment may introduce it as an independently versioned runtime or retrieval input.
+Each Formal Case defines one frozen, offline, authentic, bounded-but-realistic **Evidence Universe** consisting, for the first Formal Suite, of:
 
-Physical artifacts are deterministically mapped to answer-neutral **Canonical Evidence Units**. Canonical Evidence is the measurement/citation coordinate system, not a curator-selected evidence corpus and not a set of mandatory Retrieval index chunks. For Formal text artifacts, units completely cover the Physical Evidence Universe without gaps or overlaps. Their boundaries and IDs are deterministic, source-faithful, exact-hash verified, and independent of failure lines, fixes, Required Evidence, or curator conclusions. One physical log or repository file may produce multiple units.
+```text
+complete or naturally bounded historical raw log
++
+bounded exact-revision repository snapshot
+```
 
-Formal Cases will ultimately share a versioned **Canonicalization Profile v1** instead of choosing segmentation independently per Case. B04's complete 100-line repository partition is a calibration example, not a globally frozen constant: `N=100` must be checked against structurally different already-selected Cases before the Profile is frozen.
+The boundary is chosen from the plausible investigation neighborhood visible from the failure, not by working backward from the known answer. Authentic neighboring information and natural distractors may remain; synthetic irrelevant noise added only to manufacture difficulty is forbidden.
 
-A Trusted Evaluator artifact identifies a hidden, Human-reviewed, inclusion-minimal sufficient subset of Canonical Evidence Units. It contains the facts necessary to derive the Expected Diagnosis without containing evaluator-authored Failure Type, Root Cause, Fix, Tool Path, scorer label, or curator reasoning. The normal Agent-visible corpus must be materially broader than this subset; ordinary conditions must not receive the curated Required Evidence set at episode start.
+Physical Artifacts are the sole fact source.
 
-The Case Package defines what exists in the evaluation world. The **Evidence Acquisition Condition** defines how a runtime may observe and investigate that world:
+They are deterministically mapped to answer-neutral **Canonical Evidence Units**. Canonical Evidence is a measurement/citation coordinate system, not a curator-selected evidence corpus and not mandatory Runtime Retrieval chunks.
 
-- Fixed Pipeline uses a deterministic fixed flow, heuristic, or fixed top-k selection and has no autonomous investigation loop.
-- Full-context One-shot supplies the complete Agent-visible Evidence Universe to one fixed Prompt and exactly one model call. It must not silently truncate and still claim full-context semantics; the explicit over-budget outcome is deferred to its implementation design.
-- Fixed Model Workflow uses program-controlled fixed stages and model calls without allowing the model to choose an autonomous next-action loop.
-- Static Retrieval applies an independently versioned Runtime Retrieval Chunker to Physical Artifacts and supplies retrieval results to a fixed model path, without an autonomous investigation loop. Retrieved physical spans are mapped to overlapping Canonical Evidence IDs for trace/citation/measurement.
-- ReAct adaptively searches and opens the Investigation Workspace, chooses follow-up actions, manages context, and decides when to stop.
-- Oracle Evidence bypasses ordinary discovery and directly supplies the reviewed Required Evidence subset under ADR 0124.
+Hidden `required-evidence.json` identifies the Human-reviewed inclusion-minimal sufficient Required Evidence subset. Hidden `expected-answer.json` contains Diagnosis Ground Truth. Normal Agent paths cannot read either artifact.
 
-Full-context One-shot, Fixed Model Workflow, and Static Retrieval are diagnostic/comparison conditions, not additional V1 Product Runtimes. Oracle is orthogonal to the L0-L5+ capability ladder rather than another rung. The ladder does not require Static Retrieval to be implemented before ReAct.
+The Case Package defines what exists; each **Evidence Acquisition Condition** defines how that world may be observed.
 
-Canonicalization and Runtime Retrieval Chunking are separate responsibilities. Retrieval chunk size, overlap, embedding, index, top-k, and reranking belong to the Runtime/Evidence Acquisition Condition, not to Case curation. Controlled paired per-Case comparisons keep the Case, Evidence Universe, Expected Answer, scorer, and base model fixed wherever applicable, and vary only the target acquisition/runtime condition. Not every condition must have identical search/open tools, but no condition may receive a curator-derived reduction in search space unless that reduction is the explicitly measured intervention.
+## Current frozen Suite status
 
-Retrieval Evidence Hit means the trace's physical observation spans satisfy a Human-frozen attribution rule for the necessary facts represented by Required Evidence. Mapping a span to overlapping Canonical IDs records attribution candidates; arbitrary partial overlap does not automatically count as a full hit. Report Evidence Hit means the final Structured Triage Report cited a required Canonical Evidence Unit under the report contract. They remain separate so evaluation can distinguish not found, found but unused, and found and cited. The V1 observation-attribution rule remains a required Canonicalization calibration output rather than an implicit Schema V2 rule.
+`triage-suite-v1` is frozen with 20 Human-reviewed Schema V2 Cases and the suite-shared Canonicalization Profile v1. Earlier calibration wording in historical docs is not the current state.
 
-## Alternatives Considered
+## Condition access
 
-- Curate only answer-relevant evidence. This makes Case construction perform the investigation and collapses normal conditions toward Oracle.
-- Require the entire upstream repository and complete unbounded CI history. This is costly, unnecessary, and can make difficulty depend on corpus size rather than the failure.
-- Add synthetic noise or a fixed noise ratio. This manufactures benchmark difficulty and does not reflect authentic investigation.
-- Freeze B04's `N=100` as a universal repository line window without cross-Case calibration. One Case is insufficient to establish that the parameter is robust across different artifact structures.
-- Let each Case choose an arbitrary semantic chunk size. This introduces curator freedom and makes coordinates incomparable; a shared versioned Canonicalization Profile is required before Suite freeze.
-- Reuse Canonical Units as mandatory Retrieval chunks. This couples the measurement coordinate system to one Runtime design and can hide curator-derived acquisition advantage.
-- Give every condition the same search/open interface. Evidence acquisition is itself an experimental variable; forcing identical access would erase the distinction being measured.
+- Fixed Pipeline: deterministic program-defined access;
+- L1 Full-context One-shot: complete Agent-visible physical universe delivered upfront in one model request;
+- L2 Fixed Model Workflow: fixed program-controlled input/stage flow;
+- L3 Static Retrieval: optional future versioned static retrieval over Physical Artifacts;
+- L4 self-built ReAct: adaptive physical investigation through frozen read-only tools;
+- Oracle Evidence: Trusted resolver directly supplies reviewed Required Evidence source content.
+
+The ladder does not require L3 before L4. Oracle is orthogonal to the ladder.
+
+## L4 coordinate-vocabulary refinement
+
+Earlier guidance rejected exposing every Canonical unit as an **answer menu**. ADR 0128 clarifies that this must not be interpreted as a blanket ban on answer-neutral coordinate visibility.
+
+For L4 V1, the complete Canonical coordinate universe is disclosed in the initial model-visible input as **citation vocabulary only**.
+
+L4 still does not receive:
+
+- Physical Artifact content upfront;
+- Required/Optional labels;
+- which coordinates contain decisive evidence;
+- Expected Answer or evaluator reasoning;
+- canonical-evidence files through tools.
+
+Physical facts are acquired via `read/grep/find/ls`; the model maps observed facts to the neutral coordinate vocabulary itself.
+
+This is intentionally different from Oracle, which supplies only the reviewed Required Evidence source content and therefore bypasses ordinary discovery.
+
+## Canonicalization vs Runtime Retrieval
+
+Canonicalization and Runtime Retrieval are separate namespaces:
+
+```text
+Physical Artifact
+    -> Canonicalization Profile
+       -> stable coordinates for citation / scoring / identity
+
+Physical Artifact
+    -> Runtime-specific Retrieval Chunker
+       -> search/index chunks
+```
+
+Do not freeze retrieval chunking by reusing Canonical unit boundaries automatically.
 
 ## Consequences
 
-Positive consequences:
+Positive:
 
-- Retrieval and ReAct uplift can be measured without curator-provided localization.
-- Oracle remains a meaningful evidence-conditioned diagnostic rather than a near-copy of a normal condition.
-- Stable evidence hits, citations, and traces remain comparable across runtimes.
-- Frozen offline evaluation remains reproducible.
+- normal L4 still measures evidence discovery rather than curator-provided localization;
+- final report citations can use the existing frozen scorer contract without hidden runtime mapping magic;
+- Oracle remains meaningfully distinct;
+- Case identity stays independent from tool/retrieval design.
 
 Tradeoffs:
 
-- Formal Case Packages can be larger.
-- Runtime and retrieval implementations must actually exploit searchable artifacts.
-- Human review must assess universe bounds, canonical coverage, ID neutrality, and absence of manufactured distractors.
-- Snapshot and unit counts can legitimately vary by Case.
-- Canonicalization Profile parameters require cross-Case calibration before the first Suite freeze.
+- L4 must reason from observed physical content to the correct neutral citation coordinate;
+- a complete coordinate vocabulary adds prompt tokens, which exact L4 preflight must count;
+- later badcase analysis must distinguish acquisition failure from citation-mapping failure.
 
 ## Non-Decisions
 
-- `Canonicalization Profile v1` and its parameters are not frozen by this ADR; `N=100` remains a candidate repository-text parameter pending calibration.
-- Runtime Retrieval Chunking parameters and implementation are not defined by this ADR.
-- A Case need not include the entire upstream repository or an unbounded log history.
-- Not every runtime must provide search/open tools or an adaptive loop.
-- L1 over-budget handling, L2 orchestration stages, L3 retrieval parameters, and their schema representation are not defined by this ADR.
-- Constructed Cases remain allowed; only artificial irrelevant distractors added solely to create difficulty are forbidden.
-- The five V1 Failure Types, diagnosis-only product boundary, and deterministic scoring semantics do not change.
-- No runtime, retrieval, tool, index, or Oracle execution is implemented by this decision.
-- No Project Knowledge artifact is added to the Formal Case Package.
-
-## Structural Schema Consequence
-
-This methodology exposed a structural limitation in Offline Case Schema V1. Logs have a physical source (`raw.log`) and separately frozen chunks, but repository content exists only as `repository-evidence.json`. The physical repository Investigation Workspace, Canonical Evidence coordinates, and evaluator evidence labels are therefore not cleanly separated.
-
-Offline Case Schema V2 is required before the first Formal Suite freezes its 20 Case Packages. Schema V2 must separate Physical Artifacts, Canonical Evidence, and Trusted Evaluator Artifacts; represent the physical repository snapshot independently; and make Canonical Units resolve machine-readable source spans instead of acting as independent fact copies. This ADR establishes the methodology but does not define the complete storage schema. [ADR 0126](0126-offline-case-schema-v2-physical-artifacts-and-canonical-evidence.md) records the accepted storage and trust-layer decision.
+This ADR does not define L3 retrieval parameters, L5+ context management, compaction, planning, verifier, memory or skills. Dynamic L4 context-exhaustion semantics remain deferred until observed.
 
 ## Implementation Guide
 
-See [Formal Evaluation Methodology: Evidence Universe and Access Conditions](../evaluation/formal-evaluation-methodology.md).
+See [Formal Evaluation Methodology](../evaluation/formal-evaluation-methodology.md) and [L4 Self-built ReAct Runtime Design](../evaluation/l4-self-built-react-runtime-design.md).
 
 ## Refines
 
@@ -90,4 +106,6 @@ ADRs: `0113`, `0115`, `0118`, `0122`, `0123`, `0124`.
 
 ## Refined By
 
-[ADR 0127: Staged Runtime Capability Ladder and Reference Boundary](0127-staged-runtime-capability-ladder-and-reference-boundary.md).
+- [ADR 0126: Offline Case Schema V2](0126-offline-case-schema-v2-physical-artifacts-and-canonical-evidence.md)
+- [ADR 0127: Staged Runtime Capability Ladder](0127-staged-runtime-capability-ladder-and-reference-boundary.md)
+- [ADR 0128: L4 Self-built ReAct Runtime Contract](0128-l4-self-built-react-runtime-contract.md)

@@ -2,98 +2,104 @@
 
 ## Status
 
-Accepted.
+Accepted. L4 concrete design is now refined by ADR 0128.
 
 ## Context
 
-The earlier V1 plan compared a deterministic Pipeline directly with a self-built ReAct runtime. That comparison remains useful, but it cannot by itself attribute an uplift to model reasoning, fixed model-backed orchestration, evidence acquisition, or adaptive Agent control. DevAgentOps needs intermediate diagnostic conditions that introduce these capabilities separately without expanding the Product Runtime surface.
-
-The project also benefits from studying a mature Agent runtime architecture while preserving its own bounded Investigation Workspace, evaluation-first design, explicit tool policy, and trusted-evaluator boundary.
+Comparing only deterministic Pipeline and full ReAct cannot isolate model reasoning, fixed orchestration, evidence acquisition and adaptive control. DevAgentOps therefore uses a capability ladder for attribution while keeping the Product Runtime surface small.
 
 ## Decision
 
-DevAgentOps adopts the following **Runtime Capability Ladder** as an evaluation and attribution model:
-
-| Level | Capability name | Role | Added capability |
+| Level | Capability | Role | Current state |
 | --- | --- | --- | --- |
-| L0 | `deterministic_pipeline` | Product Runtime baseline | deterministic execution with no model and no Agent |
-| L1 | `full_context_one_shot` | diagnostic/comparison condition | fixed prompt and exactly one model call over the complete Agent-visible Evidence Universe |
-| L2 | `fixed_model_workflow` | diagnostic/comparison condition | program-controlled, fixed multi-stage model orchestration |
-| L3 | `static_retrieval` | evidence-acquisition diagnostic condition | static retrieval over the Evidence Universe, without adaptive Agent control |
-| L4 | `self_built_react` | Product Runtime and first Agentic Runtime | adaptive decision, tool, observation, context, stop, and report loop |
-| L5+ | incremental Agent capabilities | future Product Runtime evolution or controlled conditions | retrieval, context management, planning, verifier, skills, experience, and later capabilities |
+| L0 | deterministic pipeline | Product Runtime baseline | implemented; shipped runtime identity remains `pipeline_baseline` |
+| L1 | `full_context_one_shot` | diagnostic/comparison | MiniMax-M3 formal milestone complete |
+| L2 | `fixed_model_workflow` | diagnostic/comparison | MiniMax-M3 formal milestone complete |
+| L3 | `static_retrieval` | evidence-acquisition diagnostic | not implemented; not required before L4 |
+| L4 | `self_built_react` | first Agentic Product Runtime | ADR 0128/design Human-frozen; implementation pending |
+| L5+ | incremental Agent capabilities | future Runtime evolution / controlled conditions | deferred |
 
-The ladder is not a mandatory implementation order. In particular, this decision does not require L3 to be implemented before L4. It is a semantic structure for controlled comparisons: conditions should add or remove capabilities deliberately so observed changes are not automatically attributed to “the Agent.”
+The ladder is a semantic attribution model, not a mandatory implementation order. L3 does not block L4.
 
-V1 Product Runtime remains limited to **Fixed Pipeline** and **self-built ReAct**. L1, L2, and L3 are model-backed diagnostic/comparison conditions, not additional Product Runtimes. L4 is the first condition with adaptive Agent control and begins the long-lived self-built Agent Runtime kernel lineage.
+V1 Product Runtimes remain Fixed Pipeline and self-built ReAct. L1/L2/L3 remain diagnostic conditions. Oracle Evidence is orthogonal to the ladder and its MiniMax formal milestone is already complete.
 
-The shipped Issue #16 identity remains `runtime_variant="pipeline_baseline"`. `deterministic_pipeline` is the L0 capability-level name, not a request to rename historical manifests, runtime identities, Matrix values, or Registry entries. This ADR does not change Matrix or Registry schemas and does not freeze a future field name for recording ladder level or condition semantics.
+## Task Contract vs Runtime Control
 
-### L1 full-context integrity
+The shared Task Contract defines diagnosis taxonomy, grounding/citation requirements and final Structured Triage Report semantics.
 
-L1 means that the complete **Agent-visible Evidence Universe** for the condition is delivered to the model in one fixed prompt and one model call. It must not silently truncate the evidence and continue to claim `full_context_one_shot` semantics. If the complete visible universe exceeds the condition's fixed context budget, a truncated run is not a valid L1 full-context result.
+Evidence delivery, tool surface, loop behavior, budgets and stopping belong to Runtime/Treatment identity.
 
-The first L1 implementation records an execution/feasibility failure with zero provider calls when the complete rendered input plus the reserved output tokens exceeds the fixed model context capability. It does not truncate, summarize, split, retry, or relabel the condition.
+For L4 ADR 0128 concretely freezes a separate Runtime-control `prompt` component for stable model-visible tool/loop/stopping instructions, rather than hiding them in Case `runtime_input` or Tool Policy.
 
-### Task Contract and Runtime Control Separation
+## L1 full-context integrity
 
-Controlled comparisons should reuse the same versioned Task Contract where scientifically appropriate. The Task Contract defines the diagnosis task, taxonomy, grounding and citation rules, and final Structured Triage Report contract. Evidence delivery, tools, Retrieval, stages, loops, call count, and stop rules belong to the Runtime condition rather than the shared Task Contract.
+L1 must deliver the complete Agent-visible physical universe in one fixed request. It cannot truncate and retain `full_context_one_shot` identity.
 
-`runtime_input` is a case-specific data plane. It may carry Case identity, forbidden actions, evidence, answer-neutral citation coordinates, artifact boundaries, and descriptive serialization metadata, but it must not conceal imperative Runtime control policy. Any model-visible Runtime control instructions that vary across conditions must be explicit, versioned, and recorded as treatment. Sharing a Task Contract therefore does not imply byte-identical rendered requests.
+The current MiniMax path uses exact preflight; an infeasible complete request terminates before provider execution as context-feasibility execution failure.
 
-### Oracle is orthogonal
+## Oracle is orthogonal
 
-Oracle Evidence remains an orthogonal diagnostic intervention under ADR 0124. It changes evidence delivery by resolving the hidden Human-reviewed Minimal Sufficient Evidence Set for a fixed model; it is not a capability rung and must not be presented as L1, L2, L3, or a Product Runtime.
+Oracle bypasses ordinary discovery by resolving hidden reviewed Required Evidence to source-faithful Physical Artifact content. It is not L1/L2/L3/L4 and not a Product Runtime.
 
-### Pi reference-architecture boundary
+Oracle execution is implemented; generic Oracle-vs-L4 pairing / realization-gap machinery waits for a real L4 formal artifact.
 
-[`earendil-works/pi`](https://github.com/earendil-works/pi) is the current canonical upstream for the project's primary Agent Runtime reference architecture. `badlogic/pi-mono` is recorded only as historical lineage and an old repository name; it is not the current canonical reference.
+## Pi reference-architecture boundary
 
-DevAgentOps may study Pi's mature treatment of Agent state, loop structure, tool interface, event flow, model-provider seam, stop conditions, and context management when designing the formal ReAct runtime. Pi is:
+`earendil-works/pi` is the current canonical Agent Runtime reference. Pi is:
 
 - a reference architecture only;
 - not an implementation dependency;
 - not a compatibility target;
-- not the source of DevAgentOps Runtime semantics;
-- not authorization to copy its concrete API into project contracts.
+- not the source of DevAgentOps Runtime semantics.
 
-DevAgentOps will implement its own Runtime and retain the bounded Investigation Workspace, evaluation-first contracts, Trusted Evaluator and leakage boundaries, explicit tool policy, and V1 diagnosis-only product boundary. A concrete Pi API/reference matrix is deferred until formal ReAct design, when the project has a specific kernel contract to compare.
+Pi has now been concretely studied during L4 design. ADR 0128 records where DevAgentOps borrows patterns and where it intentionally differs, including strict malformed-argument handling, Trace/trajectory separation, minimal tool surface, no Pi session tree and no baseline compaction.
 
-## Alternatives Considered
+Earlier wording that said a Pi reference matrix or concrete ReAct design would be created “later” is superseded by ADR 0128 and the L4 implementation guide.
 
-- Compare only deterministic Pipeline and complete ReAct. This keeps the Product Runtime list small but cannot isolate which added capability produced an uplift.
-- Promote every ladder level to a Product Runtime. This would inflate V1 product scope and confuse diagnostic scaffolds with supported runtime products.
-- Require strict L0-to-L4 implementation order. The evaluation semantics do not require delivery sequencing, and the value or cost of L3 may be learned independently.
-- Make Oracle another ladder level. Oracle removes ordinary evidence-discovery difficulty rather than adding a runtime capability.
-- Adopt Pi as a dependency or compatibility contract. This would surrender project-specific semantics and prematurely freeze an external API boundary.
+## L4 current boundary
+
+L4 V1 is the smallest self-built adaptive Runtime:
+
+```text
+Model Decision
+    -> Runtime policy/schema/budget validation
+    -> optional read-only Tool
+    -> ToolResult
+    -> typed history update
+    -> next Model Decision or terminal report
+```
+
+Native tools: `read`, `grep`, `find`, `ls`. Report submission is a terminal Runtime action, not a native tool. Baseline Tool Policy is `single + sequential`, hard Agent budget is `max_steps=100`, and automatic compaction/planner/verifier/memory/multi-agent are deferred.
+
+L4 may receive the full answer-neutral Canonical coordinate vocabulary as citation vocabulary while all Physical Artifact contents remain tool-acquired and all evaluator labels remain hidden.
 
 ## Consequences
 
-Positive consequences:
-
-- Evaluation can distinguish model reasoning, fixed orchestration, static evidence acquisition, and adaptive Agent control.
-- V1 keeps only two Product Runtime identities while still supporting informative diagnostics.
-- The self-built ReAct kernel can learn from mature architecture without inheriting external semantics or dependency risk.
-- L1 results cannot hide context loss behind a misleading full-context label.
-
-Tradeoffs:
-
-- More diagnostic conditions may require additional controlled runs and explicit manifests in later implementation issues.
-- Comparisons require care to hold the Case, base model, prompt/report contract, scorer, inference settings, and other relevant controls fixed.
-- The concrete encoding of capability level, L1 over-budget handling, L2 stages, L3 retrieval parameters, and Pi reference matrix remain future design work.
+- evaluation can distinguish broad capability classes without inflating Product Runtime count;
+- L4 can evolve from an explicit self-built kernel;
+- references to Pi remain informative without inheriting an external framework contract;
+- current L1/L2/Oracle milestones provide pre-L4 diagnostic baselines.
 
 ## Non-Decisions
 
-- No L2, L3, ReAct, retrieval, tool, or context-management implementation is selected here.
-- The implementation order between L3 and L4 is not frozen.
-- No Matrix, Registry, Run Manifest, or runtime schema field is added or named.
-- No Pi API or DevAgentOps-to-Pi mapping is frozen.
-- Investigation Workspace, Trusted Evaluator, leakage, Canonical Evidence, and tool-policy contracts are unchanged.
+Still not frozen here:
+
+- L3 retrieval internals;
+- L5+ capability numbering/packaging;
+- dynamic context-exhaustion handling;
+- future compaction/planning/verifier/memory designs;
+- generic Oracle-vs-L4 gap implementation.
+
+Concrete L4 semantics are not a non-decision anymore; they are owned by ADR 0128.
 
 ## Implementation Guide
 
-See [Runtime Capability Ladder and Model-backed Diagnostic Conditions](../evaluation/runtime-capability-ladder.md).
+See [Runtime Capability Ladder](../evaluation/runtime-capability-ladder.md) and [L4 Self-built ReAct Runtime Design](../evaluation/l4-self-built-react-runtime-design.md).
 
 ## Refines
 
 ADRs: `0002`, `0112`, `0113`, `0124`, `0125`.
+
+## Refined By
+
+[ADR 0128: L4 Self-built ReAct Runtime Contract](0128-l4-self-built-react-runtime-contract.md).

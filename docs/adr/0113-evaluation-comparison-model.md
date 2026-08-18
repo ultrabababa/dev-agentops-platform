@@ -2,41 +2,75 @@
 
 ## Status
 
-Accepted.
+Accepted. Current formal path uses Matrix schema v2.
 
 ## Context
 
-DevAgentOps must compare deterministic Pipeline, model-backed diagnostic conditions, ReAct, retrieval, model, and future framework variants without confusing changes in runtime, prompt, orchestration, evidence access, adaptive control, tool descriptions, model configuration, suite content, or scoring method.
+DevAgentOps must compare deterministic Pipeline, model-backed diagnostic conditions, ReAct, retrieval, model and future runtime variants without confusing runtime behavior, evidence access, prompt/control, tool policy, model configuration, Suite identity, execution mechanics or scoring method.
 
 ## Decision
 
-V1 will compare systems through repository-defined evaluation matrix conditions. Direct leaderboard comparison requires the same evaluation method version, evaluation suite version, model configuration, and condition fingerprint. Matrix conditions may use defaults and one-level `extends`, but every run manifest must store the fully resolved effective condition and condition fingerprint.
+V1 compares systems through repository-defined Evaluation Matrix conditions. Current new formal conditions use **Matrix v2**, not the earlier Defaults/one-level-`extends` Matrix v1 shape.
 
-The L0-L5+ Runtime Capability Ladder defines attribution semantics, not a mandatory Matrix shape or implementation order. L1 full-context one-shot, L2 fixed model workflow, and L3 static retrieval are diagnostic/comparison conditions; L4 self-built ReAct is the first Agentic Runtime. Oracle Evidence is an orthogonal diagnostic intervention. ADR 0127 does not modify the current Matrix/Registry schema or freeze future field names.
+Matrix v2 condition identity includes:
+
+```text
+type
+runtime_variant
+suite
+evaluation_method
+treatment_fingerprint
+```
+
+Treatment explicitly contains provider/model/reasoning/generation/contracts/context. Execution Policy is separately fingerprinted and enters Run Configuration identity together with Suite/Case selection, code revision and dirty state.
+
+Therefore `Condition Fingerprint` is not by itself the complete run identity.
+
+Historical Matrix v1 files remain compatibility/history and must not be silently reinterpreted as Matrix v2.
+
+The L0-L5+ Runtime Capability Ladder defines attribution semantics, not a mandatory Matrix order. L1/L2/L3 are diagnostics, L4 is the first Agentic Product Runtime, and Oracle Evidence is orthogonal.
+
+Current implementation state:
+
+- L1 Matrix v2 formal milestone complete;
+- L2 Matrix v2 formal milestone complete;
+- Oracle Matrix v2 formal milestone complete;
+- L4 Matrix v2 Treatment contract frozen by ADR 0128, implementation pending.
+
+## L4 Treatment refinement
+
+L4 formal identity must Registry-validate:
+
+- shared Task Contract prompt;
+- separate Runtime-control prompt;
+- Tool Registry;
+- Tool Policy;
+- provider/model/reasoning/generation/context contracts.
+
+Runtime code is not a Component Registry component; implementation provenance remains `runtime_variant + code_revision`.
+
+Execution Policy is outer evaluation/request mechanics, not Agent Tool Policy. In particular, current `retry_count` must never be silently treated as whole-sample retry for L4; ADR 0128 freezes same-logical-provider-request retry semantics.
+
+## Comparison interpretation
+
+Meaningful direct or paired comparison requires explicit compatibility checks on the controls relevant to the question. When more than the intended variable changes, describe the result as a combined treatment difference rather than a single-feature causal uplift.
+
+Oracle-versus-Agent realization-gap analysis uses dedicated pairing checks because Oracle and Agent Condition Fingerprints are expected to differ; it is not an ordinary same-condition leaderboard comparison.
 
 ## Alternatives Considered
 
-- Compare by V1/V2 project version only. This hides the actual runtime and component variables.
-- Test every feature combination. This creates an unmanageable Cartesian grid.
-- Use one global leaderboard across scoring methods, suites, or models. This produces misleading rankings.
+- Compare by project version only: too coarse.
+- Test every feature combination: unmanageable Cartesian grid.
+- Use one global leaderboard across methods/suites/models: misleading.
+- Rewrite historical Matrix v1 identities to v2: destroys reproducibility.
 
 ## Consequences
 
-Comparison becomes explicit and reproducible. Matrix changes only require rerunning conditions whose effective condition changes, while anchor conditions can be rerun when evaluation method or suite versions change.
-
-## Implementation Notes
-
-- Keep evaluation matrix files in the repository.
-- Matrix entries include condition type, runtime variant, suite, method, model, component versions, budgets, and repeats.
-- Use anchor, ablation, and candidate condition types.
-- Preserve the Pipeline anchor and Product Runtime comparison between `pipeline_baseline` and `self_built_react`.
-- Add L1/L2/L3 only through future explicit diagnostic/ablation condition designs; do not infer that ladder numbering mandates Matrix order or that L3 must precede L4 implementation.
-- Model changes are tested only through ablation conditions.
-- Repeated runs are configured in the matrix and reported as stability analysis, not silently averaged into ordinary leaderboard rows.
+Current experiments have explicit Treatment and execution identities while historical runs remain interpretable. L4 can add Tool/Runtime-control component references without inventing a new top-level Runtime identity system.
 
 ## Implementation Guide
 
-See [Evaluation Matrix 与 Component Registry](../evaluation/evaluation-matrix-and-component-registry.md) for the currently implemented Matrix schema, resolution rules, fingerprints, CLI modes, and boundaries.
+See [Evaluation Matrix, Component Registry and Formal Evaluation Identity](../evaluation/evaluation-matrix-and-component-registry.md).
 
 ## Consolidates
 
@@ -44,4 +78,5 @@ Micro ADRs: `0014`, `0015`, `0016`, `0017`, `0023`, `0044`, `0045`, `0046`, `004
 
 ## Refined By
 
-[ADR 0127: Staged Runtime Capability Ladder and Reference Boundary](0127-staged-runtime-capability-ladder-and-reference-boundary.md).
+- ADR 0127 — capability ladder semantics;
+- ADR 0128 — concrete L4 Treatment / Tool / retry identity.

@@ -2,37 +2,66 @@
 
 ## Status
 
-Accepted.
+Accepted and implemented.
 
 ## Context
 
-Evaluation requires reports that can be validated, scored, and reviewed. Natural-language evidence descriptions are not enough to measure whether the agent found and used the expected evidence.
+Evaluation requires reports that can be validated, scored, and reviewed deterministically. Natural-language evidence descriptions are not enough to measure whether the system found and cited the expected facts.
 
 ## Decision
 
-V1 will version the structured triage report schema as an evaluation and product contract outside the component registry. Structured reports must include valid evidence references to stable evidence identifiers. Expected answers distinguish required key evidence from optional evidence, and evidence hit rate means the final report cited expected required evidence.
+Structured Triage Report V1 is a versioned product/evaluation contract outside the Component Registry. Reports cite stable Canonical Evidence IDs through `evidence_references`.
 
-## Alternatives Considered
+Offline Case Schema V2 separates Ground Truth:
 
-- Treat report schema as a mutable agent component. It is a product and scoring contract, not a prompt-like tuning artifact.
-- Let reports cite evidence only in prose. This makes evidence hit rate and review unreliable.
-- Score retrieval hit and final report citation as one metric. This hides whether the problem is search or report synthesis.
+```text
+evaluator/required-evidence.json
+= Evidence Ground Truth
+
+ evaluator/expected-answer.json
+= Diagnosis Ground Truth
+```
+
+Required/Optional Evidence IDs are **not** stored in Expected Answer. Evidence Hit Rate compares final report citations against hidden Required Evidence IDs through the deterministic scorer.
+
+Invalid/unknown Evidence IDs remain protocol/evidence-validation failures rather than being repaired.
+
+## L4 citation refinement
+
+ADR 0128 keeps the existing report/scorer contract unchanged. To let L4 cite valid IDs without a hidden Runtime mapping helper, the complete answer-neutral Canonical coordinate vocabulary may be disclosed in L4's initial model-visible input.
+
+This does not expose Evidence Ground Truth: the model is not told which IDs are Required/Optional, and physical content remains tool-acquired.
+
+Thus L4 badcase analysis can distinguish:
+
+```text
+physical fact not found
+vs
+fact found but Canonical ID not cited
+vs
+correct ID cited but diagnosis wrong
+```
 
 ## Consequences
 
-Evidence scoring becomes deterministic and diagnosable. Invalid evidence IDs are hallucinated citations, and retrieval/report gaps can be attributed correctly.
+- report validation/scoring remains deterministic across L1/L2/L4/Oracle;
+- Case Ground Truth remains hidden and separated by responsibility;
+- L4 does not require scorer changes or an automatic source-span-to-ID annotator;
+- unknown citations remain measurable model/report failures.
 
 ## Implementation Notes
 
-- Report schema version is recorded in run manifests and evaluation methods.
-- Evidence references point to log, repository, or project-knowledge evidence IDs.
-- Stable evidence IDs are defined by case packages or retrieval corpora.
-- Derived evidence is allowed only with provenance back to stable evidence IDs or source spans.
-- Retrieval evidence hits and report evidence hits are both reported; primary evidence hit rate is report citation hit.
-- Invalid evidence IDs fail evidence-related scoring and produce hallucinated-evidence badcases.
-- Expected Answers and deterministic scorers belong only to the trusted Evaluator boundary. They must not be exposed to the evaluated Agent through prompts, tools, retrieval corpora, validation errors, or public scoring output.
-- Public evidence diagnostics expose counts only. `unknown_evidence_count` is the number of distinct unknown Evidence IDs, not the number of unknown reference occurrences; required or optional Evidence ID sets and missed required IDs remain private.
+- report schema/version is recorded in formal identities where applicable;
+- canonical Evidence IDs come from frozen Case packages;
+- current Formal Case Physical Universe does not include Project Knowledge; future independently versioned knowledge treatments must preserve provenance if they ever introduce report-citable evidence;
+- public diagnostics expose only non-leaking aggregate/count information; hidden Required IDs and missed Required IDs stay evaluator-only;
+- report invalidity is a scored capability outcome when the model had a valid execution opportunity, not automatically an infrastructure failure.
 
 ## Consolidates
 
 Micro ADRs: `0102`, `0103`, `0104`, `0105`, `0106`, `0107`, `0108`.
+
+## Refined By
+
+- ADR 0126 — Ground Truth split and Canonical source coordinates;
+- ADR 0128 — L4 citation-vocabulary visibility and terminal semantics.
