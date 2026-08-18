@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 import pytest
 
-from devagentops.providers.contracts import CompletionProviderError, ExactTokenCount
+from devagentops.providers.contracts import CompletionProviderError
 from devagentops.runtime.messages import (
     AssistantMessage,
     TextContent,
@@ -70,11 +70,9 @@ class SequenceProvider:
     def __init__(self, sequence) -> None:
         self.sequence = list(sequence)
         self.requests = []
-        self.count_requests = []
 
     def count_input_tokens(self, request):
-        self.count_requests.append(request)
-        return ExactTokenCount(input_tokens=100 + len(request.messages), method="fake-exact")
+        raise AssertionError("L4 Runtime must not perform local token preflight")
 
     def complete(self, request):
         self.requests.append(request)
@@ -170,7 +168,7 @@ def test_multi_step_trajectory_uses_complete_history_and_submits_valid_report() 
     ]
     assert len(provider.requests[1].messages) == 3
     assert len(provider.requests[1].tools) == 4
-    assert [item.input_tokens for item in result.token_counts] == [101, 103]
+    assert result.provider_input_tokens == (10, 10)
     assert "report_submitted" in [event for event, _ in events]
 
 
@@ -230,6 +228,7 @@ def test_invalid_model_actions_are_agent_visible_and_recoverable(decision, expec
     assert isinstance(error, ToolResultMessage) and error.is_error
     assert expected_fragment in error.content
     assert result.terminal_reason == "report_submitted"
+    assert len(provider.requests) == 2
 
 
 def test_length_tool_call_and_multi_call_execute_none_and_close_every_id() -> None:

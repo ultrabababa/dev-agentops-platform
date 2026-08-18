@@ -185,15 +185,10 @@ class ConfiguredL4ConditionExecutor:
                 else None
             ),
             "context_assessment": {
-                "per_step_input_tokens": [
-                    count.input_tokens for count in runtime_result.token_counts
-                ],
-                "method": (
-                    runtime_result.token_counts[0].method
-                    if runtime_result.token_counts
-                    else None
-                ),
-                "exact": True,
+                "assessment": "provider_reported",
+                "per_step_input_tokens": list(runtime_result.provider_input_tokens),
+                "method": "provider_response_usage",
+                "local_preflight": False,
                 "context_window_tokens": self.treatment.context_limit_tokens,
                 "reserved_completion_tokens": self.treatment.max_completion_tokens,
             },

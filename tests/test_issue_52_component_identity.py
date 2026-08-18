@@ -56,7 +56,12 @@ def test_l4_matrix_resolves_all_four_frozen_component_identities() -> None:
     condition = matrix.conditions[0]
     assert condition.effective_condition["runtime_variant"] == "self_built_react"
     contracts = condition.effective_condition["treatment"]["contracts"]
+    context = condition.effective_condition["treatment"]["context"]
     assert "runtime" not in contracts
+    assert context["assessment"] == "provider_reported"
+    assert context["method"] == "provider_response_usage"
+    assert context["policy"] == "observe_provider_usage_no_local_preflight"
+    assert "tokenizer" not in context
     assert condition.effective_condition["execution_policy"]["retry_count"] == 3
     validate_minimax_development_condition(condition.effective_condition, case_count=1)
 

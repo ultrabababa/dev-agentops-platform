@@ -8,7 +8,6 @@ from typing import Any, Literal
 
 from devagentops.providers.contracts import (
     CompletionProvider,
-    ExactTokenCount,
     LogicalCompletionRequest,
 )
 from devagentops.providers.execution import (
@@ -65,7 +64,7 @@ class ReactRuntimeResult:
     messages: tuple[Message, ...]
     steps: int
     request_attempts: int
-    token_counts: tuple[ExactTokenCount, ...]
+    provider_input_tokens: tuple[int | None, ...]
     final_assistant: AssistantMessage | None
     final_latency_ms: int | None
 
@@ -146,7 +145,7 @@ def run_react(
     sleep: Callable[[float], None] = time.sleep,
 ) -> ReactRuntimeResult:
     messages: tuple[Message, ...] = (initial_user_message,)
-    token_counts: list[ExactTokenCount] = []
+    provider_input_tokens: list[int | None] = []
     steps = 0
     request_attempts = 0
     final_assistant: AssistantMessage | None = None
@@ -171,7 +170,7 @@ def run_react(
                 messages=messages,
                 steps=steps,
                 request_attempts=request_attempts,
-                token_counts=tuple(token_counts),
+                provider_input_tokens=tuple(provider_input_tokens),
                 final_assistant=final_assistant,
                 final_latency_ms=final_latency_ms,
             )
@@ -184,30 +183,6 @@ def run_react(
             reasoning=configuration.reasoning,
             generation=configuration.generation,
         )
-        try:
-            token_count = provider.count_input_tokens(request)
-        except Exception as exc:
-            raise ReactInfrastructureError(
-                "L4 exact input-token preflight failed",
-                code=getattr(exc, "code", "l4_token_preflight_failed"),
-                stage="context_feasibility",
-                messages=messages,
-                steps=steps,
-                request_attempts=request_attempts,
-            ) from exc
-        token_counts.append(token_count)
-        if (
-            token_count.input_tokens + configuration.max_completion_tokens
-            > configuration.context_limit_tokens
-        ):
-            raise ReactInfrastructureError(
-                "L4 request exceeds the configured model context capability",
-                code="l4_context_infeasible",
-                stage="context_feasibility",
-                messages=messages,
-                steps=steps,
-                request_attempts=request_attempts,
-            )
 
         try:
             execution = execute_completion_request(
@@ -223,7 +198,6 @@ def run_react(
                     {
                         "step": steps + 1,
                         "attempt_index": attempt_index,
-                        "input_tokens": token_count.input_tokens,
                     },
                 ),
                 after_attempt=lambda attempt: _record_model_attempt(
@@ -246,6 +220,7 @@ def run_react(
         assistant = execution.assistant
         request_attempts += execution.attempts
         steps += 1
+        provider_input_tokens.append(assistant.usage.input_tokens)
         final_assistant = assistant
         final_latency_ms = execution.latency_ms
         messages = (*messages, assistant)
@@ -288,7 +263,7 @@ def run_react(
                 messages=messages,
                 steps=steps,
                 request_attempts=request_attempts,
-                token_counts=tuple(token_counts),
+                provider_input_tokens=tuple(provider_input_tokens),
                 final_assistant=assistant,
                 final_latency_ms=execution.latency_ms,
             )
@@ -303,8 +278,12 @@ def run_react(
                 _emit(
                     on_event,
                     "tool_call_error",
-                    {"step": steps, "tool_call_id": call.id, "tool_name": call.name,
-                     "code": "truncated_tool_call"},
+                    {
+                        "step": steps,
+                        "tool_call_id": call.id,
+                        "tool_name": call.name,
+                        "code": "truncated_tool_call",
+                    },
                 )
             continue
 
@@ -316,8 +295,12 @@ def run_react(
                 _emit(
                     on_event,
                     "tool_call_error",
-                    {"step": steps, "tool_call_id": call.id, "tool_name": call.name,
-                     "code": "multiple_tool_calls_rejected"},
+                    {
+                        "step": steps,
+                        "tool_call_id": call.id,
+                        "tool_name": call.name,
+                        "code": "multiple_tool_calls_rejected",
+                    },
                 )
             continue
 
@@ -336,8 +319,12 @@ def run_react(
             _emit(
                 on_event,
                 "tool_call_error",
-                {"step": steps, "tool_call_id": call.id, "tool_name": call.name,
-                 "code": "malformed_tool_arguments"},
+                {
+                    "step": steps,
+                    "tool_call_id": call.id,
+                    "tool_name": call.name,
+                    "code": "malformed_tool_arguments",
+                },
             )
             continue
 
@@ -364,8 +351,13 @@ def run_react(
             _emit(
                 on_event,
                 "tool_call_error",
-                {"step": steps, "tool_call_id": call.id, "tool_name": call.name,
-                 "code": exc.code, "truncated": content_truncated},
+                {
+                    "step": steps,
+                    "tool_call_id": call.id,
+                    "tool_name": call.name,
+                    "code": exc.code,
+                    "truncated": content_truncated,
+                },
             )
             continue
         except Exception as exc:

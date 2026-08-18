@@ -24,7 +24,6 @@ from devagentops.evaluation.suite import load_evaluation_suite
 from devagentops.evaluation.trace import TraceRecorder
 from devagentops.evaluation.matrix import load_evaluation_matrix
 from devagentops.evaluation.run_v2 import run_formal_evaluation_v2
-from devagentops.providers.contracts import ExactTokenCount
 from devagentops.runtime.messages import (
     AssistantMessage,
     TextContent,
@@ -45,11 +44,11 @@ class FakeProvider:
         self.requests = []
 
     def count_input_tokens(self, request):
-        assert len(request.tools) == 4
-        assert request.system_prompt
-        return ExactTokenCount(input_tokens=321, method="fake-exact")
+        raise AssertionError("L4 Runtime must not perform local token preflight")
 
     def complete(self, request):
+        assert len(request.tools) == 4
+        assert request.system_prompt
         self.requests.append(request)
         return AssistantMessage(
             content=(
@@ -129,6 +128,14 @@ def test_l4_condition_reuses_sample_trace_scorer_and_separate_trajectory() -> No
     assert result.status == "scored"
     assert result.data["terminal_reason"] == "report_submitted"
     assert result.data["validation"]["valid"] is True
+    assert result.data["context_assessment"] == {
+        "assessment": "provider_reported",
+        "per_step_input_tokens": [321],
+        "method": "provider_response_usage",
+        "local_preflight": False,
+        "context_window_tokens": 1_000_000,
+        "reserved_completion_tokens": 65536,
+    }
     assert [message["role"] for message in result.trajectory] == ["user", "assistant"]
     assert result.trajectory[1]["provider_fields"]["reasoning_details"] == [
         {"text": "private provider reasoning"}
@@ -140,6 +147,7 @@ def test_l4_condition_reuses_sample_trace_scorer_and_separate_trajectory() -> No
         if event["event_type"] == "model_call_completed"
     )
     assert isinstance(completed["payload"]["latency_ms"], int)
+    assert completed["payload"]["usage"]["input_tokens"] == 321
     trace_json = json.dumps(recorder.snapshot())
     assert "private provider reasoning" not in trace_json
     assert report not in trace_json

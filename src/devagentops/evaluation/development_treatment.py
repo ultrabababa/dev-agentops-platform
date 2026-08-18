@@ -41,6 +41,8 @@ L4_TOOL_POLICY_VERSION = "l4-single-sequential-tool-policy-v1"
 L4_TOOL_POLICY_FINGERPRINT = (
     "fd218879f82d7c090304522e6c938102ee633e10eaa09733ffda99760db5c26c"
 )
+
+
 def validate_minimax_development_condition(
     effective: dict[str, Any],
     case_count: int,
@@ -171,6 +173,27 @@ def validate_minimax_development_condition(
         )
 
     context = treatment["context"]
+    if runtime_variant == "self_built_react":
+        expected_context = {
+            "assessment": "provider_reported",
+            "method": "provider_response_usage",
+            "context_window_tokens": 1000000,
+            "advertised_maximum_tokens": 1000000,
+            "guaranteed_minimum_label": "512K",
+            "policy": "observe_provider_usage_no_local_preflight",
+            "source": {
+                "url": CONTEXT_SOURCE_URL,
+                "accessed_on": "2026-08-14",
+                "contract_version": "minimax-m3-api-context-2026-08-14",
+            },
+        }
+        if context != expected_context:
+            raise EvaluationRunError(
+                "unsupported L4 provider-reported context accounting identity",
+                code="unsupported_v2_context_identity",
+            )
+        return
+
     tokenizer = context["tokenizer"]
     if (
         context["assessment"] != "exact"
