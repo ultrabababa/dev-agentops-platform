@@ -17,11 +17,11 @@ from devagentops.conditions.oracle.evidence_v1 import (
 from devagentops.evaluation.components import ComponentManifest
 from devagentops.evaluation.suite import OfflineCasePackage
 from devagentops.providers.contracts import (
-    CompletionObservation,
     CompletionProvider,
     ExactTokenCount,
     LogicalCompletionRequest,
 )
+from devagentops.runtime.messages import AssistantMessage, UserMessage, assistant_text
 
 
 RUNTIME_VARIANT = "model_one_shot"
@@ -55,7 +55,7 @@ class OracleOneShotResult:
     prompt_sha256: str
     token_count: ExactTokenCount
     context_limit_tokens: int
-    response: CompletionObservation
+    response: AssistantMessage
 
 
 def run_configured_oracle_one_shot(
@@ -113,15 +113,9 @@ def run_configured_oracle_one_shot(
 
     request = LogicalCompletionRequest(
         model=treatment.model,
-        messages=(
-            {
-                "role": "user",
-                "content": prompt_text,
-            },
-        ),
+        messages=(UserMessage(prompt_text),),
         reasoning=treatment.reasoning,
         generation=treatment.generation,
-        tools=None,
     )
 
     token_count = provider.count_input_tokens(request)
@@ -159,13 +153,14 @@ def run_configured_oracle_one_shot(
         )
 
     response = provider.complete(request)
+    visible_output = assistant_text(response)
 
     try:
         candidate_document: Any = json.loads(
-            response.visible_output
+            visible_output
         )
     except json.JSONDecodeError:
-        candidate_document = response.visible_output
+        candidate_document = visible_output
 
     return OracleOneShotResult(
         candidate_document=candidate_document,

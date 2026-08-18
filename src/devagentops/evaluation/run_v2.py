@@ -11,6 +11,10 @@ from devagentops.conditions.l1.executor import ConfiguredL1ConditionExecutor
 from devagentops.conditions.l1.full_context_v1 import ConfiguredL1Treatment
 from devagentops.conditions.l2.development_workflow_v1 import ConfiguredL2Treatment
 from devagentops.conditions.l2.executor import ConfiguredL2ConditionExecutor
+from devagentops.conditions.l4.react_condition import (
+    ConfiguredL4ConditionExecutor,
+    ConfiguredL4Treatment,
+)
 from devagentops.conditions.oracle.executor import (
     ConfiguredOracleConditionExecutor,
 )
@@ -28,6 +32,9 @@ from devagentops.evaluation.artifacts import (
 )
 from devagentops.evaluation.components import resolve_frozen_component_manifest
 from devagentops.evaluation.development_treatment import (
+    L4_RUNTIME_CONTROL_VERSION,
+    L4_TOOL_POLICY_VERSION,
+    L4_TOOL_REGISTRY_VERSION,
     TASK_CONTRACT_VERSION,
     validate_minimax_development_condition,
 )
@@ -74,6 +81,7 @@ def run_formal_evaluation_v2(
         )
     treatment = effective["treatment"]
     execution_policy = effective["execution_policy"]
+    runtime_variant = effective["runtime_variant"]
     code_revision = _code_revision()
     git_dirty = _git_dirty()
     selected_cases = [
@@ -98,6 +106,16 @@ def run_formal_evaluation_v2(
         "prompt",
         TASK_CONTRACT_VERSION,
     )
+    if runtime_variant == "self_built_react":
+        runtime_control = resolve_frozen_component_manifest(
+            registry_path, "prompt", L4_RUNTIME_CONTROL_VERSION
+        )
+        tool_registry = resolve_frozen_component_manifest(
+            registry_path, "tool_registry", L4_TOOL_REGISTRY_VERSION
+        )
+        tool_policy = resolve_frozen_component_manifest(
+            registry_path, "tool_policy", L4_TOOL_POLICY_VERSION
+        )
     initialize_database(database_path)
     run_id = str(uuid4())
     started_at = _now()
@@ -129,8 +147,6 @@ def run_formal_evaluation_v2(
         base_url=treatment["provider"]["base_url"],
         timeout_seconds=execution_policy["request_timeout_seconds"],
     )
-
-    runtime_variant = effective["runtime_variant"]
 
     if runtime_variant == "full_context_one_shot":
         executor = ConfiguredL1ConditionExecutor(
@@ -199,6 +215,32 @@ def run_formal_evaluation_v2(
             ),
             provider_factory=provider_factory,
         )
+    elif runtime_variant == "self_built_react":
+        executor = ConfiguredL4ConditionExecutor(
+            prompt=prompt,
+            runtime_control=runtime_control,
+            tool_registry=tool_registry,
+            tool_policy=tool_policy,
+            treatment=ConfiguredL4Treatment(
+                provider_id=treatment["provider"]["id"],
+                model=treatment["model"],
+                reasoning=treatment["reasoning"],
+                generation=treatment["generation"],
+                context_limit_tokens=treatment["context"][
+                    "context_window_tokens"
+                ],
+                max_completion_tokens=treatment["generation"][
+                    "max_completion_tokens"
+                ],
+                task_contract_version=TASK_CONTRACT_VERSION,
+                runtime_control_version=L4_RUNTIME_CONTROL_VERSION,
+                tool_registry_version=L4_TOOL_REGISTRY_VERSION,
+                tool_policy_version=L4_TOOL_POLICY_VERSION,
+                output_contract_prompt_suffix=output_contract_prompt_suffix(),
+                max_steps=treatment["contracts"]["runtime"]["max_steps"],
+            ),
+            provider_factory=provider_factory,
+        )
     else:
         from devagentops.evaluation.run import EvaluationRunError
 
@@ -214,7 +256,11 @@ def run_formal_evaluation_v2(
             policy=ExecutionPolicy(
                 repeat_count=execution_policy["repeat_count"],
                 max_case_concurrency=execution_policy["max_case_concurrency"],
-                retry_count=execution_policy["retry_count"],
+                retry_count=(
+                    0
+                    if runtime_variant == "self_built_react"
+                    else execution_policy["retry_count"]
+                ),
             ),
         )
         sample_results = [result.data for result in results]
@@ -280,6 +326,13 @@ def run_formal_evaluation_v2(
             failure_type_aggregates=[
                 item.as_dict() for item in failure_type_aggregates
             ],
+            sample_trajectories={
+                (result.identity.case_id, result.identity.repeat_index): (
+                    result.trajectory
+                )
+                for result in results
+                if result.trajectory
+            },
         )
     except StorageError as exc:
         from devagentops.evaluation.run import EvaluationRunError
@@ -375,12 +428,14 @@ def _manifest(
         "full_context_one_shot": "l1-development-treatment-milestone",
         "fixed_model_workflow": "l2-development-treatment-integration",
         "model_one_shot": "oracle-evidence-diagnostic-development",
+        "self_built_react": "l4-self-built-react-development",
     }[runtime_variant]
 
     tool_protocol_reason = {
         "full_context_one_shot": "full_context_one_shot_has_no_tools",
         "fixed_model_workflow": "fixed_model_workflow_has_no_tools",
         "model_one_shot": "oracle_model_one_shot_has_no_tools",
+        "self_built_react": "minimax_native_tools_from_frozen_tool_registry",
     }[runtime_variant]
 
     return {
@@ -437,7 +492,11 @@ def _manifest(
             "model": effective["treatment"]["model"],
         },
         "tool_call_protocol": {
-            "applicability": "not_applicable",
+            "applicability": (
+                "applicable"
+                if runtime_variant == "self_built_react"
+                else "not_applicable"
+            ),
             "reason": tool_protocol_reason,
         },
         "formal_semantics": {

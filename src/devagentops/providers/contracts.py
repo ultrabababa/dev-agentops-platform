@@ -3,25 +3,21 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Protocol
 
+from devagentops.runtime.messages import (
+    AssistantMessage,
+    Message,
+    ToolDefinition,
+)
+
 
 @dataclass(frozen=True)
 class LogicalCompletionRequest:
     model: str
-    messages: tuple[dict[str, str], ...]
+    messages: tuple[Message, ...]
     reasoning: dict[str, Any]
     generation: dict[str, Any]
-    tools: None = None
-
-
-@dataclass(frozen=True)
-class CompletionObservation:
-    visible_output: str
-    reasoning_output: str | None
-    provider_request_id: str | None
-    returned_model: str | None
-    usage: dict[str, Any]
-    finish_reason: str | None
-    latency_ms: int
+    system_prompt: str | None = None
+    tools: tuple[ToolDefinition, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -37,4 +33,4 @@ class CompletionProvider(Protocol):
 
     def complete(
         self, request: LogicalCompletionRequest
-    ) -> CompletionObservation: ...
+    ) -> AssistantMessage: ...

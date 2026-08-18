@@ -18,10 +18,15 @@ from devagentops.conditions.l2.fixed_workflow_v1 import (
 )
 from devagentops.evaluation.components import ComponentManifest
 from devagentops.providers.contracts import (
-    CompletionObservation,
     CompletionProvider,
     ExactTokenCount,
     LogicalCompletionRequest,
+)
+from devagentops.runtime.messages import (
+    AssistantMessage,
+    UserMessage,
+    assistant_text,
+    assistant_thinking,
 )
 from devagentops.runtime.workspace import RuntimeCaseWorkspace
 
@@ -213,7 +218,7 @@ class ConfiguredStageCallResult:
     control_version: str
     control_fingerprint: str
     token_count: ExactTokenCount
-    response: CompletionObservation
+    response: AssistantMessage
 
 
 @dataclass(frozen=True)
@@ -261,12 +266,10 @@ def run_configured_fixed_model_workflow(
         before_model_call=before_model_call,
     )
 
-    observation = observe_evidence_analysis_memo(
-        stage_1.response.visible_output,
-        workspace,
-    )
+    stage_1_visible_output = assistant_text(stage_1.response)
+    observation = observe_evidence_analysis_memo(stage_1_visible_output, workspace)
 
-    handoff = serialize_handoff(stage_1.response.visible_output)
+    handoff = serialize_handoff(stage_1_visible_output)
 
     _notify_model_call_completed(
         after_model_call,
@@ -307,16 +310,15 @@ def run_configured_fixed_model_workflow(
         stage_2,
     )
 
+    stage_2_visible_output = assistant_text(stage_2.response)
     try:
-        candidate_document: Any = json.loads(
-            stage_2.response.visible_output
-        )
+        candidate_document: Any = json.loads(stage_2_visible_output)
     except json.JSONDecodeError:
-        candidate_document = stage_2.response.visible_output
+        candidate_document = stage_2_visible_output
 
     return ConfiguredFixedModelWorkflowResult(
         candidate_document=candidate_document,
-        visible_output=stage_2.response.visible_output,
+        visible_output=stage_2_visible_output,
         complete_runtime_input=complete_runtime_input,
         handoff=handoff,
         evidence_analysis_observation=observation,
@@ -410,15 +412,9 @@ def _execute_stage(
 ) -> ConfiguredStageCallResult:
     request = LogicalCompletionRequest(
         model=treatment.model,
-        messages=(
-            {
-                "role": "user",
-                "content": prompt_text,
-            },
-        ),
+        messages=(UserMessage(prompt_text),),
         reasoning=treatment.reasoning,
         generation=treatment.generation,
-        tools=None,
     )
 
     token_count = provider.count_input_tokens(request)
@@ -469,13 +465,6 @@ def _execute_stage(
 
     response = provider.complete(request)
 
-    if not isinstance(response.visible_output, str):
-        raise ConfiguredFixedModelWorkflowError(
-            f"L2 {stage_id} provider response did not expose a visible string",
-            code="model_provider_protocol_error",
-            stage_id=stage_id,
-        )
-
     return ConfiguredStageCallResult(
         stage_id=stage_id,
         logical_call_number=logical_call_number,
@@ -503,14 +492,14 @@ def _notify_model_call_completed(
         {
             "stage_id": stage.stage_id,
             "logical_call_number": stage.logical_call_number,
-            "provider_request_id": stage.response.provider_request_id,
-            "returned_model": stage.response.returned_model,
-            "usage": stage.response.usage,
+            "provider_request_id": stage.response.response_id,
+            "returned_model": stage.response.response_model,
+            "usage": stage.response.usage.as_dict(),
             "latency_ms": stage.response.latency_ms,
-            "finish_reason": stage.response.finish_reason,
-            "visible_output": stage.response.visible_output,
+            "finish_reason": stage.response.stop_reason,
+            "visible_output": assistant_text(stage.response),
             "reasoning_observation": _reasoning_metadata(
-                stage.response.reasoning_output
+                assistant_thinking(stage.response)
             ),
             **(extra or {}),
         }

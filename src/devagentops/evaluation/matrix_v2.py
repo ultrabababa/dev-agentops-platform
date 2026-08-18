@@ -164,23 +164,11 @@ def load_evaluation_matrix_v2(
         _validate_treatment(raw["treatment"], condition_id)
         _validate_execution_policy(raw["execution_policy"], condition_id)
         if component_registry_path is not None:
-            task = raw["treatment"]["contracts"].get("task", {})
-            if task.get("component_type") != "prompt" or not isinstance(
-                task.get("version"), str
-            ):
-                raise EvaluationMatrixError(
-                    f"condition {condition_id!r} has invalid task contract identity"
-                )
-            fingerprints = validate_component_references(
-                {"prompt": task["version"]},
+            _validate_registry_contracts(
+                raw,
                 component_registry_path,
                 condition_id=condition_id,
             )
-            if task.get("fingerprint") != fingerprints["prompt"]:
-                raise EvaluationMatrixError(
-                    f"condition {condition_id!r} task contract fingerprint does not "
-                    "match the Component Registry"
-                )
         effective = {key: value for key, value in raw.items() if key != "id"}
         resolved.append(ResolvedConditionV2(condition_id, effective))
     return EvaluationMatrixV2(
@@ -189,6 +177,44 @@ def load_evaluation_matrix_v2(
         schema_version="2",
         conditions=tuple(resolved),
     )
+
+
+def _validate_registry_contracts(
+    condition: dict[str, Any],
+    registry_path: Path,
+    *,
+    condition_id: str,
+) -> None:
+    contracts = condition["treatment"]["contracts"]
+    references = [("task", "prompt")]
+    if condition["runtime_variant"] == "self_built_react":
+        references.extend(
+            [
+                ("runtime_control", "prompt"),
+                ("tool_registry", "tool_registry"),
+                ("tool_policy", "tool_policy"),
+            ]
+        )
+    for contract_key, component_type in references:
+        identity = contracts.get(contract_key, {})
+        if (
+            identity.get("component_type") != component_type
+            or not isinstance(identity.get("version"), str)
+            or not identity["version"]
+        ):
+            raise EvaluationMatrixError(
+                f"condition {condition_id!r} has invalid {contract_key} contract identity"
+            )
+        fingerprints = validate_component_references(
+            {component_type: identity["version"]},
+            registry_path,
+            condition_id=condition_id,
+        )
+        if identity.get("fingerprint") != fingerprints[component_type]:
+            raise EvaluationMatrixError(
+                f"condition {condition_id!r} {contract_key} contract fingerprint "
+                "does not match the Component Registry"
+            )
 
 
 def _validate_treatment(value: Any, condition_id: str) -> None:

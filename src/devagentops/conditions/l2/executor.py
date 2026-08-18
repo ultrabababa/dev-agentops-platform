@@ -28,6 +28,7 @@ from devagentops.runtime.workspace import (
 )
 from devagentops.scoring.case import evaluate_case_report
 from devagentops.scoring.report import REPORT_SCHEMA_VERSION
+from devagentops.runtime.messages import assistant_thinking
 
 
 @dataclass(frozen=True)
@@ -206,18 +207,18 @@ class ConfiguredL2ConditionExecutor:
                     stage.logical_call_number
                 ),
                 "provider_request_id": (
-                    stage.response.provider_request_id
+                    stage.response.response_id
                 ),
                 "returned_model": (
-                    stage.response.returned_model
+                    stage.response.response_model
                 ),
-                "usage": stage.response.usage,
+                "usage": stage.response.usage.as_dict(),
                 "finish_reason": (
-                    stage.response.finish_reason
+                    stage.response.stop_reason
                 ),
                 "latency_ms": stage.response.latency_ms,
                 "reasoning": _reasoning_metadata(
-                    stage.response.reasoning_output
+                    assistant_thinking(stage.response)
                 ),
             }
             for stage in l2_result.stage_calls
@@ -280,20 +281,20 @@ class ConfiguredL2ConditionExecutor:
             # shape used by the existing evaluation surface.
             "provider_observation": {
                 "provider_request_id": (
-                    final_stage.response.provider_request_id
+                    final_stage.response.response_id
                 ),
                 "returned_model": (
-                    final_stage.response.returned_model
+                    final_stage.response.response_model
                 ),
-                "usage": final_stage.response.usage,
+                "usage": final_stage.response.usage.as_dict(),
                 "finish_reason": (
-                    final_stage.response.finish_reason
+                    final_stage.response.stop_reason
                 ),
                 "latency_ms": (
                     final_stage.response.latency_ms
                 ),
                 "reasoning": _reasoning_metadata(
-                    final_stage.response.reasoning_output
+                    assistant_thinking(final_stage.response)
                 ),
             },
 

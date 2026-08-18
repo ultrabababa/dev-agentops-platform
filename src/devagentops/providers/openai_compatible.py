@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import socket
 import time
 import urllib.error
 import urllib.request
@@ -68,7 +69,22 @@ class OpenAICompatibleChatCompletionsTransport:
                 code=code,
                 http_status=exc.code,
             ) from exc
-        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        except (TimeoutError, socket.timeout) as exc:
+            raise OpenAICompatibleTransportError(
+                "OpenAI-compatible request timed out before a completion was returned",
+                code="model_provider_timeout",
+            ) from exc
+        except urllib.error.URLError as exc:
+            if isinstance(exc.reason, (TimeoutError, socket.timeout)):
+                raise OpenAICompatibleTransportError(
+                    "OpenAI-compatible request timed out before a completion was returned",
+                    code="model_provider_timeout",
+                ) from exc
+            raise OpenAICompatibleTransportError(
+                "OpenAI-compatible request failed before a completion was returned",
+                code="model_provider_transport_error",
+            ) from exc
+        except OSError as exc:
             raise OpenAICompatibleTransportError(
                 "OpenAI-compatible request failed before a completion was returned",
                 code="model_provider_transport_error",

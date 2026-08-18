@@ -8,6 +8,13 @@ from pathlib import Path
 
 import pytest
 
+from devagentops.runtime.messages import (
+    AssistantMessage,
+    TextContent,
+    ThinkingContent,
+    TokenUsage,
+)
+
 from devagentops.conditions.oracle.evidence_v1 import (
     ORACLE_EVIDENCE_DELIVERY_FINGERPRINT,
     ORACLE_EVIDENCE_PACK_VERSION,
@@ -590,25 +597,19 @@ class _OracleFakeProvider:
         )
 
     def complete(self, request):
-        from devagentops.providers.contracts import (
-            CompletionObservation,
-        )
-
         self.requests.append(request)
         self.complete_calls += 1
 
-        return CompletionObservation(
-            visible_output=self.visible_output,
-            reasoning_output=(
-                "private reasoning must not be persisted"
+        return AssistantMessage(
+            content=(
+                ThinkingContent("private reasoning must not be persisted"),
+                TextContent(self.visible_output),
             ),
-            provider_request_id="oracle-fake-request-1",
-            returned_model="MiniMax-M3",
-            usage={
-                "prompt_tokens": self.input_tokens,
-                "completion_tokens": 100,
-            },
-            finish_reason="stop",
+            response_id="oracle-fake-request-1",
+            response_model="MiniMax-M3",
+            usage=TokenUsage(input_tokens=self.input_tokens, output_tokens=100),
+            stop_reason="stop",
+            raw_stop_reason="stop",
             latency_ms=7,
         )
 
@@ -679,9 +680,9 @@ def test_oracle_one_shot_uses_only_selected_runtime_input_and_one_call() -> None
     request = provider.requests[0]
 
     assert request.model == "MiniMax-M3"
-    assert request.tools is None
+    assert request.tools == ()
 
-    visible_prompt = request.messages[0]["content"]
+    visible_prompt = request.messages[0].content
 
     assert "required_evidence_ids" not in visible_prompt
     assert "optional_evidence_ids" not in visible_prompt
@@ -883,14 +884,10 @@ class _OracleFormalFakeProvider:
     def complete(self, request):
         import re
 
-        from devagentops.providers.contracts import (
-            CompletionObservation,
-        )
-
         self.complete_calls += 1
         self.requests.append(request)
 
-        prompt = request.messages[0]["content"]
+        prompt = request.messages[0].content
 
         case_match = re.search(
             r'"case_id"\s*:\s*"([^"]+)"',
@@ -926,20 +923,18 @@ class _OracleFormalFakeProvider:
             ],
         }
 
-        return CompletionObservation(
-            visible_output=json.dumps(report),
-            reasoning_output=(
-                "private fake Oracle reasoning must never persist"
+        return AssistantMessage(
+            content=(
+                ThinkingContent("private fake Oracle reasoning must never persist"),
+                TextContent(json.dumps(report)),
             ),
-            provider_request_id=(
+            response_id=(
                 f"oracle-formal-request-{self.provider_index}"
             ),
-            returned_model="MiniMax-M3",
-            usage={
-                "prompt_tokens": 1000,
-                "completion_tokens": 80,
-            },
-            finish_reason="stop",
+            response_model="MiniMax-M3",
+            usage=TokenUsage(input_tokens=1000, output_tokens=80),
+            stop_reason="stop",
+            raw_stop_reason="stop",
             latency_ms=5,
         )
 
@@ -1039,7 +1034,7 @@ def test_oracle_formal_fake_full_suite_runs_20x3_through_shared_engine(
     assert len(all_requests) == 60
 
     for request in all_requests:
-        prompt = request.messages[0]["content"]
+        prompt = request.messages[0].content
 
         assert "required_evidence_ids" not in prompt
         assert "optional_evidence_ids" not in prompt

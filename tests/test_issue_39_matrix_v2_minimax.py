@@ -10,7 +10,7 @@ from devagentops.evaluation.matrix import EvaluationMatrixError, load_evaluation
 from devagentops.evaluation.matrix_v2 import calculate_run_configuration_fingerprint
 import devagentops.evaluation.debug_v2 as evaluation_debug_v2
 from devagentops.cli import main
-from devagentops.providers.contracts import CompletionObservation, ExactTokenCount
+from devagentops.providers.contracts import ExactTokenCount
 from devagentops.providers.contracts import LogicalCompletionRequest
 from devagentops.providers.minimax_v1 import (
     MINIMAX_M3_CHAT_TEMPLATE_SHA256,
@@ -21,6 +21,18 @@ from devagentops.providers.minimax_v1 import (
 from devagentops.providers.openai_compatible import (
     OpenAICompatibleChatCompletionsTransport,
     OpenAICompatibleTransportError,
+)
+from devagentops.runtime.messages import (
+    AssistantMessage,
+    TextContent,
+    ThinkingContent,
+    TokenUsage,
+    ToolCall,
+    ToolDefinition,
+    ToolResultMessage,
+    UserMessage,
+    assistant_text,
+    assistant_thinking,
 )
 
 
@@ -199,7 +211,7 @@ class _RecordingTransport:
 def _logical_request() -> LogicalCompletionRequest:
     return LogicalCompletionRequest(
         model="MiniMax-M3",
-        messages=({"role": "user", "content": "diagnose this failure"},),
+        messages=(UserMessage("diagnose this failure"),),
         reasoning={"thinking": {"type": "adaptive"}, "reasoning_split": True},
         generation={
             "temperature": 0,
@@ -208,7 +220,6 @@ def _logical_request() -> LogicalCompletionRequest:
             "stream": False,
             "response_format": {"mode": "omitted"},
         },
-        tools=None,
     )
 
 
@@ -231,10 +242,10 @@ def test_minimax_profile_maps_exact_qualified_payload_without_response_format() 
         }
     ]
     assert "response_format" not in transport.payloads[0]
-    assert observation.provider_request_id == "request-39"
-    assert observation.visible_output == '{"schema_version":"1"}'
-    assert observation.reasoning_output == "private reasoning"
-    assert observation.usage["prompt_tokens"] == 178
+    assert observation.response_id == "request-39"
+    assert assistant_text(observation) == '{"schema_version":"1"}'
+    assert assistant_thinking(observation) == "private reasoning"
+    assert observation.usage.input_tokens == 178
 
 
 def test_minimax_transport_failure_is_not_retried() -> None:
@@ -302,6 +313,182 @@ def test_minimax_exact_counter_uses_pinned_official_adaptive_chat_template() -> 
     assert count.input_tokens == 180
 
 
+def test_minimax_native_tool_call_preserves_strict_and_raw_arguments() -> None:
+    raw_arguments = '{"path":"/raw.log","offset":1}'
+    transport = _RecordingTransport(
+        {
+            "id": "tool-response",
+            "model": "MiniMax-M3",
+            "choices": [{
+                "message": {
+                    "content": None,
+                    "reasoning_content": "inspect the log",
+                    "reasoning_details": [
+                        {"type": "text", "text": "opaque continuation"},
+                        {"type": "encrypted", "data": "sentinel"},
+                    ],
+                    "tool_calls": [{
+                        "id": "call-1",
+                        "type": "function",
+                        "function": {"name": "read", "arguments": raw_arguments},
+                    }],
+                },
+                "finish_reason": "tool_calls",
+            }],
+            "usage": {
+                "prompt_tokens": 200,
+                "completion_tokens": 20,
+                "total_tokens": 220,
+                "completion_tokens_details": {"reasoning_tokens": 7},
+            },
+            "base_resp": {"status_code": 0, "status_msg": ""},
+        }
+    )
+    assistant = MiniMaxProvider(transport=transport).complete(_logical_request())
+
+    call = next(block for block in assistant.content if isinstance(block, ToolCall))
+    assert call.arguments == {"path": "/raw.log", "offset": 1}
+    assert call.raw_arguments == raw_arguments
+    assert assistant.stop_reason == "tool_use"
+    assert assistant.raw_stop_reason == "tool_calls"
+    assert assistant.provider_fields == {
+        "reasoning_content": "inspect the log",
+        "reasoning_details": [
+            {"type": "text", "text": "opaque continuation"},
+            {"type": "encrypted", "data": "sentinel"},
+        ],
+    }
+    assert assistant.usage.total_tokens == 220
+    assert assistant.usage.provider_fields == {
+        "completion_tokens_details": {"reasoning_tokens": 7}
+    }
+
+
+@pytest.mark.parametrize(
+    "raw_arguments",
+    [
+        '{"path":',
+        '["/raw.log"]',
+        '{"offset":NaN}',
+        '{"offset":Infinity}',
+    ],
+)
+def test_minimax_malformed_tool_arguments_remain_a_model_decision(
+    raw_arguments: str,
+) -> None:
+    transport = _RecordingTransport(
+        {
+            "id": "malformed-tool-response",
+            "model": "MiniMax-M3",
+            "choices": [{
+                "message": {
+                    "content": None,
+                    "tool_calls": [{
+                        "id": "call-bad",
+                        "type": "function",
+                        "function": {"name": "read", "arguments": raw_arguments},
+                    }],
+                },
+                "finish_reason": "tool_calls",
+            }],
+            "usage": {},
+        }
+    )
+
+    assistant = MiniMaxProvider(transport=transport).complete(_logical_request())
+    call = next(block for block in assistant.content if isinstance(block, ToolCall))
+    assert call.arguments is None
+    assert call.raw_arguments == raw_arguments
+
+
+def test_minimax_continuation_and_exact_counter_share_typed_serialization() -> None:
+    tool = ToolDefinition(
+        name="read",
+        description="Read bounded lines.",
+        parameters={
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {"path": {"type": "string"}},
+            "required": ["path"],
+        },
+    )
+    assistant = AssistantMessage(
+        content=(
+            ThinkingContent("inspect"),
+            ToolCall(
+                id="call-1",
+                name="read",
+                arguments={"path": "/raw.log"},
+                raw_arguments='{ "path" : "/raw.log" }',
+            ),
+        ),
+        response_id="response-1",
+        response_model="MiniMax-M3",
+        usage=TokenUsage(input_tokens=10, output_tokens=5, total_tokens=15),
+        stop_reason="tool_use",
+        raw_stop_reason="tool_calls",
+        provider_fields={
+            "reasoning_content": "inspect",
+            "reasoning_details": [{"type": "text", "text": "full-state"}],
+        },
+    )
+    request = LogicalCompletionRequest(
+        model="MiniMax-M3",
+        system_prompt="Runtime control.",
+        messages=(
+            UserMessage("diagnose"),
+            assistant,
+            ToolResultMessage("call-1", "read", "line 1", False),
+        ),
+        tools=(tool,),
+        reasoning=_logical_request().reasoning,
+        generation=_logical_request().generation,
+    )
+    transport = _RecordingTransport()
+    provider = MiniMaxProvider(transport=transport)
+
+    count = provider.count_input_tokens(request)
+    provider.complete(request)
+
+    assert count.input_tokens > provider.count_input_tokens(_logical_request()).input_tokens
+    payload = transport.payloads[0]
+    assert payload["messages"][0] == {
+        "role": "system",
+        "content": "Runtime control.",
+    }
+    assert payload["messages"][2]["reasoning_details"] == [
+        {"type": "text", "text": "full-state"}
+    ]
+    assert payload["messages"][2]["tool_calls"][0]["function"]["arguments"] == (
+        '{ "path" : "/raw.log" }'
+    )
+    assert payload["messages"][3] == {
+        "role": "tool",
+        "tool_call_id": "call-1",
+        "name": "read",
+        "content": "line 1",
+    }
+    assert payload["tools"] == [{
+        "type": "function",
+        "function": {
+            "name": "read",
+            "description": "Read bounded lines.",
+            "parameters": tool.parameters,
+        },
+    }]
+
+
+def test_minimax_nonzero_provider_status_is_not_a_successful_completion() -> None:
+    provider = MiniMaxProvider(
+        transport=_RecordingTransport(
+            {"base_resp": {"status_code": 1004, "status_msg": "auth failed"}}
+        )
+    )
+    with pytest.raises(OpenAICompatibleTransportError) as captured:
+        provider.complete(_logical_request())
+    assert captured.value.code == "model_provider_error"
+
+
 class _FakeMiniMaxProvider:
     def __init__(self, *, input_tokens: int = 1000) -> None:
         self.input_tokens = input_tokens
@@ -313,11 +500,12 @@ class _FakeMiniMaxProvider:
             method="minimax_m3_official_chat_template_adaptive_v1",
         )
 
-    def complete(self, request: LogicalCompletionRequest) -> CompletionObservation:
+    def complete(self, request: LogicalCompletionRequest) -> AssistantMessage:
         self.requests.append(request)
-        return CompletionObservation(
-            visible_output=json.dumps(
-                {
+        return AssistantMessage(
+            content=(
+                ThinkingContent("private hidden reasoning must never be persisted"),
+                TextContent(json.dumps({
                     "schema_version": "1",
                     "case_id": SMOKE_CASE_ID,
                     "classification_status": "inconclusive",
@@ -329,13 +517,13 @@ class _FakeMiniMaxProvider:
                     "evidence_references": [
                         {"evidence_id": "log:raw-log:lines-0001-0100"}
                     ],
-                }
+                })),
             ),
-            reasoning_output="private hidden reasoning must never be persisted",
-            provider_request_id="minimax-request-39",
-            returned_model="MiniMax-M3",
-            usage={"prompt_tokens": self.input_tokens, "completion_tokens": 80},
-            finish_reason="stop",
+            response_id="minimax-request-39",
+            response_model="MiniMax-M3",
+            usage=TokenUsage(input_tokens=self.input_tokens, output_tokens=80),
+            stop_reason="stop",
+            raw_stop_reason="stop",
             latency_ms=42,
         )
 
@@ -406,7 +594,7 @@ def test_matrix_v2_minimax_fake_provider_cli_e2e_is_auditable_and_secret_free(
         event["payload"]["provider_request_id"] == "minimax-request-39"
         for event in completed
     )
-    assert all(event["payload"]["usage"]["prompt_tokens"] == 1000 for event in completed)
+    assert all(event["payload"]["usage"]["input_tokens"] == 1000 for event in completed)
     assert all(event["payload"]["reasoning_observation"]["present"] for event in completed)
     assert all("reasoning_output" not in event["payload"] for event in completed)
     assert [
