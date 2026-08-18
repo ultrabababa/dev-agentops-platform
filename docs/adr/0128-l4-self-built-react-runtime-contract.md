@@ -152,7 +152,13 @@ User/model-supplied `limit` may request fewer results but cannot exceed these V1
 
 Truncation is both Agent-visible in ToolResult content and recorded as Trace metadata. L4 V1 does not add byte/column slicing for a single line larger than 50 KiB; qualification evidence can justify a later extension.
 
-### 10. Tool Registry and Tool Policy identity
+### 10. Treatment component identity
+
+L4 uses existing Component Registry types; no `runtime` component type is added.
+
+The shared diagnosis Task Contract remains one frozen `prompt` component. L4's runtime-specific model-visible system instructions for tool use, loop semantics, evidence acquisition, stopping, and report submission are frozen as a separate `prompt` component and referenced from Matrix Treatment as `contracts.runtime_control` with its version and fingerprint.
+
+This keeps task semantics and Runtime control independently versioned while reusing the existing generic `prompt` component type. Runtime-control instructions must not be hidden in case `runtime_input`, Tool Registry, Tool Policy, or implementation constants that escape Treatment identity.
 
 `tool_registry` is the single frozen source of provider-visible tool contracts and deterministic tool behavior. Its fingerprint covers tool names, descriptions, complete parameter JSON Schemas, workspace/search semantics, bounds, ordering, and truncation behavior.
 
@@ -167,7 +173,7 @@ multiple_calls = reject_all_with_error_results
 
 V1 does not duplicate a second allowlist through `default_action`. Tool implementation class paths do not belong in Component manifests; implementation provenance remains represented by `code_revision`.
 
-The generic Component Registry V1 envelope is unchanged. L4 defines and validates its own semantic sub-contract within existing `tools[]` and `rules[]` behavior containers.
+The generic Component Registry V1 envelope is unchanged. L4 defines and validates its own semantic sub-contract within existing `tools[]` and `rules[]` behavior containers. Formal Matrix validation must resolve and verify the Task Contract, runtime-control prompt, Tool Registry, and Tool Policy references against the Component Registry.
 
 ### 11. Tool-call recovery
 
@@ -242,7 +248,7 @@ Positive consequences:
 - the Agent Runtime kernel is explicit and testable;
 - provider protocol details do not leak into ReAct control logic;
 - malformed Model actions remain measurable capability behavior;
-- tool behavior and call policy have reproducible Treatment identity;
+- task semantics, Runtime control, tool behavior, and call policy have reproducible independent Treatment identity;
 - full trajectory evidence supports badcase analysis without abusing Trace as a transcript store;
 - L1/L2/Oracle can migrate to the same successful-completion contract without changing their evaluation semantics.
 
