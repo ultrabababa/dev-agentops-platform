@@ -1,10 +1,18 @@
 # L4 Self-built ReAct Runtime Design
 
-This document is the implementation guide for Issue #52 and ADR 0128. It records the Human-frozen L4 V1 design so implementation can proceed without re-deciding semantics in code.
+This document is the implementation guide for Issue #52, ADR 0128, and the
+accepted ADR 0129 Human amendment.
+
+ADR 0129 supersedes only ADR 0128's mandatory **L4 local exact-token
+preflight** requirement. The rest of the Human-frozen L4 V1 contract remains
+unchanged. In particular, L4 keeps full provider-origin conversation replay,
+`max_steps=100`, bounded read-only tools, Tool Registry / Tool Policy identity,
+same-logical-request retry, Trace / trajectory separation, and no compaction.
 
 ## 1. Goal
 
-Implement the smallest trustworthy adaptive Agent Runtime for one frozen CI/test-failure Case:
+Implement the smallest trustworthy adaptive Agent Runtime for one frozen
+CI/test-failure Case:
 
 ```text
 case/workspace + citation coordinates
@@ -15,7 +23,8 @@ case/workspace + citation coordinates
         -> next decision or final Structured Triage Report V1
 ```
 
-L4 is the first Agentic Product Runtime. It is not a framework-building exercise and does not attempt to implement L5+ capabilities.
+L4 is the first Agentic Product Runtime. It is not a framework-building
+exercise and does not attempt to implement L5+ capabilities.
 
 ## 2. Architectural boundary
 
@@ -44,18 +53,27 @@ Evaluator
   owns hidden Required Evidence, Expected Answer, report validation, scoring
 ```
 
-The Runtime must never read `evaluator/required-evidence.json` or `evaluator/expected-answer.json` through normal Agent paths.
+The Runtime must never read `evaluator/required-evidence.json` or
+`evaluator/expected-answer.json` through normal Agent paths.
 
-## 3. Proposed code shape
+A Runtime action is:
 
-Prefer a compact implementation under the existing runtime package rather than a new framework hierarchy:
+```text
+ToolAction | SubmitReportAction
+```
+
+`SubmitReportAction` is semantic Runtime behavior, not a native tool.
+
+## 3. Code shape
+
+Keep the implementation compact under the existing Runtime package:
 
 ```text
 src/devagentops/runtime/
-├── workspace.py                 # existing
-├── messages.py                  # provider-neutral message/tool types
-├── react.py                     # state + loop + terminal result
-├── tool_policy.py               # generic single/batch policy interpreter
+├── workspace.py
+├── messages.py
+├── react.py
+├── tool_policy.py
 └── tools/
     ├── __init__.py
     ├── read.py
@@ -65,14 +83,15 @@ src/devagentops/runtime/
 
 src/devagentops/conditions/l4/
 ├── __init__.py
-└── react_condition.py           # Matrix/evaluation integration
+└── react_condition.py
 ```
 
-Do not split state/context/stopping into separate modules unless implementation proves the file has become materially difficult to reason about.
+Do not split state/context/stopping into a framework hierarchy unless later
+evidence makes that complexity necessary.
 
-## 4. Provider-neutral types
+## 4. Provider-neutral messages and requests
 
-The following is illustrative shape, not a demand for exact Python spelling.
+The canonical Runtime-facing types are provider-neutral.
 
 ```python
 @dataclass(frozen=True)
@@ -112,21 +131,14 @@ class ToolResultMessage:
     tool_name: str
     content: str
     is_error: bool
-
-Message = UserMessage | AssistantMessage | ToolResultMessage
 ```
 
-`provider_fields` is opaque to Runtime code. Only the provider adapter may interpret or reconstruct it.
+`provider_fields` is opaque to Runtime code. Only the provider adapter may
+interpret or reconstruct provider continuation state.
 
-The common request shape is:
+The logical request shape is:
 
 ```python
-@dataclass(frozen=True)
-class ToolDefinition:
-    name: str
-    description: str
-    parameters: dict[str, JsonValue]
-
 @dataclass(frozen=True)
 class LogicalCompletionRequest:
     model: str
@@ -137,132 +149,137 @@ class LogicalCompletionRequest:
     generation: dict[str, Any]
 ```
 
-The provider protocol becomes:
+`CompletionProvider.complete(request)` returns one normalized
+`AssistantMessage` or raises a typed provider error before a Model Decision is
+created.
 
-```python
-class CompletionProvider(Protocol):
-    def count_input_tokens(self, request: LogicalCompletionRequest) -> ExactTokenCount: ...
-    def complete(self, request: LogicalCompletionRequest) -> AssistantMessage: ...
-```
+`count_input_tokens()` may remain on provider implementations where L1/L2/Oracle
+or offline diagnostics require exact local counting, but **L4 `run_react()` must
+not call it on the critical path**.
 
-L1/L2/Oracle should use a small `assistant_text()` helper rather than `CompletionObservation.visible_output` once migrated.
+## 5. MiniMax adapter boundary
 
-## 5. MiniMax adapter migration
-
-Keep the current transport boundary:
+Keep the qualified route:
 
 ```text
 MiniMaxProvider
     -> OpenAICompatibleChatCompletionsTransport
+    -> MiniMax OpenAI Chat Completions API
 ```
 
-The transport remains responsible only for one HTTP attempt and generic HTTP/JSON-envelope errors.
+The transport owns one HTTP/JSON attempt. It does not own Agent retry or hidden
+SDK retry.
 
-`MiniMaxProvider` must:
+`MiniMaxProvider` owns:
 
-1. serialize `system_prompt`, typed messages, and ToolDefinitions into MiniMax OpenAI Chat Completions wire objects;
-2. send native `tools` rather than rejecting them;
-3. parse visible content, reasoning, tool calls, usage, model/id, and finish reason into `AssistantMessage`;
-4. strict-parse `function.arguments` while preserving the exact raw string;
-5. retain full provider continuation fields needed for subsequent assistant-message replay, including MiniMax reasoning fields;
-6. inspect MiniMax provider-level response status such as `base_resp` where applicable and raise typed provider errors before returning a successful AssistantMessage.
+1. typed-message and ToolDefinition serialization;
+2. native `tools` serialization;
+3. visible text / thinking / ToolCall parsing;
+4. strict parsing of `function.arguments` while preserving the exact raw
+   provider string;
+5. full provider continuation replay, including MiniMax reasoning fields;
+6. usage/model/request/finish metadata normalization;
+7. provider-level response-status interpretation where applicable.
 
-Do not broaden this into a generic multi-provider framework.
+Malformed inner `function.arguments` is not a malformed outer provider
+envelope. If the provider returns such a ToolCall, Runtime preserves the raw
+AssistantMessage and follows the recoverable Agent-action path.
 
-## 6. Exact token counting
+Do not broaden Issue #52 into a generic multi-provider framework.
 
-There must be one logical MiniMax serialization path used by both:
+## 6. L4 context accounting — ADR 0129
+
+L4 V1 does **not** perform mandatory local exact-token preflight before a Model
+Decision.
+
+The critical path is:
 
 ```text
-count_input_tokens(request)
-complete(request)
+build logical request
+    -> complete_with_request_retry(request)
+    -> provider processes request
+    -> AssistantMessage.usage records observed usage
 ```
 
-A recommended implementation pattern is:
+For completed requests:
+
+- provider-reported `usage.input_tokens` is the authoritative observed input
+  token count;
+- Trace records provider usage per successful Model Decision;
+- the Sample result records the per-step observed input-token sequence;
+- Treatment retains the advertised context-window metadata;
+- Runtime does not block solely on a locally reconstructed token count.
+
+The frozen Matrix context identity is:
 
 ```text
-LogicalCompletionRequest
-        ↓
-MiniMaxProvider._serialize_request(...)
-        ↓
-provider messages + tools + thinking mode
-        ├─ render through frozen M3 chat template for token count
-        └─ convert to HTTP payload for completion
+assessment = provider_reported
+method = provider_response_usage
+policy = observe_provider_usage_no_local_preflight
 ```
 
-The token count must include the same:
+L4 still performs no compaction, summarization, history trimming, or automatic
+context compression.
 
-- system prompt;
-- complete typed message history;
-- ToolDefinitions;
-- provider continuation fields that affect replay;
-- thinking mode;
-- generation prompt.
+A real context-limit rejection is provider/execution evidence. Predictive
+budgeting or compaction is deferred until real trajectories justify a new ADR.
 
-Do not maintain a separate hand-written approximation for L4.
-
-Preflight is run before every logical Model Decision:
-
-```text
-exact_input_tokens + reserved_max_completion_tokens <= context_window
-```
-
-Dynamic context exhaustion is not otherwise special-cased in V1.
+Pinned MiniMax tokenizer/chat-template assets and local exact counting remain
+available for existing L1/L2/Oracle behavior and offline diagnostics. They are
+not L4 Agent Treatment behavior and are not part of the L4 critical execution
+path.
 
 ## 7. Initial model-visible input and Runtime-control identity
 
-The shared diagnosis Task Contract remains the existing frozen runtime-neutral `prompt` component.
+The shared diagnosis Task Contract remains the existing frozen Runtime-neutral
+`prompt` component.
 
-L4's stable condition-level system instructions for tool use, investigation semantics, loop/stopping behavior, and report submission are a **separate frozen `prompt` component**. Matrix Treatment references it under `contracts.runtime_control` with its component version and fingerprint. Do not hide these instructions in case `runtime_input`, Tool Registry, Tool Policy, or unversioned implementation constants.
+L4-specific instructions for tool use, investigation semantics, loop behavior,
+stopping, and final report submission are a **separate frozen `prompt`
+component** referenced under `contracts.runtime_control`.
 
 The first user message contains:
 
-- Case ID and public Case metadata needed for the task;
+- Case ID and public Case metadata needed for triage;
 - Agent-visible workspace description (`/raw.log`, `/repository/...`);
-- explicit statement that physical contents must be acquired through tools;
-- full answer-neutral Canonical Evidence coordinate universe usable for final citations.
+- an explicit statement that physical contents must be acquired through tools;
+- the complete answer-neutral Canonical Evidence coordinate universe usable for
+  final citations.
 
-Do not place Required Evidence, Expected Answer, evaluator labels, curator reasoning, or package-internal filenames in this message.
+It must not expose:
 
-## 8. Tool contracts
+- Required Evidence;
+- Expected Answer;
+- evaluator labels;
+- curator/reviewer reasoning;
+- package-internal evaluator filenames or scorer state.
 
-### 8.1 `read`
+## 8. Tool surface and hard bounds
 
-```text
-read(path, offset?, limit?)
-```
+Expose exactly four read-only investigation tools.
 
-Rules:
+### `read(path, offset?, limit?)`
 
-- Agent-visible relative path only;
+- Agent-visible path only;
 - `offset` is 1-based;
-- `limit` range is 1..2000;
+- `limit` range is `1..2000`;
 - output <= 2000 lines and <= 50 KiB;
-- when more complete lines remain, append an explicit continuation notice with next offset;
-- a single source line larger than 50 KiB does not bypass the hard cap; return a clear bounded error/notice rather than adding a new slicing API in V1.
+- when complete lines remain, include an explicit continuation notice and next
+  offset;
+- a single source line larger than the hard cap returns a bounded error/notice
+  rather than byte slicing.
 
-### 8.2 `grep`
-
-```text
-grep(pattern, path?, glob?, ignore_case?, literal?, context?, limit?)
-```
-
-Rules:
+### `grep(pattern, path?, glob?, ignore_case?, literal?, context?, limit?)`
 
 - maximum 100 matches;
 - output <= 50 KiB;
 - each emitted source line <= 500 characters;
-- matching line format is distinguishable from context-line format;
+- match and context lines are distinguishable;
 - truncation/limit notices are model-visible;
-- no `.gitignore` filtering beyond the already-frozen workspace membership.
+- operate over frozen visible workspace membership; do not re-apply
+  `.gitignore`.
 
-### 8.3 `find`
-
-```text
-find(pattern, path?, limit?)
-```
-
-Rules:
+### `find(pattern, path?, limit?)`
 
 - glob path matching;
 - deterministic output over visible workspace membership;
@@ -270,39 +287,32 @@ Rules:
 - output <= 50 KiB;
 - relative paths only.
 
-### 8.4 `ls`
-
-```text
-ls(path?, limit?)
-```
-
-Rules:
+### `ls(path?, limit?)`
 
 - one directory layer;
 - maximum 500 entries;
 - output <= 50 KiB;
-- deterministic alphabetical ordering;
-- directories end with `/`;
-- dotfiles are included.
+- deterministic alphabetical order;
+- directories suffixed with `/`;
+- dotfiles included.
 
-## 9. Tool Registry manifest semantics
+Tool truncation is both Agent-visible and represented in Trace metadata.
 
-The frozen `tool_registry` behavior must include for each tool:
+## 9. Tool Registry and Tool Policy identity
 
-- name;
-- provider-visible description;
-- complete parameter JSON Schema;
-- deterministic workspace/search semantics;
-- all output/count/line limits;
-- truncation and continuation behavior.
+The frozen `tool_registry` is the single source of truth for provider-visible
+tool contracts and deterministic tool behavior. Its behavior identity includes:
 
-These are behavior-affecting and therefore participate in the component fingerprint.
+- names and descriptions;
+- complete parameter JSON Schemas;
+- workspace/search semantics;
+- ordering;
+- output/count/line limits;
+- truncation/continuation behavior.
 
-Implementation class paths and review notes do not belong in behavior identity.
+Implementation paths and review notes are not behavior identity.
 
-## 10. Tool Policy manifest semantics
-
-Baseline L4 policy:
+Baseline Tool Policy is:
 
 ```json
 {
@@ -317,11 +327,20 @@ Baseline L4 policy:
 }
 ```
 
-Do not duplicate per-tool allowlist rules in Tool Policy. Availability is defined by Tool Registry.
+Tool availability comes from Tool Registry; do not maintain a second per-tool
+allowlist in Tool Policy.
 
-Future same-L4 ablations may change only policy behavior to `batch + sequential`, then `batch + parallel`.
+If one AssistantMessage emits multiple ToolCalls under baseline `single`:
 
-## 11. Loop pseudocode
+- execute none;
+- preserve the AssistantMessage;
+- emit one policy-error ToolResult for every declared ToolCall ID;
+- allow the next Model Decision.
+
+Future `batch + sequential` / `batch + parallel` behavior is an explicit
+same-L4 ablation, not baseline behavior.
+
+## 10. ReAct loop
 
 ```text
 messages = [initial_user_message]
@@ -332,12 +351,11 @@ while True:
         return scored(max_steps_exhausted, report=None)
 
     request = build_request(system_prompt, messages, tools)
-    exact_preflight(request)
-
     assistant = complete_with_request_retry(request)
+
     steps += 1
     persist assistant in trajectory
-    trace model completion metadata
+    trace provider-reported completion metadata and usage
 
     tool_calls = assistant ToolCall blocks
 
@@ -348,10 +366,12 @@ while True:
         return scored(model_stopped_without_valid_report, raw_report)
 
     if assistant.stop_reason == length:
+        execute none
         append one error ToolResult for every declared ToolCall
         continue
 
     if policy rejects the call set:
+        execute none
         append policy-error ToolResult for every declared ToolCall
         continue
 
@@ -372,152 +392,173 @@ while True:
     append successful ToolResult
 ```
 
-The 100th decision may execute its legal ToolAction. The next loop check stops before a 101st model call.
+`max_steps = 100` is the only Agent-level hard budget in V1.
 
-## 12. Provider retry algorithm
+One step is one successfully returned provider completion normalized into a
+valid AssistantMessage. Failed provider attempts do not consume steps or enter
+trajectory.
 
-A request retry does not mutate Agent-visible state.
+The 100th Model Decision is allowed. If it submits a valid report, accept it. If
+it executes a legal ToolAction, execute and persist the ToolResult, then stop
+before any 101st Model Decision with `max_steps_exhausted`.
+
+## 11. Provider-request retry
+
+Retry is infrastructure handling of the **same logical request**, not Agent
+behavior and not whole-sample restart.
+
+For ordinary retryable provider/network failures:
 
 ```text
-logical step N
-  attempt 1 -> retryable infra failure
-  wait 2s
-  attempt 2 -> retryable infra failure
-  wait 4s
-  attempt 3 -> retryable infra failure
-  wait 8s
-  attempt 4 -> success
+attempt 1 -> failure
+wait 2s
+attempt 2 -> failure
+wait 4s
+attempt 3 -> failure
+wait 8s
+attempt 4 -> success or terminal failure
 ```
 
-Only the successful AssistantMessage is appended to trajectory. Trace records every attempt.
+Request timeout is allowed at most one retry.
 
-Timeout is a separate one-retry class because the configured per-request deadline can already be long.
+Auth/billing/invalid request/context-limit/deterministic protocol or config
+errors/policy block/explicit abort are non-retryable.
 
-Do not perform whole-sample retry automatically.
+Every attempt is recorded in Trace. Only the successful AssistantMessage enters
+trajectory. Exhaustion becomes:
 
-## 13. Error boundaries
+```text
+execution_failed / provider_request_failed
+```
 
-Use three distinct concepts.
+Matrix `execution_policy.retry_count` means provider-request retry for L4. It
+must not trigger whole-sample replay.
 
-### Recoverable Agent-visible error
+## 12. Error and terminal boundaries
+
+### Recoverable Agent-visible action errors
 
 Examples:
 
-- path not found from a syntactically valid Agent action;
 - unknown/disallowed tool;
-- invalid args;
+- schema-invalid arguments;
 - malformed raw arguments;
-- multiple calls under single mode;
-- truncated ToolCall.
+- expected tool-domain failure such as path-not-found;
+- `length + ToolCall`;
+- multiple calls under baseline `single`.
 
-Result: error ToolResult, then another Model Decision.
+Runtime emits error ToolResult messages and allows another Model Decision.
+Runtime does not semantically repair the model action.
 
-### Capability terminal
+### Capability terminals
+
+```text
+valid final report
+  -> report_submitted
+  -> status=scored
+
+zero ToolCalls + invalid/missing report
+  -> model_stopped_without_valid_report
+  -> status=scored
+
+no report before max_steps
+  -> max_steps_exhausted
+  -> status=scored
+```
+
+`stop_reason=length` with zero ToolCalls follows the same final-report parse
+rule. There is no rescue/regeneration call.
+
+### Infrastructure terminals
 
 Examples:
 
-- valid report submitted;
-- model stops with invalid report;
-- max steps exhausted.
-
-Result: `status=scored`.
-
-### Infrastructure terminal
-
-Examples:
-
-- provider request failure after retry policy;
-- malformed provider protocol envelope that cannot produce an AssistantMessage;
+- provider request failure after frozen retry policy;
+- malformed provider envelope that yields no AssistantMessage;
 - Runtime/workspace invariant defect;
 - unexpected tool implementation exception;
-- static context preflight infeasible;
-- scorer/persistence infrastructure defect.
+- evaluator/scorer/persistence defect.
 
-Result: `status=execution_failed` with existing `failure_stage`, `failure_code`, and `failure_message` fields.
-
-## 14. Trace contract
-
-Reuse the existing Trace recorder/table. Add only L4-relevant event payloads, for example:
+Result:
 
 ```text
-model_call_started
-model_call_failed
-model_call_completed
-tool_call_started
-tool_call_completed
-tool_call_error
-budget_exhausted
-report_submitted
-agent_terminal
+status=execution_failed
 ```
 
-Exact event names can follow existing naming conventions during implementation, but the information boundary is fixed.
+L4 no longer has a local static exact-preflight infeasibility terminal. A real
+provider context-limit rejection is surfaced through the provider/execution
+error path under ADR 0129.
 
-Trace should record:
+## 13. Trace vs Agent trajectory
 
-- step index;
-- request attempt index;
-- provider/model IDs already known from Treatment;
-- response/request IDs where available;
-- exact token counts/usage;
-- latency;
-- stop reason;
-- tool name/arguments or stable hashes where existing Trace policy requires;
-- tool truncation metadata;
-- terminal reason;
-- infrastructure failure metadata.
-
-Trace does not need to duplicate full AssistantMessage thinking/text bodies when the trajectory store already contains them.
-
-## 15. Trajectory persistence
-
-Add the smallest sample-scoped persistence slice that can reconstruct the exact ordered linear trajectory.
-
-Recommended shape:
+These are separate records.
 
 ```text
-evaluation_sample_trajectory_messages
-- run_id
-- case_id
-- repeat_index
-- message_index
-- message_role
-- message_json
-- message_sha256
-PRIMARY KEY(run_id, case_id, repeat_index, message_index)
+Trace
+= lifecycle / execution observations
+  request attempts
+  provider usage / latency / IDs
+  tool lifecycle / errors / truncation
+  budgets / terminals / infrastructure failures
+
+Agent trajectory
+= complete ordered UserMessage / AssistantMessage / ToolResultMessage history
 ```
 
-`message_json` stores the canonical serialized provider-neutral message, including provider-returned thinking and opaque continuation fields. A normalized multi-table content-block schema is unnecessary for V1.
+Persist complete normalized AssistantMessages needed for badcase analysis,
+including visible text, provider-returned thinking, ToolCalls, metadata, and
+opaque provider continuation fields required for replay.
 
-Use the existing SQLite/Alembic migration chain. Do not create session IDs, branch IDs, parent pointers, resume state, conversation trees, or a second storage subsystem.
+Provider-returned thinking is diagnostic trajectory evidence. It is not a
+score input and is not claimed to be faithful hidden neural chain-of-thought.
 
-If implementation shows that a file artifact is materially simpler while preserving run/sample ownership and formal artifact integrity, that can be used instead, but the complete trajectory must be persisted and addressable per sample.
+Reuse the existing Trace recorder/table. The trajectory store must remain the
+smallest sample-scoped linear persistence extension required to reconstruct one
+sample; do not add sessions, branches, parent pointers, resume state, or a
+second storage subsystem.
 
-## 16. Matrix and Treatment integration
+## 14. Matrix and Treatment integration
 
-L4 remains a Matrix v2 condition with `runtime_variant="self_built_react"`.
+L4 remains Matrix v2:
 
-Treatment identity must reference the frozen:
+```text
+runtime_variant = self_built_react
+```
 
-- shared Task Contract `prompt`;
-- L4 Runtime-control `prompt` under `contracts.runtime_control`;
+Treatment identity references the frozen:
+
+- shared Task Contract prompt;
+- L4 Runtime-control prompt;
 - Tool Registry;
 - Tool Policy;
 - provider/model/reasoning/generation/context contract.
 
-The current Matrix v2 formal validator only Registry-validates the shared Task prompt. Issue #52 implementation must extend formal validation so the Task prompt, Runtime-control prompt, Tool Registry, and Tool Policy versions/fingerprints are all resolved against Component Registry.
+Formal validation resolves and checks the Task prompt, Runtime-control prompt,
+Tool Registry, and Tool Policy against Component Registry.
 
-Runtime code itself is not a Component Registry component in V1. `runtime_variant + code_revision` represents implementation provenance.
+Runtime implementation is **not** a Component Registry component. Implementation
+provenance remains:
 
-### Retry field
+```text
+runtime_variant + code_revision
+```
 
-Existing Matrix v2 contains `execution_policy.retry_count`. For L4, this must mean provider-request retry only if retained. A clearer future field name such as `provider_request_retry_count` is preferable, but changing Matrix v2 schema is an implementation migration choice. It must never silently mean whole-sample retry.
+Execution policy, including concurrency and provider-request retry, remains
+outside Treatment/Condition behavior identity and participates in Run
+Configuration identity as already frozen.
 
-## 17. Canonical Evidence and citation behavior
+## 15. Canonical Evidence and citation behavior
 
-For L4 V1 the complete Canonical coordinate universe is disclosed as answer-neutral citation vocabulary in the initial model-visible input. This is intentionally different from providing Canonical Evidence content or hidden Required Evidence.
+The complete Canonical coordinate universe is disclosed as answer-neutral
+citation vocabulary in the initial input. This is different from exposing
+Canonical Evidence content or hidden Required Evidence.
 
-The Agent still has to discover physical facts through tools and map those facts to the exposed coordinates itself.
+The Agent must:
+
+1. acquire physical content through tools;
+2. reason over that content;
+3. map relevant physical facts to an exact exposed Evidence ID;
+4. cite only IDs in the frozen vocabulary.
 
 Badcase analysis distinguishes:
 
@@ -532,73 +573,116 @@ C. correct Evidence ID cited but diagnosis wrong
    -> reasoning problem
 ```
 
-No dynamic Runtime span-to-Evidence-ID helper is added in L4 baseline.
+No dynamic physical-span -> Evidence-ID mapping helper exists in the L4 V1
+baseline.
 
-## 18. Testing plan
+## 16. Deterministic testing
 
-Before live qualification, deterministic fake-provider tests should cover at minimum:
+Before live qualification, deterministic fake-provider tests cover at minimum:
 
-1. multi-step read/search trajectory ending in valid report;
+1. multi-step tool trajectory ending in a valid report;
 2. model stops without valid report;
-3. max-steps exhaustion;
-4. unknown tool;
-5. schema-invalid tool args;
-6. malformed raw tool args;
-7. `length + ToolCall` rejection and self-repair;
-8. multiple ToolCalls under single policy;
+3. exact max-step semantics;
+4. unknown tool recovery;
+5. schema-invalid arguments;
+6. malformed raw arguments and next-turn recovery;
+7. `length + ToolCall` rejection;
+8. multi-ToolCall rejection under `single`;
 9. expected tool-domain error recovery;
-10. unexpected tool/runtime exception -> execution failure;
-11. transient provider failure then same-request retry success;
+10. unexpected Runtime/tool exception -> execution failure;
+11. transient provider failure -> same-request retry -> success;
 12. retry exhaustion -> execution failure;
-13. trajectory/Trace separation and persistence;
-14. evaluator/package boundary enforcement;
-15. 50 KiB/count truncation semantics;
-16. exact token counting includes tools and full typed history;
-17. MiniMax assistant continuation fields round-trip losslessly;
-18. Matrix doctor rejects missing/mismatched Runtime-control, Tool Registry, or Tool Policy fingerprints.
+13. Trace / trajectory separation and persistence;
+14. evaluator/package leakage boundary;
+15. 50 KiB/count/line truncation semantics;
+16. L4 `run_react()` does **not** call `count_input_tokens()`;
+17. provider-reported input usage is recorded per successful Model Decision;
+18. MiniMax assistant continuation fields and raw ToolCall arguments round-trip;
+19. Matrix doctor rejects missing/mismatched Runtime-control, Tool Registry, or
+    Tool Policy identity.
 
-## 19. Live qualification
+Existing L1/L2/Oracle exact-token tests remain unchanged.
 
-Use a very small live qualification before any full Suite run. It must prove:
+## 17. Live qualification
 
-- MiniMax-M3 native function calling through the existing OpenAI Chat Completions route;
-- full assistant `reasoning_details`/continuation round-trip;
-- exact token count alignment with the serialized request;
-- one real multi-step tool trajectory;
-- correct Trace and trajectory persistence;
+Before the formal full-Suite milestone, one small real MiniMax-M3 qualification
+must prove:
+
+- native function calling through the existing OpenAI Chat Completions route;
+- full assistant `reasoning_details` / provider continuation replay;
+- raw ToolCall replay preserving protocol-significant fields;
+- one real multi-step read-only tool trajectory;
+- provider-reported usage recorded without a local preflight gate;
+- correct Trace / trajectory persistence;
 - no evaluator leakage.
 
-Only after qualification passes should the project run the one planned controlled 20 Case x 3 L4 formal milestone.
+A model capability failure in the final diagnosis/report does not invalidate the
+qualification if provider protocol, Runtime loop, Tool execution, persistence,
+and information boundaries are functioning as designed.
 
-## 20. Deferred features
+Only after qualification PASS may the project run the one controlled 20 Case x
+3 L4 formal milestone.
+
+## 18. Formal milestone interpretation
+
+The formal L4 milestone reuses the existing formal evaluation stack:
+
+- doctor-first validation;
+- full frozen Suite;
+- repeated Sample scheduler;
+- bounded cross-Case concurrency;
+- Trace;
+- SQLite persistence;
+- Case-first aggregation;
+- JSON/Markdown artifacts;
+- existing Structured Triage Report scorer.
+
+Do not build a parallel L4 evaluator.
+
+Capability outcomes remain scored even when the report is invalid. Provider /
+Runtime infrastructure failures remain `execution_failed` and remain visible in
+execution coverage.
+
+The development milestone is evidence for Runtime behavior and diagnostic
+quality. It is not a final benchmark freeze or leaderboard result.
+
+## 19. Deferred features
 
 Do not implement until real evidence justifies them:
 
-- compaction/summary/history trimming;
+- compaction / summary / history trimming;
+- predictive local context budgeting;
 - planner/verifier;
 - retrieval optimization;
 - Bash/edit/write/CI rerun;
-- multi-call sequential/parallel baseline;
+- batch/parallel baseline tool calls;
 - dynamic skills/MCP;
 - long-term memory/experience;
 - oversized-line slicing;
 - whole-sample retry;
-- dynamic context-exhaustion special semantics.
+- dynamic context-exhaustion terminal taxonomy.
 
-## 21. Human Freeze checklist
+Future behavior changes require explicit Treatment/ADR decisions rather than
+silent mutation of the recorded L4 baseline.
 
-The implementation may begin when the following are represented in code/config/tests exactly as frozen:
+## 20. Final L4 V1 acceptance checklist
 
-- [ ] typed provider-neutral message contract;
-- [ ] MiniMax native-tool and continuation serializer/parser;
-- [ ] exact per-turn token counting from the same serializer;
-- [ ] shared Task Contract and separate frozen Runtime-control prompt identity;
-- [ ] `read/grep/find/ls` contracts and hard bounds;
-- [ ] frozen Tool Registry and Tool Policy manifests;
-- [ ] `single + sequential` policy;
-- [ ] `max_steps=100` semantics;
-- [ ] request-level retry semantics;
-- [ ] terminal `scored/execution_failed` taxonomy;
-- [ ] complete linear trajectory persistence separate from Trace;
-- [ ] full answer-neutral Canonical coordinate vocabulary in initial input;
-- [ ] no compaction or L5+ mechanisms.
+The implementation is acceptable when the following are represented in
+code/config/tests according to ADR 0128 + ADR 0129:
+
+- [x] provider-neutral typed messages and logical completion request;
+- [x] MiniMax native ToolCall and continuation round-trip;
+- [x] provider-reported L4 context accounting with no mandatory local preflight;
+- [x] shared Task Contract plus separate frozen Runtime-control prompt;
+- [x] bounded `read/grep/find/ls` contracts;
+- [x] frozen Tool Registry and Tool Policy;
+- [x] baseline `single + sequential` policy;
+- [x] exact `max_steps=100` semantics;
+- [x] same-logical-request provider retry;
+- [x] scored capability vs `execution_failed` infrastructure taxonomy;
+- [x] complete linear trajectory persistence separate from Trace;
+- [x] full answer-neutral Canonical coordinate vocabulary in initial input;
+- [x] no compaction or L5+ mechanism in baseline;
+- [x] deterministic test gate;
+- [x] live MiniMax qualification;
+- [x] one controlled formal 20 Case x 3 milestone.

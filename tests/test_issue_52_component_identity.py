@@ -1,0 +1,132 @@
+from __future__ import annotations
+
+import json
+from dataclasses import replace
+from pathlib import Path
+
+import pytest
+
+from devagentops.evaluation.components import resolve_frozen_component_manifest
+from devagentops.evaluation.matrix import EvaluationMatrixError, load_evaluation_matrix
+from devagentops.evaluation.matrix_v2 import calculate_run_configuration_fingerprint
+from devagentops.evaluation.development_treatment import (
+    validate_minimax_development_condition,
+)
+from devagentops.runtime.tool_policy import BASELINE_TOOL_POLICY
+from devagentops.runtime.tools import TOOL_DEFINITIONS
+from devagentops.conditions.l4.react_condition import validate_l4_tool_registry
+from devagentops.runtime.react import ReactInfrastructureError
+
+
+ROOT = Path(__file__).resolve().parents[1]
+REGISTRY = ROOT / "components/registry.json"
+MATRIX = ROOT / "evaluation/matrices/l4-minimax-m3-development-v2.json"
+
+
+def test_l4_frozen_manifests_match_runtime_provider_contracts() -> None:
+    runtime_control = resolve_frozen_component_manifest(
+        REGISTRY, "prompt", "l4-react-runtime-control-v1"
+    )
+    tool_registry = resolve_frozen_component_manifest(
+        REGISTRY, "tool_registry", "l4-investigation-tools-v1"
+    )
+    tool_policy = resolve_frozen_component_manifest(
+        REGISTRY, "tool_policy", "l4-single-sequential-tool-policy-v1"
+    )
+    assert "zero or one ToolCall" in runtime_control.behavior["template"]
+    provider_tools = [
+        {
+            "name": definition.name,
+            "description": definition.description,
+            "parameters": definition.parameters,
+        }
+        for definition in TOOL_DEFINITIONS
+    ]
+    manifest_provider_tools = [
+        {key: item[key] for key in ("name", "description", "parameters")}
+        for item in tool_registry.behavior["tools"]
+    ]
+    assert manifest_provider_tools == provider_tools
+    assert tool_policy.behavior == {"rules": [BASELINE_TOOL_POLICY]}
+    assert "runtime" not in json.loads(REGISTRY.read_text())["components"]
+
+
+def test_l4_matrix_resolves_all_four_frozen_component_identities() -> None:
+    matrix = load_evaluation_matrix(MATRIX, REGISTRY)
+    condition = matrix.conditions[0]
+    assert condition.effective_condition["runtime_variant"] == "self_built_react"
+    contracts = condition.effective_condition["treatment"]["contracts"]
+    context = condition.effective_condition["treatment"]["context"]
+    assert "runtime" not in contracts
+    assert context["assessment"] == "provider_reported"
+    assert context["method"] == "provider_response_usage"
+    assert context["policy"] == "observe_provider_usage_no_local_preflight"
+    assert "tokenizer" not in context
+    assert condition.effective_condition["execution_policy"]["retry_count"] == 3
+    validate_minimax_development_condition(condition.effective_condition, case_count=1)
+
+
+def test_l4_retry_policy_changes_execution_and_run_identity_only(tmp_path: Path) -> None:
+    baseline_document = json.loads(MATRIX.read_text(encoding="utf-8"))
+    changed_document = json.loads(MATRIX.read_text(encoding="utf-8"))
+    changed_document["conditions"][0]["execution_policy"]["retry_count"] = 2
+    baseline_path = tmp_path / "baseline.json"
+    changed_path = tmp_path / "changed.json"
+    baseline_path.write_text(json.dumps(baseline_document), encoding="utf-8")
+    changed_path.write_text(json.dumps(changed_document), encoding="utf-8")
+
+    baseline_matrix = load_evaluation_matrix(baseline_path, REGISTRY)
+    changed_matrix = load_evaluation_matrix(changed_path, REGISTRY)
+    baseline = baseline_matrix.conditions[0]
+    changed = changed_matrix.conditions[0]
+
+    assert baseline.treatment_fingerprint == changed.treatment_fingerprint
+    assert baseline.condition_fingerprint == changed.condition_fingerprint
+    assert baseline.execution_policy_fingerprint != changed.execution_policy_fingerprint
+    identity = {
+        "suite_fingerprint": "5" * 64,
+        "selected_cases": [
+            {"case_id": "case", "case_fingerprint": "6" * 64, "weight": 1.0}
+        ],
+        "code_revision": "a" * 40,
+        "git_dirty": False,
+    }
+    assert calculate_run_configuration_fingerprint(
+        baseline_matrix, baseline, **identity
+    ) != calculate_run_configuration_fingerprint(
+        changed_matrix, changed, **identity
+    )
+
+
+def test_l4_tool_registry_semantic_drift_is_rejected() -> None:
+    manifest = resolve_frozen_component_manifest(
+        REGISTRY, "tool_registry", "l4-investigation-tools-v1"
+    )
+    drifted_behavior = json.loads(json.dumps(manifest.behavior))
+    drifted_behavior["tools"][0]["semantics"]["max_lines"] = 1999
+    drifted = replace(manifest, behavior=drifted_behavior)
+
+    with pytest.raises(ReactInfrastructureError) as captured:
+        validate_l4_tool_registry(drifted)
+
+    assert captured.value.code == "invalid_l4_tool_registry"
+
+
+@pytest.mark.parametrize(
+    "contract_key", ["runtime_control", "tool_registry", "tool_policy"]
+)
+def test_l4_matrix_doctor_rejects_missing_or_mismatched_component_identity(
+    tmp_path: Path, contract_key: str
+) -> None:
+    document = json.loads(MATRIX.read_text(encoding="utf-8"))
+    contract = document["conditions"][0]["treatment"]["contracts"][contract_key]
+    contract["fingerprint"] = "0" * 64
+    path = tmp_path / "l4-invalid.json"
+    path.write_text(json.dumps(document), encoding="utf-8")
+    with pytest.raises(EvaluationMatrixError, match=contract_key):
+        load_evaluation_matrix(path, REGISTRY)
+
+    del document["conditions"][0]["treatment"]["contracts"][contract_key]
+    path.write_text(json.dumps(document), encoding="utf-8")
+    with pytest.raises(EvaluationMatrixError, match=contract_key):
+        load_evaluation_matrix(path, REGISTRY)

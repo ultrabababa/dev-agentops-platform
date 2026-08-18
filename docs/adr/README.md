@@ -5,7 +5,7 @@ This directory keeps active architecture decisions for DevAgentOps.
 ## Reading Order
 
 1. Read the foundational ADRs `0001` through `0013` for stack, runtime, trace, retrieval, dashboard, storage, eval runner, and baseline decisions.
-2. Read the consolidated topic ADRs `0112` through `0128` for the current V1 evaluation and AgentOps design.
+2. Read the consolidated topic ADRs `0112` through `0129` for the current V1 evaluation and AgentOps design.
 3. Use `archive/micro-decisions/` only when you need the detailed discussion trail behind the consolidated decisions.
 
 ## Active Foundational ADRs
@@ -43,6 +43,7 @@ This directory keeps active architecture decisions for DevAgentOps.
 - [0126 Offline Case Schema V2 Physical Artifacts and Canonical Evidence](0126-offline-case-schema-v2-physical-artifacts-and-canonical-evidence.md)
 - [0127 Staged Runtime Capability Ladder and Reference Boundary](0127-staged-runtime-capability-ladder-and-reference-boundary.md)
 - [0128 L4 Self-built ReAct Runtime Contract](0128-l4-self-built-react-runtime-contract.md)
+- [0129 L4 Provider-Reported Context Accounting](0129-l4-provider-reported-context-accounting.md)
 
 ## Archived Micro ADRs
 

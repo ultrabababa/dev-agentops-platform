@@ -684,15 +684,16 @@ def test_docs_freeze_task_contract_runtime_control_boundary() -> None:
         PROJECT_ROOT / "docs" / "evaluation" / "formal-evaluation-methodology.md"
     ).read_text(encoding="utf-8")
 
-    adr_section = adr.split("### Task Contract and Runtime Control Separation", 1)[1]
-    adr_section = adr_section.split("### Oracle is orthogonal", 1)[0]
-    assert "case-specific data plane" in adr_section
-    assert "must not conceal imperative Runtime control policy" in adr_section
-    assert "explicit, versioned, and recorded as treatment" in adr_section
-    methodology_section = methodology.split(
-        "### 4.1 Shared Task Contract 与 Runtime Treatment", 1
-    )[1]
-    methodology_section = methodology_section.split("## 5.", 1)[0]
-    assert "共享控制变量" in methodology_section
-    assert "rendered request" in methodology_section
+    adr_section = adr.split("## Task Contract vs Runtime Control", 1)[1]
+    adr_section = adr_section.split("## L1 full-context integrity", 1)[0]
+    assert "shared Task Contract" in adr_section
+    assert "Runtime/Treatment identity" in adr_section
+    assert "separate Runtime-control `prompt` component" in adr_section
+    assert "Case `runtime_input`" in adr_section
+
+    methodology_section = methodology.split("## 11. Reproducibility boundaries", 1)[1]
+    methodology_section = methodology_section.split("## 12.", 1)[0]
+    assert "provider/model/inference settings" in methodology_section
+    assert "runtime/evidence-delivery treatment" in methodology_section
+    assert "component fingerprints" in methodology_section
     assert "combined difference" in methodology_section

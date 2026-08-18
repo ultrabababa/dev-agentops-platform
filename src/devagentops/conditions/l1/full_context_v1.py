@@ -14,9 +14,14 @@ from devagentops.providers.siliconflow_v1 import (
     TokenCount,
 )
 from devagentops.providers.contracts import (
-    CompletionObservation,
     CompletionProvider,
     LogicalCompletionRequest,
+)
+from devagentops.providers.execution import execute_completion_request
+from devagentops.runtime.messages import (
+    AssistantMessage,
+    UserMessage,
+    assistant_text,
 )
 from devagentops.runtime.workspace import RuntimeCaseWorkspace
 
@@ -111,7 +116,8 @@ class FullContextOneShotResult:
     prompt_sha256: str
     token_count: TokenCount
     context_limit_tokens: int
-    response: ModelResponse | CompletionObservation
+    response: ModelResponse | AssistantMessage
+    latency_ms: int
 
 
 @dataclass(frozen=True)
@@ -245,6 +251,7 @@ def run_full_context_one_shot(
         token_count=token_count,
         context_limit_tokens=CONTEXT_LIMIT_TOKENS,
         response=response,
+        latency_ms=response.latency_ms,
     )
 
 
@@ -282,10 +289,9 @@ def run_configured_full_context_one_shot(
     prompt_text += treatment.output_contract_prompt_suffix
     request = LogicalCompletionRequest(
         model=treatment.model,
-        messages=({"role": "user", "content": prompt_text},),
+        messages=(UserMessage(prompt_text),),
         reasoning=treatment.reasoning,
         generation=treatment.generation,
-        tools=None,
     )
     token_count = provider.count_input_tokens(request)
     if (
@@ -311,11 +317,13 @@ def run_configured_full_context_one_shot(
                 "logical_call_number": 1,
             }
         )
-    response = provider.complete(request)
+    execution = execute_completion_request(provider, request)
+    response = execution.assistant
+    visible_output = assistant_text(response)
     try:
-        candidate_document: Any = json.loads(response.visible_output)
+        candidate_document: Any = json.loads(visible_output)
     except json.JSONDecodeError:
-        candidate_document = response.visible_output
+        candidate_document = visible_output
     return FullContextOneShotResult(
         candidate_document=candidate_document,
         runtime_input=runtime_input,
@@ -324,4 +332,5 @@ def run_configured_full_context_one_shot(
         token_count=token_count,
         context_limit_tokens=treatment.context_limit_tokens,
         response=response,
+        latency_ms=execution.latency_ms,
     )

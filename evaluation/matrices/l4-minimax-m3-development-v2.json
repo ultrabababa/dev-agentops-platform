@@ -1,0 +1,83 @@
+{
+  "matrix_id": "l4-minimax-m3-development",
+  "matrix_version": "2",
+  "schema_version": "2",
+  "conditions": [
+    {
+      "id": "l4-minimax-m3-adaptive-development-v1",
+      "type": "candidate",
+      "runtime_variant": "self_built_react",
+      "suite": "triage-suite-v1",
+      "evaluation_method": "triage-method-v1",
+      "treatment": {
+        "provider": {
+          "id": "minimax-official",
+          "transport": "openai-compatible-chat-completions",
+          "profile": "minimax-official-v1",
+          "base_url": "https://api.minimaxi.com/v1"
+        },
+        "model": "MiniMax-M3",
+        "reasoning": {
+          "thinking": {"type": "adaptive"},
+          "reasoning_split": true
+        },
+        "generation": {
+          "temperature": 0,
+          "max_completion_tokens": 65536,
+          "n": 1,
+          "stream": false,
+          "response_format": {"mode": "omitted"}
+        },
+        "contracts": {
+          "task": {
+            "component_type": "prompt",
+            "version": "structured-triage-task-contract-v1",
+            "fingerprint": "d96154bc6a5aa436c84f291c16848daec60bdbf1be250dcedc4b115f4b7c4988"
+          },
+          "output": {
+            "id": "structured-triage-report-json-clarification",
+            "version": "development-v1",
+            "prompt_suffix_sha256": "621391d3d9a93997165105df4a1942b3cbc91e8a50f85bc1766225d5efdf1405",
+            "schema_version": "1",
+            "schema_sha256": "475b42d2cbedc00a68fff1d21993073fcf2aa7a549db7176951462b33e6a9224"
+          },
+          "runtime_input": {"version": "l4_tool_workspace_runtime_input_v1"},
+          "runtime_control": {
+            "component_type": "prompt",
+            "version": "l4-react-runtime-control-v1",
+            "fingerprint": "06db8a3bf29e4f8f9cc34972efceecccbc265fa7d25dcb40b1523b9a0b2a1a26"
+          },
+          "tool_registry": {
+            "component_type": "tool_registry",
+            "version": "l4-investigation-tools-v1",
+            "fingerprint": "734ae48e68f66c04a82a60eb4d8d67f1688203c040552524bd5640cb91ac9ff5"
+          },
+          "tool_policy": {
+            "component_type": "tool_policy",
+            "version": "l4-single-sequential-tool-policy-v1",
+            "fingerprint": "fd218879f82d7c090304522e6c938102ee633e10eaa09733ffda99760db5c26c"
+          }
+        },
+        "context": {
+          "assessment": "provider_reported",
+          "method": "provider_response_usage",
+          "context_window_tokens": 1000000,
+          "advertised_maximum_tokens": 1000000,
+          "guaranteed_minimum_label": "512K",
+          "policy": "observe_provider_usage_no_local_preflight",
+          "source": {
+            "url": "https://www.minimax.io/models/text/m3",
+            "accessed_on": "2026-08-14",
+            "contract_version": "minimax-m3-api-context-2026-08-14"
+          }
+        }
+      },
+      "execution_policy": {
+        "repeat_count": 3,
+        "max_case_concurrency": 6,
+        "retry_count": 3,
+        "request_timeout_seconds": 600
+      }
+    }
+  ]
+}

@@ -21,12 +21,11 @@ from devagentops.evaluation.execution import (
     SampleResult,
 )
 from devagentops.evaluation.persistence import canonical_sha256
-from devagentops.providers.contracts import CompletionProvider
-from devagentops.providers.openai_compatible import (
-    OpenAICompatibleTransportError,
-)
+from devagentops.providers.contracts import CompletionProvider, CompletionProviderError
+from devagentops.providers.execution import ProviderRequestFailed
 from devagentops.scoring.case import evaluate_case_report
 from devagentops.scoring.report import REPORT_SCHEMA_VERSION
+from devagentops.runtime.messages import assistant_text, assistant_thinking
 
 
 @dataclass(frozen=True)
@@ -83,7 +82,8 @@ class ConfiguredOracleConditionExecutor:
         except (
             OracleEvidenceError,
             OracleOneShotError,
-            OpenAICompatibleTransportError,
+            CompletionProviderError,
+            ProviderRequestFailed,
         ) as exc:
             failure_code = getattr(
                 exc,
@@ -95,7 +95,7 @@ class ConfiguredOracleConditionExecutor:
                 stage = "context_feasibility"
             elif isinstance(
                 exc,
-                OpenAICompatibleTransportError,
+                (CompletionProviderError, ProviderRequestFailed),
             ):
                 stage = "model_provider"
             elif isinstance(exc, OracleEvidenceError):
@@ -113,7 +113,7 @@ class ConfiguredOracleConditionExecutor:
             if (
                 isinstance(
                     exc,
-                    OpenAICompatibleTransportError,
+                    (CompletionProviderError, ProviderRequestFailed),
                 )
                 and exc.http_status
             ):
@@ -139,8 +139,9 @@ class ConfiguredOracleConditionExecutor:
             )
 
         response = oracle_result.response
+        visible_output = assistant_text(response)
         reasoning_metadata = _reasoning_metadata(
-            response.reasoning_output
+            assistant_thinking(response)
         )
 
         recorder.record(
@@ -150,13 +151,13 @@ class ConfiguredOracleConditionExecutor:
                 "logical_call_number": 1,
                 "attempt_index": 0,
                 "provider_request_id": (
-                    response.provider_request_id
+                    response.response_id
                 ),
-                "returned_model": response.returned_model,
-                "usage": response.usage,
-                "latency_ms": response.latency_ms,
-                "finish_reason": response.finish_reason,
-                "visible_output": response.visible_output,
+                "returned_model": response.response_model,
+                "usage": response.usage.as_dict(),
+                "latency_ms": oracle_result.latency_ms,
+                "finish_reason": response.stop_reason,
+                "visible_output": visible_output,
                 "reasoning_observation": reasoning_metadata,
                 "actual_call_count": actual_call_count,
                 "retry_count": 0,
@@ -213,15 +214,15 @@ class ConfiguredOracleConditionExecutor:
                 score.evidence_diagnostics.as_dict()
             ),
             "candidate_document": candidate_document,
-            "visible_output": response.visible_output,
+            "visible_output": visible_output,
             "provider_observation": {
                 "provider_request_id": (
-                    response.provider_request_id
+                    response.response_id
                 ),
-                "returned_model": response.returned_model,
-                "usage": response.usage,
-                "finish_reason": response.finish_reason,
-                "latency_ms": response.latency_ms,
+                "returned_model": response.response_model,
+                "usage": response.usage.as_dict(),
+                "finish_reason": response.stop_reason,
+                "latency_ms": oracle_result.latency_ms,
                 "reasoning": reasoning_metadata,
             },
             "context_assessment": {

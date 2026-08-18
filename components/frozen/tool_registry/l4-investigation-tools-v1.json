@@ -1,0 +1,103 @@
+{
+  "schema_version": "1",
+  "component_type": "tool_registry",
+  "component_version": "l4-investigation-tools-v1",
+  "behavior": {
+    "tools": [
+      {
+        "name": "read",
+        "description": "Read complete UTF-8 lines from /raw.log or a frozen /repository file. Offsets are 1-based and results are bounded with visible continuation.",
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {"type": "string", "minLength": 1},
+            "offset": {"type": "integer", "minimum": 1},
+            "limit": {"type": "integer", "minimum": 1, "maximum": 2000}
+          },
+          "required": ["path"]
+        },
+        "semantics": {
+          "workspace": "agent_visible_virtual_paths_only",
+          "offset": "one_based",
+          "max_lines": 2000,
+          "max_result_bytes": 51200,
+          "continuation": "visible_next_offset",
+          "oversized_single_line": "bounded_error_no_byte_slicing"
+        }
+      },
+      {
+        "name": "grep",
+        "description": "Search visible workspace text with a regex or literal pattern. Results distinguish matches from context and never re-apply .gitignore.",
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pattern": {"type": "string", "minLength": 1},
+            "path": {"type": "string", "minLength": 1},
+            "glob": {"type": "string", "minLength": 1},
+            "ignore_case": {"type": "boolean"},
+            "literal": {"type": "boolean"},
+            "context": {"type": "integer", "minimum": 0},
+            "limit": {"type": "integer", "minimum": 1, "maximum": 100}
+          },
+          "required": ["pattern"]
+        },
+        "semantics": {
+          "membership": "frozen_workspace_no_gitignore_reapplication",
+          "max_matches": 100,
+          "max_source_line_characters": 500,
+          "max_result_bytes": 51200,
+          "context_format": "match_colon_context_hyphen",
+          "ordering": "lexicographic_path_then_line"
+        }
+      },
+      {
+        "name": "find",
+        "description": "Find paths by glob over the frozen visible workspace membership. Results are deterministic and do not re-apply .gitignore.",
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pattern": {"type": "string", "minLength": 1},
+            "path": {"type": "string", "minLength": 1},
+            "limit": {"type": "integer", "minimum": 1, "maximum": 1000}
+          },
+          "required": ["pattern"]
+        },
+        "semantics": {
+          "membership": "frozen_workspace_no_gitignore_reapplication",
+          "matching": "glob_path",
+          "max_results": 1000,
+          "max_result_bytes": 51200,
+          "ordering": "lexicographic_virtual_path"
+        }
+      },
+      {
+        "name": "ls",
+        "description": "List one directory level in deterministic alphabetical order, including dotfiles and marking directories with a trailing slash.",
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {"type": "string", "minLength": 1},
+            "limit": {"type": "integer", "minimum": 1, "maximum": 500}
+          },
+          "required": []
+        },
+        "semantics": {
+          "membership": "frozen_workspace_no_gitignore_reapplication",
+          "depth": "one_level",
+          "dotfiles": "included",
+          "directory_suffix": "/",
+          "max_entries": 500,
+          "max_result_bytes": 51200,
+          "ordering": "alphabetical"
+        }
+      }
+    ]
+  },
+  "metadata": {
+    "description": "Human-frozen L4 V1 read-only investigation Tool Registry"
+  }
+}

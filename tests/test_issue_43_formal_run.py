@@ -8,7 +8,13 @@ import devagentops.evaluation.run_v2 as evaluation_run_v2
 from devagentops.cli import main
 from devagentops.evaluation.artifacts import EvaluationArtifactError
 from devagentops.evaluation.execution import SampleResult
-from devagentops.providers.contracts import CompletionObservation, ExactTokenCount
+from devagentops.providers.contracts import ExactTokenCount
+from devagentops.runtime.messages import (
+    AssistantMessage,
+    TextContent,
+    ThinkingContent,
+    TokenUsage,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -28,14 +34,16 @@ class _FakeProvider:
 
     def complete(self, request):
         self.complete_calls += 1
-        return CompletionObservation(
-            visible_output="not-json-but-scored-protocol-invalid",
-            reasoning_output="private-reasoning-must-not-persist",
-            provider_request_id=f"request-{self.provider_index}",
-            returned_model="MiniMax-M3",
-            usage={"prompt_tokens": 1000, "completion_tokens": 10},
-            finish_reason="stop",
-            latency_ms=5,
+        return AssistantMessage(
+            content=(
+                ThinkingContent("private-reasoning-must-not-persist"),
+                TextContent("not-json-but-scored-protocol-invalid"),
+            ),
+            response_id=f"request-{self.provider_index}",
+            response_model="MiniMax-M3",
+            usage=TokenUsage(input_tokens=1000, output_tokens=10),
+            stop_reason="stop",
+            raw_stop_reason="stop",
         )
 
 

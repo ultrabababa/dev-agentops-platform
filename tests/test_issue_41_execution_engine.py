@@ -18,8 +18,14 @@ from devagentops.evaluation.execution import (
 )
 from devagentops.evaluation.trace import TraceRecorder
 from devagentops.evaluation.matrix import load_evaluation_matrix
-from devagentops.providers.contracts import CompletionObservation, ExactTokenCount
+from devagentops.providers.contracts import ExactTokenCount
 from devagentops.providers.openai_compatible import OpenAICompatibleTransportError
+from devagentops.runtime.messages import (
+    AssistantMessage,
+    TextContent,
+    ThinkingContent,
+    TokenUsage,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -349,14 +355,16 @@ def test_repository_cli_persists_repeated_samples_without_flattening(
 
         def complete(self, request):
             self.complete_calls += 1
-            return CompletionObservation(
-                visible_output="not-json-but-still-a-scored-observation",
-                reasoning_output="raw-reasoning-sentinel-must-not-persist",
-                provider_request_id=f"request-{self.provider_index}",
-                returned_model="MiniMax-M3",
-                usage={"prompt_tokens": 1000, "completion_tokens": 25},
-                finish_reason="stop",
-                latency_ms=10,
+            return AssistantMessage(
+                content=(
+                    ThinkingContent("raw-reasoning-sentinel-must-not-persist"),
+                    TextContent("not-json-but-still-a-scored-observation"),
+                ),
+                response_id=f"request-{self.provider_index}",
+                response_model="MiniMax-M3",
+                usage=TokenUsage(input_tokens=1000, output_tokens=25),
+                stop_reason="stop",
+                raw_stop_reason="stop",
             )
 
     def provider_factory(**kwargs):
@@ -463,7 +471,7 @@ def test_context_and_provider_failures_are_isolated_and_persisted_per_sample(
             self.should_fail_provider = False
 
         def count_input_tokens(self, request):
-            content = request.messages[0]["content"]
+            content = request.messages[0].content
             case_id = case_a if case_a in content else case_b
             with lock:
                 repeat_index = count_index[case_id]
@@ -483,14 +491,13 @@ def test_context_and_provider_failures_are_isolated_and_persisted_per_sample(
                     "sanitized provider failure",
                     code="model_provider_transport_error",
                 )
-            return CompletionObservation(
-                visible_output="invalid-observation-is-still-scored",
-                reasoning_output=None,
-                provider_request_id="request-success",
-                returned_model="MiniMax-M3",
-                usage={"prompt_tokens": 1000, "completion_tokens": 10},
-                finish_reason="stop",
-                latency_ms=10,
+            return AssistantMessage(
+                content=(TextContent("invalid-observation-is-still-scored"),),
+                response_id="request-success",
+                response_model="MiniMax-M3",
+                usage=TokenUsage(input_tokens=1000, output_tokens=10),
+                stop_reason="stop",
+                raw_stop_reason="stop",
             )
 
     monkeypatch.setattr(
@@ -557,14 +564,13 @@ def test_artifact_failure_marks_run_failed_and_removes_sample_rows(
             return ExactTokenCount(1000, "exact-fake-count")
 
         def complete(self, request):
-            return CompletionObservation(
-                visible_output="invalid-but-scored",
-                reasoning_output=None,
-                provider_request_id="request-success",
-                returned_model="MiniMax-M3",
-                usage={"prompt_tokens": 1000},
-                finish_reason="stop",
-                latency_ms=1,
+            return AssistantMessage(
+                content=(TextContent("invalid-but-scored"),),
+                response_id="request-success",
+                response_model="MiniMax-M3",
+                usage=TokenUsage(input_tokens=1000),
+                stop_reason="stop",
+                raw_stop_reason="stop",
             )
 
     monkeypatch.setattr(

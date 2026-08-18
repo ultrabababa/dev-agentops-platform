@@ -28,6 +28,19 @@ TASK_CONTRACT_FINGERPRINT = (
     "d96154bc6a5aa436c84f291c16848daec60bdbf1be250dcedc4b115f4b7c4988"
 )
 CONTEXT_SOURCE_URL = "https://www.minimax.io/models/text/m3"
+L4_RUNTIME_INPUT_VERSION = "l4_tool_workspace_runtime_input_v1"
+L4_RUNTIME_CONTROL_VERSION = "l4-react-runtime-control-v1"
+L4_RUNTIME_CONTROL_FINGERPRINT = (
+    "06db8a3bf29e4f8f9cc34972efceecccbc265fa7d25dcb40b1523b9a0b2a1a26"
+)
+L4_TOOL_REGISTRY_VERSION = "l4-investigation-tools-v1"
+L4_TOOL_REGISTRY_FINGERPRINT = (
+    "734ae48e68f66c04a82a60eb4d8d67f1688203c040552524bd5640cb91ac9ff5"
+)
+L4_TOOL_POLICY_VERSION = "l4-single-sequential-tool-policy-v1"
+L4_TOOL_POLICY_FINGERPRINT = (
+    "fd218879f82d7c090304522e6c938102ee633e10eaa09733ffda99760db5c26c"
+)
 
 
 def validate_minimax_development_condition(
@@ -44,6 +57,7 @@ def validate_minimax_development_condition(
             "full_context_one_shot",
             "fixed_model_workflow",
             "model_one_shot",
+            "self_built_react",
         }
         or case_count < 1
     ):
@@ -51,9 +65,10 @@ def validate_minimax_development_condition(
             "Matrix v2 MiniMax development run requires at least one supported Case",
             code="unsupported_v2_debug_shape",
         )
-    if policy["retry_count"] != 0:
+    expected_retry_count = 3 if runtime_variant == "self_built_react" else 0
+    if policy["retry_count"] != expected_retry_count:
         raise EvaluationRunError(
-            "Matrix v2 execution engine does not support retries",
+            "Matrix v2 execution policy does not match the Runtime retry contract",
             code="unsupported_v2_execution_policy",
         )
     treatment = effective["treatment"]
@@ -120,7 +135,7 @@ def validate_minimax_development_condition(
             },
         }
         contract_label = "L2"
-    else:
+    elif runtime_variant == "model_one_shot":
         expected_contracts = {
             **common_contracts,
             "runtime_input": {
@@ -129,6 +144,27 @@ def validate_minimax_development_condition(
             "evidence_delivery": oracle_evidence_delivery_contract(),
         }
         contract_label = "Oracle"
+    else:
+        expected_contracts = {
+            **common_contracts,
+            "runtime_input": {"version": L4_RUNTIME_INPUT_VERSION},
+            "runtime_control": {
+                "component_type": "prompt",
+                "version": L4_RUNTIME_CONTROL_VERSION,
+                "fingerprint": L4_RUNTIME_CONTROL_FINGERPRINT,
+            },
+            "tool_registry": {
+                "component_type": "tool_registry",
+                "version": L4_TOOL_REGISTRY_VERSION,
+                "fingerprint": L4_TOOL_REGISTRY_FINGERPRINT,
+            },
+            "tool_policy": {
+                "component_type": "tool_policy",
+                "version": L4_TOOL_POLICY_VERSION,
+                "fingerprint": L4_TOOL_POLICY_FINGERPRINT,
+            },
+        }
+        contract_label = "L4"
 
     if contracts != expected_contracts:
         raise EvaluationRunError(
@@ -137,6 +173,27 @@ def validate_minimax_development_condition(
         )
 
     context = treatment["context"]
+    if runtime_variant == "self_built_react":
+        expected_context = {
+            "assessment": "provider_reported",
+            "method": "provider_response_usage",
+            "context_window_tokens": 1000000,
+            "advertised_maximum_tokens": 1000000,
+            "guaranteed_minimum_label": "512K",
+            "policy": "observe_provider_usage_no_local_preflight",
+            "source": {
+                "url": CONTEXT_SOURCE_URL,
+                "accessed_on": "2026-08-14",
+                "contract_version": "minimax-m3-api-context-2026-08-14",
+            },
+        }
+        if context != expected_context:
+            raise EvaluationRunError(
+                "unsupported L4 provider-reported context accounting identity",
+                code="unsupported_v2_context_identity",
+            )
+        return
+
     tokenizer = context["tokenizer"]
     if (
         context["assessment"] != "exact"

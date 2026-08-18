@@ -19,8 +19,13 @@ from devagentops.conditions.l2.development_workflow_v1 import (
 from devagentops.evaluation.components import load_component_manifest
 from devagentops.evaluation.suite import load_case_package
 from devagentops.providers.contracts import (
-    CompletionObservation,
     ExactTokenCount,
+)
+from devagentops.runtime.messages import (
+    AssistantMessage,
+    TextContent,
+    ThinkingContent,
+    TokenUsage,
 )
 from devagentops.runtime.workspace import RuntimeCaseWorkspace
 
@@ -70,17 +75,19 @@ class SequenceCompletionProvider:
         index = len(self.requests)
         self.requests.append(request)
 
-        return CompletionObservation(
-            visible_output=self.visible_outputs[index],
-            reasoning_output=f"private-reasoning-stage-{index + 1}",
-            provider_request_id=f"fake-request-{index + 1}",
-            returned_model="MiniMax-M3",
-            usage={
-                "prompt_tokens": self.input_tokens[index],
-                "completion_tokens": 100 + index,
-            },
-            finish_reason="stop",
-            latency_ms=10 + index,
+        return AssistantMessage(
+            content=(
+                ThinkingContent(f"private-reasoning-stage-{index + 1}"),
+                TextContent(self.visible_outputs[index]),
+            ),
+            response_id=f"fake-request-{index + 1}",
+            response_model="MiniMax-M3",
+            usage=TokenUsage(
+                input_tokens=self.input_tokens[index],
+                output_tokens=100 + index,
+            ),
+            stop_reason="stop",
+            raw_stop_reason="stop",
         )
 
 
@@ -202,17 +209,17 @@ def test_configured_l2_runs_two_independent_requests_with_same_foundation_policy
         assert request.model == "MiniMax-M3"
         assert request.reasoning == treatment.reasoning
         assert request.generation == treatment.generation
-        assert request.tools is None
+        assert request.tools == ()
 
         assert len(request.messages) == 1
-        assert request.messages[0]["role"] == "user"
+        assert request.messages[0].__class__.__name__ == "UserMessage"
 
         assert request.generation["response_format"] == {
             "mode": "omitted",
         }
 
-    stage_1_text = stage_1_request.messages[0]["content"]
-    stage_2_text = stage_2_request.messages[0]["content"]
+    stage_1_text = stage_1_request.messages[0].content
+    stage_2_text = stage_2_request.messages[0].content
 
     # Both stages receive the complete Evidence Universe.
     assert result.complete_runtime_input.text in stage_1_text
@@ -273,7 +280,7 @@ def test_configured_l2_handoff_preserves_exact_stage_1_visible_output():
     assert handoff_document["visible_output"] == memo_output
     assert result.handoff.visible_output_sha256
 
-    stage_2_text = provider.requests[1].messages[0]["content"]
+    stage_2_text = provider.requests[1].messages[0].content
 
     assert result.handoff.text in stage_2_text
 
@@ -317,7 +324,7 @@ def test_invalid_stage_1_memo_is_observational_and_does_not_gate_stage_2():
     handoff_document = json.loads(result.handoff.text)
 
     assert handoff_document["visible_output"] == invalid_memo
-    assert result.handoff.text in provider.requests[1].messages[0]["content"]
+    assert result.handoff.text in provider.requests[1].messages[0].content
     assert result.candidate_document == report
 
 
@@ -822,7 +829,6 @@ def test_l2_formal_cli_runs_20x3_with_exactly_two_calls_per_sample(
     import devagentops.evaluation.run_v2 as evaluation_run_v2
     from devagentops.cli import main
     from devagentops.providers.contracts import (
-        CompletionObservation,
         ExactTokenCount,
     )
 
@@ -873,22 +879,19 @@ def test_l2_formal_cli_runs_20x3_with_exactly_two_calls_per_sample(
                     "L2 Sample made more than two provider calls"
                 )
 
-            return CompletionObservation(
-                visible_output=visible_output,
-                reasoning_output=(
-                    "private-l2-reasoning-must-not-persist"
+            return AssistantMessage(
+                content=(
+                    ThinkingContent("private-l2-reasoning-must-not-persist"),
+                    TextContent(visible_output),
                 ),
-                provider_request_id=(
+                response_id=(
                     f"l2-request-{self.provider_index}"
                     f"-{self.complete_calls}"
                 ),
-                returned_model="MiniMax-M3",
-                usage={
-                    "prompt_tokens": 1000,
-                    "completion_tokens": 10,
-                },
-                finish_reason="stop",
-                latency_ms=5,
+                response_model="MiniMax-M3",
+                usage=TokenUsage(input_tokens=1000, output_tokens=10),
+                stop_reason="stop",
+                raw_stop_reason="stop",
             )
 
     def provider_factory(**kwargs):

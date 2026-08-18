@@ -35,6 +35,7 @@ class SampleResult:
     identity: SampleIdentity
     status: Literal["scored", "execution_failed"]
     data: dict[str, Any]
+    trajectory: tuple[dict[str, Any], ...] = ()
 
 
 @dataclass(frozen=True)

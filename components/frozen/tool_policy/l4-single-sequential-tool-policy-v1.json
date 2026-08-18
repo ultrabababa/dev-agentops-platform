@@ -1,0 +1,18 @@
+{
+  "schema_version": "1",
+  "component_type": "tool_policy",
+  "component_version": "l4-single-sequential-tool-policy-v1",
+  "behavior": {
+    "rules": [
+      {
+        "scope": "model_decision",
+        "call_mode": "single",
+        "execution_mode": "sequential",
+        "multiple_calls": "reject_all_with_error_results"
+      }
+    ]
+  },
+  "metadata": {
+    "description": "Human-frozen L4 V1 single-call sequential Tool Policy"
+  }
+}

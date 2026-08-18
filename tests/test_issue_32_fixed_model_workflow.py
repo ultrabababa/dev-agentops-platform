@@ -750,9 +750,15 @@ def test_docs_record_frozen_l2_semantics_and_fingerprint_limitation() -> None:
         PROJECT_ROOT / "docs" / "evaluation" / "formal-evaluation-methodology.md"
     ).read_text(encoding="utf-8")
 
-    for document in (ladder, methodology):
-        assert "evidence_analysis -> report_synthesis -> stop" in document
-        assert "Condition Fingerprint" in document
-        assert "Manifest" in document
-        assert "combined difference" in document
-        assert "Formal L1→L2 comparison" in document
+    l2_section = ladder.split("### L2 — fixed model workflow", 1)[1]
+    l2_section = l2_section.split("### L3", 1)[0]
+    assert "evidence_analysis" in l2_section
+    assert "report_synthesis" in l2_section
+    assert "explicit handoff" in l2_section
+    assert "controlled combined treatment difference" in l2_section
+
+    reproducibility = methodology.split("## 11. Reproducibility boundaries", 1)[1]
+    reproducibility = reproducibility.split("## 12.", 1)[0]
+    assert "component fingerprints" in reproducibility
+    assert "execution policy" in reproducibility
+    assert "combined difference" in reproducibility

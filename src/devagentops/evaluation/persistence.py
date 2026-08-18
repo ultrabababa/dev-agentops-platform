@@ -164,6 +164,9 @@ def persist_finalizing_sample_run(
     case_aggregates: list[dict[str, Any]] | None = None,
     suite_aggregate: dict[str, Any] | None = None,
     failure_type_aggregates: list[dict[str, Any]] | None = None,
+    sample_trajectories: dict[
+        tuple[str, int], tuple[dict[str, Any], ...]
+    ] | None = None,
 ) -> None:
     sample_sequences = [result["sample_sequence"] for result in sample_results]
     if sample_sequences != sorted(sample_sequences) or len(sample_sequences) != len(
@@ -179,6 +182,12 @@ def persist_finalizing_sample_run(
         value is not None for value in aggregate_inputs
     ):
         raise ValueError("formal aggregate persistence requires all aggregate layers")
+    trajectories = sample_trajectories or {}
+    result_identities = {
+        (result["case_id"], result["repeat_index"]) for result in sample_results
+    }
+    if set(trajectories) - result_identities:
+        raise ValueError("sample trajectories contain an unknown sample identity")
     engine = create_database_engine(database_path)
     try:
         with engine.begin() as connection:
@@ -253,6 +262,34 @@ def persist_finalizing_sample_run(
                     ),
                     parameters,
                 )
+                for message_index, message in enumerate(
+                    trajectories.get(
+                        (result["case_id"], result["repeat_index"]), ()
+                    )
+                ):
+                    role = message.get("role")
+                    if role not in {"user", "assistant", "tool_result"}:
+                        raise ValueError(
+                            "trajectory message role must be user, assistant, or tool_result"
+                        )
+                    connection.execute(
+                        text(
+                            "INSERT INTO evaluation_sample_trajectory_messages "
+                            "(run_id, case_id, repeat_index, message_index, "
+                            "message_role, message_json, message_sha256) VALUES "
+                            "(:run_id, :case_id, :repeat_index, :message_index, "
+                            ":message_role, :message_json, :message_sha256)"
+                        ),
+                        {
+                            "run_id": manifest["run_id"],
+                            "case_id": result["case_id"],
+                            "repeat_index": result["repeat_index"],
+                            "message_index": message_index,
+                            "message_role": role,
+                            "message_json": canonical_json(message),
+                            "message_sha256": canonical_sha256(message),
+                        },
+                    )
                 if outcome["status"] != "scored":
                     continue
                 candidate_document = result.get(
