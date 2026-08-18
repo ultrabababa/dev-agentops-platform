@@ -209,9 +209,11 @@ exact_input_tokens + reserved_max_completion_tokens <= context_window
 
 Dynamic context exhaustion is not otherwise special-cased in V1.
 
-## 7. Initial model-visible input
+## 7. Initial model-visible input and Runtime-control identity
 
-The stable condition-level system prompt contains L4 Runtime/tool-use/stopping instructions. The shared Task Contract remains runtime-neutral.
+The shared diagnosis Task Contract remains the existing frozen runtime-neutral `prompt` component.
+
+L4's stable condition-level system instructions for tool use, investigation semantics, loop/stopping behavior, and report submission are a **separate frozen `prompt` component**. Matrix Treatment references it under `contracts.runtime_control` with its component version and fingerprint. Do not hide these instructions in case `runtime_input`, Tool Registry, Tool Policy, or unversioned implementation constants.
 
 The first user message contains:
 
@@ -497,13 +499,13 @@ L4 remains a Matrix v2 condition with `runtime_variant="self_built_react"`.
 
 Treatment identity must reference the frozen:
 
-- Task Contract;
+- shared Task Contract `prompt`;
+- L4 Runtime-control `prompt` under `contracts.runtime_control`;
 - Tool Registry;
 - Tool Policy;
-- Runtime-specific model-visible control/instruction identity;
 - provider/model/reasoning/generation/context contract.
 
-The current Matrix v2 formal validator only Registry-validates the Task prompt. Issue #52 implementation must extend formal validation so referenced Tool Registry and Tool Policy versions/fingerprints are checked against Component Registry rather than merely embedded as unverified JSON.
+The current Matrix v2 formal validator only Registry-validates the shared Task prompt. Issue #52 implementation must extend formal validation so the Task prompt, Runtime-control prompt, Tool Registry, and Tool Policy versions/fingerprints are all resolved against Component Registry.
 
 Runtime code itself is not a Component Registry component in V1. `runtime_variant + code_revision` represents implementation provenance.
 
@@ -552,7 +554,8 @@ Before live qualification, deterministic fake-provider tests should cover at min
 14. evaluator/package boundary enforcement;
 15. 50 KiB/count truncation semantics;
 16. exact token counting includes tools and full typed history;
-17. MiniMax assistant continuation fields round-trip losslessly.
+17. MiniMax assistant continuation fields round-trip losslessly;
+18. Matrix doctor rejects missing/mismatched Runtime-control, Tool Registry, or Tool Policy fingerprints.
 
 ## 19. Live qualification
 
@@ -589,6 +592,7 @@ The implementation may begin when the following are represented in code/config/t
 - [ ] typed provider-neutral message contract;
 - [ ] MiniMax native-tool and continuation serializer/parser;
 - [ ] exact per-turn token counting from the same serializer;
+- [ ] shared Task Contract and separate frozen Runtime-control prompt identity;
 - [ ] `read/grep/find/ls` contracts and hard bounds;
 - [ ] frozen Tool Registry and Tool Policy manifests;
 - [ ] `single + sequential` policy;
