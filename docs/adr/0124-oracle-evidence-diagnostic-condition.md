@@ -2,61 +2,71 @@
 
 ## Status
 
-Accepted.
+Accepted and implemented for the V1 Formal Suite.
 
 ## Context
 
-DevAgentOps compares Fixed Pipeline, ReAct, retrieval, prompt, tool-policy, and model ablation conditions, but an Agent failure can still combine two different bottlenecks: acquiring the decisive evidence and reasoning correctly from evidence that is already available. Retrieval Evidence Hit and Report Evidence Hit localize part of this difference, but they do not answer whether the fixed model could diagnose the Case when evidence discovery difficulty is removed.
+DevAgentOps compares Fixed Pipeline, model-backed diagnostic conditions, ReAct, retrieval, prompt, tool-policy, and model ablations, but an Agent failure can still combine two bottlenecks: acquiring decisive evidence and reasoning correctly once evidence is available.
 
 ## Decision
 
-V1 Evaluation Methodology will define an Oracle Evidence Diagnostic Condition, shortened to Oracle Evidence Condition. It is a controlled diagnostic evaluation condition, not a third V1 runtime or a product candidate.
+V1 defines Oracle Evidence as a controlled diagnostic intervention, not a Product Runtime and not a capability-ladder rung.
 
-For each eligible Case, the condition bypasses ordinary Agent evidence discovery and directly supplies the source-faithful evidence items referenced by the Human-reviewed `required_evidence_ids`. The supplied items form a Human-reviewed Minimal Sufficient Evidence Set: under the fixed model, diagnosis prompt, report contract, scorer, and inference settings, they contain the facts necessary to derive the Expected Diagnosis, and no proper reviewed subset is sufficient. Minimality and sufficiency are review judgments, not properties inferred from an Oracle model pass.
+For each eligible Case, Oracle bypasses ordinary evidence discovery and directly supplies the source-faithful Physical Artifact spans referenced by Human-reviewed `required_evidence_ids`. Stable Evidence IDs may be included so the model can produce ordinary report citations, but all evaluator labels, Expected Answer fields, curator reasoning, selection rationale, scorer labels, fix information, and other answer-bearing metadata remain hidden.
 
-The Oracle input may include stable Evidence IDs and their frozen source content so the model can produce normal Evidence References. It must not include or derive from model-visible evaluator annotations such as:
+The Required Evidence set is Human-reviewed as inclusion-minimal and sufficient for deriving the Expected Diagnosis under the fixed diagnosis/report contract. Minimality and sufficiency are review judgments, not properties tuned from an Oracle model pass.
 
-- Expected Answer labels or answer text;
-- Primary or acceptable Failure Type labels;
-- curator reasoning, evidence-selection rationale, or scorer labels;
-- fix commit, passing revision, or reasonable tool path;
-- evaluator-authored root-cause or recommended-action summaries.
+Evidence ordering and delivery wrappers are deterministic, versioned, and fingerprinted. Oracle runtime input is derived from the existing Case package at execution time; no independent permanent `oracle-evidence.json` is frozen.
 
-Evidence ordering and delivery wrappers must be deterministic, versioned, fingerprinted, and free of evaluator commentary. The Expected Answer and the fact that an item is tagged required remain inside the Trusted Evaluator boundary; only the selected source evidence content is delivered.
+Oracle performance is a conditional diagnostic estimate when ordinary discovery difficulty is removed. It is not proof of context-independent model capability.
 
-Oracle and a paired Agent condition must keep the Evaluation Suite and Case versions, model configuration, diagnosis prompt and Structured Triage Report contract, evaluation method and diagnosis scorer, inference parameters, output budget, and context/truncation policy equal wherever applicable. Evidence delivery and the discovery/tool path are the intended intervention. Any unavoidable wrapper or runtime difference must be recorded in the Effective Condition and Run Manifest; a comparison with other behavior-affecting differences is not a valid realization-gap pair.
+## Implementation Status
 
-Agent-System Realization Gap is reported as a paired, higher-is-better metric-vector difference, never as an implicit composite score:
+Issue #19 implemented the Oracle foundation and formal Matrix v2 execution path. The preserved MiniMax-M3 formal milestone completed:
 
 ```text
-realization_gap(case, metric) = oracle_score(case, metric) - agent_score(case, metric)
+20 Cases × 3 repeats
+60/60 scored Samples
+0 execution failures
+60 model calls
 ```
 
-Each metric is reported by Case, overall, and per Failure Type. Diagnosis/report metrics may participate in the gap. Retrieval, tool-path, step-count, tool-call, cost, and latency measurements remain separate acquisition or operational diagnostics because Oracle intentionally removes ordinary discovery. PASS/FAIL quadrant analysis may be derived only from a versioned diagnosis-quality predicate; it does not replace the metric vector.
+See [Oracle MiniMax-M3 Full-Suite Milestone](../evaluation/milestones/oracle-minimax-m3-full-suite-2026-08-15.md).
 
-Oracle performance is an upper-bound diagnostic estimate under reviewed evidence packaging, not proof of a model's context-independent reasoning ability. Oracle failure can support a model-bottleneck hypothesis only after auditing evidence sufficiency, answer leakage, prompt/report constraints, scorer consistency, truncation, and run variance.
+The implementation includes deterministic Required-Evidence resolution, source hash verification, answer-neutral delivery guards, explicit evidence-delivery Treatment identity, exact context preflight, and reuse of the existing scheduler/persistence/Trace/scorer path.
+
+## Agent-System Realization Gap
+
+The generic Oracle-versus-Agent pairing/gap machinery remains intentionally deferred until a real L4 Agent Product Runtime formal artifact exists.
+
+For a valid higher-is-better diagnosis metric `m`, the future diagnostic remains:
+
+```text
+realization_gap(case, m)
+  = oracle_score(case, m) - agent_score(case, m)
+```
+
+It must be reported as metric-specific paired differences, not a composite capability score. Pairing is valid only when declared controls such as Suite/Case, model, diagnosis Task Contract/report contract, scorer, inference settings, and other relevant treatment fields are compatible and the remaining intended intervention is explicit.
+
+## L4 Refinement
+
+ADR 0128 allows L4 V1 to receive the complete **answer-neutral Canonical coordinate vocabulary** at episode start as citation vocabulary while withholding all Physical Artifact content until tools are used and withholding all Required Evidence labels/evaluator artifacts.
+
+This does not collapse L4 into Oracle:
+
+- L4 receives all neutral coordinates but must discover physical facts itself;
+- Oracle receives only the reviewed Required Evidence source content and bypasses discovery.
 
 ## Alternatives Considered
 
-- Infer model capability from ReAct versus Pipeline alone. Both conditions still include evidence acquisition and can fail before the model sees the decisive facts.
-- Expose the complete Expected Answer. This turns diagnosis into answer reproduction and violates the Trusted Evaluator boundary.
-- Treat Oracle as a new runtime variant. It is an experimental intervention on evidence delivery, not a deployable triage workflow.
-- Collapse the difference into one score. V1 has no defensible composite weighting and requires metric-specific, per-Failure-Type analysis.
+- Infer model capability from ReAct versus Pipeline alone: evidence acquisition remains entangled.
+- Expose Expected Answer: this becomes answer reproduction and violates the Trusted Evaluator boundary.
+- Treat Oracle as a Product Runtime: incorrect; it is an evaluator intervention.
+- Collapse gaps into one score: V1 has no defensible composite weighting.
 
 ## Consequences
 
-DevAgentOps can distinguish likely Agent-system opportunities from likely model, prompt/report, scorer, or dataset bottlenecks more precisely. The condition also increases curation burden: every Oracle-eligible Case needs Human review for sufficiency, minimality, provenance fidelity, and answer non-encoding. Changing that reviewed evidence set changes the Case and Suite identity.
-
-Oracle-versus-Agent results are paired diagnostic analyses, not ordinary direct leaderboard rankings. Unexpected `Oracle FAIL + Agent PASS` outcomes become evaluation-audit signals rather than evidence that the Agent exceeded an Oracle ceiling.
-
-## Implementation Notes
-
-- Add a future explicit, fingerprinted evidence-delivery field or equivalent versioned contract to Evaluation Matrix Conditions and Run Manifests; do not overload `runtime_variant`.
-- Build the Oracle pack by resolving reviewed Required Evidence IDs to frozen log chunks or repository evidence items, then strip all Expected Answer fields and curator metadata.
-- Reject Oracle eligibility when evidence is missing, mutable, unsanitized, non-source-faithful, or not Human reviewed as minimal and sufficient.
-- Validate pairing keys before computing a gap and record every differing field.
-- Keep canonical runs and stability samples separate. Use repeated runs to audit variance rather than silently averaging them.
-- Implement execution and gap reporting in [Issue #19](https://github.com/ultrabababa/dev-agentops-platform/issues/19). Do not expand Issue #15, which remains responsible for curating the balanced Formal Evaluation Suite, or Issue #16, which remains the deterministic Pipeline Baseline tracer bullet.
+Oracle provides a clean evidence-conditioned diagnostic and preserves one Evidence Ground Truth source of truth. It also requires careful pairing and variance interpretation before causal claims are made.
 
 ## Implementation Guide
 
@@ -64,4 +74,8 @@ See [Oracle Evidence Diagnostic Condition and Agent-System Realization Gap](../e
 
 ## Refines
 
-ADRs: `0113`, `0115`, `0116`, `0118`, `0122`, `0123`.
+ADRs: `0113`, `0115`, `0116`, `0118`, `0122`, `0123`, `0125`, `0126`.
+
+## Refined By
+
+[ADR 0128: L4 Self-built ReAct Runtime Contract](0128-l4-self-built-react-runtime-contract.md) for L4 coordinate-vocabulary visibility and future pairing boundary.
