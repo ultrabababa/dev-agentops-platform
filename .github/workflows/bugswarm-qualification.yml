@@ -7,6 +7,11 @@ on:
       - agent/bugswarm-qualification
     paths:
       - .github/workflows/bugswarm-qualification.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/bugswarm-qualification.yml
   workflow_dispatch:
 
 permissions:
@@ -122,7 +127,8 @@ jobs:
           BASELINE_SECONDS=$(( $(date +%s) - BASELINE_START ))
           echo "baseline_rc=$BASELINE_RC" | tee -a "$RESULT"
           echo "baseline_seconds=$BASELINE_SECONDS" | tee -a "$RESULT"
-          tail -200 qualification/baseline.log || true
+          # Never replay raw nested GitHub Actions workflow commands (e.g. ##[error]) to the outer runner.
+          grep -E 'github/Requester\.py:.*raise_for_status|Found 1 error' qualification/baseline.log || true
 
           if grep -Fq 'raise_for_status' qualification/baseline.log && grep -Eq 'Found 1 error|error: .*raise_for_status' qualification/baseline.log; then
             BASELINE_SIGNATURE=PASS
@@ -171,7 +177,7 @@ jobs:
           REPAIR_SECONDS=$(( $(date +%s) - REPAIR_START ))
           echo "repair_rc=$REPAIR_RC" | tee -a "$RESULT"
           echo "repair_seconds=$REPAIR_SECONDS" | tee -a "$RESULT"
-          tail -200 qualification/repaired.log || true
+          grep -E '^Success: no issues found' qualification/repaired.log || true
 
           if docker exec "$CONTAINER_NAME" bash -lc "grep -qF '$NEW' '$REPO_ROOT/github/Requester.py'"; then
             echo "mutation_survived_rerun=PASS" >> "$RESULT"
