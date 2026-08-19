@@ -1,0 +1,18 @@
+{
+  "schema_version": "1",
+  "component_type": "tool_policy",
+  "component_version": "l4-batch-parallel-tool-policy-v1",
+  "behavior": {
+    "rules": [
+      {
+        "scope": "model_decision",
+        "call_mode": "batch",
+        "execution_mode": "parallel",
+        "multiple_calls": "accept_independently"
+      }
+    ]
+  },
+  "metadata": {
+    "description": "Human-frozen L4 batch + parallel read-only Tool Policy from Issue #61"
+  }
+}

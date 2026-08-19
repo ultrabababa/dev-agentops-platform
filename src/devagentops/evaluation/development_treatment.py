@@ -30,6 +30,10 @@ L4_RUNTIME_CONTROL_VERSION = "l4-react-runtime-control-v1"
 L4_RUNTIME_CONTROL_FINGERPRINT = (
     "06db8a3bf29e4f8f9cc34972efceecccbc265fa7d25dcb40b1523b9a0b2a1a26"
 )
+L4_BATCH_RUNTIME_CONTROL_VERSION = "l4-react-runtime-control-batch-parallel-v1"
+L4_BATCH_RUNTIME_CONTROL_FINGERPRINT = (
+    "654f8c3834a12fbf854f70e2de75fa0f2f41976efb9ea93ad786a01b8d73228d"
+)
 L4_TOOL_REGISTRY_VERSION = "l4-investigation-tools-v1"
 L4_TOOL_REGISTRY_FINGERPRINT = (
     "734ae48e68f66c04a82a60eb4d8d67f1688203c040552524bd5640cb91ac9ff5"
@@ -37,6 +41,10 @@ L4_TOOL_REGISTRY_FINGERPRINT = (
 L4_TOOL_POLICY_VERSION = "l4-single-sequential-tool-policy-v1"
 L4_TOOL_POLICY_FINGERPRINT = (
     "fd218879f82d7c090304522e6c938102ee633e10eaa09733ffda99760db5c26c"
+)
+L4_BATCH_TOOL_POLICY_VERSION = "l4-batch-parallel-tool-policy-v1"
+L4_BATCH_TOOL_POLICY_FINGERPRINT = (
+    "7a12a19e99b6b36d7cde1964a1bc42c5e101175477ed9e06564fcba97adacfe2"
 )
 
 
@@ -130,6 +138,7 @@ def validate_minimax_development_condition(
     if runtime_variant == "full_context_one_shot":
         expected_contracts = l1_contracts
         contract_label = "L1"
+        contracts_valid = contracts == expected_contracts
     elif runtime_variant == "fixed_model_workflow":
         from devagentops.conditions.l2.development_workflow_v1 import (
             WORKFLOW_FINGERPRINT,
@@ -144,6 +153,7 @@ def validate_minimax_development_condition(
             },
         }
         contract_label = "L2"
+        contracts_valid = contracts == expected_contracts
     elif runtime_variant == "model_one_shot":
         expected_contracts = {
             **common_contracts,
@@ -153,19 +163,23 @@ def validate_minimax_development_condition(
             "evidence_delivery": oracle_evidence_delivery_contract(),
         }
         contract_label = "Oracle"
+        contracts_valid = contracts == expected_contracts
     else:
-        expected_contracts = {
+        l4_common = {
             **common_contracts,
             "runtime_input": {"version": L4_RUNTIME_INPUT_VERSION},
-            "runtime_control": {
-                "component_type": "prompt",
-                "version": L4_RUNTIME_CONTROL_VERSION,
-                "fingerprint": L4_RUNTIME_CONTROL_FINGERPRINT,
-            },
             "tool_registry": {
                 "component_type": "tool_registry",
                 "version": L4_TOOL_REGISTRY_VERSION,
                 "fingerprint": L4_TOOL_REGISTRY_FINGERPRINT,
+            },
+        }
+        baseline_contracts = {
+            **l4_common,
+            "runtime_control": {
+                "component_type": "prompt",
+                "version": L4_RUNTIME_CONTROL_VERSION,
+                "fingerprint": L4_RUNTIME_CONTROL_FINGERPRINT,
             },
             "tool_policy": {
                 "component_type": "tool_policy",
@@ -173,9 +187,23 @@ def validate_minimax_development_condition(
                 "fingerprint": L4_TOOL_POLICY_FINGERPRINT,
             },
         }
+        batch_parallel_contracts = {
+            **l4_common,
+            "runtime_control": {
+                "component_type": "prompt",
+                "version": L4_BATCH_RUNTIME_CONTROL_VERSION,
+                "fingerprint": L4_BATCH_RUNTIME_CONTROL_FINGERPRINT,
+            },
+            "tool_policy": {
+                "component_type": "tool_policy",
+                "version": L4_BATCH_TOOL_POLICY_VERSION,
+                "fingerprint": L4_BATCH_TOOL_POLICY_FINGERPRINT,
+            },
+        }
         contract_label = "L4"
+        contracts_valid = contracts in (baseline_contracts, batch_parallel_contracts)
 
-    if contracts != expected_contracts:
+    if not contracts_valid:
         raise EvaluationRunError(
             f"unsupported {contract_label} MiniMax development contract identity",
             code="unsupported_v2_contract_identity",

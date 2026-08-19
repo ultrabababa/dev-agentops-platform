@@ -30,7 +30,7 @@ from devagentops.runtime.react import (
     build_initial_user_message,
     run_react,
 )
-from devagentops.runtime.tool_policy import BASELINE_TOOL_POLICY
+from devagentops.runtime.tool_policy import ToolPolicyMode, tool_policy_mode
 from devagentops.runtime.tools import TOOL_DEFINITIONS, TOOL_SEMANTICS
 from devagentops.runtime.workspace import RuntimeCaseWorkspace, RuntimeWorkspaceError
 from devagentops.scoring.case import evaluate_case_report
@@ -75,7 +75,7 @@ class ConfiguredL4ConditionExecutor:
         recorder.record("l4_execution_started", identity=identity)
         messages = ()
         try:
-            tools = self._validated_tools()
+            tools, policy_mode = self._validated_runtime()
             workspace = RuntimeCaseWorkspace.from_package(suite_case.package)
             initial_message = build_initial_user_message(
                 workspace,
@@ -97,6 +97,7 @@ class ConfiguredL4ConditionExecutor:
                     resolve_evidence_references=evidence_reference_resolution_enabled(
                         self.output_contract_version
                     ),
+                    tool_policy_mode=policy_mode,
                 ),
                 initial_user_message=initial_message,
                 on_event=lambda event_type, payload: recorder.record(
@@ -222,7 +223,7 @@ class ConfiguredL4ConditionExecutor:
             trajectory=tuple(message_to_dict(message) for message in messages),
         )
 
-    def _validated_tools(self) -> tuple[ToolDefinition, ...]:
+    def _validated_runtime(self) -> tuple[tuple[ToolDefinition, ...], ToolPolicyMode]:
         expected_versions = (
             (self.prompt, "prompt", self.treatment.task_contract_version),
             (
@@ -250,16 +251,17 @@ class ConfiguredL4ConditionExecutor:
                     steps=0,
                     request_attempts=0,
                 )
-        if self.tool_policy.behavior != {"rules": [BASELINE_TOOL_POLICY]}:
+        policy_mode = tool_policy_mode(self.tool_policy.behavior)
+        if policy_mode is None:
             raise ReactInfrastructureError(
-                "L4 Tool Policy does not match the baseline single-call contract",
+                "L4 Tool Policy semantics do not match a supported Runtime policy",
                 code="invalid_l4_tool_policy",
                 stage="l4_execution",
                 messages=(),
                 steps=0,
                 request_attempts=0,
             )
-        return validate_l4_tool_registry(self.tool_registry)
+        return validate_l4_tool_registry(self.tool_registry), policy_mode
 
 
 def validate_l4_tool_registry(

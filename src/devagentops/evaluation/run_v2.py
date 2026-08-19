@@ -32,9 +32,6 @@ from devagentops.evaluation.artifacts import (
 )
 from devagentops.evaluation.components import resolve_frozen_component_manifest
 from devagentops.evaluation.development_treatment import (
-    L4_RUNTIME_CONTROL_VERSION,
-    L4_TOOL_POLICY_VERSION,
-    L4_TOOL_REGISTRY_VERSION,
     TASK_CONTRACT_VERSION,
     validate_minimax_development_condition,
 )
@@ -80,9 +77,10 @@ def run_formal_evaluation_v2(
             code="formal_suite_mismatch",
         )
     treatment = effective["treatment"]
+    contracts = treatment["contracts"]
     execution_policy = effective["execution_policy"]
     runtime_variant = effective["runtime_variant"]
-    output_contract_version = treatment["contracts"]["output"]["version"]
+    output_contract_version = contracts["output"]["version"]
     code_revision = _code_revision()
     git_dirty = _git_dirty()
     selected_cases = [
@@ -108,14 +106,17 @@ def run_formal_evaluation_v2(
         TASK_CONTRACT_VERSION,
     )
     if runtime_variant == "self_built_react":
+        runtime_control_contract = contracts["runtime_control"]
+        tool_registry_contract = contracts["tool_registry"]
+        tool_policy_contract = contracts["tool_policy"]
         runtime_control = resolve_frozen_component_manifest(
-            registry_path, "prompt", L4_RUNTIME_CONTROL_VERSION
+            registry_path, "prompt", runtime_control_contract["version"]
         )
         tool_registry = resolve_frozen_component_manifest(
-            registry_path, "tool_registry", L4_TOOL_REGISTRY_VERSION
+            registry_path, "tool_registry", tool_registry_contract["version"]
         )
         tool_policy = resolve_frozen_component_manifest(
-            registry_path, "tool_policy", L4_TOOL_POLICY_VERSION
+            registry_path, "tool_policy", tool_policy_contract["version"]
         )
     initialize_database(database_path)
     run_id = str(uuid4())
@@ -210,10 +211,10 @@ def run_formal_evaluation_v2(
                     output_contract_prompt_suffix()
                 ),
                 runtime_input_serialization_version=(
-                    treatment["contracts"]["runtime_input"]["version"]
+                    contracts["runtime_input"]["version"]
                 ),
                 evidence_delivery_contract=(
-                    treatment["contracts"]["evidence_delivery"]
+                    contracts["evidence_delivery"]
                 ),
             ),
             provider_factory=provider_factory,
@@ -237,9 +238,9 @@ def run_formal_evaluation_v2(
                     "max_completion_tokens"
                 ],
                 task_contract_version=TASK_CONTRACT_VERSION,
-                runtime_control_version=L4_RUNTIME_CONTROL_VERSION,
-                tool_registry_version=L4_TOOL_REGISTRY_VERSION,
-                tool_policy_version=L4_TOOL_POLICY_VERSION,
+                runtime_control_version=runtime_control_contract["version"],
+                tool_registry_version=tool_registry_contract["version"],
+                tool_policy_version=tool_policy_contract["version"],
                 output_contract_prompt_suffix=output_contract_prompt_suffix(),
             ),
             provider_factory=provider_factory,
