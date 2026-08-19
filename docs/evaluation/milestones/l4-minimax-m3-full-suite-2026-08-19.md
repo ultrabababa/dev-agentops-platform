@@ -1,5 +1,7 @@
 # L4 MiniMax-M3 Full-Suite Milestone — 2026-08-19
 
+> **Status: historical L4 V1 baseline.** The measured run, artifacts, metrics, and observations in this file remain authoritative for that historical run. However, the original forward-looking recommendation in `Final Output Protocol` / `Follow-up Direction` that rejected post-generation repair and proposed L4-only coordinate assistance has been **superseded** by the later Oracle↔L4 Pair Analysis decision. Current direction: shared deterministic final-report Evidence Reference Canonicalization for L1/L2/Oracle/L4, then a fresh four-condition comparison generation. See [Milestone Status Index](README.md) and [Oracle ↔ L4 Pair Analysis Findings](oracle-l4-pair-analysis-2026-08-19.md).
+
 ## Overview
 
 This document records the first formal full-Suite L4 development-treatment
