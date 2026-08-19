@@ -691,8 +691,8 @@ def test_docs_freeze_task_contract_runtime_control_boundary() -> None:
     assert "separate Runtime-control `prompt` component" in adr_section
     assert "Case `runtime_input`" in adr_section
 
-    methodology_section = methodology.split("## 11. Reproducibility boundaries", 1)[1]
-    methodology_section = methodology_section.split("## 12.", 1)[0]
+    methodology_section = methodology.split("Reproducibility boundaries", 1)[1]
+    methodology_section = methodology_section.split("\n## ", 1)[0].casefold()
     assert "provider/model/inference settings" in methodology_section
     assert "runtime/evidence-delivery treatment" in methodology_section
     assert "component fingerprints" in methodology_section
