@@ -7,6 +7,11 @@ on:
       - agent/bugswarm-qualification
     paths:
       - .github/workflows/bugswarm-qualification.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/bugswarm-qualification.yml
   workflow_dispatch:
 
 permissions:
