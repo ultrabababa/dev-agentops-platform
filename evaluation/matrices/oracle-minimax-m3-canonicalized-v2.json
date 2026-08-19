@@ -1,0 +1,87 @@
+{
+  "matrix_id": "oracle-minimax-m3-canonicalized",
+  "matrix_version": "2",
+  "schema_version": "2",
+  "conditions": [
+    {
+      "id": "oracle-minimax-m3-canonicalized-development-v1",
+      "type": "candidate",
+      "runtime_variant": "model_one_shot",
+      "suite": "triage-suite-v1",
+      "evaluation_method": "triage-method-v1",
+      "treatment": {
+        "provider": {
+          "id": "minimax-official",
+          "transport": "openai-compatible-chat-completions",
+          "profile": "minimax-official-v1",
+          "base_url": "https://api.minimaxi.com/v1"
+        },
+        "model": "MiniMax-M3",
+        "reasoning": {
+          "thinking": {"type": "adaptive"},
+          "reasoning_split": true
+        },
+        "generation": {
+          "temperature": 0,
+          "max_completion_tokens": 65536,
+          "n": 1,
+          "stream": false,
+          "response_format": {"mode": "omitted"}
+        },
+        "contracts": {
+          "task": {
+            "component_type": "prompt",
+            "version": "structured-triage-task-contract-v1",
+            "fingerprint": "d96154bc6a5aa436c84f291c16848daec60bdbf1be250dcedc4b115f4b7c4988"
+          },
+          "output": {
+            "id": "structured-triage-report-json-clarification",
+            "version": "development-v2",
+            "prompt_suffix_sha256": "621391d3d9a93997165105df4a1942b3cbc91e8a50f85bc1766225d5efdf1405",
+            "schema_version": "1",
+            "schema_sha256": "475b42d2cbedc00a68fff1d21993073fcf2aa7a549db7176951462b33e6a9224",
+            "evidence_reference_resolution": "canonical-line-range-normalization-v1"
+          },
+          "runtime_input": {"version": "selected_evidence_runtime_input_v2"},
+          "evidence_delivery": {
+            "id": "oracle_required_evidence_delivery",
+            "version": "2",
+            "pack_version": "oracle_evidence_pack_v1",
+            "runtime_input_serialization_version": "selected_evidence_runtime_input_v2",
+            "selection": "required_evidence_ids_as_set",
+            "ordering": "canonical_source_start_end_evidence_id",
+            "source_resolution": "canonical_line_range_exact_bytes_v1",
+            "integrity": "sha256_verified"
+          }
+        },
+        "context": {
+          "assessment": "exact",
+          "method": "minimax_m3_official_chat_template_adaptive_v1",
+          "context_window_tokens": 1000000,
+          "advertised_maximum_tokens": 1000000,
+          "guaranteed_minimum_label": "512K",
+          "policy": "advertised_maximum_total_context",
+          "reservation_rule": "input_tokens + max_completion_tokens <= context_window_tokens",
+          "source": {
+            "url": "https://www.minimax.io/models/text/m3",
+            "accessed_on": "2026-08-14",
+            "contract_version": "minimax-m3-api-context-2026-08-14"
+          },
+          "tokenizer": {
+            "repository": "MiniMaxAI/MiniMax-M3",
+            "revision": "f0e1c1e04d40177e4673a22097036854f536e9c0",
+            "tokenizer_sha256": "bb1f1626cf01448f1e3b6036d0a061ffc66c91d9046aada14ea23a5441b5ad6e",
+            "chat_template_sha256": "11421244f67553498e5c8112dae02802025bcc4305ec45ad380af95c96f9fe64",
+            "renderer": "jinja2-3.1.6-sandbox-trim-lstrip-v1"
+          }
+        }
+      },
+      "execution_policy": {
+        "repeat_count": 3,
+        "max_case_concurrency": 6,
+        "retry_count": 0,
+        "request_timeout_seconds": 600
+      }
+    }
+  ]
+}

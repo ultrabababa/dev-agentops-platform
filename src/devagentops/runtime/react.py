@@ -6,10 +6,10 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Literal
 
-from devagentops.providers.contracts import (
-    CompletionProvider,
-    LogicalCompletionRequest,
+from devagentops.evaluation.evidence_reference_resolution import (
+    canonicalize_evidence_references,
 )
+from devagentops.providers.contracts import CompletionProvider, LogicalCompletionRequest
 from devagentops.providers.execution import (
     CompletionRequestAttempt,
     CompletionRequestRetryPolicy,
@@ -19,9 +19,9 @@ from devagentops.providers.execution import (
 from devagentops.runtime.messages import (
     AssistantMessage,
     Message,
+    ToolDefinition,
     ToolResultMessage,
     UserMessage,
-    ToolDefinition,
     assistant_text,
     tool_calls,
 )
@@ -54,6 +54,7 @@ class ReactConfiguration:
     max_completion_tokens: int
     tools: tuple[ToolDefinition, ...] = TOOL_DEFINITIONS
     max_steps: int = MAX_STEPS
+    resolve_evidence_references: bool = False
 
 
 @dataclass(frozen=True)
@@ -67,6 +68,7 @@ class ReactRuntimeResult:
     provider_input_tokens: tuple[int | None, ...]
     final_assistant: AssistantMessage | None
     final_latency_ms: int | None
+    model_candidate_document: Any = None
 
 
 class ReactInfrastructureError(RuntimeError):
@@ -195,10 +197,7 @@ def run_react(
                 before_attempt=lambda attempt_index: _emit(
                     on_event,
                     "model_call_started",
-                    {
-                        "step": steps + 1,
-                        "attempt_index": attempt_index,
-                    },
+                    {"step": steps + 1, "attempt_index": attempt_index},
                 ),
                 after_attempt=lambda attempt: _record_model_attempt(
                     on_event,
@@ -217,6 +216,7 @@ def run_react(
                 steps=steps,
                 request_attempts=request_attempts,
             ) from exc
+
         assistant = execution.assistant
         request_attempts += execution.attempts
         steps += 1
@@ -229,9 +229,17 @@ def run_react(
         if not calls:
             visible_output = assistant_text(assistant)
             try:
-                candidate_document: Any = json.loads(visible_output)
+                model_candidate_document: Any = json.loads(visible_output)
             except json.JSONDecodeError:
-                candidate_document = visible_output
+                model_candidate_document = visible_output
+            candidate_document = (
+                canonicalize_evidence_references(
+                    model_candidate_document,
+                    workspace.canonical_coordinates,
+                )
+                if configuration.resolve_evidence_references
+                else model_candidate_document
+            )
             analysis = analyze_candidate_report(
                 candidate_document,
                 case_id=workspace.case.case_id,
@@ -266,6 +274,7 @@ def run_react(
                 provider_input_tokens=tuple(provider_input_tokens),
                 final_assistant=assistant,
                 final_latency_ms=execution.latency_ms,
+                model_candidate_document=model_candidate_document,
             )
 
         if assistant.stop_reason == "length":
@@ -369,6 +378,7 @@ def run_react(
                 steps=steps,
                 request_attempts=request_attempts,
             ) from exc
+
         messages = (
             *messages,
             ToolResultMessage(

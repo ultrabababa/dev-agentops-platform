@@ -5,7 +5,14 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
+from devagentops.conditions.l1.development_output_contract import (
+    OUTPUT_CONTRACT_VERSION,
+    evidence_reference_resolution_enabled,
+)
 from devagentops.evaluation.components import ComponentManifest
+from devagentops.evaluation.evidence_reference_resolution import (
+    EVIDENCE_REFERENCE_RESOLUTION_VERSION,
+)
 from devagentops.evaluation.execution import (
     EventRecorder,
     PlannedSample,
@@ -56,6 +63,7 @@ class ConfiguredL4ConditionExecutor:
     tool_policy: ComponentManifest
     treatment: ConfiguredL4Treatment
     provider_factory: Callable[[], CompletionProvider]
+    output_contract_version: str = OUTPUT_CONTRACT_VERSION
 
     def execute_sample(
         self,
@@ -86,6 +94,9 @@ class ConfiguredL4ConditionExecutor:
                     context_limit_tokens=self.treatment.context_limit_tokens,
                     max_completion_tokens=self.treatment.max_completion_tokens,
                     tools=tools,
+                    resolve_evidence_references=evidence_reference_resolution_enabled(
+                        self.output_contract_version
+                    ),
                 ),
                 initial_user_message=initial_message,
                 on_event=lambda event_type, payload: recorder.record(
@@ -193,6 +204,12 @@ class ConfiguredL4ConditionExecutor:
                 "reserved_completion_tokens": self.treatment.max_completion_tokens,
             },
         }
+        if evidence_reference_resolution_enabled(self.output_contract_version):
+            result["model_candidate_document"] = runtime_result.model_candidate_document
+            result["evidence_reference_resolution"] = {
+                "version": EVIDENCE_REFERENCE_RESOLUTION_VERSION,
+                "changed": candidate_document != runtime_result.model_candidate_document,
+            }
         recorder.record(
             "evaluation_completed",
             identity=identity,

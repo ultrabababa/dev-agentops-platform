@@ -3,10 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from devagentops.conditions.l1.development_output_contract import (
-    OUTPUT_CONTRACT_ID,
-    OUTPUT_CONTRACT_PROMPT_SHA256,
-    OUTPUT_CONTRACT_VERSION,
-    OUTPUT_SCHEMA_SHA256,
+    output_contract_identity,
 )
 from devagentops.conditions.l1.full_context_v1 import (
     RUNTIME_INPUT_SERIALIZATION_VERSION,
@@ -95,20 +92,32 @@ def validate_minimax_development_condition(
                 f"unsupported Issue #39 MiniMax treatment field {field!r}",
                 code="unsupported_v2_treatment",
             )
+
     contracts = treatment["contracts"]
+    output_contract = contracts.get("output")
+    output_version = (
+        output_contract.get("version") if isinstance(output_contract, dict) else None
+    )
+    if not isinstance(output_version, str):
+        raise EvaluationRunError(
+            "MiniMax development condition has no supported output contract version",
+            code="unsupported_v2_contract_identity",
+        )
+    try:
+        expected_output_contract = output_contract_identity(output_version)
+    except ValueError as exc:
+        raise EvaluationRunError(
+            "MiniMax development condition has an unsupported output contract version",
+            code="unsupported_v2_contract_identity",
+        ) from exc
+
     common_contracts = {
         "task": {
             "component_type": "prompt",
             "version": TASK_CONTRACT_VERSION,
             "fingerprint": TASK_CONTRACT_FINGERPRINT,
         },
-        "output": {
-            "id": OUTPUT_CONTRACT_ID,
-            "version": OUTPUT_CONTRACT_VERSION,
-            "prompt_suffix_sha256": OUTPUT_CONTRACT_PROMPT_SHA256,
-            "schema_version": "1",
-            "schema_sha256": OUTPUT_SCHEMA_SHA256,
-        },
+        "output": expected_output_contract,
     }
 
     l1_contracts = {
