@@ -1,6 +1,6 @@
 # Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap
 
-> Current-state note (2026-08-19): Oracle Evidence execution 与 L4 `self_built_react` formal milestone 都已经完成。此前“等待真实 L4 formal artifact 再做 generic pairing / realization gap”的 sequencing guard 已满足。Pair Validator 与 gap-report machinery 仍**尚未实现**，但现在是当前可执行的下一阶段，而不是被前置条件阻塞的 future work。
+> Current-state note (2026-08-19): Oracle Evidence execution 与 L4 `self_built_react` formal milestone 都已经完成。Oracle ↔ Agent Pair Analyzer 现已作为一个小型离线分析能力实现：它直接消费两份 formal `evaluation.json`，按 Case 对齐并计算 `Oracle - Agent` gap；可选读取 Agent SQLite trajectory，为后续 Human / AI badcase 分析提供调查过程。它不是通用 Condition-comparison framework，也不自动做因果归因。
 
 Oracle Evidence answers：
 
@@ -116,56 +116,70 @@ Protocol Validity        = 81.36%
 
 See [L4 MiniMax-M3 Full-Suite Milestone](milestones/l4-minimax-m3-full-suite-2026-08-19.md).
 
-The existence of both artifacts enables pairing analysis, but does **not** by itself prove that every metric difference is a clean causal “Oracle minus Agent” estimate. Compatibility still has to be validated explicitly.
-
 ## 5. Pairing with L4
 
-Oracle-vs-L4 should be paired only when declared controls match sufficiently, including where applicable：
+The first Pair Analyzer deliberately keeps the comparison contract small. It requires：
 
-- same Suite / Case versions and fingerprints；
-- same base model/provider/profile；
-- same diagnosis Task Contract / output contract / scorer；
-- compatible reasoning and generation settings；
-- explicit known wrapper/Treatment differences；
-- compatible repeat/sample semantics and visible execution coverage。
+- both inputs are `formal_full_suite` artifacts；
+- the Oracle side is `model_one_shot` and the other side is a non-Oracle Runtime；
+- same Suite fingerprint and same Case identities；
+- same model；
+- same evaluation method；
+- same Structured Triage Report schema version。
 
-The intended analysis question is：
+This is enough for the current Oracle-vs-L4 analysis question：
 
-> Given the same model and diagnosis contract, how much of the evidence-conditioned diagnosis capability is realized by the actual Agent System that must investigate the Case itself?
+> 在同一批 Case、同一个模型和同一评分合同下，模型直接拿到 reviewed key evidence 与 Agent 必须自己调查 evidence 时，结果差多少？
 
-If additional behavior-affecting differences are uncontrolled, report the comparison as a **combined difference** rather than a formal realization-gap pair.
+The implementation does not introduce `clean_pair / qualified_pair / incompatible` tiers and does not attempt to become a generic pair-comparison framework.
 
 ## 6. Agent-System Realization Gap
 
-For a higher-is-better diagnosis metric `m`：
+For every higher-is-better metric `m`：
 
 ```text
 realization_gap(case, m)
   = oracle_score(case, m) - agent_score(case, m)
 ```
 
-Gap remains a metric vector, never one composite capability score.
-
-Report at least：
+Therefore：
 
 ```text
-per Case
-per Failure Type
-Suite aggregate
-repeat / variance information
-pairing identity and compatibility result
+gap > 0  -> Oracle performs better
+gap = 0  -> same aggregate result
+gap < 0  -> Agent performs better on that metric
 ```
 
-Do not fold acquisition/operational metrics such as tool-call count, steps, cost or latency into a purported model-capability score. Those are explanatory signals for why the Agent did or did not realize Oracle-condition performance.
+Case aggregate is the primary comparison unit. Repeat index is **not** treated as a strict Oracle-repeat-to-Agent-repeat pair; repeat observations are retained only for stability and badcase interpretation.
 
-A negative gap on one diagnosis metric is possible and not inherently invalid. For example, L4 Suite Failure Type Exact Match (`88.33%`) is higher than Oracle (`85.00%`). Oracle is not a theoretical upper bound; it is a specific evidence-delivery intervention.
-
-## 7. Gap attribution using L4 trajectory
-
-The value of pairing is not only the numeric difference. L4 has a complete Agent trajectory, so gap analysis can distinguish several failure mechanisms：
+The primary realization-gap vector is：
 
 ```text
-A. required / decisive physical content never entered model-visible history
+failure_type_exact_match
+report_evidence_hit_rate
+protocol_validity_rate
+```
+
+Auxiliary observations are：
+
+```text
+required_fields_completeness
+execution_coverage
+repeat-level observations
+```
+
+Gap remains a metric vector, never one composite capability score. Operational signals such as tool calls or Agent steps remain explanatory information, not capability-score dimensions.
+
+A negative gap is valid. For example, the current L4 Suite Failure Type Exact Match (`88.33%`) is higher than Oracle (`85.00%`). Oracle is a specific evidence-delivery intervention, not a theoretical upper bound.
+
+## 7. Human / AI gap attribution
+
+The Pair Analyzer intentionally stops before causal attribution. It packages the comparison evidence; Human / AI review decides what happened in each important Case.
+
+A useful review lens remains：
+
+```text
+A. decisive physical content never entered model-visible history
    -> evidence acquisition / tool-use problem
 
 B. decisive physical content was observed but correct Canonical ID was not cited
@@ -175,9 +189,7 @@ C. decisive evidence was available/cited but diagnosis remained wrong
    -> reasoning / causal-chain problem
 ```
 
-The first L4 milestone already suggests that class B is important: unknown/invented Evidence IDs dominated protocol-invalid final reports.
-
-This is more actionable than treating every Oracle-L4 difference as generic “Agent weakness”.
+These are analysis categories, **not** persisted automatic labels. A Case may involve more than one mechanism, and the first implementation does not build heuristic attribution rules around them.
 
 ## 8. Relationship to L4 Canonical-coordinate visibility
 
@@ -200,30 +212,36 @@ only reviewed Required Evidence source content
 
 Therefore exposing the full coordinate vocabulary to L4 does not collapse L4 into Oracle.
 
-## 9. Current implementation target
+## 9. Current Pair Analyzer
 
-The next implementation slice should remain small：
+CLI：
 
-```text
-Pair Validator
-    -> validate compatible Oracle / L4 formal runs
-    -> construct Case-level pairs
-    -> preserve execution-failure visibility
-
-Realization Gap report
-    -> metric-vector delta per Case
-    -> Failure-Type aggregation
-    -> Suite aggregation
-    -> repeat / variance view
-
-Badcase attribution support
-    -> join L4 trajectory / Trace evidence
-    -> classify acquisition vs mapping/report vs reasoning
+```bash
+devagentops eval pair \
+  --oracle <oracle-evaluation.json> \
+  --agent <agent-evaluation.json> \
+  --agent-database <optional-agent.sqlite3> \
+  --output-dir .devagentops/pair-analysis
 ```
 
-Do **not** reimplement Oracle Runner, redesign the L4 Runtime, or silently normalize away protocol/execution failures as part of the gap machinery.
+Outputs：
 
-A formal Diagnosis Pass Predicate / quadrant visualization may be added only if it provides additional analytical value beyond the metric-vector report; it is not required for the first Pair Validator slice.
+```text
+pair-analysis.json
+pair-analysis.md
+```
+
+`pair-analysis.json` preserves every Case and repeat observation. If `--agent-database` is supplied, the analyzer also joins persisted Agent trajectory messages for later inspection.
+
+`pair-analysis.md` contains：
+
+- Suite gap；
+- Failure-Type gap；
+- a compact table covering every Case；
+- detailed sections only for Cases with a primary-metric difference, protocol invalidity, or incomplete execution；
+- a Human / AI analysis placeholder rather than automatic causal labeling。
+
+The analyzer does not rerun either model, modify Oracle/L4 Runtime behavior, create a new scoring contract, or normalize away execution/protocol failures.
 
 ## 10. Related decisions and results
 
