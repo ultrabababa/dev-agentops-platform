@@ -2,15 +2,16 @@
 
 This directory keeps active architecture decisions for DevAgentOps.
 
-> Current-state note (2026-08-19): L4 `self_built_react` is implemented and has completed its first MiniMax-M3 20×3 formal milestone. ADR 0129 supersedes only ADR 0128's mandatory **L4 local exact-token preflight** requirement; the rest of ADR 0128 remains the active L4 V1 contract.
+> Current-state note (2026-08-19): L4 `self_built_react` is implemented and has completed historical/fresh formal milestones. ADR 0129 supersedes only ADR 0128's mandatory **L4 local exact-token preflight** requirement. ADR 0128 remains the frozen historical L4 V1 base contract; the later L4 Batch + Parallel ToolCalls experiment explicitly refines the recommended forward Tool Policy from historical `single + sequential + reject-all` to `batch + parallel + independent-call handling` without creating a new Runtime rung or rewriting historical identities.
 
 ## Reading Order
 
 1. Read the foundational ADRs `0001` through `0013` for stack, runtime, trace, retrieval, dashboard, storage, eval runner, and baseline decisions.
 2. Read the consolidated topic ADRs `0112` through `0127` for the current V1 evaluation and AgentOps architecture.
-3. For L4, read **ADR 0128 together with ADR 0129**. Do not apply ADR 0128's original exact-preflight section without the ADR 0129 amendment.
-4. Use `archive/micro-decisions/` only when you need the detailed discussion trail behind the consolidated decisions.
-5. Use dated milestone reports for immutable experiment evidence, not as replacements for active architecture contracts.
+3. For the historical L4 V1 base contract, read **ADR 0128 together with ADR 0129**. Do not apply ADR 0128's original exact-preflight section without the ADR 0129 amendment.
+4. For the current recommended same-L4 Tool Policy, read the [L4 Batch + Parallel ToolCalls Milestone](../evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md) together with current `README.md` / `CONTEXT.md` and the frozen Batch Runtime-control / Tool Policy components.
+5. Use `archive/micro-decisions/` only when you need the detailed discussion trail behind the consolidated decisions.
+6. Use dated milestone reports for immutable experiment evidence; only an explicitly referenced later milestone decision may refine a forward recommendation without retroactively changing older measurements.
 
 ## Active Foundational ADRs
 
@@ -49,9 +50,11 @@ This directory keeps active architecture decisions for DevAgentOps.
 - [0128 L4 Self-built ReAct Runtime Contract](0128-l4-self-built-react-runtime-contract.md)
 - [0129 L4 Provider-Reported Context Accounting](0129-l4-provider-reported-context-accounting.md)
 
-## Current empirical reference
+## Current empirical / refinement references
 
-- [L4 MiniMax-M3 Full-Suite Milestone — 2026-08-19](../evaluation/milestones/l4-minimax-m3-full-suite-2026-08-19.md)
+- [L4 MiniMax-M3 Full-Suite Milestone — historical V1 reference](../evaluation/milestones/l4-minimax-m3-full-suite-2026-08-19.md)
+- [Shared Evidence Reference Canonicalization Milestone](../evaluation/milestones/evidence-reference-canonicalization-2026-08-19.md)
+- [L4 Batch + Parallel ToolCalls Milestone — current forward Tool Policy decision](../evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md)
 
 ## Archived Micro ADRs
 
