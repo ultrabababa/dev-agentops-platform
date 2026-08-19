@@ -2,6 +2,14 @@
   "components": {
     "mcp_server_set": {},
     "prompt": {
+      "l4-react-runtime-control-batch-parallel-v1": {
+        "fingerprint": "654f8c3834a12fbf854f70e2de75fa0f2f41976efb9ea93ad786a01b8d73228d",
+        "frozen_at": "2026-08-19T10:39:48Z",
+        "manifest": "frozen/prompt/l4-react-runtime-control-batch-parallel-v1.json",
+        "metadata": {
+          "description": "Human-frozen L4 batch + parallel Runtime-control prompt from Issue #61"
+        }
+      },
       "l4-react-runtime-control-v1": {
         "fingerprint": "06db8a3bf29e4f8f9cc34972efceecccbc265fa7d25dcb40b1523b9a0b2a1a26",
         "frozen_at": "2026-08-18T12:11:02Z",
@@ -22,6 +30,14 @@
     "retriever_config": {},
     "skill_registry": {},
     "tool_policy": {
+      "l4-batch-parallel-tool-policy-v1": {
+        "fingerprint": "7a12a19e99b6b36d7cde1964a1bc42c5e101175477ed9e06564fcba97adacfe2",
+        "frozen_at": "2026-08-19T10:39:48Z",
+        "manifest": "frozen/tool_policy/l4-batch-parallel-tool-policy-v1.json",
+        "metadata": {
+          "description": "Human-frozen L4 batch + parallel read-only Tool Policy from Issue #61"
+        }
+      },
       "l4-single-sequential-tool-policy-v1": {
         "fingerprint": "fd218879f82d7c090304522e6c938102ee633e10eaa09733ffda99760db5c26c",
         "frozen_at": "2026-08-18T12:11:02Z",

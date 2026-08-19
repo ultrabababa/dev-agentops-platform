@@ -1,0 +1,145 @@
+{
+  "schema_version": "1",
+  "milestone_id": "l4-batch-parallel-toolcalls-2026-08-19",
+  "date": "2026-08-19",
+  "implementation": {
+    "issue": 61,
+    "pull_request": 62,
+    "runtime_variant": "self_built_react",
+    "runtime_control_version": "l4-react-runtime-control-batch-parallel-v1",
+    "tool_policy_version": "l4-batch-parallel-tool-policy-v1",
+    "tool_registry_version": "l4-investigation-tools-v1",
+    "output_contract_version": "development-v2",
+    "evidence_reference_resolution": "canonical-line-range-normalization-v1"
+  },
+  "validation": {
+    "focused_regression": {
+      "passed": 29
+    },
+    "full_repository": {
+      "passed": 377,
+      "skipped": 2,
+      "subtests_passed": 30
+    },
+    "formal_matrix_doctor": "passed"
+  },
+  "fresh_canonicalized_baseline_reference": {
+    "run_id": "d6fee1ba-ddd2-4ed3-ae2f-625603de5fef",
+    "condition_id": "l4-minimax-m3-canonicalized-development-v1",
+    "metrics": {
+      "execution_coverage": 1.0,
+      "failure_type_exact_match": 0.816667,
+      "report_evidence_hit_rate": 0.7183,
+      "required_fields_completeness": 0.9958,
+      "protocol_validity_rate": 0.9333
+    },
+    "trace_audit": {
+      "successful_model_decisions": 798,
+      "multi_call_decisions": 14,
+      "rejected_tool_call_ids": 35,
+      "affected_samples": 11
+    },
+    "interpretation": "Fresh hosted generation is not a causal control because model/provider regeneration variance is known. This baseline is used as an operational comparison reference only."
+  },
+  "batch_parallel_formal": {
+    "run_id": "010e9a75-8ca8-44b5-8445-d82d188d11f3",
+    "status": "completed",
+    "suite_quality_status": "complete",
+    "condition_id": "l4-minimax-m3-batch-parallel-canonicalized-development-v1",
+    "code_revision": "ae6b756d13471a68c263583533795ef1c2a47231",
+    "artifact_sha256": "a8e73a66de70788aa7fc59fce881723ef6e4d75d0127767aa0a4da64765fe67d",
+    "planned_samples": 60,
+    "scored_samples": 60,
+    "execution_failures": 0,
+    "fingerprints": {
+      "condition": "d3353424ccfdfeb03772ebf4ff4bd8f1ca6861b051136d2571ef7dea39bae62e",
+      "treatment": "c988c570a1e0ed5623933c8c419605cd1f6c2066d2bbe224c6748178391d181e",
+      "execution_policy": "14e21cd921a1729991f83aa83ce3c9ba8f4603526c3782181255886bbf30461a",
+      "run_configuration": "4cdc2facc0f12dd36c09ebd8dde1e982270c50e8fd87a3e3ad28de7776a4dfbc"
+    },
+    "provenance_note": {
+      "manifest_git_dirty": true,
+      "post_run_tracked_tree_check": "clean",
+      "observed_untracked_entry": ".worktrees/",
+      "interpretation": "Maintainer verification immediately after the run showed no tracked modifications; git_dirty was caused by an unrelated untracked worktree directory. The run is retained and is not re-run merely to change the metadata bit."
+    },
+    "quality_metrics": {
+      "execution_coverage": 1.0,
+      "failure_type_exact_match": 0.7333333333333333,
+      "report_evidence_hit_rate": 0.6819179894179894,
+      "required_fields_completeness": 0.8666666666666666,
+      "protocol_validity_rate": 0.8666666666666667,
+      "protocol_valid_samples": 52,
+      "protocol_invalid_samples": 8
+    },
+    "runtime_mechanism": {
+      "successful_model_decisions": 547,
+      "provider_request_attempts": 548,
+      "failed_provider_attempts": 1,
+      "tool_using_decisions": 487,
+      "tool_calls_started": 787,
+      "multi_call_decisions": 257,
+      "multi_call_decision_rate_among_tool_decisions": 0.5277207392197125,
+      "samples_with_multi_call": 55,
+      "batch_size_distribution": {
+        "1": 230,
+        "2": 221,
+        "3": 29,
+        "4": 7
+      },
+      "multiple_tool_calls_rejected": 0,
+      "tool_errors": {
+        "schema_invalid_arguments": 9,
+        "path_not_found": 2
+      },
+      "model_decision_reduction_vs_fresh_baseline": {
+        "baseline": 798,
+        "candidate": 547,
+        "absolute": 251,
+        "relative": 0.31453634085213034
+      }
+    },
+    "provider_usage": {
+      "input_tokens": 15684626,
+      "output_tokens": 272805,
+      "total_tokens": 15957431,
+      "cached_prompt_tokens": 13328611,
+      "cache_ratio": 0.8497882576224642,
+      "non_cached_prompt_tokens": 2356015
+    },
+    "latency": {
+      "run_wall_seconds": 1378.687302,
+      "sample_duration_seconds": {
+        "p50": 42.4376395,
+        "p90": 112.9038836,
+        "p95": 138.1487169,
+        "max": 653.681583
+      },
+      "straggler": {
+        "case_id": "odrepair-dubbo-737f7a7e",
+        "repeat_index": 2,
+        "duration_seconds": 653.681583,
+        "provider_timeout_step": 3,
+        "failed_attempt_latency_ms": 600160,
+        "failure_code": "model_provider_timeout",
+        "sample_completed_after_same_request_retry": true
+      }
+    },
+    "protocol_invalid_details": [
+      {"case_id": "bugswarm-apache-struts-190697114", "repeat_index": 2, "error_codes": ["invalid_report_type"]},
+      {"case_id": "bugswarm-retrofit-113047638", "repeat_index": 0, "error_codes": ["invalid_report_type"]},
+      {"case_id": "bugswarm-retrofit-113047638", "repeat_index": 1, "error_codes": ["invalid_report_type"]},
+      {"case_id": "bugswarm-mypy-237548392", "repeat_index": 0, "error_codes": ["invalid_report_type"]},
+      {"case_id": "bugswarm-blueflood-80881330", "repeat_index": 2, "error_codes": ["invalid_report_type"]},
+      {"case_id": "odrepair-dubbo-737f7a7e", "repeat_index": 2, "error_codes": ["invalid_report_type"]},
+      {"case_id": "odrepair-remoting-abf0455a", "repeat_index": 0, "error_codes": ["invalid_report_type"]},
+      {"case_id": "odrepair-remoting-abf0455a", "repeat_index": 2, "error_codes": ["invalid_report_type"]}
+    ]
+  },
+  "decision": {
+    "implementation_qualification": "passed",
+    "default_baseline_promotion": "not_yet",
+    "reason": "The runtime mechanism worked as intended and materially reduced Model Decisions while eliminating reject-all multi-call failures. Fresh quality metrics were lower, but all residual protocol-invalid samples were invalid_report_type and hosted regeneration variance prevents attributing the quality delta causally to batching. Keep batch+parallel as a distinct supported treatment; do not add arbitrary batch caps, forced batching, scheduler changes, or output repair based on this run.",
+    "next_direction": "Preserve the treatment and milestone. A future baseline promotion requires stronger evidence than one fresh hosted comparison; the next large capability remains executable repair/sandbox work unless new evidence justifies another controlled runtime ablation."
+  }
+}

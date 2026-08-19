@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import time
 from collections.abc import Callable
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import Any, Literal
 
@@ -19,13 +20,14 @@ from devagentops.providers.execution import (
 from devagentops.runtime.messages import (
     AssistantMessage,
     Message,
+    ToolCall,
     ToolDefinition,
     ToolResultMessage,
     UserMessage,
     assistant_text,
     tool_calls,
 )
-from devagentops.runtime.tool_policy import evaluate_baseline_policy
+from devagentops.runtime.tool_policy import ToolPolicyMode, evaluate_baseline_policy
 from devagentops.runtime.tools import TOOL_DEFINITIONS, ExpectedToolError, execute_tool
 from devagentops.runtime.tools._common import bound_tool_result_text
 from devagentops.runtime.workspace import RuntimeCaseWorkspace
@@ -55,6 +57,7 @@ class ReactConfiguration:
     tools: tuple[ToolDefinition, ...] = TOOL_DEFINITIONS
     max_steps: int = MAX_STEPS
     resolve_evidence_references: bool = False
+    tool_policy_mode: ToolPolicyMode = "single_sequential"
 
 
 @dataclass(frozen=True)
@@ -69,6 +72,13 @@ class ReactRuntimeResult:
     final_assistant: AssistantMessage | None
     final_latency_ms: int | None
     model_candidate_document: Any = None
+
+
+@dataclass(frozen=True)
+class _ToolCallOutcome:
+    message: ToolResultMessage
+    event_type: Literal["tool_call_completed", "tool_call_error"]
+    payload: dict[str, Any]
 
 
 class ReactInfrastructureError(RuntimeError):
@@ -296,6 +306,27 @@ def run_react(
                 )
             continue
 
+        if configuration.tool_policy_mode == "batch_parallel":
+            messages = _execute_parallel_tool_batch(
+                workspace=workspace,
+                messages=messages,
+                calls=calls,
+                step=steps,
+                request_attempts=request_attempts,
+                on_event=on_event,
+            )
+            continue
+
+        if configuration.tool_policy_mode != "single_sequential":
+            raise ReactInfrastructureError(
+                "L4 Runtime received an unsupported Tool Policy mode",
+                code="invalid_l4_tool_policy",
+                stage="l4_execution",
+                messages=messages,
+                steps=steps,
+                request_attempts=request_attempts,
+            )
+
         policy = evaluate_baseline_policy(calls)
         if not policy.accepted:
             assert policy.error is not None
@@ -315,15 +346,7 @@ def run_react(
 
         call = calls[0]
         if call.arguments is None:
-            result_message = ToolResultMessage(
-                tool_call_id=call.id,
-                tool_name=call.name,
-                content=(
-                    "malformed tool arguments: arguments must be one strict JSON object; "
-                    "the Runtime did not repair the provider-emitted representation"
-                ),
-                is_error=True,
-            )
+            result_message = _malformed_tool_arguments_result(call)
             messages = (*messages, result_message)
             _emit(
                 on_event,
@@ -399,6 +422,135 @@ def run_react(
                 "result_metadata": result.metadata,
             },
         )
+
+
+def _execute_parallel_tool_batch(
+    *,
+    workspace: RuntimeCaseWorkspace,
+    messages: tuple[Message, ...],
+    calls: tuple[ToolCall, ...],
+    step: int,
+    request_attempts: int,
+    on_event: RuntimeEventCallback | None,
+) -> tuple[Message, ...]:
+    outcomes: list[_ToolCallOutcome | None] = [None] * len(calls)
+    runnable: list[tuple[int, ToolCall]] = []
+
+    for index, call in enumerate(calls):
+        if call.arguments is None:
+            outcomes[index] = _ToolCallOutcome(
+                message=_malformed_tool_arguments_result(call),
+                event_type="tool_call_error",
+                payload={
+                    "step": step,
+                    "tool_call_id": call.id,
+                    "tool_name": call.name,
+                    "code": "malformed_tool_arguments",
+                },
+            )
+        else:
+            runnable.append((index, call))
+
+    for _, call in runnable:
+        _emit(
+            on_event,
+            "tool_call_started",
+            {"step": step, "tool_call_id": call.id, "tool_name": call.name},
+        )
+
+    unexpected: list[tuple[ToolCall, Exception]] = []
+    if runnable:
+        with ThreadPoolExecutor(
+            max_workers=len(runnable),
+            thread_name_prefix="l4-tool",
+        ) as pool:
+            futures = [
+                pool.submit(_execute_one_tool_call, workspace, call, step)
+                for _, call in runnable
+            ]
+            for (index, call), future in zip(runnable, futures, strict=True):
+                try:
+                    outcomes[index] = future.result()
+                except Exception as exc:  # infrastructure failure, never Agent-visible
+                    unexpected.append((call, exc))
+
+    if unexpected:
+        first_call, exc = unexpected[0]
+        raise ReactInfrastructureError(
+            "unexpected L4 tool or workspace implementation failure "
+            f"during parallel ToolCall {first_call.id}",
+            code="tool_execution_failed",
+            stage="tool_execution",
+            messages=messages,
+            steps=step,
+            request_attempts=request_attempts,
+        ) from exc
+
+    assert all(outcome is not None for outcome in outcomes)
+    ordered_outcomes = tuple(outcome for outcome in outcomes if outcome is not None)
+    messages = (*messages, *(outcome.message for outcome in ordered_outcomes))
+    for outcome in ordered_outcomes:
+        _emit(on_event, outcome.event_type, outcome.payload)
+    return messages
+
+
+def _execute_one_tool_call(
+    workspace: RuntimeCaseWorkspace,
+    call: ToolCall,
+    step: int,
+) -> _ToolCallOutcome:
+    assert call.arguments is not None
+    try:
+        result = execute_tool(workspace, call.name, call.arguments)
+    except ExpectedToolError as exc:
+        error_content, content_truncated = bound_tool_result_text(
+            f"{exc.code}: {exc}"
+        )
+        return _ToolCallOutcome(
+            message=ToolResultMessage(
+                tool_call_id=call.id,
+                tool_name=call.name,
+                content=error_content,
+                is_error=True,
+            ),
+            event_type="tool_call_error",
+            payload={
+                "step": step,
+                "tool_call_id": call.id,
+                "tool_name": call.name,
+                "code": exc.code,
+                "truncated": content_truncated,
+            },
+        )
+
+    return _ToolCallOutcome(
+        message=ToolResultMessage(
+            tool_call_id=call.id,
+            tool_name=call.name,
+            content=result.content,
+            is_error=False,
+        ),
+        event_type="tool_call_completed",
+        payload={
+            "step": step,
+            "tool_call_id": call.id,
+            "tool_name": call.name,
+            "truncated": result.truncated,
+            "result_metadata": result.metadata,
+        },
+    )
+
+
+def _malformed_tool_arguments_result(call: ToolCall) -> ToolResultMessage:
+    return ToolResultMessage(
+        tool_call_id=call.id,
+        tool_name=call.name,
+        content=(
+            "malformed tool arguments: arguments must be one strict JSON object; "
+            "the Runtime did not repair the provider-emitted representation"
+        ),
+        is_error=True,
+    )
 
 
 def _record_model_attempt(
