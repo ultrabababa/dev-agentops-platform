@@ -17,6 +17,10 @@ from devagentops.evaluation.matrix import (
     load_evaluation_matrix,
 )
 from devagentops.evaluation.debug import run_case_subset_debug
+from devagentops.evaluation.pair_analysis import (
+    PairAnalysisError,
+    analyze_oracle_agent_pair,
+)
 from devagentops.evaluation.preflight import run_formal_eval_doctor
 from devagentops.evaluation.run import EvaluationRunError, run_evaluation
 from devagentops.evaluation.suite import (
@@ -201,6 +205,33 @@ def build_parser() -> argparse.ArgumentParser:
         default=Path(".devagentops/evaluation-artifacts"),
         help="Ignored directory for generated JSON and Markdown artifacts.",
     )
+    pair_parser = eval_subcommands.add_parser(
+        "pair",
+        help="Compare one Oracle formal artifact with one Agent formal artifact.",
+    )
+    pair_parser.add_argument(
+        "--oracle",
+        type=Path,
+        required=True,
+        help="Path to the Oracle evaluation.json artifact.",
+    )
+    pair_parser.add_argument(
+        "--agent",
+        type=Path,
+        required=True,
+        help="Path to the Agent evaluation.json artifact.",
+    )
+    pair_parser.add_argument(
+        "--agent-database",
+        type=_database_path,
+        help="Optional SQLite database containing persisted Agent trajectories.",
+    )
+    pair_parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=Path(".devagentops/pair-analysis"),
+        help="Directory for pair-analysis.json and pair-analysis.md.",
+    )
 
     component_parser = subcommands.add_parser(
         "component",
@@ -307,6 +338,13 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "completed_with_sample_failures",
             }:
                 exit_code = 1
+        elif args.command == "eval" and args.eval_command == "pair":
+            status = analyze_oracle_agent_pair(
+                oracle_path=args.oracle,
+                agent_path=args.agent,
+                agent_database=args.agent_database,
+                output_dir=args.output_dir,
+            )
         elif args.command == "component" and args.component_command == "validate":
             status = load_component_manifest(args.manifest).validation_result()
         elif args.command == "component" and args.component_command == "freeze":
@@ -325,6 +363,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     except (
         ComponentRegistryError,
         EvaluationMatrixError,
+        PairAnalysisError,
         ReportInputError,
         StorageError,
     ) as exc:
