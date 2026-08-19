@@ -140,7 +140,7 @@ Behavior-affecting Treatment components通过 Component Registry version + finge
 
 ### Historical MiniMax-M3 baseline generation
 
-同一 `triage-suite-v1` 包含 20 个 Human-reviewed Formal Cases，每个 Case 重复 3 次。下表是当前保留的**历史 baseline generation**，用于解释已经完成的 L1/L2/Oracle/L4 runs；它不会被后续 shared output normalization retroactively 改写。
+同一 `triage-suite-v1` 包含 20 个 Human-reviewed Formal Cases，每个 Case 重复 3 次。下表是保留的**历史 pre-canonicalization baseline generation**；这些 run 不会被后续 output normalization retroactively 改写。
 
 | Condition | Execution Coverage | Failure Type Exact Match | Evidence Hit Rate | Required Fields Completeness | Protocol Validity |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -149,7 +149,7 @@ Behavior-affecting Treatment components通过 Component Registry version + finge
 | **L4 self-built ReAct** | **98.33%** | **88.33%** | **65.51%** | **96.67%** | **81.36%** |
 | Oracle Evidence | 100.00% | 85.00% | 89.29% | 100.00% | 100.00% |
 
-L4 formal milestone：
+L4 historical formal milestone：
 
 - Run ID: `dd8ca829-5051-43b6-a0c2-b3c2889acae0`
 - `20 Cases × 3 repeats = 60 Samples`
@@ -160,11 +160,42 @@ L4 formal milestone：
 - `283` truncated ToolResults；
 - 最大 provider-reported input context：`98,893` tokens。
 
-相对 L2，L4 提升了 taxonomy exact match 与 Evidence Hit Rate，但降低了 final protocol validity。历史 L4 V1 中最明显的 realization defect 是：模型已经得到或定位到一个物理 line range 后，仍可能自行拼接不存在的 Canonical Evidence ID。历史 run 没有做任何 post-generation repair；Pair Analysis 之后的当前决策则是把 deterministic Evidence Reference Canonicalization 提升为 **L1/L2/Oracle/L4 共享的 final-report/output infrastructure**，并在统一能力下重新生成公平的四条件比较结果。
+历史 L4 V1 中最明显的 realization defect 是：模型已经得到或定位到一个物理 line range 后，仍可能自行拼接不存在的 Canonical Evidence ID。Oracle↔L4 Pair Analysis 因此推动了共享 deterministic Evidence Reference Canonicalization，而不是 L4-only coordinate hint。
+
+### Shared Evidence Reference Canonicalization result
+
+`canonical-line-range-normalization-v1` 已作为 L1/L2/Oracle/L4 共享 final-report/output infrastructure 实现并完成实验验证。
+
+历史 raw candidate 的 zero-model-cost offline replay 提供因果隔离结果：
+
+| Condition | Protocol before → after | Evidence Hit before → after | Canonicalization effect |
+| --- | ---: | ---: | --- |
+| L1 | 96.67% → 96.67% | 51.38% → 51.38% | 0 changed Samples |
+| L2 | 90.00% → **95.00%** | 55.57% → **59.46%** | 3 invalid Samples recovered |
+| Oracle | 100.00% → 100.00% | 89.29% → 89.29% | 0 changed Samples |
+| L4 | 81.36% → **96.61%** | 65.51% → **75.88%** | 9 invalid Samples recovered; unknown IDs 12 → 0 |
+
+四条件 fresh `20×3` canonicalized generation 也已完成：
+
+| Condition | Execution Coverage | Failure Type Exact Match | Evidence Hit Rate | Required Fields Completeness | Protocol Validity |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| L1 canonicalized | 98.33% | 80.00% | 52.16% | 99.79% | 96.61% |
+| L2 canonicalized | 96.67% | 83.33% | 54.15% | 98.33% | **98.28%** |
+| Oracle canonicalized | 100.00% | 83.33% | 85.40% | 96.67% | 96.67% |
+| **L4 canonicalized** | **100.00%** | **81.67%** | **71.83%** | **99.58%** | **93.33%** |
+
+Fresh generation 不能作为 canonicalizer 的单变量 causal estimate：Oracle 在 `canonicalization_changed_samples = 0` 的情况下仍发生 metric drift，说明重新调用 hosted model/provider 本身存在 regeneration variance。因果结论以固定历史 raw candidate 的 offline replay 为准；fresh generation 用于 operational confirmation。
+
+Resolver 只处理可从 frozen source identity + physical line range 确定映射的引用。Source identity typo、缺失字段或其他报告错误仍由正常 validator 判 invalid；不做 fuzzy matching 或语义修复。
+
+完整实验报告与 machine-readable result snapshot：
+
+- [Shared Evidence Reference Canonicalization Milestone](docs/evaluation/milestones/evidence-reference-canonicalization-2026-08-19.md)
+- [Canonicalization Result Snapshot](docs/evaluation/milestones/evidence-reference-canonicalization-results-2026-08-19.json)
 
 Oracle 不是“更高一级 Runtime”，也不应该被解释成 L4 必须整体超过的 benchmark rung。它是 evidence-conditioned diagnostic intervention。
 
-完整历史结果见 [L4 MiniMax-M3 Full-Suite Milestone](docs/evaluation/milestones/l4-minimax-m3-full-suite-2026-08-19.md)。当前分析与后续决策见 [Oracle ↔ L4 Pair Analysis Findings](docs/evaluation/milestones/oracle-l4-pair-analysis-2026-08-19.md)。
+完整历史结果见 [L4 MiniMax-M3 Full-Suite Milestone](docs/evaluation/milestones/l4-minimax-m3-full-suite-2026-08-19.md)。Pair Analysis 见 [Oracle ↔ L4 Pair Analysis Findings](docs/evaluation/milestones/oracle-l4-pair-analysis-2026-08-19.md)。
 
 ## Repository layout
 
@@ -200,11 +231,11 @@ Initialize local persistence：
 .venv/bin/devagentops status --database .devagentops/devagentops.db
 ```
 
-Validate the current L4 formal configuration without running the model：
+Validate the current canonicalized L4 formal configuration without running the model：
 
 ```bash
 .venv/bin/devagentops eval doctor \
-  --matrix evaluation/matrices/l4-minimax-m3-development-v2.json \
+  --matrix evaluation/matrices/l4-minimax-m3-canonicalized-v2.json \
   --registry components/registry.json \
   --suite evaluation/suites/triage-v1/suite.json
 ```
@@ -236,26 +267,28 @@ Current architecture / methodology should be read in roughly this order：
 5. [Runtime Capability Ladder](docs/evaluation/runtime-capability-ladder.md) — controlled capability comparisons;
 6. [L4 Runtime Design](docs/evaluation/l4-self-built-react-runtime-design.md) — frozen L4 V1 self-built Agent Runtime contract;
 7. [Oracle Evidence Diagnostic Condition](docs/evaluation/oracle-evidence-diagnostic-condition.md) — evidence-conditioned diagnostic boundary;
-8. [Oracle ↔ L4 Pair Analysis Findings](docs/evaluation/milestones/oracle-l4-pair-analysis-2026-08-19.md) — current badcase analysis and next-decision record;
-9. [Milestone Status Index](docs/evaluation/milestones/README.md) — tells which dated milestone documents are historical baselines versus current decision records.
+8. [Shared Evidence Reference Canonicalization Milestone](docs/evaluation/milestones/evidence-reference-canonicalization-2026-08-19.md) — completed replay + fresh four-condition comparison and interpretation;
+9. [Oracle ↔ L4 Pair Analysis Findings](docs/evaluation/milestones/oracle-l4-pair-analysis-2026-08-19.md) — historical badcase analysis that motivated canonicalization;
+10. [Milestone Status Index](docs/evaluation/milestones/README.md) — classifies dated milestone documents and points to the current completed experiment.
 
 `docs/adr/archive/`、dated milestone docs、Case review packets 和 merged PR discussions 是历史记录；它们不覆盖当前 Active ADR 与 current-facing docs。直接阅读 dated milestone 前先看 Milestone Status Index。
 
 ## Current roadmap
 
-Oracle↔L4 Pair Analysis 已完成，当前工作不再是“再做一次 L4-only coordinate-assistance ablation”。最新顺序是：
+Shared deterministic Evidence Reference Canonicalization 已完成实现、historical offline replay 和 fresh L1/L2/Oracle/L4 `20×3` formal generation。当前不再继续扩 resolver；下一项独立 Runtime experiment 是：
 
 ```text
-Shared deterministic Evidence Reference Canonicalization
-    -> offline replay of historical L1/L2/Oracle/L4 raw candidate outputs
-    -> validate normalization correctness and counterfactual metric recovery
-    -> new L1/L2/Oracle/L4 20×3 formal comparison generation
-    -> establish the new fair shared-output baseline
-    -> separate L4 batch + parallel Tool Policy efficiency experiment
+L4 single + sequential Tool Policy
+    -> batch + parallel ToolCalls
+    -> compare Model Decisions / rejected multi-call handling
+    -> compare tokens / cache / wall-clock
+    -> verify taxonomy / Evidence Hit / Protocol do not materially regress
 ```
 
-Shared canonicalization 只把 model-authored、可确定解析的 same-family line-range reference 映射到 frozen Canonical IDs；exact ID 原样保留，不做 fuzzy matching，不读取 Required Evidence / Expected Answer，也不根据语义替模型选择“应该引用什么”。无法确定解析的引用仍由正常 validation 判 invalid。
+当前 canonicalizer 只根据 frozen Canonical coordinates 做确定性映射：exact legal ID 原样保留；source identity 一致且 line range 可解析时，替换为实际覆盖到的 Canonical Evidence IDs 并稳定去重；无法确定映射的引用继续由 validator 判 invalid。它不读取 Required Evidence / Expected Answer，不做 fuzzy source correction，也不替模型进行语义 Evidence selection。
 
-L4 的第二个已观察到的工程瓶颈是执行效率：历史 formal run 有 `26` 个 `multiple_tool_calls_rejected` ToolCall IDs，且 `802` 个 successful Model Decisions 产生 `24.72M` prompt tokens。Canonicalization 稳定后，再单独把 Tool Policy 从 `single + sequential` 演进到 `batch + parallel`，测 Model Decisions、tokens、wall-clock 与质量指标变化。
+实验同时暴露了一个独立 metric limitation：一个极宽的合法 physical line range 可以展开为大量 Canonical IDs，而当前 recall-oriented Evidence Hit 不惩罚 broad over-citation。如果后续 evidence 表明该问题重要，应单独研究 Evidence Precision / Citation Specificity，而不是往 resolver 中加入任意宽度阈值。
 
-L3 static retrieval、context management、planner/verifier、skills/MCP、memory 等仍保持 evidence-gated；当前没有证据要求把这些能力与上述两个已确认问题混在同一轮实现里。
+L4 的下一个已确认工程瓶颈是执行效率：历史 formal run 有 `26` 个 `multiple_tool_calls_rejected` ToolCall IDs，且 `802` 个 successful Model Decisions 产生 `24.72M` prompt tokens。Batch + parallel 必须保持为独立 Treatment，避免把效率变化和 citation normalization 混在同一实验中。
+
+L3 static retrieval、context management、planner/verifier、skills/MCP、memory 等仍保持 evidence-gated；当前没有证据要求把这些能力与 batch-parallel 混在同一轮实现里。
