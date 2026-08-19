@@ -3,6 +3,7 @@ name: BugSwarm PyGithub Qualification
 on:
   push:
     branches:
+      - main
       - agent/bugswarm-qualification
     paths:
       - .github/workflows/bugswarm-qualification.yml
