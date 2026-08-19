@@ -1,6 +1,6 @@
 # Formal Evaluation Methodology：Evidence Universe、Schema V2 与 Access Conditions
 
-> Current-state note (2026-08-19): `triage-suite-v1`、20 个 Schema V2 Cases 与 Canonicalization Profile v1 已冻结；historical L1/L2/Oracle/L4 MiniMax-M3 formal milestones 均已完成；Oracle↔L4 Pair Analysis 也已完成。当前下一步是 shared deterministic final-report Evidence Reference Canonicalization，并在统一 output-resolution capability 下重新生成 L1/L2/Oracle/L4 formal comparison。
+> Current-state note (2026-08-19): `triage-suite-v1`、20 个 Schema V2 Cases 与 Canonicalization Profile v1 已冻结；historical L1/L2/Oracle/L4 milestones、Oracle↔L4 Pair Analysis、shared deterministic Evidence Reference Canonicalization、fresh four-condition canonicalized generation，以及 L4 Batch + Parallel Tool Policy initial + replication experiment 均已完成。Batch + Parallel 是 new L4 evaluations 的推荐 Tool Policy；historical single/sequential 保留为 immutable reference。
 
 ## 1. Trust model
 
@@ -86,13 +86,11 @@ Do not equate Canonical Units with retriever index chunks.
 
 ## 4. Canonicalization Profile v1
 
-The first Formal Suite uses one frozen suite-shared Canonicalization Profile v1. Earlier documents that describe profile calibration or `N=100` as only a candidate reflect pre-freeze history.
-
-Changing Canonical coordinates/required IDs in the frozen suite is a Case/Suite identity change, not a Runtime tweak.
+The first Formal Suite uses one frozen suite-shared Canonicalization Profile v1. Changing Canonical coordinates/required IDs in the frozen suite is a Case/Suite identity change, not a Runtime tweak.
 
 ## 5. Investigation Workspace
 
-The Investigation Workspace is the Runtime-facing physical view of the Case world. For L4 V1 it is conceptually:
+The Investigation Workspace is the Runtime-facing physical view of the Case world. For L4 it is conceptually:
 
 ```text
 /raw.log
@@ -108,21 +106,19 @@ Different conditions may expose the same underlying Case world differently becau
 | Condition | Physical evidence delivery / acquisition | Adaptive Agent loop? | Current state |
 | --- | --- | --- | --- |
 | L0 Pipeline | deterministic program-defined access | no | implemented |
-| L1 Full-context One-shot | complete Agent-visible physical universe upfront | no | historical formal milestone complete; new generation pending shared canonicalization |
-| L2 Fixed Model Workflow | fixed program-controlled multi-stage input flow | no | historical formal milestone complete; new generation pending shared canonicalization |
+| L1 Full-context One-shot | complete Agent-visible physical universe upfront | no | historical + canonicalized fresh generation complete |
+| L2 Fixed Model Workflow | fixed program-controlled multi-stage input flow | no | historical + canonicalized fresh generation complete |
 | L3 Static Retrieval | versioned static retrieval over Physical Artifacts | no | not implemented; optional diagnostic |
-| L4 self-built ReAct | `read/grep/find/ls` investigation of physical workspace | yes | historical formal milestone complete; new generation pending shared canonicalization |
-| Oracle Evidence | Trusted resolver supplies reviewed Required Evidence source content directly | no | historical formal milestone complete; new generation pending shared canonicalization |
+| L4 self-built ReAct | `read/grep/find/ls` investigation of physical workspace | yes | historical/fresh milestones + Batch/Parallel replication complete |
+| Oracle Evidence | Trusted resolver supplies reviewed Required Evidence source content directly | no | historical + canonicalized fresh generation complete |
 
 L0–L5+ is not mandatory implementation order. Oracle is orthogonal to the ladder.
 
 ## 7. L4 Canonical-coordinate vocabulary and shared final-report normalization
 
-Earlier methodology correctly rejected giving a normal Agent a curator-selected **Required Evidence menu**. That remains forbidden.
+A normal Agent must never receive a curator-selected **Required Evidence menu**.
 
-ADR 0128 makes a narrower historical L4 V1 decision: the complete **answer-neutral Canonical coordinate vocabulary** is included in L4's initial model-visible user input so the final report can cite valid Evidence IDs.
-
-The distinction is critical:
+L4 may receive the complete **answer-neutral Canonical coordinate vocabulary** in the initial model-visible input so the final report can cite valid Evidence IDs.
 
 ```text
 L4 receives upfront:
@@ -138,9 +134,9 @@ L4 does NOT receive upfront:
 
 L4 still has to discover decisive physical content through tools.
 
-The first L4 formal milestone showed that final citation representation can fail even when investigation/diagnosis is useful: unknown/invented Evidence IDs dominated protocol-invalid reports. That historical L4 V1 baseline had no dynamic Runtime span -> Evidence-ID repair.
+Historical L4 showed that final citation representation can fail even when investigation/diagnosis is useful. Pair Analysis therefore moved the deterministic repair to shared final-report/output infrastructure rather than adding an L4-only coordinate helper.
 
-Pair Analysis superseded the earlier proposal for an L4-only coordinate-assistance ablation. The current plan is shared final-report/output normalization across L1/L2/Oracle/L4:
+Current shared path:
 
 ```text
 runtime-specific model execution
@@ -152,14 +148,52 @@ runtime-specific model execution
 
 Resolver semantics are deliberately narrow:
 
-- exact frozen Canonical ID -> preserve；
-- parseable same-family explicit line range -> map by deterministic overlap to frozen Canonical unit(s)；
-- deduplicate resolved references；
-- unresolvable reference -> remain invalid。
+- exact frozen Canonical ID -> preserve;
+- matching frozen source identity + parseable explicit line range -> map by deterministic physical overlap to frozen Canonical unit(s);
+- stably deduplicate resolved references;
+- unresolvable reference -> remain invalid.
 
-The resolver must not inspect Required Evidence, Expected Answer, evaluator labels/reasoning, semantic similarity, or fuzzy path matching. It also does not add a new trajectory/read-history proof obligation solely for repaired references. The Runtime normalizes representation; it does not choose which evidence the model ought to cite.
+The resolver must not inspect Required Evidence, Expected Answer, evaluator labels/reasoning, semantic similarity, or fuzzy path matching. It also does not add a trajectory/read-history proof obligation solely for normalized references. The Runtime normalizes representation; it does not choose which evidence the model ought to cite.
 
-## 8. Context/accounting semantics by condition
+Historical raw candidate replay is the causal isolation evidence because model output is held fixed. Fresh generation is operational confirmation and is subject to hosted regeneration variance.
+
+## 8. L4 Tool Policy as an explicit Treatment
+
+Tool availability comes from the frozen Tool Registry; Tool Policy controls cross-call execution semantics.
+
+Historical reference:
+
+```text
+call_mode = single
+execution_mode = sequential
+multiple_calls = reject_all_with_error_results
+```
+
+Recommended forward L4 Treatment:
+
+```text
+call_mode = batch
+execution_mode = parallel
+multiple_calls = accept_independently
+```
+
+Batch + Parallel keeps `runtime_variant=self_built_react`; it is not a new capability rung. Frozen semantics include:
+
+- zero/one/multiple ToolCalls in one Model Decision;
+- no arbitrary ordinary ToolCall count cap;
+- malformed / expected errors isolated per call;
+- valid siblings execute concurrently;
+- duplicate calls are not deduplicated;
+- barrier before next Model Decision;
+- ToolResults materialize in original model-authored order;
+- one N-call Model Decision consumes one Agent step;
+- unexpected Runtime/workspace/tool defects remain Sample-level infrastructure failures;
+- `stop_reason=length` executes none;
+- the Runtime-control prompt exposes batching neutrally rather than forcing it.
+
+The initial Batch run and a fresh back-to-back replication are complete. Model Decision reduction reproduced at about `31–35%`; the clean replication also reduced wall time `17.54%` while executed ToolCalls changed only `809 -> 775`. The initial apparent quality regression did not reproduce. Therefore the current recommendation is Batch + Parallel for new L4 evaluations while historical single/sequential remains an immutable comparison reference.
+
+## 9. Context/accounting semantics by condition
 
 ### L1/L2/Oracle
 
@@ -169,8 +203,6 @@ These formal MiniMax paths retain their existing exact-token behavior where defi
 
 ADR 0129 supersedes mandatory local exact-token preflight for L4 only.
 
-L4 behavior：
-
 ```text
 build logical request
     -> provider-request execution
@@ -178,7 +210,7 @@ build logical request
     -> record provider-reported input tokens
 ```
 
-Current identity：
+Current identity:
 
 ```text
 assessment = provider_reported
@@ -186,35 +218,15 @@ method = provider_response_usage
 policy = observe_provider_usage_no_local_preflight
 ```
 
-L4 V1 performs no compaction, summarization, trimming or automatic context compression. A provider context-limit rejection is observed as provider/execution evidence rather than predicted by a local exact replica.
+L4 performs no compaction, summarization, trimming or automatic context compression. A provider context-limit rejection is observed as provider/execution evidence rather than predicted by a local exact replica.
 
-The historical L4 milestone observed maximum provider-reported input of `98,893` tokens and no context-limit rejection.
-
-## 9. Oracle semantics and completed Oracle↔L4 Pair Analysis
+## 10. Oracle semantics and Oracle↔L4 Pair Analysis
 
 Oracle bypasses ordinary evidence discovery by resolving the hidden reviewed Required Evidence set to source-faithful Physical Artifact content. It may include stable IDs but never exposes `required` labels, Expected Answer fields, curator reasoning or scorer answers.
 
-Historical Oracle MiniMax-M3 20×3 milestone：
+Oracle↔L4 Pair Analysis is implemented and complete. It validates compatible Suite/Case, model and scoring identities; compares at Case aggregate; preserves condition-local repeats rather than pairing repeat indexes; and keeps execution coverage separate from scored quality.
 
-```text
-60/60 scored
-0 execution failures
-Evidence Hit Rate = 89.29%
-```
-
-Historical L4 MiniMax-M3 20×3 milestone：
-
-```text
-59/60 scored
-Execution Coverage = 98.33%
-Failure Type Exact Match = 88.33%
-Evidence Hit Rate = 65.51%
-Protocol Validity = 81.36%
-```
-
-Oracle↔L4 Pair Analysis is now implemented and complete. It validates compatible Suite/Case, model and scoring identities; compares at Case aggregate; preserves condition-local repeats rather than pairing repeat indexes; and keeps execution coverage separate from scored quality.
-
-Human/AI review of 15 detailed Cases showed multiple distinct mechanisms rather than one generic realization gap:
+Human/AI review showed multiple distinct mechanisms rather than one generic realization gap:
 
 ```text
 Canonical reference / report realization
@@ -224,13 +236,13 @@ Causal reasoning
 Operational execution reliability
 ```
 
-Negative-gap Cases such as `github-osquery-issue-7718` demonstrate that autonomous L4 investigation can add causal-diagnosis value rather than merely approximating Oracle evidence delivery.
+Negative-gap Cases demonstrate that autonomous L4 investigation can add causal-diagnosis value rather than merely approximating Oracle evidence delivery.
 
-## 10. Evidence-hit and badcase interpretation
+## 11. Evidence-hit and badcase interpretation
 
 Current Report Evidence Hit is based on final cited Canonical Evidence IDs against hidden Required Evidence IDs under the frozen scorer.
 
-For Human/AI analysis, keep these conceptual failure classes distinct：
+For Human/AI analysis, keep these conceptual failure classes distinct:
 
 ```text
 A. decisive physical content never found / seen
@@ -247,9 +259,9 @@ These are analysis lenses only, not persisted Pair Analyzer labels or automatic 
 
 Shared Evidence Reference Canonicalization addresses only the deterministic representation subset of B. It does not solve missing acquisition, missing evidence selection, or causal reasoning errors.
 
-## 11. Oracle-vs-L4 realization gap boundary
+## 12. Comparison and causal-interpretation boundary
 
-For higher-is-better diagnosis metric `m`：
+For higher-is-better diagnosis metric `m`:
 
 ```text
 realization_gap(case, m)
@@ -258,58 +270,75 @@ realization_gap(case, m)
 
 Gap must remain a metric vector. Do not collapse classification, Evidence Hit, report completeness, protocol validity, cost, latency and tool behavior into one composite score.
 
-A valid pairing must check, where applicable：
+A valid controlled comparison checks, where applicable:
 
-- same Suite / Case versions and fingerprints；
-- same base model/provider/profile；
-- same diagnosis Task Contract / output contract / scorer；
-- compatible reasoning/generation settings；
-- explicit Treatment differences；
-- repeat/sample availability and execution coverage。
+- same Suite / Case versions and fingerprints;
+- same base model/provider/profile;
+- same diagnosis Task Contract / output contract / scorer;
+- compatible reasoning/generation settings;
+- explicit Treatment differences;
+- repeat/sample availability and execution coverage.
 
-If controls differ beyond the intended evidence-acquisition/runtime intervention, report a **combined difference** instead of pretending to have isolated a single causal effect.
+If controls differ beyond the intended intervention, report a **combined difference** instead of pretending to have isolated a single causal effect.
 
-Operational signals such as tool count, steps, token usage and latency are useful explanatory features, but not components of a model-capability score.
+Hosted fresh generations are not deterministic causal controls even at temperature 0. The Batch experiment therefore relies on replication: quality deltas were unstable and changed direction, while the efficiency mechanism reproduced. Paired Case-level intervals are diagnostic uncertainty summaries, not leaderboard significance claims.
 
-For the next formal comparison generation, L1/L2/Oracle/L4 must all share the same Evidence Reference Canonicalization behavior before their quality metrics are treated as the new fair current comparison.
+Operational signals such as tool count, steps, token usage and latency are explanatory features, not components of a model-capability score.
 
-## 12. Reproducibility boundaries
+## 13. Reproducibility boundaries
 
-Formal comparisons must preserve or explicitly version：
+Formal comparisons must preserve or explicitly version:
 
-- Suite/Case identity；
-- Evidence/Diagnosis Ground Truth；
-- scorer/report/output-realization contract；
-- provider/model/inference settings；
-- runtime/evidence-delivery Treatment；
-- Component fingerprints；
-- Execution Policy；
-- code revision / dirty state。
+- Suite/Case identity;
+- Evidence/Diagnosis Ground Truth;
+- scorer/report/output-realization contract;
+- provider/model/inference settings;
+- runtime/evidence-delivery Treatment;
+- Component fingerprints;
+- Execution Policy;
+- code revision / dirty state.
 
 A result with multiple changed controls is a combined difference, not evidence of one isolated causal uplift.
 
-Historical formal artifacts must remain attached to the contracts that actually produced them. Shared canonicalization will create a new comparison generation; it must not retroactively rewrite historical metrics/fingerprints.
+Historical formal artifacts must remain attached to the contracts that actually produced them. Shared canonicalization and Batch + Parallel each created new explicit Treatment/output identities; neither retroactively rewrites historical metrics/fingerprints.
 
-## 13. Current next measurements
+A `git_dirty=true` manifest remains visible provenance. For the Batch experiment, maintainer verification established that the observed dirty state came from an unrelated untracked `.worktrees/` directory while tracked files matched the recorded revision; this was documented rather than hidden by rerunning solely to flip the metadata bit.
 
-After shared canonicalization implementation:
+## 14. Current measurements and next direction
 
-1. replay historical L1/L2/Oracle/L4 raw candidate documents offline through the resolver + unchanged scorer to isolate deterministic metric recovery without new model stochasticity；
-2. rerun L1/L2/Oracle/L4 20×3 under the same shared output-resolution capability；
-3. report quality plus execution/resource measurements together: execution coverage, taxonomy, Evidence Hit, required fields, protocol validity, invalid-reference counts, model calls/decisions, prompt/completion/total tokens, cache observations, and wall-clock time；
-4. only after that baseline is established, evaluate L4 `batch + parallel` Tool Policy separately for efficiency and regression risk。
+Completed measurement sequence:
 
-## 14. Source-of-truth order
+1. historical L1/L2/Oracle/L4 formal milestones;
+2. Oracle↔L4 Pair Analysis;
+3. shared canonicalizer implementation;
+4. zero-model-cost historical replay;
+5. fresh L1/L2/Oracle/L4 canonicalized `20×3` generation;
+6. L4 Batch + Parallel initial `20×3` formal run;
+7. fresh back-to-back single/sequential vs Batch + Parallel replication.
 
-For current behavior use：
+The Batch experiment is now complete. Current evidence supports Batch + Parallel as the recommended forward L4 Tool Policy, with small Evidence Hit / Protocol deltas retained as weak residual signals to monitor rather than demonstrated regressions.
 
-1. [Active ADR Index](../adr/README.md)；
-2. `README.md` / `CONTEXT.md` current-facing orientation；
-3. this methodology for current evidence/trust/comparison semantics；
-4. ADR 0128 for the frozen L4 V1 Runtime contract + ADR 0129 for L4 context accounting；
-5. current Matrix / Registry / source-code contracts；
-6. [Oracle ↔ L4 Pair Analysis Findings](milestones/oracle-l4-pair-analysis-2026-08-19.md) for the latest badcase-driven decision record；
-7. [Milestone Status Index](milestones/README.md) before interpreting any other dated milestone；
-8. dated calibration/review/milestone docs only for historical facts and immutable experiment results。
+The next large Runtime capability direction is executable repair / sandboxed remediation:
+
+```text
+investigate -> diagnose -> mutate/edit -> execute/test -> observe -> retry -> verify -> report
+```
+
+This is outside the completed read-only V1 boundary and must be introduced as a distinct new phase. L3 retrieval, compaction, planner/verifier, memory, skills/MCP and multi-agent remain evidence-gated rather than bundled automatically.
+
+## 15. Source-of-truth order
+
+For current behavior use:
+
+1. [Active ADR Index](../adr/README.md);
+2. `README.md` / `CONTEXT.md` current-facing orientation;
+3. this methodology for current evidence/trust/comparison semantics;
+4. ADR 0128 for the frozen historical L4 V1 Runtime contract + ADR 0129 for L4 context accounting;
+5. current Matrix / Registry / source-code contracts;
+6. [L4 Batch + Parallel ToolCalls Milestone](milestones/l4-batch-parallel-toolcalls-2026-08-19.md) for the current L4 Tool Policy recommendation and replication evidence;
+7. [Shared Evidence Reference Canonicalization Milestone](milestones/evidence-reference-canonicalization-2026-08-19.md) for the completed output-resolution decision;
+8. [Oracle ↔ L4 Pair Analysis Findings](milestones/oracle-l4-pair-analysis-2026-08-19.md) for historical badcase-driven analysis;
+9. [Milestone Status Index](milestones/README.md) before interpreting any other dated milestone;
+10. dated calibration/review/milestone docs only for historical facts and immutable experiment results.
 
 Historical milestone forward-looking recommendations may be superseded; their measured results and run identities remain historical evidence.

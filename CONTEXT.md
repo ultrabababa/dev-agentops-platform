@@ -43,7 +43,10 @@ Completed:
 - shared deterministic Evidence Reference Canonicalization implementation (`development-v2` / `canonical-line-range-normalization-v1`);
 - canonicalization focused regression `100 passed, 2 skipped` and full repository regression `371 passed, 2 skipped, 30 subtests passed`;
 - zero-model-cost replay of historical L1/L2/Oracle/L4 raw candidates through the canonicalizer + unchanged scorer;
-- fresh canonicalized L1/L2/Oracle/L4 `20 Cases × 3 repeats` formal generation.
+- fresh canonicalized L1/L2/Oracle/L4 `20 Cases × 3 repeats` formal generation;
+- L4 Batch + Parallel ToolCalls implementation with frozen Runtime-control/Tool Policy identities;
+- Batch + Parallel focused regression `29 passed`, formal `eval doctor` PASS, full repository regression `377 passed, 2 skipped, 30 subtests passed`;
+- initial Batch + Parallel `20×3` formal run plus a fresh back-to-back single/sequential vs Batch + Parallel `20×3 + 20×3` replication block.
 
 Historical L4 formal milestone:
 
@@ -83,7 +86,22 @@ L4      60/60 scored   taxonomy 81.67%   evidence 71.83%   protocol 93.33%
 
 Fresh-generation deltas are operational confirmation rather than single-variable causal estimates. The fresh Oracle run had `canonicalization_changed_samples = 0` but still moved from its historical metrics, demonstrating material model/provider regeneration variance.
 
-Current next work is now the separate L4 batch + parallel Tool Policy efficiency experiment. Do not continue widening the canonicalizer without new evidence.
+Batch + Parallel then tested the observed multi-call friction independently of canonicalization. Two fresh Batch runs reduced Model Decisions by about `31–35%`. In the clean back-to-back replication, single/sequential vs Batch + Parallel was:
+
+```text
+Model Decisions       877 -> 571   (-34.89%)
+Executed ToolCalls     809 -> 775   (-4.20%)
+Raw input tokens     23.45M -> 15.70M
+Wall time            978.27s -> 806.69s (-17.54%)
+Taxonomy              71.67% -> 75.00%
+Evidence              74.64% -> 73.50%
+Required Fields       93.33% -> 98.13%
+Protocol              93.33% -> 91.67%
+```
+
+The initial Batch run's larger quality drop did not reproduce; taxonomy and Required Fields reversed direction, while the efficiency mechanism reproduced at similar magnitude. Current evidence therefore does not demonstrate a material Batch-induced quality regression. Batch + Parallel is now the recommended forward L4 Tool Policy for new evaluations; historical single/sequential remains an immutable reference Treatment.
+
+Do not continue widening the canonicalizer or Batch policy without new evidence. The next large capability direction is executable repair / sandboxed remediation outside the current read-only V1 boundary.
 
 ## Core terminology
 
@@ -225,9 +243,17 @@ execution_mode = sequential
 multiple_calls = reject_all_with_error_results
 ```
 
-Tool availability is defined by Tool Registry; do not duplicate a second allowlist in Tool Policy.
+Current recommended forward L4 treatment:
 
-The next separate efficiency evolution is from `single + sequential` to `batch + parallel`. It is intentionally independent of Evidence Reference Canonicalization so efficiency and quality effects remain attributable.
+```text
+call_mode = batch
+execution_mode = parallel
+multiple_calls = accept_independently
+```
+
+For Batch + Parallel, malformed/expected errors remain per-call; valid siblings execute concurrently; the Runtime waits for the batch barrier and appends ToolResults in the original model-authored call order before the next Model Decision. Duplicate calls are not deduplicated. No arbitrary ordinary ToolCall count cap is imposed. One N-call Model Decision still consumes one `max_steps` unit.
+
+Tool availability is defined by Tool Registry; do not duplicate a second allowlist in Tool Policy. Historical single/sequential and recommended Batch + Parallel remain distinct frozen Treatment identities so results stay attributable.
 
 ### Tool bounds
 
@@ -261,9 +287,10 @@ Recoverable Agent-visible errors return `ToolResult(is_error=True)` and allow an
 - malformed raw argument JSON;
 - expected tool/domain errors;
 - `length + ToolCall` — execute none;
-- multiple ToolCalls under historical `single` policy — execute none, error result per call ID.
+- multiple ToolCalls under historical `single` policy — execute none, error result per call ID;
+- under Batch + Parallel, one malformed/expected-error call does not cancel otherwise valid siblings.
 
-Unexpected Runtime/workspace/tool implementation exceptions are infrastructure failures, not Agent observations.
+Unexpected Runtime/workspace/tool implementation exceptions are infrastructure failures, not Agent observations. In Batch + Parallel, an unexpected worker/runtime defect fails the Sample after the barrier; partial sibling ToolResults are not fed back to the model.
 
 ### Terminal taxonomy
 
@@ -340,7 +367,7 @@ Request retry is infrastructure handling, not whole-sample retry and not Agent b
 
 The same logical request must preserve model/system/tools/messages/reasoning/generation exactly.
 
-The historical formal L4 run exercised both paths: one transient 529 recovered on retry, and one 529 sequence exhausted all four attempts and remained visible as the sole execution failure.
+The historical formal L4 run exercised both paths: one transient 529 recovered on retry, and one 529 sequence exhausted all four attempts and remained visible as the sole execution failure. The initial Batch + Parallel formal run also exercised a real 600-second provider timeout followed by successful same-request retry; the replication block had no provider retry failures.
 
 ## Trace vs Agent Trajectory
 
@@ -385,6 +412,8 @@ L4 Treatment Registry-validates:
 - Tool Registry;
 - Tool Policy.
 
+The historical `l4-react-runtime-control-v1` + `l4-single-sequential-tool-policy-v1` pair and the recommended `l4-react-runtime-control-batch-parallel-v1` + `l4-batch-parallel-tool-policy-v1` pair remain independently frozen. Mixed/unknown pairs are invalid Treatment identities.
+
 Do not add a `runtime` Component type; Runtime implementation provenance remains `runtime_variant + code_revision`.
 
 Shared Evidence Reference Canonicalization is implemented at the final report/output-realization boundary, not as a new L4 `runtime_variant`. The canonicalized L1/L2/Oracle/L4 matrices use output contract `development-v2` with resolver identity `canonical-line-range-normalization-v1`, while historical matrices remain unchanged.
@@ -406,6 +435,8 @@ execution_policy
 Treatment contains provider/model/reasoning/generation/contracts/context. Execution Policy contains repeat count, case concurrency, retry count, and request timeout.
 
 For L4, `execution_policy.retry_count` is interpreted as provider-request retry count by the L4 execution path; it must never mean whole-sample replay.
+
+Recommended new L4 evaluation uses `evaluation/matrices/l4-minimax-m3-batch-parallel-canonicalized-v1.json`. The single/sequential canonicalized matrix remains available as a historical/fresh controlled reference and is not rewritten.
 
 Legacy Defaults/`extends` Matrix v1 remains historical compatibility, not the current L4 template.
 
@@ -431,29 +462,51 @@ The canonical reference/report-realization slice identified by Pair Analysis has
 
 ## Current next work / evidence-gated work
 
-Confirmed next work:
-
-1. separate L4 `batch + parallel` Tool Policy efficiency experiment, motivated by `26` rejected multi-ToolCall IDs and high repeated prompt traffic in the historical L4 run;
-2. compare Model Decisions, accepted/rejected ToolCalls, executed calls, provider usage/cache, wall-clock, taxonomy, Evidence Hit, Required Fields, and Protocol Validity under the new Tool Policy;
-3. treat Evidence Precision / Citation Specificity as a separate evaluator question only if broad over-citation proves material; do not encode arbitrary width heuristics in the canonicalizer.
-
 Completed and no longer current work:
 
 - shared deterministic Evidence Reference Canonicalization implementation;
 - historical L1/L2/Oracle/L4 offline replay;
-- fresh canonicalized L1/L2/Oracle/L4 `20×3` formal generation.
+- fresh canonicalized L1/L2/Oracle/L4 `20×3` formal generation;
+- L4 Batch + Parallel Tool Policy implementation, initial formal run, and fresh single/sequential vs Batch + Parallel replication.
+
+Current recommended L4 state:
+
+```text
+historical reference
+single + sequential + reject-all
+
+recommended forward treatment
+batch + parallel + independent-call handling
+```
+
+The Batch result does not justify arbitrary call-count caps, forced-batching prompt language, scheduler heuristics, or output repair. Evidence Precision / Citation Specificity remains a separate evaluator question only if broad over-citation proves material; do not encode arbitrary width heuristics in the canonicalizer.
+
+Next large capability direction:
+
+```text
+investigate
+    -> diagnose
+    -> mutate/edit
+    -> execute/test
+    -> observe
+    -> retry
+    -> verify
+    -> report
+```
+
+This is executable repair / sandboxed remediation after the read-only V1 boundary. It should reuse the L4 Runtime kernel without silently mutating historical L4 Treatment identities.
 
 Still evidence-gated / deferred:
 
 - L3 static retrieval internals;
 - compaction / summarization / history trimming;
 - predictive context budgeting;
-- planner/verifier/reflection;
+- planner/verifier/reflection unless repair-loop evidence requires it;
 - multi-agent / subagents;
 - memory / skills / MCP;
 - read byte/column slicing for oversized single lines.
 
-Do not mix these deferred capabilities into the batch-parallel work without new evidence.
+Do not mix these deferred capabilities into the repair/sandbox work without new evidence.
 
 ## Current source-of-truth order
 
@@ -463,9 +516,10 @@ When sources disagree, use:
 2. current `README.md` / `CONTEXT.md` and active evaluation methodology;
 3. ADR 0128 for the frozen base L4 V1 contract **plus ADR 0129 for the context-accounting amendment**;
 4. current Matrix/Registry/source-code contracts;
-5. `docs/evaluation/milestones/evidence-reference-canonicalization-2026-08-19.md` for the completed canonicalization experiment and current post-canonicalization decision;
-6. `docs/evaluation/milestones/oracle-l4-pair-analysis-2026-08-19.md` for the historical Pair Analysis that motivated the change;
-7. `docs/evaluation/milestones/README.md` to classify dated milestone status;
-8. other dated milestone/history only for historical facts.
+5. `docs/evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md` for the current recommended Tool Policy decision and replication evidence;
+6. `docs/evaluation/milestones/evidence-reference-canonicalization-2026-08-19.md` for the completed canonicalization experiment;
+7. `docs/evaluation/milestones/oracle-l4-pair-analysis-2026-08-19.md` for the historical Pair Analysis that motivated canonicalization;
+8. `docs/evaluation/milestones/README.md` to classify dated milestone status;
+9. other dated milestone/history only for historical facts.
 
-Archived micro ADRs and old PR/Issue bodies must not override active decisions.
+Archived micro ADRs and old PR/Issue bodies must not override active/current decisions. Historical L4 V1 documents remain authoritative for their frozen baseline behavior, but they do not override the later explicit Batch + Parallel Treatment decision.

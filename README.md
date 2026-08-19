@@ -62,7 +62,7 @@ DevAgentOps 使用 capability ladder 做归因，而不是把所有能力塞进�
 | L1 | `full_context_one_shot` | one model call | full visible universe upfront | formal milestone complete |
 | L2 | `fixed_model_workflow` | fixed multi-stage program | fixed explicit input flow | formal milestone complete |
 | L3 | `static_retrieval` | program-controlled | static retrieval | not implemented; optional diagnostic |
-| L4 | `self_built_react` | model adaptive next-action / stop | read/search/list tool loop | **implemented + formal milestone complete** |
+| L4 | `self_built_react` | model adaptive next-action / stop | read/search/list tool loop | **implemented + formal milestones + Batch/Parallel replication complete** |
 | L5+ | incremental Agent capabilities | evidence-driven evolution | context/retrieval/planning/etc. | future work |
 
 Oracle Evidence 与 ladder 正交：它直接向固定模型提供 Human-reviewed Required Evidence source content，用来估计“去掉 ordinary evidence-discovery difficulty 后还能做到什么”。
@@ -103,9 +103,10 @@ Agent-visible filesystem：
 - provider-neutral `UserMessage / AssistantMessage / ToolResultMessage`；
 - MiniMax native ToolCall + `reasoning_details` continuation round-trip；
 - `Tool Registry` 冻结 provider-visible tool contract 与 deterministic behavior；
-- baseline `Tool Policy = single + sequential`；
-- multiple ToolCalls under `single` 时 execute none，并为每个 call ID 返回 error ToolResult；
-- `max_steps = 100`；
+- historical baseline `Tool Policy = single + sequential + reject-all multi-call` 保留为不可改写的 reference；
+- current recommended forward L4 treatment 使用 `batch + parallel + independent-call handling`：同一 Model Decision 的合法 sibling ToolCalls 并发执行，barrier 后按原 ToolCall 顺序返回 ToolResults；
+- 普通 ToolCall 数不设置任意 cap；模型无需被 prompt 强制 batching；
+- `max_steps = 100`，一个 Model Decision 无论含多少 ToolCalls 仍只消耗一个 step；
 - provider transient failure 使用 **same-logical-request retry**，不是 whole-sample retry；
 - Trace 与完整 Agent trajectory 分离持久化；
 - 每个 ToolResult 有 hard bound，避免模型一次读取无限 workspace；
@@ -115,9 +116,10 @@ L4 context accounting 由 [ADR 0129](docs/adr/0129-l4-provider-reported-context-
 
 完整设计见：
 
-- [ADR 0128 — L4 Self-built ReAct Runtime Contract](docs/adr/0128-l4-self-built-react-runtime-contract.md)
-- [ADR 0129 — L4 Provider-Reported Context Accounting](docs/adr/0129-l4-provider-reported-context-accounting.md)
-- [L4 Self-built ReAct Runtime Design](docs/evaluation/l4-self-built-react-runtime-design.md)
+- [ADR 0128 — L4 Self-built ReAct Runtime Contract](docs/adr/0128-l4-self-built-react-runtime-contract.md) — historical frozen L4 V1 baseline contract；
+- [ADR 0129 — L4 Provider-Reported Context Accounting](docs/adr/0129-l4-provider-reported-context-accounting.md)；
+- [L4 Self-built ReAct Runtime Design](docs/evaluation/l4-self-built-react-runtime-design.md) — historical V1 implementation guide；
+- [L4 Batch + Parallel ToolCalls Milestone](docs/evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md) — current Tool Policy experiment decision and replication evidence。
 
 ## Formal evaluation
 
@@ -193,6 +195,33 @@ Resolver 只处理可从 frozen source identity + physical line range 确定映�
 - [Shared Evidence Reference Canonicalization Milestone](docs/evaluation/milestones/evidence-reference-canonicalization-2026-08-19.md)
 - [Canonicalization Result Snapshot](docs/evaluation/milestones/evidence-reference-canonicalization-results-2026-08-19.json)
 
+### L4 Batch + Parallel ToolCalls result
+
+Batch + Parallel 已完成实现、首轮 formal run 和一组 fresh back-to-back replication。最稳定的信号是 Runtime efficiency，而不是单轮 hosted quality 百分比：
+
+```text
+initial comparison
+Model Decisions 798 -> 547   (-31.45%)
+
+fresh replication
+Model Decisions 877 -> 571   (-34.89%)
+executed ToolCalls 809 -> 775 (-4.20%)
+wall time 978.27s -> 806.69s (-17.54%)
+```
+
+Replication quality：
+
+| Metric | Single / Sequential | Batch + Parallel |
+| --- | ---: | ---: |
+| Failure Type Exact | 71.67% | **75.00%** |
+| Evidence Hit | **74.64%** | 73.50% |
+| Required Fields | 93.33% | **98.13%** |
+| Protocol Validity | **93.33%** | 91.67% |
+
+首轮 Batch 的明显 taxonomy / required-fields 下降没有复现，方向在 replication 中反转；paired Case-level uncertainty 也没有显示 material quality regression。相反，Model Decision reduction 在两轮 fresh Batch run 中稳定复现。因此 Batch + Parallel 现在是**新 L4 evaluation / Runtime evolution 的推荐 Tool Policy**，而 historical single/sequential 仍保留为不可改写的 reference Treatment。
+
+完整结果见 [L4 Batch + Parallel ToolCalls Milestone](docs/evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md) 与 [machine-readable snapshot](docs/evaluation/milestones/l4-batch-parallel-toolcalls-results-2026-08-19.json)。
+
 Oracle 不是“更高一级 Runtime”，也不应该被解释成 L4 必须整体超过的 benchmark rung。它是 evidence-conditioned diagnostic intervention。
 
 完整历史结果见 [L4 MiniMax-M3 Full-Suite Milestone](docs/evaluation/milestones/l4-minimax-m3-full-suite-2026-08-19.md)。Pair Analysis 见 [Oracle ↔ L4 Pair Analysis Findings](docs/evaluation/milestones/oracle-l4-pair-analysis-2026-08-19.md)。
@@ -231,14 +260,16 @@ Initialize local persistence：
 .venv/bin/devagentops status --database .devagentops/devagentops.db
 ```
 
-Validate the current canonicalized L4 formal configuration without running the model：
+Validate the recommended current L4 Tool Policy configuration without running the model：
 
 ```bash
 .venv/bin/devagentops eval doctor \
-  --matrix evaluation/matrices/l4-minimax-m3-canonicalized-v2.json \
+  --matrix evaluation/matrices/l4-minimax-m3-batch-parallel-canonicalized-v1.json \
   --registry components/registry.json \
   --suite evaluation/suites/triage-v1/suite.json
 ```
+
+The historical/fresh single-sequential reference matrix remains `evaluation/matrices/l4-minimax-m3-canonicalized-v2.json` for controlled comparison; it is not rewritten.
 
 FastAPI：
 
@@ -265,30 +296,38 @@ Current architecture / methodology should be read in roughly this order：
 3. [Formal Evaluation Methodology](docs/evaluation/formal-evaluation-methodology.md) — Case/evidence/trust model;
 4. [Evaluation Matrix & Component Registry](docs/evaluation/evaluation-matrix-and-component-registry.md) — experiment identity;
 5. [Runtime Capability Ladder](docs/evaluation/runtime-capability-ladder.md) — controlled capability comparisons;
-6. [L4 Runtime Design](docs/evaluation/l4-self-built-react-runtime-design.md) — frozen L4 V1 self-built Agent Runtime contract;
-7. [Oracle Evidence Diagnostic Condition](docs/evaluation/oracle-evidence-diagnostic-condition.md) — evidence-conditioned diagnostic boundary;
-8. [Shared Evidence Reference Canonicalization Milestone](docs/evaluation/milestones/evidence-reference-canonicalization-2026-08-19.md) — completed replay + fresh four-condition comparison and interpretation;
-9. [Oracle ↔ L4 Pair Analysis Findings](docs/evaluation/milestones/oracle-l4-pair-analysis-2026-08-19.md) — historical badcase analysis that motivated canonicalization;
-10. [Milestone Status Index](docs/evaluation/milestones/README.md) — classifies dated milestone documents and points to the current completed experiment.
+6. [L4 Runtime Design](docs/evaluation/l4-self-built-react-runtime-design.md) — frozen historical L4 V1 self-built Agent Runtime contract;
+7. [L4 Batch + Parallel ToolCalls Milestone](docs/evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md) — current recommended Tool Policy evidence and replication;
+8. [Oracle Evidence Diagnostic Condition](docs/evaluation/oracle-evidence-diagnostic-condition.md) — evidence-conditioned diagnostic boundary;
+9. [Shared Evidence Reference Canonicalization Milestone](docs/evaluation/milestones/evidence-reference-canonicalization-2026-08-19.md) — completed replay + fresh four-condition comparison and interpretation;
+10. [Oracle ↔ L4 Pair Analysis Findings](docs/evaluation/milestones/oracle-l4-pair-analysis-2026-08-19.md) — historical badcase analysis that motivated canonicalization;
+11. [Milestone Status Index](docs/evaluation/milestones/README.md) — classifies dated milestone documents and points to the current completed experiment.
 
-`docs/adr/archive/`、dated milestone docs、Case review packets 和 merged PR discussions 是历史记录；它们不覆盖当前 Active ADR 与 current-facing docs。直接阅读 dated milestone 前先看 Milestone Status Index。
+`docs/adr/archive/`、dated milestone docs、Case review packets 和 merged PR discussions 是历史记录；它们不覆盖当前 current-facing docs。历史 L4 V1 ADR/Design 继续作为 frozen baseline contract 阅读，不应被 retroactively 改写成 Batch + Parallel。
 
 ## Current roadmap
 
-Shared deterministic Evidence Reference Canonicalization 已完成实现、historical offline replay 和 fresh L1/L2/Oracle/L4 `20×3` formal generation。当前不再继续扩 resolver；下一项独立 Runtime experiment 是：
+Shared deterministic Evidence Reference Canonicalization 与 L4 Batch + Parallel ToolCalls 两个独立实验都已完成。当前结论是：
 
 ```text
-L4 single + sequential Tool Policy
-    -> batch + parallel ToolCalls
-    -> compare Model Decisions / rejected multi-call handling
-    -> compare tokens / cache / wall-clock
-    -> verify taxonomy / Evidence Hit / Protocol do not materially regress
+shared Evidence Reference Canonicalization
+    -> accepted shared output infrastructure
+
+historical L4 Tool Policy
+single + sequential + reject-all
+    -> preserved immutable reference
+
+recommended forward L4 Tool Policy
+batch + parallel + independent-call handling
+    -> two fresh runs reproduce ~31-35% Model Decision reduction
+    -> fresh replication reduces wall time 17.5%
+    -> no reproducible material quality regression demonstrated
 ```
 
 当前 canonicalizer 只根据 frozen Canonical coordinates 做确定性映射：exact legal ID 原样保留；source identity 一致且 line range 可解析时，替换为实际覆盖到的 Canonical Evidence IDs 并稳定去重；无法确定映射的引用继续由 validator 判 invalid。它不读取 Required Evidence / Expected Answer，不做 fuzzy source correction，也不替模型进行语义 Evidence selection。
 
 实验同时暴露了一个独立 metric limitation：一个极宽的合法 physical line range 可以展开为大量 Canonical IDs，而当前 recall-oriented Evidence Hit 不惩罚 broad over-citation。如果后续 evidence 表明该问题重要，应单独研究 Evidence Precision / Citation Specificity，而不是往 resolver 中加入任意宽度阈值。
 
-L4 的下一个已确认工程瓶颈是执行效率：历史 formal run 有 `26` 个 `multiple_tool_calls_rejected` ToolCall IDs，且 `802` 个 successful Model Decisions 产生 `24.72M` prompt tokens。Batch + parallel 必须保持为独立 Treatment，避免把效率变化和 citation normalization 混在同一实验中。
+Batch + Parallel 不需要继续扩 batch cap、forced-batching prompt、scheduler heuristic 或 output repair。下一项大的 Product Runtime 能力方向转向 **executable repair / sandboxed remediation**：`investigate -> diagnose -> mutate/edit -> execute/test -> observe -> retry -> verify -> report`。这属于 V1 read-only triage 之后的独立阶段，不应静默改写现有 L4 historical contracts。
 
-L3 static retrieval、context management、planner/verifier、skills/MCP、memory 等仍保持 evidence-gated；当前没有证据要求把这些能力与 batch-parallel 混在同一轮实现里。
+L3 static retrieval、context management、planner/verifier、skills/MCP、memory/multi-agent 等仍保持 evidence-gated；当前没有证据要求把这些能力与 repair/sandbox 或 Batch + Parallel 混在同一轮实现里。
