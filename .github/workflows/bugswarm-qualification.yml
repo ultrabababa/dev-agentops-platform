@@ -1,0 +1,228 @@
+name: BugSwarm PyGithub Qualification
+
+on:
+  push:
+    branches:
+      - main
+      - agent/bugswarm-qualification
+    paths:
+      - .github/workflows/bugswarm-qualification.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify-pygithub:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      IMAGE_TAG: PyGithub-PyGithub-36442425251
+      CONTAINER_NAME: bugswarm-pygithub-qualification
+      REPO_ROOT: /home/github/build/failed/PyGithub/PyGithub
+    steps:
+      - name: Qualify BugSwarm repair substrate
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p qualification
+          RESULT=qualification/result.txt
+          : > "$RESULT"
+
+          echo "== runner facts ==" | tee qualification/system.txt
+          {
+            uname -a
+            echo "arch=$(uname -m)"
+            echo "cpu=$(nproc)"
+            free -h || true
+            df -h
+            docker version
+            docker info
+          } 2>&1 | tee -a qualification/system.txt
+
+          RUNNER_ARCH=$(uname -m)
+          echo "runner_arch=$RUNNER_ARCH" >> "$RESULT"
+
+          # This is an ephemeral hosted runner; free space that is irrelevant to this Docker-only probe.
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc 2>/dev/null || true
+          docker system prune -af >/dev/null 2>&1 || true
+          df -h | tee qualification/disk-after-cleanup.txt
+
+          IMAGE=""
+          : > qualification/pull.log
+          for registry in bugswarm/cached-images bugswarm/images; do
+            candidate="${registry}:${IMAGE_TAG}"
+            echo "Trying ${candidate}" | tee -a qualification/pull.log
+            if docker pull "$candidate" 2>&1 | tee -a qualification/pull.log; then
+              IMAGE="$candidate"
+              break
+            fi
+          done
+
+          if [[ -z "$IMAGE" ]]; then
+            echo "pull_status=FAIL" >> "$RESULT"
+            echo "verdict=FAIL: image tag could not be pulled from cached-images or images" >> "$RESULT"
+            cat "$RESULT" >> "$GITHUB_STEP_SUMMARY"
+            exit 20
+          fi
+
+          echo "pull_status=PASS" >> "$RESULT"
+          echo "image=$IMAGE" >> "$RESULT"
+          docker image inspect "$IMAGE" > qualification/image-inspect.json
+          IMAGE_ARCH=$(docker image inspect "$IMAGE" --format '{{.Architecture}}')
+          IMAGE_OS=$(docker image inspect "$IMAGE" --format '{{.Os}}')
+          IMAGE_SIZE=$(docker image inspect "$IMAGE" --format '{{.Size}}')
+          IMAGE_ID=$(docker image inspect "$IMAGE" --format '{{.Id}}')
+          IMAGE_DIGESTS=$(docker image inspect "$IMAGE" --format '{{json .RepoDigests}}')
+          {
+            echo "image_arch=$IMAGE_ARCH"
+            echo "image_os=$IMAGE_OS"
+            echo "image_size_bytes=$IMAGE_SIZE"
+            echo "image_id=$IMAGE_ID"
+            echo "image_repo_digests=$IMAGE_DIGESTS"
+          } | tee -a "$RESULT"
+          docker image ls | tee qualification/docker-images.txt
+          df -h | tee qualification/disk-after-pull.txt
+
+          docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
+          if ! docker run -d --name "$CONTAINER_NAME" "$IMAGE" tail -f /dev/null > qualification/container-id.txt; then
+            echo "container_start=FAIL" >> "$RESULT"
+            echo "verdict=FAIL: image pulled but fresh container did not start" >> "$RESULT"
+            cat "$RESULT" >> "$GITHUB_STEP_SUMMARY"
+            exit 21
+          fi
+          trap 'docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true' EXIT
+          echo "container_start=PASS" >> "$RESULT"
+
+          docker exec "$CONTAINER_NAME" bash -lc 'id; pwd; ls -ld /home/github/build/failed /home/github/build/passed 2>/dev/null || true' \
+            > qualification/container-layout.txt 2>&1 || true
+
+          if docker exec "$CONTAINER_NAME" bash -lc "test -x /usr/local/bin/run_failed.sh && test -f '$REPO_ROOT/github/Requester.py'"; then
+            echo "failed_workspace=PASS" >> "$RESULT"
+          else
+            echo "failed_workspace=FAIL" >> "$RESULT"
+            echo "verdict=FAIL: expected failed-side workspace or run_failed.sh missing" >> "$RESULT"
+            cat "$RESULT" >> "$GITHUB_STEP_SUMMARY"
+            exit 22
+          fi
+
+          if docker exec "$CONTAINER_NAME" bash -lc 'test -d /home/github/build/passed/PyGithub/PyGithub'; then
+            echo "stock_passed_side_visible=YES" >> "$RESULT"
+          else
+            echo "stock_passed_side_visible=NO" >> "$RESULT"
+          fi
+
+          echo "== baseline run_failed.sh =="
+          BASELINE_START=$(date +%s)
+          set +e
+          docker exec "$CONTAINER_NAME" bash -lc '/usr/local/bin/run_failed.sh' \
+            > qualification/baseline.log 2>&1
+          BASELINE_RC=$?
+          set -e
+          BASELINE_SECONDS=$(( $(date +%s) - BASELINE_START ))
+          echo "baseline_rc=$BASELINE_RC" | tee -a "$RESULT"
+          echo "baseline_seconds=$BASELINE_SECONDS" | tee -a "$RESULT"
+          tail -200 qualification/baseline.log || true
+
+          if grep -Fq 'raise_for_status' qualification/baseline.log && grep -Eq 'Found 1 error|error: .*raise_for_status' qualification/baseline.log; then
+            BASELINE_SIGNATURE=PASS
+          else
+            BASELINE_SIGNATURE=FAIL
+          fi
+          echo "baseline_expected_signature=$BASELINE_SIGNATURE" >> "$RESULT"
+
+          OLD='if isinstance(output, RequestsResponse) or hasattr(output, "iter_content"):'
+          NEW='if isinstance(output, RequestsResponse) or (hasattr(output, "iter_content") and hasattr(output, "raise_for_status")):'
+
+          docker exec "$CONTAINER_NAME" bash -lc "grep -nF '$OLD' '$REPO_ROOT/github/Requester.py'" \
+            > qualification/prepatch-guard.txt 2>&1
+          PREPATCH_RC=$?
+          echo "prepatch_guard_found=$([[ $PREPATCH_RC -eq 0 ]] && echo PASS || echo FAIL)" >> "$RESULT"
+
+          if [[ $PREPATCH_RC -ne 0 ]]; then
+            echo "verdict=FAIL: exact failed guard not found in artifact workspace" >> "$RESULT"
+            cat "$RESULT" >> "$GITHUB_STEP_SUMMARY"
+            exit 23
+          fi
+
+          docker exec "$CONTAINER_NAME" bash -lc \
+            "sed -i 's#if isinstance(output, RequestsResponse) or hasattr(output, \"iter_content\"):#if isinstance(output, RequestsResponse) or (hasattr(output, \"iter_content\") and hasattr(output, \"raise_for_status\")):#' '$REPO_ROOT/github/Requester.py'"
+
+          if docker exec "$CONTAINER_NAME" bash -lc "grep -nF '$NEW' '$REPO_ROOT/github/Requester.py'" \
+              > qualification/postpatch-guard.txt 2>&1; then
+            echo "patch_applied=PASS" >> "$RESULT"
+          else
+            echo "patch_applied=FAIL" >> "$RESULT"
+            echo "verdict=FAIL: repair mutation could not be applied" >> "$RESULT"
+            cat "$RESULT" >> "$GITHUB_STEP_SUMMARY"
+            exit 24
+          fi
+
+          docker exec "$CONTAINER_NAME" bash -lc "cd '$REPO_ROOT' && git diff -- github/Requester.py" \
+            > qualification/repair.diff 2>&1 || true
+
+          echo "== repaired rerun in same container =="
+          REPAIR_START=$(date +%s)
+          set +e
+          docker exec "$CONTAINER_NAME" bash -lc '/usr/local/bin/run_failed.sh' \
+            > qualification/repaired.log 2>&1
+          REPAIR_RC=$?
+          set -e
+          REPAIR_SECONDS=$(( $(date +%s) - REPAIR_START ))
+          echo "repair_rc=$REPAIR_RC" | tee -a "$RESULT"
+          echo "repair_seconds=$REPAIR_SECONDS" | tee -a "$RESULT"
+          tail -200 qualification/repaired.log || true
+
+          if docker exec "$CONTAINER_NAME" bash -lc "grep -qF '$NEW' '$REPO_ROOT/github/Requester.py'"; then
+            echo "mutation_survived_rerun=PASS" >> "$RESULT"
+            MUTATION_SURVIVED=PASS
+          else
+            echo "mutation_survived_rerun=FAIL" >> "$RESULT"
+            MUTATION_SURVIVED=FAIL
+          fi
+
+          docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
+          trap - EXIT
+
+          set +e
+          docker run --rm "$IMAGE" bash -lc \
+            "grep -qF '$OLD' '$REPO_ROOT/github/Requester.py' && ! grep -qF '$NEW' '$REPO_ROOT/github/Requester.py'"
+          FRESH_RC=$?
+          set -e
+          if [[ $FRESH_RC -eq 0 ]]; then
+            echo "fresh_reset=PASS" >> "$RESULT"
+            FRESH_RESET=PASS
+          else
+            echo "fresh_reset=FAIL" >> "$RESULT"
+            FRESH_RESET=FAIL
+          fi
+
+          if [[ "$RUNNER_ARCH" == "x86_64" && "$IMAGE_ARCH" == "amd64" && "$BASELINE_RC" -ne 0 && \
+                "$BASELINE_SIGNATURE" == "PASS" && "$REPAIR_RC" -eq 0 && \
+                "$MUTATION_SURVIVED" == "PASS" && "$FRESH_RESET" == "PASS" ]]; then
+            echo "verdict=PASS" >> "$RESULT"
+            FINAL_RC=0
+          else
+            echo "verdict=FAIL" >> "$RESULT"
+            FINAL_RC=1
+          fi
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## BugSwarm PyGithub qualification" >> "$GITHUB_STEP_SUMMARY"
+          echo '```text' >> "$GITHUB_STEP_SUMMARY"
+          cat "$RESULT" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Stock passed-side visibility is recorded as an isolation finding, not a failure criterion." >> "$GITHUB_STEP_SUMMARY"
+
+          cat "$RESULT"
+          exit "$FINAL_RC"
+
+      - name: Upload qualification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bugswarm-pygithub-qualification
+          path: qualification/
+          if-no-files-found: warn
+          retention-days: 7
