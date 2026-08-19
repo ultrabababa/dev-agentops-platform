@@ -1,26 +1,41 @@
-# Mission: 掌握 DevAgentOps 的最小工程闭环
+# Mission: 建立可解释、可评测的 Agent Runtime 工程闭环
 
 ## Why
 
-为了秋招中能够独立实现并讲清自己的 Agent 项目，而不是只展示 AI 生成的代码；长期形成建设 Agent Runtime、Evals、Environments 和可验证数据闭环所需的工程能力。
+DevAgentOps 的目标不是只实现一个能调用模型和工具的 Agent，而是把 Agent Runtime、Environment、Trace、Evaluation 与 Badcase Analysis 连接成一个可复现、可验证、可持续演进的工程闭环。
+
+项目中的实现和学习都应服务于一个核心能力：
+
+> 能独立理解、实现、验证并解释一个 Agent System 为什么工作，以及它在什么地方失败。
 
 ## Success looks like
 
-- 不看现成实现，能画出并解释 `CLI → Storage → Migration → SQLite → JSON` 数据流。
-- 能从空文件实现一个不会意外创建数据库的只读 `status`，并用测试证明。
-- 能解释 Alembic 为什么让初始化可重复、Schema 为什么需要版本。
-- 能读懂失败测试，自己定位到 Path、SQLite、Migration 或 CLI 边界。
-- 能在面试中说明这一切如何服务于可复现 Evaluation，而不是只背框架 API。
+- 能从代码层解释 Case / Environment 如何进入 Runtime，并最终形成可评分的 Structured Triage Report。
+- 能解释 Model 与 Runtime 的控制边界，而不是把“Agent”当成一个不可拆解的黑盒。
+- 能理解并实现 typed conversation、ToolCall / ToolResult、retry、budget、Trace、trajectory persistence 等 Runtime 核心机制。
+- 能解释 Matrix / Treatment / Component / Suite / code revision 如何共同形成 formal experiment identity。
+- 能从 formal artifact 和 trajectory 中区分 evidence acquisition、citation/mapping、reasoning 与 infrastructure failure。
+- 能依据真实 badcase 决定下一项 Runtime capability，而不是按功能清单堆 planner、memory、multi-agent 等机制。
 
-## Constraints
+## Working principles
 
-- 学习必须落到当前 DevAgentOps 代码和可运行练习。
-- 每次只学一个小闭环，控制在 30–60 分钟。
-- 先回忆、预测和动手，AI 在第一次尝试前不直接给完整答案。
-- 现成实现只作为完成练习后的对照和反馈。
+- 所有关键结论尽量落到当前 DevAgentOps 的真实代码、Case、Trace 或 formal artifact。
+- 先建立最小可信实现，再通过端到端反馈增加能力。
+- Behavior-affecting change 必须显式 version / fingerprint / Treatment 化，不静默修改已经记录的 baseline。
+- TDD 用于验证 deterministic software contract；Formal Eval / EBDD 用于验证 Agent/System behavior。
+- 历史实验和决策记录保留原貌；current-facing docs 负责维护当前架构事实。
 
-## Out of scope
+## Current technical focus
 
-- CLI/SQLite 基础未掌握前，不进入 FastAPI、React、LLM、RAG 或复杂 Agent Runtime。
-- 当前不学习模型训练、RL 算法或自动 Post-training 闭环。
-- 算法面试训练在 `leetcode-hot-100` 使用独立学习轨道，不与本项目课程混在一起。
+L4 self-built ReAct Runtime baseline 已完成。当前重点从“把 Runtime 跑起来”转向：
+
+```text
+formal run
+    -> Oracle / L4 pairing
+    -> realization-gap analysis
+    -> badcase attribution
+    -> controlled ablation
+    -> next Runtime capability
+```
+
+后续 context management、retrieval、planner/verifier、skills/MCP、memory、multi-agent 等能力都应由真实 trajectory / badcase 证据触发，而不是预先堆入 baseline。

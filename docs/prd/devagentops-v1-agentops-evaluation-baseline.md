@@ -1,18 +1,19 @@
 # PRD: DevAgentOps V1 AgentOps Evaluation Baseline
 
-> Current-state revision: 2026-08-18. This PRD describes the **current V1 target and already-delivered foundation**. Earlier versions of this PRD and historical PR/milestone documents may describe pre-Matrix-v2, pre-Suite-freeze, pre-Oracle, or pre-L4-design states.
+> Current-state revision: 2026-08-19. This PRD describes the current V1 product/evaluation boundary and delivered foundation. Historical PRs, dated milestones and archived micro ADRs preserve earlier project states but do not override current Active ADRs.
 
 ## 1. Problem Statement
 
-DevAgentOps V1 must be more than a one-off Agent demo. It needs a reproducible CI/Test Failure Triage AgentOps system where runtime behavior, evidence acquisition, model usage, tool policy, reports and badcases can be compared honestly across controlled conditions.
+DevAgentOps needs a reproducible CI/Test Failure Triage AgentOps system where Runtime behavior, evidence acquisition, model usage, Tool Policy, reports and badcases can be compared honestly across controlled conditions.
 
-The system must answer questions such as:
+The system should answer questions such as:
 
-- does adaptive ReAct investigation outperform fixed model-backed conditions on the same failures?
-- when an Agent fails, was decisive evidence never found, found but not cited, or cited but reasoned about incorrectly?
-- did a runtime/prompt/tool-policy change improve quality without changing benchmark identity?
-- when Oracle evidence is supplied, how much diagnosis capability is available to be realized by the Agent system?
-- are apparent failures Agent capability outcomes or infrastructure execution failures?
+- how does adaptive ReAct investigation differ from fixed model-backed conditions on the same failures?
+- when an Agent fails, was decisive evidence never found, found but not cited correctly, or available but reasoned about incorrectly?
+- did a Runtime/prompt/tool-policy change improve one quality dimension while degrading another?
+- when Oracle Evidence is supplied, how much evidence-conditioned diagnosis capability is available, and how much does the real Agent System realize?
+- are apparent failures Agent capability outcomes or provider/Runtime/evaluation infrastructure failures?
+- can a result be reproduced from frozen Case/Suite/Component identity plus execution code revision?
 
 ## 2. V1 Product Boundary
 
@@ -27,25 +28,40 @@ V1 remains diagnosis-only. It does not edit code, run tests, rerun CI, create PR
 
 ## 3. Delivered Foundation
 
-As of 2026-08-18, the following foundation is implemented:
+As of 2026-08-19, the following foundation is implemented:
 
 - Offline Case Schema V2 with Physical / Canonical / Evaluator separation;
-- frozen `triage-suite-v1`, exactly 20 Cases and 4 Cases per V1 Failure Type;
+- frozen `triage-suite-v1`, exactly 20 Human-reviewed Cases and 4 Cases per V1 Failure Type;
 - frozen Canonicalization Profile v1;
-- Structured Triage Report V1 and deterministic per-Case scorer;
+- Structured Triage Report V1 and deterministic scorer;
 - Evaluation Matrix v2;
 - Treatment, Condition, Execution Policy and Run Configuration identities;
 - Component Registry / frozen Component fingerprints;
 - doctor-first formal preflight;
-- repeated-sample execution engine and bounded cross-Case concurrency;
+- repeated-Sample execution engine and bounded cross-Case concurrency;
 - Case-first Suite / Failure-Type aggregation;
 - SQLite persistence, Trace, JSON/Markdown artifacts;
-- MiniMax-M3 provider profile and exact local context/token accounting;
+- sample-scoped complete Agent trajectory persistence;
+- provider-neutral typed completion/message contracts;
+- MiniMax-M3 adapter with native ToolCall and continuation support;
 - L1 MiniMax-M3 20×3 formal milestone: 60 scored, 0 execution failures;
 - L2 MiniMax-M3 20×3 formal milestone: 60 scored / 120 model calls, 0 execution failures;
-- Oracle MiniMax-M3 20×3 formal milestone: 60 scored, 0 execution failures.
+- Oracle MiniMax-M3 20×3 formal milestone: 60 scored, 0 execution failures;
+- L4 self-built ReAct implementation, deterministic tests and live qualification;
+- L4 MiniMax-M3 20×3 formal milestone: 59 scored / 1 provider execution failure;
+- ADR 0129 provider-reported L4 context accounting.
 
-L4 architecture is Human-frozen by ADR 0128 and its implementation guide; implementation/formal milestone are pending.
+Current L4 Suite metrics:
+
+```text
+Execution Coverage            98.33%
+Failure Type Exact Match      88.33%
+Evidence Hit Rate             65.51%
+Required Fields Completeness  96.67%
+Protocol Validity             81.36%
+```
+
+The L4 milestone is recorded in [L4 MiniMax-M3 Full-Suite Milestone](../evaluation/milestones/l4-minimax-m3-full-suite-2026-08-19.md).
 
 ## 4. Runtime Capability Ladder
 
@@ -58,25 +74,35 @@ L0 deterministic pipeline
     -> L5+ incremental Agent capabilities
 ```
 
-The ladder is a capability-attribution model, not a mandatory implementation sequence. L3 does not block L4.
+The ladder is a capability-attribution model, not a mandatory implementation sequence. L3 does not block L4 or evidence-driven L5+ work.
 
-## 5. Core User Needs
+| Level | Role | Current state |
+| --- | --- | --- |
+| L0 | deterministic Product Runtime baseline | implemented |
+| L1 | one-shot diagnostic/comparison condition | formal milestone complete |
+| L2 | fixed multi-stage diagnostic/comparison condition | formal milestone complete |
+| L3 | static-retrieval diagnostic | optional; not implemented |
+| L4 | first Agentic Product Runtime | **implemented; live + formal milestone complete** |
+| Oracle | orthogonal evidence-conditioned diagnostic | formal milestone complete |
 
-### Reproducible evaluation
+## 5. Core Evaluation Requirements
 
-The project builder needs:
+### 5.1 Reproducibility
+
+Formal evaluation requires:
 
 - immutable Suite/Case identities;
 - explicit Matrix conditions;
-- versioned/fingerprinted behavior-affecting components;
+- versioned/fingerprinted behavior-affecting Components;
 - recorded code revision / dirty state;
-- repeatable Sample identity and aggregation;
+- explicit Execution Policy;
+- repeatable Sample identity and Case-first aggregation;
 - formal/debug separation;
-- no hidden repair/regeneration or unrecorded retries.
+- no hidden report repair, regeneration or unrecorded retries.
 
-### Agent observability and badcase analysis
+### 5.2 Agent observability
 
-The reviewer needs both:
+The system preserves both:
 
 ```text
 Run Trace
@@ -86,24 +112,26 @@ Agent Trajectory
 = complete ordered per-sample User / Assistant / ToolResult message history
 ```
 
-Trace must remain operationally readable and must not become a duplicate transcript store. L4 provider-returned thinking/reasoning may be persisted in the Agent trajectory for badcase analysis. It is not deterministic score input and is not claimed to expose faithful hidden neural computation.
+Trace must remain an operational event record, not a duplicate transcript store.
 
-### Evidence-grounded diagnosis
+Provider-returned thinking/reasoning may be persisted in Agent trajectory for diagnostic analysis. It is not deterministic score input and is not claimed to expose faithful hidden neural computation.
 
-Reports must cite stable Evidence IDs and be scored against hidden Human-reviewed Ground Truth without exposing evaluator labels to the normal Agent.
+### 5.3 Evidence-grounded diagnosis
 
-The system must preserve the distinction:
+Reports cite stable Canonical Evidence IDs and are scored against hidden Human-reviewed Ground Truth without exposing evaluator labels to the normal Agent.
 
 ```text
-Physical Artifacts       -> facts
-Canonical Evidence       -> neutral coordinates
+Physical Artifacts       -> sole facts
+Canonical Evidence       -> answer-neutral coordinates
 Required Evidence        -> hidden Evidence Ground Truth
 Expected Answer          -> hidden Diagnosis Ground Truth
 ```
 
-### Controlled safety
+### 5.4 Controlled safety
 
-V1 Agent actions are diagnosis-only and read-oriented. Mutation behavior remains forbidden. Tool policy must prevent invalid/forbidden actions before execution where applicable and make policy outcomes visible in trajectory/Trace.
+V1 Agent actions are diagnosis-only and read-oriented. Mutation behavior remains forbidden.
+
+L4 executable Tool Registry contains only `read`, `grep`, `find`, `ls`. Final report submission is a semantic Runtime terminal, not a native mutation/report tool.
 
 ## 6. Formal Case / Evidence Contract
 
@@ -126,24 +154,39 @@ A Formal Case V2 contains:
 
 The Evidence Universe is authentic, frozen, offline and bounded-but-realistic. It preserves natural neighboring information rather than being curator-reduced to only Required Evidence.
 
-Project Knowledge is not part of the current Formal Case Physical Universe and may only enter later as an independently versioned Runtime/Retrieval treatment.
+Project Knowledge is not part of the current Formal Case Physical Universe and may enter later only as an independently versioned Runtime/Retrieval Treatment.
 
-## 7. L4 Self-built ReAct Product Requirement
+## 7. L4 Self-built ReAct Product Contract
 
-L4 is the first Agentic Runtime and the long-lived Agent Runtime kernel lineage starting point.
+L4 is the first Agentic Product Runtime and the baseline for future self-built Runtime evolution.
 
 ```text
 Model Decision
-    -> Runtime validates action / policy / budget
+    -> Runtime validates action / schema / Tool Policy / budget
     -> optional read-only Tool execution
     -> ToolResult observation
     -> authoritative typed message-state update
     -> next Model Decision or terminal report
 ```
 
-The model chooses what to investigate next; the Runtime owns execution authority, safety, budgets, persistence, Trace and forced stop.
+The model chooses what to investigate next; Runtime owns execution authority, policy, budgets, persistence, Trace and forced stop.
 
-### 7.1 Native tools
+### 7.1 Provider-neutral conversation
+
+Canonical L4 messages:
+
+```text
+UserMessage
+AssistantMessage
+  -> TextContent | ThinkingContent | ToolCall
+ToolResultMessage
+```
+
+`ToolCall` preserves parsed arguments when valid and raw provider/model argument text when available. Malformed argument JSON remains measurable model behavior rather than being silently repaired.
+
+Successful `CompletionProvider.complete()` returns an `AssistantMessage`. Provider failures before a valid Model Decision raise typed provider errors.
+
+### 7.2 Native tools and workspace
 
 L4 V1 exposes exactly:
 
@@ -154,26 +197,36 @@ find
 ls
 ```
 
-No Bash/edit/write tools.
-
-`submit_report` is **not** a native provider tool. Report submission is a semantic terminal Runtime action: an AssistantMessage with 0 ToolCalls attempts to terminate, and its visible text is parsed as Structured Triage Report V1.
-
-The older governance vocabulary may still call report persistence/report submission “report-write”; this classification must not be read as requiring a `submit_report` ToolCall in L4.
-
-### 7.2 Agent-visible workspace
+Agent-visible workspace:
 
 ```text
 /raw.log
 /repository/...
 ```
 
+No Bash/edit/write/test/CI tool exists in V1.
+
 Repository manifest metadata, Canonical Evidence files, evaluator directories and other package internals are not tool-readable.
 
-The first model-visible input may include the complete **answer-neutral Canonical coordinate vocabulary** for citation. It must not disclose Physical Artifact contents, Required/Optional labels, Expected Answer or evaluator reasoning. The Agent must discover facts through tools and map them to neutral citation coordinates itself.
+`submit_report` is **not** a native provider tool. An AssistantMessage with 0 ToolCalls attempts to terminate; its visible text is parsed as Structured Triage Report V1.
 
-### 7.3 Tool Registry / Tool Policy
+### 7.3 Canonical citation vocabulary
 
-Tool Registry freezes what the tools are and how their ToolResults behave: provider-visible description/schema, workspace/search semantics, deterministic ordering, hard output bounds and truncation behavior.
+The first L4 model-visible input includes the complete **answer-neutral Canonical coordinate vocabulary** for citation.
+
+It does not disclose:
+
+- Physical Artifact content;
+- Required/Optional labels;
+- which coordinates matter;
+- Expected Answer;
+- evaluator reasoning/metadata.
+
+The Agent must discover facts through tools and map them to neutral citation coordinates itself.
+
+### 7.4 Tool Registry / Tool Policy
+
+Tool Registry freezes provider-visible Tool contracts and deterministic ToolResult behavior: names, descriptions, parameter schemas, workspace/search semantics, ordering, bounds and truncation/continuation behavior.
 
 Tool Policy freezes cross-call execution semantics. Baseline:
 
@@ -183,9 +236,9 @@ execution_mode = sequential
 multiple_calls = reject_all_with_error_results
 ```
 
-Do not duplicate a second tool allowlist in L4 Tool Policy.
+Tool availability comes from Tool Registry; L4 Tool Policy does not duplicate a second allowlist.
 
-### 7.4 Tool output bounds
+### 7.5 Tool output bounds
 
 - shared ToolResult text hard cap: 50 KiB;
 - `read`: max 2000 lines, 1-based pagination;
@@ -194,9 +247,9 @@ Do not duplicate a second tool allowlist in L4 Tool Policy.
 - `ls`: max 500 entries, one level, alphabetical, dotfiles included, dirs suffixed `/`;
 - `grep/find/ls` operate over frozen workspace membership and do not re-apply `.gitignore`.
 
-Truncation must be visible to the model and recorded in Trace metadata.
+Truncation is model-visible and Trace-visible.
 
-### 7.5 Budget and stop
+### 7.6 Budget and stop
 
 L4 V1 hard Agent budget:
 
@@ -204,17 +257,15 @@ L4 V1 hard Agent budget:
 max_steps = 100
 ```
 
-One step = one successful provider completion normalized into a valid Model Decision / AssistantMessage.
+One step is one successful provider completion normalized into a valid `AssistantMessage` Model Decision. Failed provider attempts do not consume steps.
 
-Failed provider attempts do not consume steps.
+Decision #100 may execute a valid ToolAction, but no #101 Model Decision is requested.
 
-The Runtime checks before the next model request. Decision #100 may execute a valid ToolAction, but no #101 request is made. Exhaustion is a scored Agent capability outcome, not an infrastructure failure.
+V1 does not add a cumulative token hard budget, new sample wall-clock hard budget, forced finalization call, or automatic compaction.
 
-V1 does not add cumulative token hard budget, a new sample wall-clock hard budget, forced finalization call, or automatic compaction.
+### 7.7 Recoverable action errors
 
-### 7.6 Tool/action errors
-
-Recoverable model/tool-use errors become Agent-visible error ToolResults and allow self-repair:
+Recoverable model/tool-use errors become Agent-visible error ToolResults and allow another Model Decision:
 
 - unknown/disallowed tool;
 - malformed/invalid arguments;
@@ -222,9 +273,9 @@ Recoverable model/tool-use errors become Agent-visible error ToolResults and all
 - `length + ToolCall`;
 - multiple calls under `single` policy.
 
-Runtime does not semantically repair malformed model arguments. Unexpected Runtime/workspace/tool implementation exceptions are infrastructure failures.
+Runtime does not semantically repair malformed model arguments. Unexpected Runtime/workspace/tool implementation exceptions remain infrastructure failures.
 
-### 7.7 Terminal/sample semantics
+### 7.8 Terminal/sample semantics
 
 `SampleResult.status` remains:
 
@@ -232,32 +283,19 @@ Runtime does not semantically repair malformed model arguments. Unexpected Runti
 scored | execution_failed
 ```
 
-Scored Agent/capability terminals:
+Scored capability terminals:
 
-- valid `report_submitted`;
+- `report_submitted`;
 - `model_stopped_without_valid_report`;
 - `max_steps_exhausted`.
 
-Execution failures are reserved for infrastructure conditions such as exhausted provider-request failure, unexpected Runtime/workspace/tool defects, static context-preflight infeasibility, or evaluation/persistence failures.
+Execution failures are reserved for infrastructure conditions such as exhausted provider-request failure, malformed provider envelope, unexpected Runtime/workspace/tool defect, or evaluation/persistence defect.
 
-This distinction prevents survivorship bias from dropping weak Agent trajectories while also avoiding penalizing the Agent for infrastructure defects.
+Report invalidity after a valid execution opportunity is a scored capability observation, not automatically infrastructure failure.
 
-## 8. Provider Contract
+## 8. MiniMax Provider Route
 
-The Runtime uses provider-neutral typed messages:
-
-```text
-UserMessage
-AssistantMessage
-  -> TextContent | ThinkingContent | ToolCall
-ToolResultMessage
-```
-
-`ToolCall` preserves parsed arguments and raw provider/model argument text so malformed JSON remains measurable capability behavior rather than being repaired or misclassified as provider failure.
-
-Successful `CompletionProvider.complete()` returns `AssistantMessage` directly. Provider failures before a valid Model Decision raise typed provider errors.
-
-L4 V1 keeps the qualified route:
+L4 V1 uses:
 
 ```text
 MiniMaxProvider
@@ -265,28 +303,54 @@ MiniMaxProvider
     -> MiniMax OpenAI Chat Completions API
 ```
 
-Provider-specific reasoning/tool continuation fields remain adapter-owned opaque state from the Runtime perspective.
+Provider-specific ToolCalls, `reasoning_content`, `reasoning_details`, status envelopes and continuation fields remain adapter-owned opaque state from the Runtime perspective.
 
-## 9. Exact Token / Context Accounting
+The OpenAI-compatible transport is one-attempt infrastructure; provider-request retry is owned by the Runtime/provider execution layer above it.
 
-Every L4 logical model request must run exact preflight.
+## 9. Context Accounting
 
-`count_input_tokens()` and `complete()` must share one model-visible MiniMax serialization path covering the same system prompt, ToolDefinitions, full typed history, continuation fields, thinking mode and chat-template/generation prompt.
+### L4
 
-Do not create an independent approximate counter that can diverge from the request actually sent.
+ADR 0129 supersedes the original ADR 0128 mandatory local exact-preflight requirement for L4.
 
-Dynamic context exhaustion/compaction behavior is deliberately deferred until real L4 trajectories show it matters.
+L4 Runtime behavior:
+
+```text
+step-budget check
+    -> build LogicalCompletionRequest
+    -> execute provider request
+    -> successful AssistantMessage.usage
+    -> record provider-reported input usage
+```
+
+Current Treatment context identity:
+
+```text
+assessment = provider_reported
+method = provider_response_usage
+policy = observe_provider_usage_no_local_preflight
+```
+
+L4 V1 does not compact, summarize or trim history automatically. A real provider context-limit rejection is observed through provider/execution evidence.
+
+The first L4 formal milestone observed maximum provider-reported input context of `98,893` tokens and no context-limit rejection.
+
+### L1/L2/Oracle
+
+ADR 0129 does not change their existing exact-token behavior. Condition-specific exact preflight remains where already defined.
 
 ## 10. Provider-request Retry
 
-L4 request retry is infrastructure handling for the same logical Model Decision, not whole-sample restart.
+L4 request retry is infrastructure handling for the **same logical Model Decision**, not whole-sample restart.
 
-- ordinary transient errors: up to 3 retries after initial, 2s/4s/8s backoff;
+- ordinary transient errors: initial attempt + up to 3 retries, 2s/4s/8s backoff;
 - request timeout: at most 1 retry;
 - auth/billing/invalid request/context-token limit/deterministic protocol or config error/policy block/abort: no same-request retry;
 - SDK/provider hidden retries remain disabled;
 - failed attempts are Trace events only, do not enter trajectory and do not consume Agent steps;
 - exhausted request retry -> `execution_failed / provider_request_failed`.
+
+The first L4 formal milestone exercised both retry recovery and retry exhaustion against real provider HTTP 529 responses.
 
 ## 11. Matrix v2 / Treatment Requirements
 
@@ -302,7 +366,7 @@ treatment
 execution_policy
 ```
 
-L4 Treatment must reference and Registry-validate:
+L4 Treatment references and Registry-validates:
 
 - shared Task Contract prompt;
 - separate L4 Runtime-control prompt;
@@ -310,38 +374,71 @@ L4 Treatment must reference and Registry-validate:
 - Tool Policy;
 - provider/model/reasoning/generation/context contracts.
 
-Runtime implementation itself is not a Component Registry type; identity remains `runtime_variant + code_revision`.
+Runtime implementation itself is not a Component Registry type; implementation provenance remains `runtime_variant + code_revision`.
 
-The existing execution-policy `retry_count` must not silently become whole-sample retry. If reused for L4 it means provider-request retry, or the schema must migrate to a more explicit name.
+For L4, current `execution_policy.retry_count` means provider-request retry count. It must never silently become whole-sample retry.
 
-## 12. Oracle Evidence
+## 12. Oracle Evidence and Realization Gap
 
-Oracle Evidence is already implemented and formally evaluated. It supplies the Human-reviewed Required Evidence source content while withholding labels/answers, thereby removing ordinary discovery difficulty.
+Oracle Evidence is implemented and formally evaluated. It supplies Human-reviewed Required Evidence source content while withholding labels/answers, thereby removing ordinary evidence-discovery difficulty.
 
-Oracle is not L4 and not a Product Runtime.
+Oracle is not L4 and not a Product Runtime. It is not a theoretical upper bound on every metric.
 
-Generic Oracle-vs-L4 pairing / Agent-System Realization Gap remains deferred until a real L4 formal milestone exists.
+Both Oracle and L4 formal artifacts now exist, so the prior sequencing block on generic Oracle-vs-L4 analysis is satisfied.
 
-## 13. Evaluation Requirements for L4
+Next evaluation slice:
 
-Before a full live milestone:
+```text
+Pair Validator
+    -> verify compatible Suite / Case / model / contracts / scorer / inference controls
+    -> construct Case-level Oracle/L4 pairs
 
-1. deterministic fake-provider tests must prove multi-step adaptive execution, error recovery, policy rejection, max-step stop, invalid-report scoring and infrastructure failure semantics;
-2. workspace/tool tests must prove bounded read-only access and evaluator non-leakage;
-3. provider qualification must prove MiniMax-M3 native function calling, full assistant continuation/reasoning round-trip, exact token accounting, Trace/trajectory persistence;
-4. only after qualification PASS should one controlled 20 Case × 3 L4 formal milestone be run;
-5. model-quality failures are observations, not reasons to tune and rerun the formal milestone.
+Agent-System Realization Gap
+    -> metric-vector deltas per Case
+    -> Failure-Type / Suite aggregation
+    -> repeat / variance preservation
+
+Badcase attribution
+    -> use L4 trajectory to distinguish acquisition vs mapping/report vs reasoning
+```
+
+For higher-is-better metric `m`:
+
+```text
+realization_gap(case, m)
+  = oracle_score(case, m) - agent_score(case, m)
+```
+
+Do not collapse the metric vector into one composite capability score.
+
+## 13. Current Empirical L4 Findings
+
+The first L4 formal milestone establishes that the integrated Runtime can execute real multi-turn Agent workloads under the frozen Suite:
+
+- `802` successful Model Decisions;
+- `733` executed tool calls started;
+- `283` truncated ToolResults;
+- real Tool Policy rejection and model self-recovery;
+- real schema/domain action-error recovery;
+- real same-request provider retry;
+- one provider retry-exhaustion execution failure;
+- no context-limit rejection;
+- Trace and complete Agent trajectory persistence functioning together.
+
+The main observed baseline weakness is final citation/protocol reliability. Most invalid L4 reports involved unknown/invented Evidence IDs after useful physical investigation.
+
+This motivates—but does not automatically approve—an explicit **answer-neutral physical-span -> Canonical-coordinate assistance** ablation.
 
 ## 14. V1 Non-goals
 
 - code edits / patch generation / CI reruns / PR creation / deployment;
 - L4 Bash or mutation tools;
-- planner/verifier/reflection framework;
+- planner/verifier/reflection baseline;
 - multi-agent / subagents;
 - cross-run memory;
-- MCP/skills as required V1 runtime capabilities;
+- MCP/skills as required V1 Runtime capabilities;
 - OS-level sandbox;
-- automatic context compaction before evidence justifies it;
+- automatic context compaction without evidence;
 - external observability products as source of truth;
 - composite overall capability score;
 - model training / automatic post-training loop.
@@ -350,10 +447,11 @@ Before a full live milestone:
 
 When earlier PRD wording conflicts with current implementation/architecture, use:
 
-1. Active ADRs;
-2. ADR 0128 for L4;
-3. `docs/evaluation/l4-self-built-react-runtime-design.md`;
+1. [Active ADR Index](../adr/README.md);
+2. [ADR 0128](../adr/0128-l4-self-built-react-runtime-contract.md) for the base L4 contract **together with [ADR 0129](../adr/0129-l4-provider-reported-context-accounting.md)** for current L4 context accounting;
+3. [L4 Runtime Design](../evaluation/l4-self-built-react-runtime-design.md);
 4. current Matrix/Registry/source contracts;
-5. current methodology docs.
+5. current Formal Evaluation methodology;
+6. dated milestone docs for immutable experiment evidence.
 
-Dated milestone docs, merged PR bodies, Case review packets and archived micro ADRs are historical evidence and should not override current Active ADR semantics.
+Dated milestone docs, merged PR bodies, Case review packets and archived micro ADRs are historical evidence and do not override current Active ADR semantics.

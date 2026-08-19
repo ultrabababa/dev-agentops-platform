@@ -2,11 +2,15 @@
 
 This directory keeps active architecture decisions for DevAgentOps.
 
+> Current-state note (2026-08-19): L4 `self_built_react` is implemented and has completed its first MiniMax-M3 20×3 formal milestone. ADR 0129 supersedes only ADR 0128's mandatory **L4 local exact-token preflight** requirement; the rest of ADR 0128 remains the active L4 V1 contract.
+
 ## Reading Order
 
 1. Read the foundational ADRs `0001` through `0013` for stack, runtime, trace, retrieval, dashboard, storage, eval runner, and baseline decisions.
-2. Read the consolidated topic ADRs `0112` through `0129` for the current V1 evaluation and AgentOps design.
-3. Use `archive/micro-decisions/` only when you need the detailed discussion trail behind the consolidated decisions.
+2. Read the consolidated topic ADRs `0112` through `0127` for the current V1 evaluation and AgentOps architecture.
+3. For L4, read **ADR 0128 together with ADR 0129**. Do not apply ADR 0128's original exact-preflight section without the ADR 0129 amendment.
+4. Use `archive/micro-decisions/` only when you need the detailed discussion trail behind the consolidated decisions.
+5. Use dated milestone reports for immutable experiment evidence, not as replacements for active architecture contracts.
 
 ## Active Foundational ADRs
 
@@ -44,6 +48,10 @@ This directory keeps active architecture decisions for DevAgentOps.
 - [0127 Staged Runtime Capability Ladder and Reference Boundary](0127-staged-runtime-capability-ladder-and-reference-boundary.md)
 - [0128 L4 Self-built ReAct Runtime Contract](0128-l4-self-built-react-runtime-contract.md)
 - [0129 L4 Provider-Reported Context Accounting](0129-l4-provider-reported-context-accounting.md)
+
+## Current empirical reference
+
+- [L4 MiniMax-M3 Full-Suite Milestone — 2026-08-19](../evaluation/milestones/l4-minimax-m3-full-suite-2026-08-19.md)
 
 ## Archived Micro ADRs
 

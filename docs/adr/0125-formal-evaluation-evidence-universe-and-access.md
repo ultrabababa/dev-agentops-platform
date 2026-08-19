@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted. Refined for L4 by ADR 0128.
+Accepted. Refined for L4 by ADR 0128 and for L4 context accounting by ADR 0129.
 
 ## Context
 
@@ -82,15 +82,17 @@ Do not freeze retrieval chunking by reusing Canonical unit boundaries automatica
 Positive:
 
 - normal L4 still measures evidence discovery rather than curator-provided localization;
-- final report citations can use the existing frozen scorer contract without hidden runtime mapping magic;
+- final report citations can use the existing frozen scorer contract without hidden Runtime mapping magic;
 - Oracle remains meaningfully distinct;
 - Case identity stays independent from tool/retrieval design.
 
 Tradeoffs:
 
 - L4 must reason from observed physical content to the correct neutral citation coordinate;
-- a complete coordinate vocabulary adds prompt tokens, which exact L4 preflight must count;
+- a complete coordinate vocabulary increases model-visible context and therefore contributes to provider-reported request usage; under ADR 0129 it is **not** guarded by mandatory local exact-token preflight in the L4 Runtime critical path;
 - later badcase analysis must distinguish acquisition failure from citation-mapping failure.
+
+The first L4 formal milestone made the second analytical distinction concrete: unknown/invented Evidence IDs were the dominant final protocol failure mode even when the model had inspected relevant physical spans.
 
 ## Non-Decisions
 
@@ -109,3 +111,4 @@ ADRs: `0113`, `0115`, `0118`, `0122`, `0123`, `0124`.
 - [ADR 0126: Offline Case Schema V2](0126-offline-case-schema-v2-physical-artifacts-and-canonical-evidence.md)
 - [ADR 0127: Staged Runtime Capability Ladder](0127-staged-runtime-capability-ladder-and-reference-boundary.md)
 - [ADR 0128: L4 Self-built ReAct Runtime Contract](0128-l4-self-built-react-runtime-contract.md)
+- [ADR 0129: L4 Provider-Reported Context Accounting](0129-l4-provider-reported-context-accounting.md)

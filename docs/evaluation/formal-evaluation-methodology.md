@@ -1,6 +1,6 @@
 # Formal Evaluation Methodology：Evidence Universe、Schema V2 与 Access Conditions
 
-> Current-state note (2026-08-18): `triage-suite-v1`、20 个 Schema V2 Cases 与 Canonicalization Profile v1 已冻结；L1/L2/Oracle formal milestones 已完成；L4 access semantics 由 ADR 0128 进一步冻结。本文描述当前通用 evidence/trust methodology，并显式包含 L4 的 Canonical-coordinate vocabulary refinement。
+> Current-state note (2026-08-19): `triage-suite-v1`、20 个 Schema V2 Cases 与 Canonicalization Profile v1 已冻结；L1/L2/Oracle/L4 MiniMax-M3 formal milestones 均已完成。L4 access semantics 由 ADR 0128 定义，context-accounting amendment 由 ADR 0129 定义。真实 L4 artifact 已存在，因此 Oracle-vs-L4 pairing / realization-gap analysis 不再被“缺少 Agent artifact”阻塞。
 
 ## 1. Trust model
 
@@ -20,6 +20,8 @@ Evaluator / Expected Answer
 
 Normal model-backed conditions never receive evaluator-only labels or answer fields.
 
+这条边界是整个 Formal Evaluation 的基础：Runtime 可以改变如何获取证据，但不能改变什么是事实源、什么是 hidden Ground Truth。
+
 ## 2. Evidence Universe
 
 A Formal Case defines one authentic, frozen, offline, bounded-but-realistic Evidence Universe:
@@ -34,7 +36,7 @@ The universe is chosen from a plausible investigation neighborhood visible from 
 
 Passing/fix revisions, PR discussion, curator notes and other answer-validation material remain outside the Agent-visible Case world.
 
-Project Knowledge is not a Physical Artifact in `triage-suite-v1`; it can be introduced later only as an independently versioned Runtime/Retrieval treatment.
+Project Knowledge is not a Physical Artifact in `triage-suite-v1`; it can be introduced later only as an independently versioned Runtime/Retrieval Treatment.
 
 ## 3. Offline Case Schema V2
 
@@ -69,11 +71,11 @@ Canonicalization is independent of Runtime Retrieval Chunking:
 ```text
 Physical Artifact
     -> Canonicalization Profile
-       -> stable citation/measurement coordinates
+       -> stable citation / measurement coordinates
 
 Physical Artifact
     -> optional Runtime Retrieval Chunker
-       -> runtime-specific chunks/search results
+       -> runtime-specific chunks / search results
 ```
 
 Do not equate Canonical Units with retriever index chunks.
@@ -84,9 +86,9 @@ Do not equate Canonical Units with retriever index chunks.
 
 ## 4. Canonicalization Profile v1
 
-The first Formal Suite now uses one frozen suite-shared Canonicalization Profile v1. Earlier documents that describe profile calibration or `N=100` as only a candidate reflect pre-freeze history.
+The first Formal Suite uses one frozen suite-shared Canonicalization Profile v1. Earlier documents that describe profile calibration or `N=100` as only a candidate reflect pre-freeze history.
 
-Changing Canonical coordinates/required IDs in the frozen suite is a Case/Suite identity change, not a runtime tweak.
+Changing Canonical coordinates/required IDs in the frozen suite is a Case/Suite identity change, not a Runtime tweak.
 
 ## 5. Investigation Workspace
 
@@ -103,95 +105,170 @@ Different conditions may expose the same underlying Case world differently becau
 
 ## 6. Condition access semantics
 
-| Condition | Physical evidence delivery / acquisition | Adaptive Agent loop? |
-| --- | --- | --- |
-| L0 Pipeline | deterministic program-defined access | no |
-| L1 Full-context One-shot | complete Agent-visible physical universe upfront | no |
-| L2 Fixed Model Workflow | fixed program-controlled multi-stage input flow | no |
-| L3 Static Retrieval | versioned static retrieval over Physical Artifacts | no |
-| L4 self-built ReAct | `read/grep/find/ls` investigation of physical workspace | yes |
-| Oracle Evidence | Trusted resolver supplies reviewed Required Evidence source content directly | no |
+| Condition | Physical evidence delivery / acquisition | Adaptive Agent loop? | Current state |
+| --- | --- | --- | --- |
+| L0 Pipeline | deterministic program-defined access | no | implemented |
+| L1 Full-context One-shot | complete Agent-visible physical universe upfront | no | formal milestone complete |
+| L2 Fixed Model Workflow | fixed program-controlled multi-stage input flow | no | formal milestone complete |
+| L3 Static Retrieval | versioned static retrieval over Physical Artifacts | no | not implemented; optional diagnostic |
+| L4 self-built ReAct | `read/grep/find/ls` investigation of physical workspace | yes | formal milestone complete |
+| Oracle Evidence | Trusted resolver supplies reviewed Required Evidence source content directly | no | formal milestone complete |
 
 L0–L5+ is not mandatory implementation order. Oracle is orthogonal to the ladder.
 
-## 7. L4 Canonical-coordinate vocabulary refinement
+## 7. L4 Canonical-coordinate vocabulary
 
-Earlier methodology correctly rejected giving a normal Agent a curator-selected **Required Evidence menu**. That must remain forbidden.
+Earlier methodology correctly rejected giving a normal Agent a curator-selected **Required Evidence menu**. That remains forbidden.
 
-ADR 0128 makes a narrower L4 decision: the complete **answer-neutral Canonical coordinate vocabulary** may be included in L4's initial model-visible user input solely so the final report can cite valid Evidence IDs.
+ADR 0128 makes a narrower L4 decision: the complete **answer-neutral Canonical coordinate vocabulary** is included in L4's initial model-visible user input so the final report can cite valid Evidence IDs.
 
 The distinction is critical:
 
 ```text
 L4 receives upfront:
-- all answer-neutral coordinate IDs/source spans
+- all answer-neutral coordinate IDs / source spans
 
 L4 does NOT receive upfront:
 - physical source content
-- required/optional labels
+- required / optional labels
 - which coordinates matter
 - Expected Answer
-- evaluator reasoning/metadata
+- evaluator reasoning / metadata
 ```
 
-Thus L4 still has to discover the decisive physical content through tools and map observed facts to neutral coordinates itself.
+L4 still has to discover decisive physical content through tools and map observed facts to neutral coordinates itself.
 
-This avoids a dynamic hidden Runtime mapping helper while preserving the existing scorer/report citation contract. It does not turn Canonical Evidence into a curator-selected evidence corpus.
+The first L4 formal milestone empirically validates that this mapping is a meaningful capability boundary: unknown/invented Evidence IDs dominated protocol-invalid reports even when the model had inspected relevant physical spans.
 
-## 8. L1 full-context semantics
+No dynamic hidden Runtime span -> Evidence-ID repair exists in the L4 V1 baseline.
 
-L1 means complete Agent-visible physical evidence in one fixed request and exactly one model call. Silent truncation invalidates the condition identity.
+## 8. Context/accounting semantics by condition
 
-Current formal MiniMax path uses exact preflight. If complete serialized input plus reserved completion cannot fit the configured context capability, it terminates as a context-feasibility execution failure before provider work rather than truncating/summarizing/splitting the condition.
+### L1/L2/Oracle
+
+These formal MiniMax paths retain their existing exact-token behavior where defined. In particular, L1 full-context identity forbids silent truncation: if its complete serialized input plus reserved completion is infeasible, it must fail rather than silently become a different condition.
+
+### L4
+
+ADR 0129 supersedes mandatory local exact-token preflight for L4 only.
+
+L4 behavior：
+
+```text
+build logical request
+    -> provider-request execution
+    -> successful provider usage
+    -> record provider-reported input tokens
+```
+
+Current identity：
+
+```text
+assessment = provider_reported
+method = provider_response_usage
+policy = observe_provider_usage_no_local_preflight
+```
+
+L4 V1 performs no compaction, summarization, trimming or automatic context compression. A provider context-limit rejection is observed as provider/execution evidence rather than predicted by a local exact replica.
+
+The first formal L4 milestone observed maximum provider-reported input of `98,893` tokens and no context-limit rejection.
 
 ## 9. Oracle semantics
 
 Oracle bypasses ordinary evidence discovery by resolving the hidden reviewed Required Evidence set to source-faithful Physical Artifact content. It may include stable IDs but never exposes `required` labels, Expected Answer fields, curator reasoning or scorer answers.
 
-The Oracle MiniMax-M3 20×3 formal milestone is complete. Generic Oracle-vs-L4 pairing/realization-gap machinery remains deferred until a real L4 formal artifact exists.
-
-## 10. Evidence-hit interpretation
-
-Current report Evidence Hit is based on final cited Canonical Evidence IDs against hidden Required Evidence IDs under the frozen scorer.
-
-For analysis, keep these failure classes distinct:
+Oracle MiniMax-M3 20×3 formal milestone：
 
 ```text
-A. decisive physical content never found/seen
-   -> acquisition/tool-use problem
-
-B. physical content found but correct Canonical ID not cited
-   -> mapping/evidence-selection/report problem
-
-C. correct ID cited but diagnosis wrong
-   -> reasoning/diagnosis problem
+60/60 scored
+0 execution failures
+Evidence Hit Rate = 89.29%
 ```
 
-L4 baseline does not add a dynamic physical-span -> Canonical-ID annotation helper; the model performs that mapping using the upfront neutral coordinate vocabulary.
+L4 MiniMax-M3 20×3 formal milestone now also exists：
 
-## 11. Reproducibility boundaries
+```text
+59/60 scored
+Execution Coverage = 98.33%
+Failure Type Exact Match = 88.33%
+Evidence Hit Rate = 65.51%
+Protocol Validity = 81.36%
+```
 
-Formal comparisons must preserve or explicitly version:
+Therefore the previous sequencing guard — “do not implement generic Oracle-vs-L4 gap analysis before a real L4 artifact exists” — is satisfied.
 
-- Suite/Case identity;
-- Evidence/Diagnosis Ground Truth;
-- scorer/report contract;
-- provider/model/inference settings;
-- runtime/evidence-delivery treatment;
-- component fingerprints;
-- execution policy;
-- code revision / dirty state.
+The next analysis layer should not simply subtract Suite aggregates. It must first validate pairing identity and then compute metric-vector gaps by Case / Failure Type with repeat variance preserved.
+
+## 10. Evidence-hit and badcase interpretation
+
+Current Report Evidence Hit is based on final cited Canonical Evidence IDs against hidden Required Evidence IDs under the frozen scorer.
+
+For analysis, keep these failure classes distinct：
+
+```text
+A. decisive physical content never found / seen
+   -> acquisition / tool-use problem
+
+B. physical content found but correct Canonical ID not cited
+   -> mapping / evidence-selection / report problem
+
+C. correct ID cited / decisive evidence available but diagnosis wrong
+   -> reasoning / diagnosis problem
+```
+
+This distinction becomes especially important after L4 because Agent trajectories let us inspect whether the required source content actually entered the model-visible conversation before the final report.
+
+L4 baseline does not add a dynamic physical-span -> Canonical-ID annotation helper. A future answer-neutral coordinate-assistance ablation is a legitimate experimental variable, but it must be represented as explicit behavior identity rather than silent post-processing.
+
+## 11. Oracle-vs-L4 realization gap boundary
+
+For higher-is-better diagnosis metric `m`：
+
+```text
+realization_gap(case, m)
+  = oracle_score(case, m) - agent_score(case, m)
+```
+
+Gap must remain a metric vector. Do not collapse classification, Evidence Hit, report completeness, protocol validity, cost, latency and tool behavior into one composite score.
+
+A valid pairing must check, where applicable：
+
+- same Suite / Case versions and fingerprints；
+- same base model/provider/profile；
+- same diagnosis Task Contract / output contract / scorer；
+- compatible reasoning/generation settings；
+- explicit Treatment differences；
+- repeat/sample availability and execution coverage。
+
+If controls differ beyond the intended evidence-acquisition/runtime intervention, report a **combined difference** instead of pretending to have isolated a single causal effect.
+
+Operational signals such as tool count, steps, token usage and latency are useful explanatory features, but not components of a model-capability score.
+
+## 12. Reproducibility boundaries
+
+Formal comparisons must preserve or explicitly version：
+
+- Suite/Case identity；
+- Evidence/Diagnosis Ground Truth；
+- scorer/report contract；
+- provider/model/inference settings；
+- runtime/evidence-delivery Treatment；
+- Component fingerprints；
+- Execution Policy；
+- code revision / dirty state。
 
 A result with multiple changed controls is a combined difference, not evidence of one isolated causal uplift.
 
-## 12. Source-of-truth order
+## 13. Source-of-truth order
 
-For current L4 behavior use:
+For current behavior use：
 
-1. ADR 0128;
-2. L4 implementation design;
-3. this methodology for general evidence/trust semantics;
-4. ADR 0125/0126 for Case/access architecture;
-5. dated calibration/review/milestone docs only for historical facts.
+1. [Active ADR Index](../adr/README.md)；
+2. ADR 0128 for the base L4 Runtime contract + ADR 0129 for L4 context accounting；
+3. [L4 implementation design](l4-self-built-react-runtime-design.md)；
+4. this methodology for general evidence/trust semantics；
+5. ADR 0125/0126 for Case/access architecture；
+6. current Matrix / Registry / source-code contracts；
+7. dated calibration/review/milestone docs only for historical facts and immutable experiment results。
 
-Historical documents should not be rewritten merely because the project advanced; active guidance must state when those old statuses are superseded.
+Historical documents should not be rewritten merely because the project advanced; current-facing guidance is responsible for stating what has been superseded.
