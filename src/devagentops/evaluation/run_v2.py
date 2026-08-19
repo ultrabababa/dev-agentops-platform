@@ -82,6 +82,7 @@ def run_formal_evaluation_v2(
     treatment = effective["treatment"]
     execution_policy = effective["execution_policy"]
     runtime_variant = effective["runtime_variant"]
+    output_contract_version = treatment["contracts"]["output"]["version"]
     code_revision = _code_revision()
     git_dirty = _git_dirty()
     selected_cases = [
@@ -166,6 +167,7 @@ def run_formal_evaluation_v2(
                 output_contract_prompt_suffix=output_contract_prompt_suffix(),
             ),
             provider_factory=provider_factory,
+            output_contract_version=output_contract_version,
         )
     elif runtime_variant == "fixed_model_workflow":
         executor = ConfiguredL2ConditionExecutor(
@@ -187,6 +189,7 @@ def run_formal_evaluation_v2(
                 ),
             ),
             provider_factory=provider_factory,
+            output_contract_version=output_contract_version,
         )
     elif runtime_variant == "model_one_shot":
         executor = ConfiguredOracleConditionExecutor(
@@ -214,6 +217,7 @@ def run_formal_evaluation_v2(
                 ),
             ),
             provider_factory=provider_factory,
+            output_contract_version=output_contract_version,
         )
     elif runtime_variant == "self_built_react":
         executor = ConfiguredL4ConditionExecutor(
@@ -239,6 +243,7 @@ def run_formal_evaluation_v2(
                 output_contract_prompt_suffix=output_contract_prompt_suffix(),
             ),
             provider_factory=provider_factory,
+            output_contract_version=output_contract_version,
         )
     else:
         from devagentops.evaluation.run import EvaluationRunError

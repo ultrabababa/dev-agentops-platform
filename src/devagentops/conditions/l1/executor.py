@@ -5,12 +5,20 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
+from devagentops.conditions.l1.development_output_contract import (
+    OUTPUT_CONTRACT_VERSION,
+    evidence_reference_resolution_enabled,
+)
 from devagentops.conditions.l1.full_context_v1 import (
     ConfiguredL1Treatment,
     FullContextOneShotError,
     run_configured_full_context_one_shot,
 )
 from devagentops.evaluation.components import ComponentManifest
+from devagentops.evaluation.evidence_reference_resolution import (
+    EVIDENCE_REFERENCE_RESOLUTION_VERSION,
+    canonicalize_evidence_references,
+)
 from devagentops.evaluation.execution import (
     EventRecorder,
     PlannedSample,
@@ -30,6 +38,7 @@ class ConfiguredL1ConditionExecutor:
     prompt: ComponentManifest
     treatment: ConfiguredL1Treatment
     provider_factory: Callable[[], CompletionProvider]
+    output_contract_version: str = OUTPUT_CONTRACT_VERSION
 
     def execute_sample(
         self,
@@ -123,7 +132,18 @@ class ConfiguredL1ConditionExecutor:
                 "retry_count": 0,
             },
         )
-        candidate_document = l1_result.candidate_document
+        model_candidate_document = l1_result.candidate_document
+        resolution_enabled = evidence_reference_resolution_enabled(
+            self.output_contract_version
+        )
+        candidate_document = (
+            canonicalize_evidence_references(
+                model_candidate_document,
+                suite_case.package.canonical_evidence_units,
+            )
+            if resolution_enabled
+            else model_candidate_document
+        )
         recorder.record(
             "report_submitted",
             identity=identity,
@@ -169,6 +189,12 @@ class ConfiguredL1ConditionExecutor:
                 "reserved_completion_tokens": self.treatment.max_completion_tokens,
             },
         }
+        if resolution_enabled:
+            result["model_candidate_document"] = model_candidate_document
+            result["evidence_reference_resolution"] = {
+                "version": EVIDENCE_REFERENCE_RESOLUTION_VERSION,
+                "changed": candidate_document != model_candidate_document,
+            }
         recorder.record(
             "evaluation_completed",
             identity=identity,
