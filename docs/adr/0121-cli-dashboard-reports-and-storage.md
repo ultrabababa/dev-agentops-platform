@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted. Refined for L4 trajectory persistence by ADR 0128.
+Accepted and implemented. Refined for L4 trajectory persistence by ADR 0128.
 
 ## Context
 
@@ -12,21 +12,23 @@ Formal evaluation should be repeatable and scriptable. The dashboard is useful f
 
 V1 formal evaluation is CLI-driven. SQLite remains the queryable source for run/sample evaluation state and Trace events; generated JSON/Markdown artifacts remain ignored by default unless a milestone is deliberately exported.
 
-L4 adds one important storage distinction:
+L4 adds one important storage distinction：
 
 ```text
 Run Trace
-= structured execution/lifecycle events
+= structured execution / lifecycle events
 
 Agent Trajectory
-= complete ordered per-sample User/Assistant/ToolResult messages
+= complete ordered per-sample User / Assistant / ToolResult messages
 ```
 
-The complete L4 trajectory must be persisted separately from Trace so badcase analysis can reconstruct the Agent's actual conversation without turning the Trace event table into a transcript dump.
+The complete L4 trajectory is persisted separately from Trace so badcase analysis can reconstruct the Agent's actual model-visible conversation without turning the Trace event table into a transcript dump.
 
-## L4 persistence requirement
+## L4 trajectory persistence
 
-Use the smallest sample-scoped extension compatible with existing run/sample ownership and Alembic migrations. A recommended shape is one row per message:
+Issue #52 implemented the sample-scoped trajectory table through Alembic migration `0006_add_sample_trajectory_messages.py`.
+
+Current logical shape：
 
 ```text
 evaluation_sample_trajectory_messages
@@ -39,27 +41,44 @@ evaluation_sample_trajectory_messages
 - message_sha256
 ```
 
-The exact table/file naming is an implementation detail, but the following are frozen:
+The following boundaries remain frozen：
 
-- trajectory is linear and sample-scoped;
-- full finalized AssistantMessage content, including provider-returned thinking and opaque continuation fields needed for replay, is preserved;
-- Trace does not duplicate complete message bodies;
-- no Pi-style session tree, branch, resume or conversation-management subsystem is added in V1.
+- trajectory is linear and sample-scoped；
+- full finalized AssistantMessage content, including provider-returned thinking and opaque continuation fields needed for replay, is preserved；
+- Trace does not duplicate complete message bodies；
+- trajectory rows use existing run/sample ownership；
+- no Pi-style session tree, branch, resume or conversation-management subsystem is added in V1；
+- trajectory persistence is not Agent memory and creates no cross-run state。
+
+## Formal-run evidence
+
+The first L4 20×3 milestone exercised the storage path with real multi-turn trajectories, including：
+
+- hundreds of Model Decisions；
+- native ToolCalls and ToolResults；
+- provider continuation state；
+- recoverable tool/policy errors；
+- one exhausted provider-retry infrastructure failure；
+- final scored reports and invalid-report capability terminals。
+
+The formal run completed without a persistence-level execution failure, providing end-to-end evidence that trajectory storage coexists with the existing Trace, scheduler and formal artifacts.
 
 ## Consequences
 
-- operational Trace queries remain compact/readable;
-- L4 badcase review can inspect exact tool/thinking/message progression;
-- the existing scheduler, Sample identity and SQLite ownership model remain reusable;
-- trajectory persistence does not become Agent memory or cross-run state.
+- operational Trace queries remain compact/readable；
+- L4 badcase review can inspect exact tool/thinking/message progression；
+- the existing scheduler, Sample identity and SQLite ownership model remain reusable；
+- full Agent conversation evidence is available for Oracle-vs-L4 gap attribution；
+- trajectory persistence does not become Agent memory or a product session subsystem。
 
 ## Implementation Notes
 
-- formal runner still runs `eval doctor` first;
-- existing run/sample outcomes, reports, scores, aggregates and Trace remain intact;
-- L4 trajectory persistence is additive and must not rewrite historical L1/L2/Oracle rows;
-- dashboard support for rendering full L4 trajectories is optional for Issue #52 unless needed for acceptance; persistence/auditability is required;
-- generated reports/artifacts remain ignored unless deliberately exported as milestones.
+- formal runner still runs `eval doctor` first；
+- existing run/sample outcomes, reports, scores, aggregates and Trace remain intact；
+- L4 trajectory persistence is additive and does not rewrite historical L1/L2/Oracle rows；
+- dashboard rendering of full trajectories is optional; persistence/auditability is the contract；
+- generated reports/artifacts remain ignored unless deliberately exported as milestones；
+- future gap/badcase tooling should read the existing persisted trajectory rather than inventing a second transcript store。
 
 ## Consolidates
 
