@@ -1,6 +1,6 @@
 # Evaluation Matrix、Component Registry 与 Formal Evaluation Identity
 
-> Current-state note (2026-08-19): L1/L2/Oracle/L4 正式路径均使用 Matrix schema v2。L4 Runtime-control prompt、Tool Registry 与 Tool Policy 已冻结并进入 Component Registry，doctor/formal validation 已实现完整引用解析与 fingerprint 校验。
+> Current-state note (2026-08-19): L1/L2/Oracle/L4 historical formal paths均使用 Matrix schema v2。L4 Runtime-control prompt、Tool Registry 与 Tool Policy 已冻结并进入 Component Registry。Oracle↔L4 Pair Analysis 已完成，当前下一代 comparison 将增加 shared deterministic Evidence Reference Canonicalization，并以新 output-realization identity 统一应用到 L1/L2/Oracle/L4；历史 fingerprints 不改写。
 
 本文说明当前 Formal Evaluation 的配置身份链：
 
@@ -58,7 +58,7 @@ profile
 base_url
 ```
 
-Treatment 表达**会改变 Agent/model-visible behavior 或 model execution semantics 的条件身份**。它不是 execution scheduler 配置，也不是整个 run manifest。
+Treatment 表达**会改变 Agent/model-visible behavior、model execution semantics 或 output-realization semantics 的条件身份**。它不是 execution scheduler 配置，也不是整个 run manifest。
 
 ### 1.2 Execution Policy
 
@@ -75,13 +75,13 @@ Execution Policy 属于 formal execution mechanics，不是 Agent Tool Policy。
 
 当前语义：
 
-- L1/L2/Oracle 历史正式条件保持 `retry_count=0`；
-- L4 中 `retry_count=3` 由 L4 executor 解释为 **same-logical-provider-request retries after the initial attempt**；
+- L1/L2/Oracle historical formal conditions 保持 `retry_count=0`；
+- historical L4 中 `retry_count=3` 由 L4 executor 解释为 **same-logical-provider-request retries after the initial attempt**；
 - 它绝不能触发 whole-sample replay；
 - cross-Case concurrency 与 repeat count 不进入 Treatment identity；
 - Execution Policy fingerprint 进入 Run Configuration identity。
 
-L4 formal milestone 已在线上真实覆盖该语义：一次 transient HTTP 529 在 retry 后恢复；另一次 529 sequence 在 initial + 3 retries 后形成 `execution_failed / provider_request_failed`，没有重跑整个 Sample。
+L4 historical formal milestone 已真实覆盖该语义：一次 transient HTTP 529 在 retry 后恢复；另一次 529 sequence 在 initial + 3 retries 后形成 `execution_failed / provider_request_failed`，没有重跑整个 Sample。
 
 ### 1.3 Fingerprints
 
@@ -125,7 +125,7 @@ Condition fingerprint
 
 ## 2. Component Registry
 
-Component Registry schema V1 支持六类：
+Component Registry schema V1 当前支持六类：
 
 | Type | behavior contract |
 | --- | --- |
@@ -138,7 +138,7 @@ Component Registry schema V1 支持六类：
 
 Component fingerprint 只 hash canonicalized `manifest.behavior`。`metadata` 是 review/provenance 信息，不影响 behavior fingerprint。
 
-当前 L4 相关 frozen components：
+Historical L4 相关 frozen components：
 
 ```text
 prompt
@@ -165,7 +165,7 @@ Tool Policy
 
 ## 3. L4 Treatment identity
 
-L4 Treatment 显式引用：
+Historical L4 Treatment 显式引用：
 
 1. shared Task Contract `prompt`；
 2. L4 Runtime-control `prompt`；
@@ -203,7 +203,7 @@ grep.max_matches: 100 -> 200
 
 ### 3.2 Tool Policy
 
-L4 baseline Tool Policy 只描述跨 ToolCall execution semantics：
+Historical L4 baseline Tool Policy 只描述跨 ToolCall execution semantics：
 
 ```json
 {
@@ -220,7 +220,7 @@ L4 baseline Tool Policy 只描述跨 ToolCall execution semantics：
 
 Tool availability 已由 Tool Registry 定义，因此 L4 V1 不在 Tool Policy 中复制第二套 allowlist，也不使用 `default_action`。
 
-如果未来测试 `batch + sequential` 或 `batch + parallel`，那是新的 Tool Policy behavior / Treatment，不是 Runtime 内部无身份变化的开关。
+当前已经有真实 formal evidence 支持后续测试 `batch + parallel`：historical L4 run 记录了 `26` 个 `multiple_tool_calls_rejected` ToolCall IDs。该变化属于新的 Tool Policy behavior / Treatment，不是 Runtime 内部无身份变化的开关；同时必须更新 Runtime-control prompt，因为 historical prompt 明确规定 zero-or-one ToolCall。
 
 ### 3.3 Runtime-control prompt
 
@@ -237,7 +237,7 @@ Shared Task Contract 保持 Runtime-neutral。L4-specific tool-use、loop、stop
 
 ADR 0129 改变了 L4 的 context-accounting Treatment identity，但没有改 L1/L2/Oracle 的 exact-token path。
 
-L4 current context contract：
+Historical/current L4 V1 context contract：
 
 ```text
 assessment = provider_reported
@@ -256,11 +256,11 @@ context_window_tokens = 1_000_000
 
 任何未来 predictive budgeting、compaction 或 provider/server truncation policy 都必须以显式 Treatment / ADR change 表达。
 
-## 5. Evidence delivery 与 Canonical vocabulary
+## 5. Evidence delivery、Canonical vocabulary 与 shared output resolution
 
 Case/Suite identity 冻结 Physical Artifacts、Canonical coordinates、Evaluator Ground Truth 与 provenance。
 
-Evidence acquisition/delivery 属于 condition/Treatment semantics。L4 V1：
+Evidence acquisition/delivery 属于 condition/Treatment semantics。Historical L4 V1：
 
 - Tool filesystem 只暴露 `/raw.log` 和 `/repository/...` physical workspace；
 - full answer-neutral Canonical coordinate vocabulary 作为 initial model input 的 citation vocabulary；
@@ -269,7 +269,42 @@ Evidence acquisition/delivery 属于 condition/Treatment semantics。L4 V1：
 
 因此不能把“Canonical coordinates 存在于 Case Package”与“某 condition 是否把 coordinate vocabulary 发送给模型”混成一个 Case schema 问题。
 
-Formal L4 milestone 已暴露一个重要 behavior boundary：模型可能读取正确 physical span，却生成不存在的 Evidence ID。若未来加入 physical-span -> Canonical-coordinate assistance，这会改变 Agent-visible behavior，必须作为显式 Treatment / component contract，而不是 evaluator-side silent repair。
+Historical L4 milestone 暴露了一个重要 output-realization defect：模型可能已经定位到一个物理 line range，却生成不存在的 aggregate Evidence ID。最初曾计划把它做成 L4-only physical-span -> Canonical-coordinate assistance；该方向已被后续 Pair Analysis **supersede**。
+
+当前决策是：**Deterministic Evidence Reference Canonicalization 是 shared final-report/output infrastructure，统一用于新一代 L1/L2/Oracle/L4 comparison。** 它不改变各 condition 的 `runtime_variant` 或 evidence-acquisition semantics。
+
+概念链：
+
+```text
+runtime-specific raw candidate document
+    -> shared Evidence Reference Canonicalization
+    -> Structured Report validation
+    -> frozen scorer
+```
+
+Resolver 只做 representation normalization：
+
+```text
+exact Canonical ID
+    -> preserve
+
+same-family explicit line range
+    -> deterministic overlap mapping to frozen Canonical unit(s)
+    -> deduplicate
+
+unresolvable
+    -> remain invalid
+```
+
+它不得读取 Required Evidence / Expected Answer，不做 fuzzy/semantic repair，也不根据 diagnosis 选择“应该引用”的 Evidence。Raw model candidate 与 resolved candidate 应保留可审计边界。
+
+### 5.1 Identity placement
+
+Shared canonicalization 不是新的 `runtime_variant`，也不是 L4 Tool Registry / Tool Policy。它改变 final output realization behavior，因此必须进入新的显式 output/Treatment identity，并在 L1/L2/Oracle/L4 的新 comparison generation 中一致引用。
+
+当前 Matrix v2 `treatment.contracts` 已承载 shared output contract identity；具体新 version/fingerprint 在实现时冻结。若现有 output contract representation 不足以表达 resolution semantics，应做最小必要 schema/contract identity extension，而不是把行为藏在 Python 常量里。
+
+Historical L1/L2/Oracle/L4 Treatment/Condition fingerprints 绝不能 retroactively 改写。
 
 ## 6. Formal doctor validation
 
@@ -282,7 +317,9 @@ Formal L4 milestone 已暴露一个重要 behavior boundary：模型可能读取
 - L4 Task/Runtime-control/Tool Registry/Tool Policy references；
 - run configuration construction prerequisites。
 
-L4 formal 20×3 run 已通过该 doctor path，并使用：
+Shared canonicalization 落地后，新 comparison generation 的 doctor 还必须验证各 condition 引用同一目标 output-resolution contract identity；旧 historical matrices 继续保持原样可解释。
+
+Historical L4 formal 20×3 run 使用：
 
 ```text
 condition = l4-minimax-m3-adaptive-development-v1
@@ -308,10 +345,13 @@ request_timeout_seconds = 600
 当身份/配置文档冲突时，优先按：
 
 1. [Active ADR Index](../adr/README.md)；
-2. [ADR 0128 — L4 Runtime Contract](../adr/0128-l4-self-built-react-runtime-contract.md) + [ADR 0129 — L4 Context Accounting](../adr/0129-l4-provider-reported-context-accounting.md)；
-3. [L4 Self-built ReAct Runtime Design](l4-self-built-react-runtime-design.md)；
-4. current `src/devagentops/evaluation/matrix_v2.py` / Registry validation / checked-in Matrix v2 files；
-5. earlier Matrix v1 material only for historical compatibility。
+2. `README.md` / `CONTEXT.md` current-facing orientation；
+3. [Formal Evaluation Methodology](formal-evaluation-methodology.md)；
+4. [ADR 0128 — L4 Runtime Contract](../adr/0128-l4-self-built-react-runtime-contract.md) + [ADR 0129 — L4 Context Accounting](../adr/0129-l4-provider-reported-context-accounting.md) for historical/frozen L4 V1 behavior；
+5. current `src/devagentops/evaluation/matrix_v2.py` / Registry validation / checked-in Matrix v2 files；
+6. [Oracle ↔ L4 Pair Analysis Findings](milestones/oracle-l4-pair-analysis-2026-08-19.md) for the current badcase-driven decision；
+7. [Milestone Status Index](milestones/README.md) before using other dated milestone files；
+8. earlier Matrix v1 material only for historical compatibility。
 
 ## 9. 不应静默改变的历史身份
 
@@ -319,7 +359,7 @@ request_timeout_seconds = 600
 
 - frozen Suite / Case fingerprints；
 - historical L1/L2/Oracle/L4 Treatment/Condition/Execution fingerprints；
-- existing scorer/report contract；
+- historical scorer/report/output-realization contract；
 - previous milestone artifacts。
 
-任何新 capability、policy 或 context-management behavior 都应以新配置身份表达，而不是 retroactively reinterpret old runs。
+Shared canonicalization、batch+parallel Tool Policy 或其他新 capability 都必须以新配置身份表达。新行为生成新结果；旧 run 继续代表旧 contract，不能 retroactively reinterpret。
