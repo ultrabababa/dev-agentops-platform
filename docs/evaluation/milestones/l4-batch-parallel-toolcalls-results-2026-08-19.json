@@ -1,5 +1,5 @@
 {
-  "schema_version": "1",
+  "schema_version": "2",
   "milestone_id": "l4-batch-parallel-toolcalls-2026-08-19",
   "date": "2026-08-19",
   "implementation": {
@@ -8,6 +8,7 @@
     "runtime_variant": "self_built_react",
     "runtime_control_version": "l4-react-runtime-control-batch-parallel-v1",
     "tool_policy_version": "l4-batch-parallel-tool-policy-v1",
+    "historical_reference_tool_policy_version": "l4-single-sequential-tool-policy-v1",
     "tool_registry_version": "l4-investigation-tools-v1",
     "output_contract_version": "development-v2",
     "evidence_reference_resolution": "canonical-line-range-normalization-v1"
@@ -23,7 +24,7 @@
     },
     "formal_matrix_doctor": "passed"
   },
-  "fresh_canonicalized_baseline_reference": {
+  "initial_reference": {
     "run_id": "d6fee1ba-ddd2-4ed3-ae2f-625603de5fef",
     "condition_id": "l4-minimax-m3-canonicalized-development-v1",
     "metrics": {
@@ -39,9 +40,9 @@
       "rejected_tool_call_ids": 35,
       "affected_samples": 11
     },
-    "interpretation": "Fresh hosted generation is not a causal control because model/provider regeneration variance is known. This baseline is used as an operational comparison reference only."
+    "interpretation": "Fresh hosted generation is an operational reference, not a causal control, because model/provider regeneration variance is known."
   },
-  "batch_parallel_formal": {
+  "initial_batch_parallel": {
     "run_id": "010e9a75-8ca8-44b5-8445-d82d188d11f3",
     "status": "completed",
     "suite_quality_status": "complete",
@@ -61,7 +62,7 @@
       "manifest_git_dirty": true,
       "post_run_tracked_tree_check": "clean",
       "observed_untracked_entry": ".worktrees/",
-      "interpretation": "Maintainer verification immediately after the run showed no tracked modifications; git_dirty was caused by an unrelated untracked worktree directory. The run is retained and is not re-run merely to change the metadata bit."
+      "interpretation": "Immediate maintainer verification showed no tracked modifications; the dirty bit was caused by the unrelated untracked worktree directory."
     },
     "quality_metrics": {
       "execution_coverage": 1.0,
@@ -92,7 +93,7 @@
         "schema_invalid_arguments": 9,
         "path_not_found": 2
       },
-      "model_decision_reduction_vs_fresh_baseline": {
+      "model_decision_reduction_vs_reference": {
         "baseline": 798,
         "candidate": 547,
         "absolute": 251,
@@ -136,10 +137,209 @@
       {"case_id": "odrepair-remoting-abf0455a", "repeat_index": 2, "error_codes": ["invalid_report_type"]}
     ]
   },
+  "replication": {
+    "design": "back_to_back_fresh_single_sequential_then_batch_parallel",
+    "common": {
+      "code_revision": "2e1ff851911cd4c0a26f0cd4d4d69dee48bc44aa",
+      "suite_id": "triage-suite-v1",
+      "planned_samples_each": 60,
+      "execution_policy_fingerprint": "14e21cd921a1729991f83aa83ce3c9ba8f4603526c3782181255886bbf30461a",
+      "provider": "minimax-official",
+      "model": "MiniMax-M3",
+      "output_contract_version": "development-v2",
+      "evidence_reference_resolution": "canonical-line-range-normalization-v1",
+      "manifest_git_dirty": true,
+      "provenance_interpretation": "Both runs share the same recorded revision and dirty-state class. Immediately before the replication work, maintainer verification showed no tracked modifications and an unrelated untracked .worktrees/ entry."
+    },
+    "single_sequential": {
+      "run_id": "b6ad2a0f-1b40-49e2-8ce6-28b14f8b2df8",
+      "condition_id": "l4-minimax-m3-canonicalized-development-v1",
+      "run_configuration_fingerprint": "fbb8bda9b3746f203b1633f65c9810cebe95567e3fb7798ce2323b50616a149b",
+      "artifact_sha256": "05737058cd87f45dd28a39a9a61b538b4be37f02484214106db8ea85fb4441dd",
+      "scored_samples": 60,
+      "execution_failures": 0,
+      "quality_metrics": {
+        "execution_coverage": 1.0,
+        "failure_type_exact_match": 0.7166666666666667,
+        "report_evidence_hit_rate": 0.7464021164021164,
+        "required_fields_completeness": 0.9333333333333333,
+        "protocol_validity_rate": 0.9333333333333333,
+        "protocol_valid_samples": 56,
+        "protocol_invalid_samples": 4
+      },
+      "runtime_mechanism": {
+        "successful_model_decisions": 877,
+        "provider_request_attempts": 877,
+        "executed_tool_call_decisions": 809,
+        "rejected_multi_call_decisions": 8,
+        "tool_using_decisions_including_rejected": 817,
+        "tool_calls_started": 809,
+        "rejected_tool_call_ids": 20,
+        "rejected_batch_sizes": [2, 2, 2, 2, 2, 3, 3, 4],
+        "tool_errors": {
+          "multiple_tool_calls_rejected": 20,
+          "schema_invalid_arguments": 2,
+          "path_not_found": 4
+        }
+      },
+      "provider_usage": {
+        "input_tokens": 23448236,
+        "output_tokens": 301898,
+        "total_tokens": 23750134,
+        "cached_prompt_tokens": 21618995,
+        "cache_ratio": 0.9219881188503902,
+        "non_cached_prompt_tokens": 1829241
+      },
+      "latency": {
+        "run_wall_seconds": 978.270385,
+        "sample_duration_seconds": {
+          "mean": 77.91716755,
+          "p50": 63.134314,
+          "p90": 135.3715472,
+          "p95": 184.51134615,
+          "max": 318.286973
+        }
+      },
+      "protocol_invalid_details": [
+        {"case_id": "bugswarm-mypy-237548392", "repeat_index": 0, "error_codes": ["invalid_report_type"], "expected_failure_type_visible": true},
+        {"case_id": "bugswarm-byte-buddy-149441998", "repeat_index": 0, "error_codes": ["invalid_report_type"], "expected_failure_type_visible": true},
+        {"case_id": "bugswarm-traccar-221926468", "repeat_index": 1, "error_codes": ["invalid_report_type"], "expected_failure_type_visible": true},
+        {"case_id": "bugswarm-spring-hateoas-232784946", "repeat_index": 2, "error_codes": ["invalid_report_type"], "expected_failure_type_visible": true}
+      ]
+    },
+    "batch_parallel": {
+      "run_id": "d76ac5ca-22a3-4c67-acf3-c33bba68f0d5",
+      "condition_id": "l4-minimax-m3-batch-parallel-canonicalized-development-v1",
+      "run_configuration_fingerprint": "a4329af87213eb9db245f135095e97959615b61ff882849c7e9543079819c8b9",
+      "artifact_sha256": "cf4c16f8e0ac0844c2bc1a2c337dcdb6a3e1c167fdc12806eb8a06b17560ab3c",
+      "scored_samples": 60,
+      "execution_failures": 0,
+      "quality_metrics": {
+        "execution_coverage": 1.0,
+        "failure_type_exact_match": 0.75,
+        "report_evidence_hit_rate": 0.7350396825396825,
+        "required_fields_completeness": 0.98125,
+        "protocol_validity_rate": 0.9166666666666666,
+        "protocol_valid_samples": 55,
+        "protocol_invalid_samples": 5
+      },
+      "runtime_mechanism": {
+        "successful_model_decisions": 571,
+        "provider_request_attempts": 571,
+        "tool_using_decisions": 511,
+        "tool_calls_started": 775,
+        "multi_call_decisions": 228,
+        "multi_call_decision_rate_among_tool_decisions": 0.4461839530332681,
+        "samples_with_multi_call": 49,
+        "batch_size_distribution": {
+          "1": 283,
+          "2": 199,
+          "3": 24,
+          "4": 3,
+          "5": 2
+        },
+        "multiple_tool_calls_rejected": 0,
+        "tool_errors": {
+          "schema_invalid_arguments": 9,
+          "path_not_found": 1
+        }
+      },
+      "provider_usage": {
+        "input_tokens": 15696354,
+        "output_tokens": 286089,
+        "total_tokens": 15982443,
+        "cached_prompt_tokens": 13775981,
+        "cache_ratio": 0.8776548362759913,
+        "non_cached_prompt_tokens": 1920373
+      },
+      "latency": {
+        "run_wall_seconds": 806.685981,
+        "sample_duration_seconds": {
+          "mean": 57.193100783333335,
+          "p50": 45.8250175,
+          "p90": 102.0189547,
+          "p95": 132.7258861,
+          "max": 221.209817
+        }
+      },
+      "protocol_invalid_details": [
+        {"case_id": "bugswarm-traccar-221926468", "repeat_index": 1, "error_codes": ["unknown_evidence_id"], "expected_failure_type_visible": true},
+        {"case_id": "bugswarm-spring-hateoas-232784946", "repeat_index": 1, "error_codes": ["missing_required_field"], "expected_failure_type_visible": true},
+        {"case_id": "bugswarm-spring-hateoas-232784946", "repeat_index": 2, "error_codes": ["unknown_evidence_id"], "expected_failure_type_visible": true},
+        {"case_id": "bugswarm-cola-12505170926", "repeat_index": 0, "error_codes": ["unknown_evidence_id", "unknown_evidence_id"], "expected_failure_type_visible": true},
+        {"case_id": "odrepair-remoting-abf0455a", "repeat_index": 0, "error_codes": ["invalid_report_type"], "expected_failure_type_visible": false}
+      ]
+    },
+    "deltas_batch_minus_single": {
+      "quality_percentage_points": {
+        "failure_type_exact_match": 3.333333333333335,
+        "report_evidence_hit_rate": -1.1362433862433843,
+        "required_fields_completeness": 4.791666666666668,
+        "protocol_validity_rate": -1.6666666666666667
+      },
+      "paired_case_bootstrap_95_percent_percentage_points": {
+        "failure_type_exact_match": [-8.333333333333332, 15.0],
+        "report_evidence_hit_rate": [-9.562169312169312, 7.465608465608466],
+        "required_fields_completeness": [-1.6666666666666667, 11.458333333333334],
+        "protocol_validity_rate": [-8.333333333333332, 5.0]
+      },
+      "operational_relative": {
+        "successful_model_decisions": -0.34891676168757124,
+        "tool_calls_started": -0.042027194066749075,
+        "input_tokens": -0.33059552965945926,
+        "output_tokens": -0.05236536843569682,
+        "total_tokens": -0.3270588283838735,
+        "non_cached_prompt_tokens": 0.04981956997465069,
+        "run_wall_seconds": -0.17539568470121894,
+        "sample_mean_seconds": -0.2659756176758849,
+        "sample_p50_seconds": -0.27416622440848887,
+        "sample_p95_seconds": -0.280662740425191
+      }
+    }
+  },
+  "cross_run_interpretation": {
+    "quality_deltas_batch_minus_reference": {
+      "initial": {
+        "failure_type_exact_match_pp": -8.33,
+        "report_evidence_hit_rate_pp": -3.64,
+        "required_fields_completeness_pp": -12.91,
+        "protocol_validity_rate_pp": -6.67
+      },
+      "replication": {
+        "failure_type_exact_match_pp": 3.33,
+        "report_evidence_hit_rate_pp": -1.14,
+        "required_fields_completeness_pp": 4.79,
+        "protocol_validity_rate_pp": -1.67
+      }
+    },
+    "model_decision_reductions": {
+      "initial": {
+        "reference": 798,
+        "batch": 547,
+        "relative_reduction": 0.31453634085213034
+      },
+      "replication": {
+        "reference": 877,
+        "batch": 571,
+        "relative_reduction": 0.34891676168757124
+      }
+    },
+    "conclusion": "Quality deltas are unstable and can reverse direction; the initial apparent diagnosis-quality regression did not reproduce. Runtime efficiency improvement is stable across fresh generations. Evidence Hit and Protocol Validity remain weak residual signals to monitor, not demonstrated material regressions."
+  },
   "decision": {
     "implementation_qualification": "passed",
-    "default_baseline_promotion": "not_yet",
-    "reason": "The runtime mechanism worked as intended and materially reduced Model Decisions while eliminating reject-all multi-call failures. Fresh quality metrics were lower, but all residual protocol-invalid samples were invalid_report_type and hosted regeneration variance prevents attributing the quality delta causally to batching. Keep batch+parallel as a distinct supported treatment; do not add arbitrary batch caps, forced batching, scheduler changes, or output repair based on this run.",
-    "next_direction": "Preserve the treatment and milestone. A future baseline promotion requires stronger evidence than one fresh hosted comparison; the next large capability remains executable repair/sandbox work unless new evidence justifies another controlled runtime ablation."
+    "replication_status": "passed",
+    "recommended_forward_tool_policy": "batch_parallel",
+    "historical_single_sequential_baseline": "preserve_immutable_reference",
+    "default_baseline_promotion": "recommended_for_new_l4_evaluations_not_retroactive",
+    "reason": "Two fresh Batch runs materially reduced Model Decisions by about 31-35 percent. The contemporaneous replication also reduced wall time and sample latency while executed ToolCall volume remained close to the single/sequential reference. The initial quality drop did not reproduce; taxonomy and required-field deltas reversed direction, protocol failure modes changed, and paired Case-level intervals span zero. No reproducible material quality regression is demonstrated.",
+    "guardrails": [
+      "do_not_rewrite_historical_matrices_fingerprints_or_results",
+      "do_not_add_arbitrary_batch_caps",
+      "do_not_force_batching_in_prompt",
+      "do_not_add_output_repair_from_this_experiment",
+      "do_not_change_runtime_rung_identity"
+    ],
+    "next_direction": "Batch + Parallel experiment complete. The next large capability direction is executable repair / sandboxed remediation; retrieval, compaction, planning/verifier, memory, and multi-agent changes remain evidence-gated."
   }
 }
