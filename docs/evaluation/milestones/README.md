@@ -15,8 +15,8 @@ Use current-facing documents (`README.md`, `CONTEXT.md`, active ADRs, and `docs/
 | `oracle-l4-pair-analysis-2026-08-19.md` | Historical analysis / decision input | Records the completed Oracle↔L4 badcase analysis that motivated shared deterministic final-report Evidence Reference Canonicalization. |
 | `evidence-reference-canonicalization-2026-08-19.md` | **Completed experiment milestone** | Records implementation validation, zero-model-cost historical replay, fresh L1/L2/Oracle/L4 `20×3` formal generation, causal interpretation boundaries, residual invalid-report audit, and the decision to accept `canonical-line-range-normalization-v1`. |
 | `evidence-reference-canonicalization-results-2026-08-19.json` | Machine-readable result snapshot | Preserves the historical baselines, offline replay results, fresh formal Run IDs/fingerprints/metrics, execution failures, protocol-invalid details, and experiment conclusions used by the canonicalization milestone. |
-| `l4-batch-parallel-toolcalls-2026-08-19.md` | **Current completed Runtime experiment milestone** | Records Issue #61 / PR #62, deterministic gates, fresh `20×3` Batch + Parallel formal generation, runtime-mechanism evidence, quality caveats, long-tail analysis, and the decision to retain the treatment without yet promoting it to the default L4 baseline. |
-| `l4-batch-parallel-toolcalls-results-2026-08-19.json` | **Machine-readable result snapshot** | Preserves candidate Run identity, validation results, fresh canonicalized reference metrics, Model Decision / batch / ToolCall observations, provider usage, timeout straggler evidence, protocol-invalid details, and the experiment decision. |
+| `l4-batch-parallel-toolcalls-2026-08-19.md` | **Current completed Runtime experiment milestone** | Records Issue #61 / PR #62, deterministic gates, the initial Batch + Parallel formal run, a fresh back-to-back single/sequential vs Batch + Parallel replication block, quality/efficiency interpretation, and the decision to recommend Batch + Parallel for new L4 evaluations while preserving the historical baseline. |
+| `l4-batch-parallel-toolcalls-results-2026-08-19.json` | **Machine-readable result snapshot** | Preserves both Batch runs, both comparison references, run identities/fingerprints, quality metrics, Model Decision / batch / ToolCall observations, provider usage, latency, protocol-invalid details, paired Case-level uncertainty, and the final recommendation. |
 
 ## Supersession rule
 
@@ -31,19 +31,27 @@ shared deterministic Evidence Reference Canonicalization
     -> canonical-line-range-normalization-v1 accepted
 ```
 
-The independent Batch + Parallel Runtime experiment is also complete:
+The independent Batch + Parallel Runtime experiment and replication are also complete:
 
 ```text
+historical reference
 single + sequential + reject-all
-    -> batch + parallel + independent-call handling
-    -> 60/60 Samples completed
-    -> 257 multi-call decisions across 55/60 Samples
-    -> successful Model Decisions 798 reference -> 547 candidate
-    -> no multiple_tool_calls_rejected
-    -> fresh quality lower, dominated by invalid_report_type realization failures
-    -> treatment retained; default-baseline promotion deferred
+
+initial Batch run
+798 reference -> 547 Model Decisions (-31.45%)
+quality lower, with 8 invalid_report_type Samples
+
+fresh back-to-back replication
+877 -> 571 Model Decisions (-34.89%)
+809 -> 775 executed ToolCalls (-4.20%)
+wall time 978.27s -> 806.69s (-17.54%)
+taxonomy 71.67% -> 75.00%
+evidence 74.64% -> 73.50%
+protocol 93.33% -> 91.67%
 ```
 
-This result does not justify arbitrary batch caps, forced batching, output repair, or scheduler changes. It also does not redefine L4 as a new capability rung: both policies remain `runtime_variant = self_built_react` treatments.
+The initial apparent taxonomy/required-field regression did not reproduce; quality deltas changed direction while the efficiency mechanism reproduced at similar magnitude. Current evidence does not demonstrate a material Batch-induced quality regression. Batch + Parallel is therefore the recommended forward L4 Tool Policy for new evaluations, while historical single/sequential matrices, fingerprints, artifacts, and milestone results remain immutable references.
+
+This decision does not justify arbitrary batch caps, forced batching, output repair, scheduler heuristics, or a new Runtime rung. Both policies remain `runtime_variant = self_built_react` treatments.
 
 Historical artifacts, fingerprints, metrics, and run identities must not be rewritten to make old runs appear to have used newer behavior.

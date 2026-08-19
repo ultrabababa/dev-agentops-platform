@@ -1,12 +1,12 @@
 # L4 Batch + Parallel ToolCalls Milestone — 2026-08-19
 
-> **Status: implementation qualification complete; treatment retained, not promoted to the default L4 baseline.** This milestone records Issue #61 / PR #62, deterministic validation, one fresh `20 Cases × 3 repeats` MiniMax-M3 formal run, runtime-mechanism observations, quality results, and interpretation boundaries. Machine-readable results are preserved in [`l4-batch-parallel-toolcalls-results-2026-08-19.json`](l4-batch-parallel-toolcalls-results-2026-08-19.json).
+> **Status: implementation qualification and fresh replication complete. Batch + Parallel is accepted as the recommended forward L4 Tool Policy for new evaluations; the historical `single + sequential` L4 baseline remains immutable reference evidence.** This milestone records Issue #61 / PR #62, deterministic validation, the initial fresh `20 Cases × 3 repeats` candidate run, a second contemporaneous `single/sequential` vs `batch/parallel` replication block, Runtime-mechanism observations, quality interpretation, and the resulting policy decision. Machine-readable results are preserved in [`l4-batch-parallel-toolcalls-results-2026-08-19.json`](l4-batch-parallel-toolcalls-results-2026-08-19.json).
 
 ## 1. Question
 
-Historical and fresh canonicalized L4 traces showed that MiniMax-M3 naturally emitted multiple same-decision ToolCalls even though the frozen baseline Runtime-control prompt and Tool Policy required zero-or-one ToolCall and rejected every call in a multi-call decision.
+Historical and fresh canonicalized L4 traces showed that MiniMax-M3 naturally emitted multiple same-decision ToolCalls even though the frozen historical Runtime-control prompt and Tool Policy required zero-or-one ToolCall and rejected every call in a multi-call decision.
 
-The experiment asks whether L4 should support a distinct Tool Policy treatment with:
+The experiment asks whether L4 should support:
 
 ```text
 single + sequential + reject-all
@@ -40,7 +40,7 @@ PR #62 adds:
 - `l4-react-runtime-control-batch-parallel-v1`;
 - candidate Matrix `l4-minimax-m3-batch-parallel-canonicalized-v1.json`;
 - Runtime support for deterministic parallel execution with an authored-order barrier;
-- L4 condition/treatment resolution that accepts the historical baseline pair or the candidate pair without rewriting historical component identities;
+- L4 condition/treatment resolution that accepts either the historical baseline pair or the Batch + Parallel pair without rewriting historical component identities;
 - focused regression coverage for actual concurrency, order, duplicate calls, per-call expected errors, infrastructure failure, length truncation, step accounting, component identity, and Matrix validation.
 
 Maintainer-side validation passed:
@@ -49,49 +49,22 @@ Maintainer-side validation passed:
 - candidate `eval doctor`: PASS;
 - full repository regression: `377 passed, 2 skipped, 30 subtests passed`.
 
-## 4. Formal run identity
+## 4. Initial Batch + Parallel formal run
 
-Candidate formal run:
+Initial candidate run:
 
 - Run ID: `010e9a75-8ca8-44b5-8445-d82d188d11f3`
 - Status: `completed`
 - Suite quality status: `complete`
 - Condition: `l4-minimax-m3-batch-parallel-canonicalized-development-v1`
 - Code revision: `ae6b756d13471a68c263583533795ef1c2a47231`
-- Cases: `20`
-- Repeats: `3`
 - Planned / scored Samples: `60 / 60`
 - Execution failures: `0`
-- Maximum cross-Case concurrency: `6`
-- Provider request timeout: `600 s`
 - Artifact SHA256: `a8e73a66de70788aa7fc59fce881723ef6e4d75d0127767aa0a4da64765fe67d`
 
-Fingerprints:
+The candidate exercised batching heavily under a neutral prompt:
 
-- Treatment: `c988c570a1e0ed5623933c8c419605cd1f6c2066d2bbe224c6748178391d181e`
-- Condition: `d3353424ccfdfeb03772ebf4ff4bd8f1ca6861b051136d2571ef7dea39bae62e`
-- Execution Policy: `14e21cd921a1729991f83aa83ce3c9ba8f4603526c3782181255886bbf30461a`
-- Run Configuration: `4cdc2facc0f12dd36c09ebd8dde1e982270c50e8fd87a3e3ad28de7776a4dfbc`
-
-### Git state note
-
-The manifest records `git_dirty=true`. Immediately after the run, maintainer verification showed:
-
-```text
-git status --short
-?? .../.worktrees/
-
-git status --short --untracked-files=no
-<no output>
-```
-
-Therefore no tracked behavior-affecting file differed from code revision `ae6b756...`; the dirty bit came from an unrelated untracked worktree directory. The run is retained rather than repeated solely to change this metadata bit.
-
-## 5. Runtime mechanism result
-
-The candidate exercised batching heavily without a prompt instruction to prefer it.
-
-| Observation | Candidate |
+| Observation | Initial candidate |
 | --- | ---: |
 | Successful Model Decisions | `547` |
 | Provider request attempts | `548` |
@@ -102,56 +75,19 @@ The candidate exercised batching heavily without a prompt instruction to prefer 
 | Samples using at least one multi-call decision | `55 / 60` |
 | `multiple_tool_calls_rejected` | `0` |
 
-Batch-size distribution:
+Batch-size distribution was `1×230`, `2×221`, `3×29`, `4×7`. Expected Agent-visible errors remained isolated (`schema_invalid_arguments=9`, `path_not_found=2`), with no Sample-level Runtime/tool infrastructure failure.
 
-| ToolCalls in decision | Decisions |
-| ---: | ---: |
-| 1 | 230 |
-| 2 | 221 |
-| 3 | 29 |
-| 4 | 7 |
-
-No decision exceeded four calls despite the Runtime having no arbitrary ordinary-call cap. Common multi-call combinations were dominated by independent read-only investigation: `read+read`, `grep+read`, `ls+read`, and `grep+grep`.
-
-Expected Agent-visible tool errors remained isolated:
-
-- `schema_invalid_arguments`: `9`
-- `path_not_found`: `2`
-
-There was no Sample-level Runtime/tool infrastructure failure.
-
-### Model-decision comparison
-
-The fresh canonicalized single/sequential L4 reference run (`d6fee1ba-ddd2-4ed3-ae2f-625603de5fef`) used `798` successful Model Decisions. Its pre-experiment trace audit found only `14` multi-call decisions because the baseline rejected such outputs.
-
-The candidate used `547` successful Model Decisions:
+Relative to the earlier fresh canonicalized single/sequential L4 reference (`d6fee1ba-ddd2-4ed3-ae2f-625603de5fef`), successful Model Decisions fell:
 
 ```text
 798 -> 547
--251 decisions
+-251
 -31.45%
 ```
 
-This is strong operational evidence that the capability is actually used by the model and removes substantial decision-loop overhead. It is not, by itself, a causal estimate of quality or billing savings.
+Initial formal quality, however, was lower:
 
-## 6. Provider usage
-
-Across the `547` successful Model Decisions:
-
-- input tokens: `15,684,626`
-- output tokens: `272,805`
-- total tokens: `15,957,431`
-- cached prompt tokens: `13,328,611`
-- cached-input ratio: approximately `84.98%`
-- non-cached prompt tokens: `2,356,015`
-
-Relative to the historical pre-canonicalization L4 run, raw token volume is much lower, but cache behavior also differs. Therefore the experiment does **not** claim an equal-percentage billing reduction from total-token reduction.
-
-## 7. Quality result
-
-Formal Suite metrics:
-
-| Metric | Fresh canonicalized L4 reference | Batch + Parallel candidate | Delta |
+| Metric | Fresh canonicalized reference | Initial Batch + Parallel | Delta |
 | --- | ---: | ---: | ---: |
 | Execution Coverage | 100.00% | 100.00% | 0.00 pp |
 | Failure Type Exact Match | 81.67% | 73.33% | -8.33 pp |
@@ -159,55 +95,169 @@ Formal Suite metrics:
 | Required Fields Completeness | 99.58% | 86.67% | -12.91 pp |
 | Protocol Validity | 93.33% | 86.67% | -6.67 pp |
 
-These fresh-generation deltas are **not causal estimates of batching**. The earlier canonicalization milestone already established substantial hosted model/provider regeneration variance, including metric movement in Oracle when canonicalization changed zero candidates.
+All eight initial candidate protocol-invalid Samples were `invalid_report_type`; five of those visible outputs still contained the correct `failure_type`. This was diagnostic-only inspection: no Sample was repaired or re-scored.
 
-The candidate's eight protocol-invalid Samples are especially important: all eight failed with `invalid_report_type`. None failed because of multi-call rejection, ToolResult ordering, unknown Evidence IDs, parallel execution, or infrastructure failure. Typical invalid outputs wrapped an otherwise report-like JSON payload in explanatory prose, Markdown, or a JSON string.
+Because the earlier canonicalization experiment had already demonstrated hosted MiniMax regeneration variance, one fresh A/B observation was insufficient to attribute the quality drop to batching. A contemporaneous replication block was therefore run before changing the L4 recommendation.
 
-Among the `52` protocol-valid Samples, simple Sample-level diagnostics were:
+### Initial-run long tail
 
-- Failure Type Exact: `84.62%`
-- Evidence Hit: `78.68%`
-- Required Fields: `100.00%`
+The initial candidate wall time was approximately `1,378.7 s` (`22m58.7s`). The maximum Sample (`odrepair-dubbo-737f7a7e#repeat-2`) took `653.68 s` because one provider attempt hit the frozen `600 s` timeout (`600,160 ms`) and the same logical request then succeeded on retry. The extreme tail is directly explained by provider timeout, not by observed parallel-tool deadlock; no scheduler, ThreadPool, batch-cap, or timeout-policy change was justified.
 
-A diagnostic-only audit of the eight invalid visible outputs found that five still contained the correct `failure_type`. This does not repair or re-score those Samples; it only shows that a large part of the formal aggregate drop is output-realization failure rather than demonstrated diagnosis collapse.
+## 5. Fresh replication block
 
-Accordingly, the observed quality regression cannot currently be attributed cleanly to batch execution.
+To test whether the apparent quality drop was reproducible, a new single/sequential canonicalized baseline and a new Batch + Parallel candidate were run back-to-back on the same branch revision, Suite, provider/model configuration, scorer, output resolver, and Execution Policy.
 
-## 8. Long-tail latency
+### 5.1 Replication identities
 
-Observed run wall time was approximately `1,378.7 s` (`22m58.7s`). Sample-duration diagnostics:
+Single/sequential reference:
 
-- p50: `42.44 s`
-- p90: `112.90 s`
-- p95: `138.15 s`
-- maximum: `653.68 s`
+- Run ID: `b6ad2a0f-1b40-49e2-8ce6-28b14f8b2df8`
+- Matrix: `l4-minimax-m3-canonicalized-v2.json`
+- Condition: `l4-minimax-m3-canonicalized-development-v1`
+- Code revision: `2e1ff851911cd4c0a26f0cd4d4d69dee48bc44aa`
+- Run Configuration: `fbb8bda9b3746f203b1633f65c9810cebe95567e3fb7798ce2323b50616a149b`
+- Artifact SHA256: `05737058cd87f45dd28a39a9a61b538b4be37f02484214106db8ea85fb4441dd`
+- `60 / 60` scored, `0` execution failures.
 
-The maximum straggler was `odrepair-dubbo-737f7a7e#repeat-2`. At Model Decision step 3, one provider attempt hit the frozen `600 s` timeout (`600,160 ms`). The same logical request then succeeded on retry and the Sample completed.
+Batch + Parallel replication:
 
-Therefore the extreme tail is directly explained by a provider timeout, not by parallel tool execution or an observed scheduler deadlock. No batch-size cap, ThreadPool throttling, scheduler rewrite, or timeout-policy change is justified by this run.
+- Run ID: `d76ac5ca-22a3-4c67-acf3-c33bba68f0d5`
+- Matrix: `l4-minimax-m3-batch-parallel-canonicalized-v1.json`
+- Condition: `l4-minimax-m3-batch-parallel-canonicalized-development-v1`
+- Code revision: `2e1ff851911cd4c0a26f0cd4d4d69dee48bc44aa`
+- Run Configuration: `a4329af87213eb9db245f135095e97959615b61ff882849c7e9543079819c8b9`
+- Artifact SHA256: `cf4c16f8e0ac0844c2bc1a2c337dcdb6a3e1c167fdc12806eb8a06b17560ab3c`
+- `60 / 60` scored, `0` execution failures.
+
+Both manifests record `git_dirty=true`. The known workspace state immediately before this replication work had no tracked modifications and contained the unrelated untracked `.worktrees/` entry that had already explained the initial dirty bit. Both replication runs use the same recorded code revision and dirty-state class; the artifacts are retained rather than repeated merely to flip that metadata flag.
+
+### 5.2 Replication quality
+
+| Metric | Single / Sequential | Batch + Parallel | Delta |
+| --- | ---: | ---: | ---: |
+| Execution Coverage | 100.00% | 100.00% | 0.00 pp |
+| Failure Type Exact Match | 71.67% | **75.00%** | **+3.33 pp** |
+| Evidence Hit Rate | **74.64%** | 73.50% | -1.14 pp |
+| Required Fields Completeness | 93.33% | **98.13%** | **+4.79 pp** |
+| Protocol Validity | **93.33%** | 91.67% | -1.67 pp |
+
+The initial `-8.33 pp` taxonomy delta did **not** reproduce; its direction reversed. The new single/sequential baseline itself moved from the earlier fresh canonicalized `81.67%` taxonomy result to `71.67%`, directly demonstrating that hosted regeneration variance is large enough to dominate one 20×3 comparison.
+
+A paired Case-level bootstrap over the 20 common Cases gives broad 95% diagnostic intervals for Batch minus single/sequential:
+
+| Metric | Observed delta | 95% paired Case bootstrap interval |
+| --- | ---: | ---: |
+| Failure Type Exact | +3.33 pp | [-8.33, +15.00] pp |
+| Evidence Hit | -1.14 pp | [-9.56, +7.47] pp |
+| Required Fields | +4.79 pp | [-1.67, +11.46] pp |
+| Protocol Validity | -1.67 pp | [-8.33, +5.00] pp |
+
+These intervals are diagnostic rather than benchmark significance claims, but all cross zero. Current evidence therefore does not demonstrate a reproducible material quality regression from batching.
+
+### 5.3 Replication protocol audit
+
+Single/sequential reference:
+
+- protocol-valid: `56 / 60`;
+- protocol-invalid: `4 / 60`;
+- all four invalid Samples were `invalid_report_type`.
+
+Batch + Parallel:
+
+- protocol-valid: `55 / 60`;
+- protocol-invalid: `5 / 60`;
+- validation errors: `unknown_evidence_id=4` occurrences across 3 Samples, `missing_required_field=1`, `invalid_report_type=1`.
+
+The initial Batch run's concentrated `8 × invalid_report_type` pattern therefore did not reproduce. Diagnostic-only inspection found the expected `failure_type` present in all four invalid single/sequential visible outputs and in four of five invalid Batch visible outputs. Formal scores remain unchanged; this inspection only distinguishes output realization from diagnosis semantics.
+
+## 6. Replicated Runtime efficiency
+
+The second block reproduces the mechanism strongly and without the initial 600-second timeout confound.
+
+| Operational observation | Single / Sequential | Batch + Parallel | Change |
+| --- | ---: | ---: | ---: |
+| Successful Model Decisions | `877` | `571` | **-34.89%** |
+| Tool-use decisions | `817` | `511` | **-37.45%** |
+| ToolCalls executed/started | `809` | `775` | -4.20% |
+| Raw input tokens | `23,448,236` | `15,696,354` | **-33.06%** |
+| Output tokens | `301,898` | `286,089` | -5.24% |
+| Total tokens | `23,750,134` | `15,982,443` | **-32.71%** |
+| Run wall time | `978.27 s` | `806.69 s` | **-17.54%** |
+| Sample mean duration | `77.92 s` | `57.19 s` | **-26.60%** |
+| Sample p50 duration | `63.13 s` | `45.83 s` | **-27.42%** |
+| Sample p95 duration | `184.51 s` | `132.73 s` | **-28.07%** |
+
+The baseline's `817` tool-use decisions include `809` executed single-call decisions plus `8` multi-call decisions whose `20` ToolCall IDs were rejected before execution. The Batch treatment had no `multiple_tool_calls_rejected` events.
+
+Batch behavior in the replication:
+
+- tool-using decisions: `511`;
+- multi-call decisions: `228` (`44.62%` of tool-using decisions);
+- Samples with at least one multi-call decision: `49 / 60`;
+- batch-size distribution: `1×283`, `2×199`, `3×24`, `4×3`, `5×2`;
+- no arbitrary call-count cap was needed;
+- expected Agent-visible errors remained isolated (`schema_invalid_arguments=9`, `path_not_found=1`);
+- no provider retry or Sample-level execution failure occurred.
+
+The key mechanism is not simply "investigate less": executed ToolCalls changed only `809 -> 775` (-4.20%), while Model Decisions changed `877 -> 571` (-34.89%). The model performed nearly the same amount of evidence acquisition while grouping many independent calls into fewer decision turns.
+
+## 7. Provider usage and billing boundary
+
+Replication provider usage:
+
+| Usage | Single / Sequential | Batch + Parallel |
+| --- | ---: | ---: |
+| Input tokens | `23,448,236` | `15,696,354` |
+| Cached prompt tokens | `21,618,995` | `13,775,981` |
+| Cache ratio | `92.20%` | `87.77%` |
+| Non-cached prompt tokens | `1,829,241` | `1,920,373` |
+| Output tokens | `301,898` | `286,089` |
+| Total tokens | `23,750,134` | `15,982,443` |
+
+Raw token traffic fell materially, but non-cached prompt tokens increased about `4.98%` because cache behavior differed. Therefore the experiment does **not** claim a 33% billing-cost reduction. It establishes lower Model Decision count, lower raw token traffic, and lower observed latency; billable cost must be calculated from the provider's cache-aware pricing contract separately.
+
+## 8. Two-block interpretation
+
+The two fresh comparisons now show:
+
+| Metric delta, Batch minus reference | Initial comparison | Replication |
+| --- | ---: | ---: |
+| Failure Type Exact | -8.33 pp | +3.33 pp |
+| Evidence Hit | -3.64 pp | -1.14 pp |
+| Required Fields | -12.91 pp | +4.79 pp |
+| Protocol Validity | -6.67 pp | -1.67 pp |
+| Model Decisions | `798 -> 547` (-31.45%) | `877 -> 571` (-34.89%) |
+
+Quality differences are unstable and can reverse direction. Efficiency improvement is stable and similar in magnitude across independent fresh generations.
+
+Evidence Hit and Protocol Validity are slightly lower for Batch in both comparisons, but the replication deltas are small, Case-level uncertainty is broad, and the protocol failure modes themselves did not reproduce. Record this as a weak residual signal to watch in future runs, not as a demonstrated regression.
 
 ## 9. Decision
 
-The implementation qualification **passes**:
+The implementation qualification and replication **pass**.
 
-- deterministic tests and doctor pass;
-- real same-decision parallel calls execute successfully;
-- the model naturally uses batching at high frequency under a neutral prompt;
-- reject-all multi-call failures disappear;
+Current evidence supports the following conclusions:
+
+- same-decision parallel ToolCalls execute correctly with barrier/source-order semantics;
+- the model uses batching materially without prompt pressure;
+- historical reject-all multi-call friction disappears;
 - expected per-call errors remain isolated;
-- barrier/source-order semantics hold without infrastructure failures;
-- Model Decisions fall materially in the fresh operational comparison.
+- no artificial ordinary ToolCall count cap is justified;
+- Model Decisions fall by roughly 31–35% across the two fresh Batch runs;
+- the clean replication reduces wall time by 17.5% and median/p95 Sample latency by about 27–28%;
+- the initial formal quality drop is not reproducible and is best treated as hosted generation / output-realization variance rather than evidence of a Batch-induced diagnosis collapse;
+- no reproducible material quality regression has been demonstrated.
 
-However, this run does **not** justify promoting Batch + Parallel to the default canonical L4 baseline yet. Fresh quality metrics are lower, while hosted regeneration variance and `invalid_report_type` failures prevent a clean causal attribution.
-
-The decision is therefore:
+Therefore Batch + Parallel becomes the **recommended forward Tool Policy for new L4 evaluations and Runtime evolution**. This recommendation does not retroactively rewrite the historical L4 V1 baseline, its matrices, fingerprints, or milestone results, and it does not require silently changing direct-code defaults outside an explicit Treatment identity.
 
 ```text
-merge/support the distinct batch+parallel Tool Policy treatment
-    !=
-claim that it has already beaten and replaced the single/sequential baseline
+historical reference
+single + sequential + reject-all
+
+recommended forward L4 treatment
+batch + parallel + independent-call handling
 ```
 
-Do not respond to this run by adding arbitrary batch caps, forced-batching prompt language, output repair, scheduler heuristics, or a new Runtime rung.
+Do not respond to these results by adding arbitrary batch caps, forced-batching prompt language, output repair, scheduler heuristics, or a new Runtime rung.
 
-The treatment should remain available as a controlled L4 variant. A future default-baseline promotion requires stronger evidence than one fresh hosted comparison. The next large capability direction can remain executable repair / sandbox work unless new evidence motivates another focused ablation.
+The Batch experiment is complete. The next large capability direction is executable repair / sandboxed remediation, while retrieval, compaction, planner/verifier, memory, and multi-agent work remain evidence-gated rather than automatically added.
