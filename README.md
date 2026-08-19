@@ -1,172 +1,32 @@
 # DevAgentOps
 
-DevAgentOps 是一个用于求职展示和系统研究的、可评测的 CI/Test Failure Triage AgentOps 原型。它把真实失败组织成可重放的 Offline Case，通过不同 Runtime/Condition 产生 Structured Triage Report，并用统一的 Trace、Persistence、Scorer 与 Formal Evaluation 比较系统能力。
+DevAgentOps 是一个面向 **CI/Test Failure Triage** 的 Agent Runtime 与 Formal Evaluation 平台。
 
-它不是通用 Coding Agent，也不把尚未验证的原型包装成成熟商业产品。当前技术主线是：
+它把真实工程失败冻结为可重放的 Offline Case Environment，让不同 Runtime、Evidence Acquisition 与 Agent-control Treatment 在同一 Suite、同一 Ground Truth 和同一 Scorer 下运行，并记录完整执行证据，从而回答两个问题：
+
+> 一个 Agent System 实际实现了多少模型诊断能力？
+>
+> 当它失败时，问题出在 evidence acquisition、citation/mapping、reasoning，还是 Runtime / provider infrastructure？
+
+项目当前的核心闭环是：
 
 ```text
 Frozen Case / Environment
     -> Runtime / Agent execution
     -> Trace + complete Agent trajectory
-    -> deterministic scoring / Oracle diagnostics
-    -> badcase analysis
-    -> controlled runtime evolution
+    -> deterministic validation / scoring
+    -> Case-first aggregation / Oracle diagnostics
+    -> badcase attribution
+    -> controlled Runtime evolution
 ```
 
-## Current state — 2026-08-18
+当前范围是**只读诊断**。L4 V1 不编辑代码、不执行测试、不重跑 CI，也不自动提交修复。
 
-当前已经完成并冻结的关键基础：
+## Core architecture
 
-- V1 Failure Type taxonomy；
-- Offline Case Schema V2 与 Public/Trusted Evaluator boundary；
-- `triage-suite-v1`：20 个 Human-reviewed Formal Cases，五类 Failure Type 各 4 个；
-- Canonicalization Profile v1；
-- Structured Triage Report V1 + deterministic scorer；
-- Matrix v2、Treatment / Execution Policy / Run Configuration fingerprints；
-- Component Registry；
-- doctor-first formal execution、repeated Sample scheduler、Case-first aggregation；
-- Run Manifest、Trace、SQLite persistence、JSON/Markdown artifacts；
-- MiniMax-M3 provider path + exact local context/token accounting；
-- L1 `full_context_one_shot` formal milestone：20 Case × 3，60/60 scored，0 execution failures；
-- L2 `fixed_model_workflow` formal milestone：20 Case × 3，60/60 scored / 120 model calls，0 execution failures；
-- Oracle Evidence formal milestone：20 Case × 3，60/60 scored，0 execution failures。
+### 1. Frozen Case Environment
 
-L4 `self_built_react`：
-
-- [ADR 0128](docs/adr/0128-l4-self-built-react-runtime-contract.md) 与 [L4 implementation design](docs/evaluation/l4-self-built-react-runtime-design.md) 已 Human-freeze；
-- Issue #52 implementation 尚未开始；
-- L4 formal milestone 尚未运行；
-- Oracle-vs-L4 realization-gap machinery 等真实 L4 formal artifact 后再实现。
-
-如果早期文档写着“Formal Suite 尚未冻结”“Canonicalization Profile 待 calibration”“Oracle 未来实现”“L4 design 尚未决定”，应按其历史日期理解，不代表当前状态。
-
-## Runtime Capability Ladder
-
-```text
-L0 deterministic pipeline
-    -> L1 full-context one-shot
-    -> L2 fixed model workflow
-    -> L3 static retrieval
-    -> L4 self-built ReAct
-    -> L5+ incremental Agent capabilities
-```
-
-这是一套 capability-attribution framework，不是 mandatory implementation order。
-
-| Level | Role | Current state |
-| --- | --- | --- |
-| L0 | deterministic Product Runtime baseline | implemented |
-| L1 | one-shot model diagnostic | formal milestone complete |
-| L2 | fixed multi-stage model diagnostic | formal milestone complete |
-| L3 | static retrieval diagnostic | not implemented; does not block L4 |
-| L4 | first Agentic Product Runtime | design frozen; implementation pending |
-| Oracle | orthogonal evidence-conditioned diagnostic | formal milestone complete |
-
-详见 [Runtime Capability Ladder](docs/evaluation/runtime-capability-ladder.md)。
-
-## L4 frozen design in one view
-
-L4 是最小 self-built ReAct Agent Runtime，不采用 LangChain/LangGraph/Pi 作为 dependency。Pi 只作为 reference architecture。
-
-```text
-Model Decision
-    -> Runtime validates action/policy/budget
-    -> optional Tool execution
-    -> ToolResult observation
-    -> typed conversation state update
-    -> next Model Decision or terminal report
-```
-
-V1 native tools：
-
-```text
-read
-grep
-find
-ls
-```
-
-`submit_report` **不是** native tool。0 ToolCalls 表示模型尝试终止，由 Runtime 解析 visible assistant text 为 Structured Triage Report candidate。
-
-Agent-visible filesystem：
-
-```text
-/raw.log
-/repository/...
-```
-
-L4 initial input 可携带完整 answer-neutral Canonical Evidence coordinate vocabulary 作为 citation vocabulary；Physical Artifact content 仍必须通过 tools 获取，Required Evidence / Expected Answer / evaluator metadata 永不暴露给正常 Agent。
-
-Baseline Tool Policy：
-
-```text
-call_mode = single
-execution_mode = sequential
-multiple_calls = reject_all_with_error_results
-```
-
-Hard Agent budget：`max_steps=100`。V1 不提前增加 planner、verifier、memory、multi-agent、Bash/edit/write、MCP、skills 或 automatic compaction。
-
-## Trace vs Agent trajectory
-
-不要把两者混为一份数据：
-
-```text
-Run Trace
-= runtime execution events / attempts / token usage / latency / tool events / terminal & failure metadata
-
-Agent Trajectory
-= one Sample 的完整 ordered UserMessage / AssistantMessage / ToolResultMessage history
-```
-
-L4 可以持久化 provider-returned thinking/reasoning 到 trajectory 用于 badcase analysis；它不是 deterministic score input，也不需要把完整 message body 再复制进 Trace。
-
-## Provider and token accounting
-
-当前 formal model foundation 是 MiniMax-M3。L4 继续使用：
-
-```text
-DevAgentOps
-    -> MiniMaxProvider
-    -> OpenAICompatibleChatCompletionsTransport
-    -> MiniMax OpenAI Chat Completions API
-```
-
-Runtime/message contract 保持 provider-neutral。MiniMax-specific tool calls、reasoning continuation 与 wire JSON 只属于 adapter。
-
-L4 每轮 context preflight 要求 `count_input_tokens()` 与真实 `complete()` 共用同一 model-visible MiniMax serialization path，避免 tools/history/reasoning continuation 在“计算的 context”和“真正发给模型的 context”之间漂移。
-
-## Formal evaluation identity
-
-当前正式新条件使用 Matrix v2：
-
-```text
-condition
-├── runtime_variant
-├── suite
-├── evaluation_method
-├── treatment
-│   ├── provider/model
-│   ├── reasoning/generation
-│   ├── contracts
-│   └── context
-└── execution_policy
-```
-
-L4 Treatment 需要 Registry-validated：
-
-- shared Task Contract prompt；
-- separate Runtime-control prompt；
-- Tool Registry；
-- Tool Policy。
-
-Tool Registry 定义“tools 是什么以及 ToolResult 如何表现”；Tool Policy 定义“一个 Model Decision 中 ToolCalls 如何执行”。Runtime implementation identity 继续由 `runtime_variant + code_revision` 表示，不新增 `runtime` Component type。
-
-详见 [Matrix / Component Registry guide](docs/evaluation/evaluation-matrix-and-component-registry.md)。
-
-## Evaluation data model
-
-Formal Case V2：
+Formal Case 使用 Offline Case Schema V2：
 
 ```text
 <case-id>/
@@ -183,47 +43,170 @@ Formal Case V2：
     └── expected-answer.json
 ```
 
-- Physical Artifacts = sole fact source；
-- Canonical Evidence = deterministic answer-neutral coordinates；
-- `required-evidence.json` = hidden Evidence Ground Truth；
-- `expected-answer.json` = hidden Diagnosis Ground Truth。
+四层边界是刻意分开的：
 
-## Reading order for current architecture
+- **Physical Artifacts**：唯一事实来源；
+- **Canonical Evidence**：answer-neutral 的稳定 source-span coordinate，用于 citation 和 measurement；
+- **Evidence Ground Truth**：隐藏的 `required-evidence.json`；
+- **Diagnosis Ground Truth**：隐藏的 `expected-answer.json`。
 
-发生文档冲突时，优先按：
+Normal model-backed conditions 永远不能直接读取 evaluator-only artifacts。
 
-1. [Active ADR index](docs/adr/README.md)
-2. [ADR 0128 — L4 contract](docs/adr/0128-l4-self-built-react-runtime-contract.md)
-3. [L4 implementation design](docs/evaluation/l4-self-built-react-runtime-design.md)
-4. [Runtime Capability Ladder](docs/evaluation/runtime-capability-ladder.md)
-5. [Formal Evaluation Methodology](docs/evaluation/formal-evaluation-methodology.md)
-6. [Matrix / Component Registry guide](docs/evaluation/evaluation-matrix-and-component-registry.md)
-7. current source/schema/checked-in Matrix files
+### 2. Runtime / condition ladder
 
-`docs/adr/archive/`、dated milestone docs、Case review packets、merged PR bodies 记录的是历史决策/实验，不应作为最新 contract 覆盖 Active ADR。
+DevAgentOps 使用 capability ladder 做归因，而不是把所有能力塞进一个“Agent”黑盒：
 
-## V1 scope boundary
+| Level | Condition | Control | Evidence acquisition | Status |
+| --- | --- | --- | --- | --- |
+| L0 | deterministic pipeline | program-controlled | deterministic fixed access | implemented |
+| L1 | `full_context_one_shot` | one model call | full visible universe upfront | formal milestone complete |
+| L2 | `fixed_model_workflow` | fixed multi-stage program | fixed explicit input flow | formal milestone complete |
+| L3 | `static_retrieval` | program-controlled | static retrieval | not implemented; optional diagnostic |
+| L4 | `self_built_react` | model adaptive next-action / stop | read/search/list tool loop | **implemented + formal milestone complete** |
+| L5+ | incremental Agent capabilities | evidence-driven evolution | context/retrieval/planning/etc. | future work |
 
-V1 不做：
+Oracle Evidence 与 ladder 正交：它直接向固定模型提供 Human-reviewed Required Evidence source content，用来估计“去掉 ordinary evidence-discovery difficulty 后还能做到什么”。
 
-- 修改代码、生成/提交 Patch；
-- 执行测试、重跑 CI、创建 PR 或部署；
-- real CI provider integration；
-- OS-level sandbox；
-- multi-agent；
-- cross-run Agent memory；
-- automatic post-training loop。
+详见 [Runtime Capability Ladder](docs/evaluation/runtime-capability-ladder.md)。
 
-## Local smoke path
+## L4 self-built ReAct Runtime
+
+L4 是第一个 Agentic Product Runtime，也是当前 Agent Runtime kernel 的基线实现。
+
+```text
+Model Decision
+    -> Runtime validates action / schema / policy / budget
+    -> optional read-only Tool execution
+    -> ToolResult observation
+    -> authoritative typed conversation update
+    -> next Model Decision or terminal report
+```
+
+V1 native tools：
+
+```text
+read
+grep
+find
+ls
+```
+
+Agent-visible filesystem：
+
+```text
+/raw.log
+/repository/...
+```
+
+关键 Runtime contract：
+
+- provider-neutral `UserMessage / AssistantMessage / ToolResultMessage`；
+- MiniMax native ToolCall + `reasoning_details` continuation round-trip；
+- `Tool Registry` 冻结 provider-visible tool contract 与 deterministic behavior；
+- baseline `Tool Policy = single + sequential`；
+- multiple ToolCalls under `single` 时 execute none，并为每个 call ID 返回 error ToolResult；
+- `max_steps = 100`；
+- provider transient failure 使用 **same-logical-request retry**，不是 whole-sample retry；
+- Trace 与完整 Agent trajectory 分离持久化；
+- 每个 ToolResult 有 hard bound，避免模型一次读取无限 workspace；
+- 0 ToolCalls 表示尝试提交 Structured Triage Report；`submit_report` 不是 native tool。
+
+L4 context accounting 由 [ADR 0129](docs/adr/0129-l4-provider-reported-context-accounting.md) 定义：Runtime **不做 mandatory local exact-token preflight**，成功请求以 provider-reported usage 作为 observed accounting。L1/L2/Oracle 原有 exact-token path 不受影响。
+
+完整设计见：
+
+- [ADR 0128 — L4 Self-built ReAct Runtime Contract](docs/adr/0128-l4-self-built-react-runtime-contract.md)
+- [ADR 0129 — L4 Provider-Reported Context Accounting](docs/adr/0129-l4-provider-reported-context-accounting.md)
+- [L4 Self-built ReAct Runtime Design](docs/evaluation/l4-self-built-react-runtime-design.md)
+
+## Formal evaluation
+
+Formal Evaluation 统一复用：
+
+```text
+Matrix v2
+    -> doctor-first validation
+    -> frozen Component / Suite / Case identity
+    -> repeated Sample scheduler
+    -> Runtime execution
+    -> Trace + trajectory persistence
+    -> Structured Triage Report validation
+    -> deterministic scorer
+    -> Sample -> Case -> Failure Type / Suite aggregation
+    -> JSON / Markdown artifacts
+```
+
+Behavior-affecting Treatment components通过 Component Registry version + fingerprint 固定；完整 run identity 还包含 Execution Policy、Suite fingerprint、code revision 与 git state。
+
+### Current MiniMax-M3 milestones
+
+同一 `triage-suite-v1` 包含 20 个 Human-reviewed Formal Cases，每个 Case 重复 3 次。
+
+| Condition | Execution Coverage | Failure Type Exact Match | Evidence Hit Rate | Required Fields Completeness | Protocol Validity |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| L1 Full-context One-shot | 100.00% | 76.67% | 51.38% | 96.67% | 96.67% |
+| L2 Fixed Model Workflow | 100.00% | 85.00% | 55.57% | 99.58% | 90.00% |
+| **L4 self-built ReAct** | **98.33%** | **88.33%** | **65.51%** | **96.67%** | **81.36%** |
+| Oracle Evidence | 100.00% | 85.00% | 89.29% | 100.00% | 100.00% |
+
+L4 formal milestone：
+
+- Run ID: `dd8ca829-5051-43b6-a0c2-b3c2889acae0`
+- `20 Cases × 3 repeats = 60 Samples`
+- `59 scored / 1 execution_failed`
+- 唯一 execution failure 是 provider HTTP 529 在 initial + 3 same-request retries 后耗尽；
+- `802` successful Model Decisions；
+- `733` executed tool calls started；
+- `283` truncated ToolResults；
+- 最大 provider-reported input context：`98,893` tokens。
+
+相对 L2，L4 提升了 taxonomy exact match 与 Evidence Hit Rate，但降低了 final protocol validity。当前最明显的 L4 baseline weakness 是：模型已经读到正确 physical span 后，仍可能自行拼接不存在的 Canonical Evidence ID。这个现象被保留为真实 Agent/System badcase，而不是在 Runtime 中静默修复。
+
+Oracle 不是“更高一级 Runtime”，也不应该被解释成 L4 必须整体超过的 benchmark rung。它是 evidence-conditioned diagnostic intervention。
+
+完整结果见 [L4 MiniMax-M3 Full-Suite Milestone](docs/evaluation/milestones/l4-minimax-m3-full-suite-2026-08-19.md)。
+
+## Repository layout
+
+```text
+src/devagentops/
+├── runtime/        # typed messages, ReAct loop, Tool Policy, read/grep/find/ls
+├── conditions/     # L1 / L2 / L4 / Oracle execution conditions
+├── providers/      # provider-neutral request contract + MiniMax adapter
+├── evaluation/     # Matrix, scheduler, Trace, scoring, aggregation, artifacts
+└── storage/        # SQLite / migrations / trajectory persistence
+
+components/         # frozen behavior components + registry
+evaluation/         # suites, cases, matrices, formal evaluation inputs
+docs/adr/           # active architecture decisions + archived decision history
+docs/evaluation/    # methodology, Runtime design, milestone reports
+frontend/           # read/review UI
+```
+
+## Quick start
 
 Python 3.11+：
 
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -e '.[dev]'
+.venv/bin/python -m pytest -q -p no:cacheprovider
+```
+
+Initialize local persistence：
+
+```bash
 .venv/bin/devagentops db init --database .devagentops/devagentops.db
 .venv/bin/devagentops status --database .devagentops/devagentops.db
-.venv/bin/python -m pytest -q -p no:cacheprovider
+```
+
+Validate the current L4 formal configuration without running the model：
+
+```bash
+.venv/bin/devagentops eval doctor \
+  --matrix evaluation/matrices/l4-minimax-m3-development-v2.json \
+  --registry components/registry.json \
+  --suite evaluation/suites/triage-v1/suite.json
 ```
 
 FastAPI：
@@ -240,14 +223,35 @@ npm ci
 npm run dev
 ```
 
-## Current next step
+Live/formal MiniMax execution additionally requires the provider credential expected by the current Matrix/provider path.
+
+## Documentation map
+
+Current architecture / methodology should be read in roughly this order：
+
+1. [CONTEXT.md](CONTEXT.md) — compact current project context and terminology;
+2. [Active ADR Index](docs/adr/README.md) — architecture decision source of truth;
+3. [Formal Evaluation Methodology](docs/evaluation/formal-evaluation-methodology.md) — Case/evidence/trust model;
+4. [Evaluation Matrix & Component Registry](docs/evaluation/evaluation-matrix-and-component-registry.md) — experiment identity;
+5. [Runtime Capability Ladder](docs/evaluation/runtime-capability-ladder.md) — controlled capability comparisons;
+6. [L4 Runtime Design](docs/evaluation/l4-self-built-react-runtime-design.md) — current self-built Agent Runtime contract;
+7. [Oracle Evidence Diagnostic Condition](docs/evaluation/oracle-evidence-diagnostic-condition.md) — evidence-conditioned diagnostic boundary;
+8. [L4 Formal Milestone](docs/evaluation/milestones/l4-minimax-m3-full-suite-2026-08-19.md) — current empirical L4 result.
+
+`docs/adr/archive/`、dated milestone docs、Case review packets 和 merged PR discussions 是历史记录；它们不覆盖当前 Active ADR 与 current-facing docs。
+
+## Current roadmap
+
+L4 V1 已完成实现、live qualification 与 20×3 formal milestone。下一阶段不按“Agent feature checklist”堆功能，而从 formal evidence 继续推进：
 
 ```text
-PR #53: Human-freeze L4 design + active-doc consistency audit
-    -> merge
-    -> implement Issue #52 from ADR 0128 / L4 design
-    -> deterministic fake-provider tests
-    -> one small live MiniMax tool/continuation qualification
-    -> only after PASS: one controlled 20 Case × 3 L4 formal milestone
-    -> then consider Oracle-vs-L4 pairing/gap
+Oracle + L4 formal artifacts
+    -> Pair Validator / Agent-System Realization Gap
+    -> per-Case / per-Failure-Type badcase attribution
+    -> distinguish acquisition vs mapping/report vs reasoning failures
+    -> choose one evidence-driven Runtime ablation
 ```
+
+当前最直接的候选 ablation 是 **answer-neutral Canonical Evidence coordinate assistance**：当 ToolResult 对应某个 physical span 时，实验性地向 Agent 暴露可合法引用的 Canonical coordinate，验证是否能降低 L4 的 unknown-Evidence-ID protocol failures。它必须作为显式 Treatment / behavior change 评测，不能偷偷修改已记录的 L4 baseline。
+
+L3 static retrieval、context management、planner/verifier、batch/parallel tool policy、skills/MCP、memory 等仍保持 evidence-gated，只有真实 badcase 证明需要时再进入下一轮设计。
