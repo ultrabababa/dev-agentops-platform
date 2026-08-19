@@ -757,8 +757,8 @@ def test_docs_record_frozen_l2_semantics_and_fingerprint_limitation() -> None:
     assert "explicit handoff" in l2_section
     assert "controlled combined treatment difference" in l2_section
 
-    reproducibility = methodology.split("## 11. Reproducibility boundaries", 1)[1]
-    reproducibility = reproducibility.split("## 12.", 1)[0]
+    reproducibility = methodology.split("Reproducibility boundaries", 1)[1]
+    reproducibility = reproducibility.split("\n## ", 1)[0].casefold()
     assert "component fingerprints" in reproducibility
     assert "execution policy" in reproducibility
     assert "combined difference" in reproducibility
