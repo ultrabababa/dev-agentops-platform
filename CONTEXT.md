@@ -1,6 +1,6 @@
 # DevAgentOps — Current Project Context
 
-> Updated 2026-08-19. This file is a current-orientation document, not a historical log. Dated milestone documents, merged PR bodies, Case review packets, and `docs/adr/archive/` preserve historical state and may intentionally contain superseded wording.
+> Updated 2026-08-19. This file is a current-orientation document, not a historical log. Dated milestone documents, merged PR bodies, Case review packets, and `docs/adr/archive/` preserve historical state and may intentionally contain superseded wording. For milestone status, see `docs/evaluation/milestones/README.md`.
 
 ## Project
 
@@ -38,9 +38,10 @@ Completed:
 - L2 MiniMax-M3 20×3 formal milestone: 60 scored / 120 model calls, 0 execution failures;
 - Oracle MiniMax-M3 20×3 formal milestone: 60 scored, 0 execution failures;
 - L4 `self_built_react` Runtime implementation, deterministic tests, live MiniMax qualification, and 20×3 formal milestone;
-- ADR 0129 provider-reported L4 context accounting amendment.
+- ADR 0129 provider-reported L4 context accounting amendment;
+- Oracle↔L4 Pair Analyzer and real 20-Case pair analysis, including 15 Detailed Review Cases.
 
-L4 formal milestone:
+Historical L4 formal milestone:
 
 ```text
 20 Cases × 3 repeats = 60 Samples
@@ -54,14 +55,16 @@ Protocol Validity             81.36%
 
 The only L4 execution failure was a provider HTTP 529 sequence that exhausted the frozen initial + 3 same-logical-request retry policy. No Runtime implementation blocker was found.
 
-Current work now moves from “build L4” to “explain L4”:
+Pair Analysis established that the Oracle↔L4 gap is not one mechanism. It includes Canonical reference realization failures, investigation-depth/evidence-acquisition gaps, evidence-selection gaps, genuine causal-reasoning failures, and operational execution reliability. It also found clear negative-gap Cases where autonomous L4 investigation outperformed Oracle taxonomy.
+
+Current work is now:
 
 ```text
-Oracle + L4 formal artifacts
-    -> pair compatibility validation
-    -> Agent-System Realization Gap
-    -> per-Case / per-Failure-Type badcase attribution
-    -> evidence-driven next Runtime ablation
+shared deterministic Evidence Reference Canonicalization
+    -> offline replay of historical L1/L2/Oracle/L4 raw outputs
+    -> new L1/L2/Oracle/L4 20×3 comparison generation
+    -> establish fair shared-output baseline
+    -> separate L4 batch + parallel Tool Policy efficiency experiment
 ```
 
 ## Core terminology
@@ -132,7 +135,7 @@ Hidden evaluator-only `expected-answer.json` containing expected diagnosis seman
 
 ### L4 Canonical vocabulary
 
-L4 V1 receives the complete **answer-neutral Canonical coordinate vocabulary** in the initial model-visible input so it can cite valid Evidence IDs.
+Historical L4 V1 receives the complete **answer-neutral Canonical coordinate vocabulary** in the initial model-visible input so it can cite valid Evidence IDs.
 
 That does **not** expose evidence content or Ground Truth:
 
@@ -147,9 +150,9 @@ not visible upfront:
 - evaluator metadata
 ```
 
-The Agent must discover physical facts through tools and map them to the exposed coordinate vocabulary itself.
+The Agent must discover physical facts through tools. The first L4 formal milestone showed a representation defect: the model could locate a physical line range but still serialize a non-canonical aggregate Evidence ID.
 
-The first formal L4 milestone shows that this mapping remains a real capability boundary: most protocol-invalid L4 reports came from invented/unknown Evidence IDs after the model had already inspected the corresponding physical span.
+The current decision is not to add a special L4-only coordinate hint. Instead, deterministic Evidence Reference Canonicalization becomes shared final-report/output infrastructure for L1/L2/Oracle/L4: exact frozen IDs are preserved; parseable same-family line ranges are mapped by deterministic overlap to frozen Canonical unit IDs; results are deduplicated; unresolved references remain invalid. The resolver must not use Required Evidence, Expected Answer, fuzzy matching, semantic repair, or Agent read-history as a repair gate.
 
 ## L4 Runtime contract
 
@@ -194,7 +197,7 @@ Frozen provider-visible contracts and deterministic Tool behavior: names, descri
 
 ### Tool Policy
 
-Only cross-ToolCall execution semantics. L4 baseline:
+Only cross-ToolCall execution semantics. Historical L4 V1 baseline:
 
 ```text
 call_mode = single
@@ -203,6 +206,8 @@ multiple_calls = reject_all_with_error_results
 ```
 
 Tool availability is defined by Tool Registry; do not duplicate a second allowlist in Tool Policy.
+
+A later, separate efficiency evolution is planned from `single + sequential` to `batch + parallel`; it is not part of the shared Evidence Reference Canonicalization change.
 
 ### Tool bounds
 
@@ -236,7 +241,7 @@ Recoverable Agent-visible errors return `ToolResult(is_error=True)` and allow an
 - malformed raw argument JSON;
 - expected tool/domain errors;
 - `length + ToolCall` — execute none;
-- multiple ToolCalls under `single` policy — execute none, error result per call ID.
+- multiple ToolCalls under historical `single` policy — execute none, error result per call ID.
 
 Unexpected Runtime/workspace/tool implementation exceptions are infrastructure failures, not Agent observations.
 
@@ -362,6 +367,8 @@ L4 Treatment Registry-validates:
 
 Do not add a `runtime` Component type; Runtime implementation provenance remains `runtime_variant + code_revision`.
 
+Shared Evidence Reference Canonicalization is planned at the final report/output-realization boundary, not as a new L4 `runtime_variant`. Its behavior identity must be versioned consistently across the new L1/L2/Oracle/L4 comparison generation.
+
 ## Matrix v2
 
 Active formal condition shape:
@@ -388,24 +395,30 @@ Oracle Evidence is implemented and has a preserved 20×3 MiniMax-M3 formal miles
 
 L4 is different: it receives the broad physical workspace + neutral citation vocabulary and must discover facts itself.
 
-A real L4 formal artifact now exists, so the previous blocker on Oracle-vs-L4 analysis is gone. The next evaluation slice is to implement a Pair Validator and metric-vector Agent-System Realization Gap over compatible Oracle/L4 runs, then use trajectory evidence to attribute gaps to:
+Oracle↔L4 Pair Analysis is now complete. The Pair Analyzer performs deterministic alignment, aggregate comparison, and evidence packaging; Human/AI review interpreted the 15 detailed Cases. The observed gap decomposed into at least:
 
 ```text
-A. decisive content not found
-   -> acquisition / tool-use
-
-B. content found but correct Evidence ID not cited
-   -> mapping / evidence-selection / report
-
-C. evidence available/cited but diagnosis wrong
-   -> reasoning / causal analysis
+Canonical reference / report realization
+Investigation depth / evidence acquisition
+Evidence selection
+Causal reasoning
+Operational execution reliability
 ```
 
-Pairing must still validate that Suite/Case, model, diagnosis/report contract, scorer, relevant inference controls and declared treatment differences are compatible before any causal claim is made.
+Important positive counterexamples also exist: `github-osquery-issue-7718` showed L4 taxonomy `3/3` versus Oracle `0/3`, demonstrating that autonomous investigation can add real causal-diagnosis value rather than merely approximating Oracle evidence delivery.
 
-## Deferred / evidence-gated
+Current decision from that analysis: solve deterministic reference-normalization as shared output infrastructure first, then rerun all four current conditions under the same capability. Do not reinterpret the historical Oracle/L4 pair metrics as if they already included the new normalization behavior.
 
-Do not prebuild without real badcase evidence:
+## Current next work / evidence-gated work
+
+Confirmed next work:
+
+1. shared deterministic Evidence Reference Canonicalization for L1/L2/Oracle/L4;
+2. zero-model-cost offline replay of historical raw candidate outputs through the resolver + frozen scorer;
+3. fresh L1/L2/Oracle/L4 20×3 formal comparison generation;
+4. separate L4 `batch + parallel` Tool Policy efficiency experiment, motivated by `26` rejected multi-ToolCall IDs and high repeated prompt traffic in the historical L4 run.
+
+Still evidence-gated / deferred:
 
 - L3 static retrieval internals;
 - compaction / summarization / history trimming;
@@ -413,20 +426,20 @@ Do not prebuild without real badcase evidence:
 - planner/verifier/reflection;
 - multi-agent / subagents;
 - memory / skills / MCP;
-- read byte/column slicing for oversized single lines;
-- batch/parallel ToolCall policy beyond explicit ablation.
+- read byte/column slicing for oversized single lines.
 
-The most direct post-L4 candidate is a controlled, answer-neutral Canonical-coordinate assistance ablation motivated by the observed unknown-Evidence-ID failures. It must be a new explicit behavior/Treatment, not a silent change to the recorded L4 baseline.
+Do not mix these deferred capabilities into the current canonicalization or batch-parallel work without new evidence.
 
 ## Current source-of-truth order
 
 When sources disagree, use:
 
 1. `docs/adr/README.md` Active ADR index;
-2. ADR 0128 for the base L4 contract **plus ADR 0129 for the context-accounting amendment**;
-3. `docs/evaluation/l4-self-built-react-runtime-design.md`;
+2. current `README.md` / `CONTEXT.md` and active evaluation methodology;
+3. ADR 0128 for the frozen base L4 V1 contract **plus ADR 0129 for the context-accounting amendment**;
 4. current Matrix/Registry/source-code contracts;
-5. active evaluation methodology docs;
-6. dated milestone/history only for historical facts.
+5. `docs/evaluation/milestones/oracle-l4-pair-analysis-2026-08-19.md` for the latest Pair Analysis decision record;
+6. `docs/evaluation/milestones/README.md` to classify dated milestone status;
+7. other dated milestone/history only for historical facts.
 
 Archived micro ADRs and old PR/Issue bodies must not override active decisions.
