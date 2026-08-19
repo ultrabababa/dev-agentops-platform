@@ -1,6 +1,6 @@
 # Runtime Capability Ladder 与 Model-backed Diagnostic Conditions
 
-> Current-state note (2026-08-19): L1、L2、Oracle 与 L4 MiniMax-M3 formal milestones 均已完成。L4 `self_built_react` 已实现并通过 live qualification + 20 Case × 3 formal milestone。ADR 0129 已将 L4 context accounting 从 mandatory local exact preflight 修订为 provider-reported observation。
+> Current-state note (2026-08-19): L1、L2、Oracle 与 L4 MiniMax-M3 historical formal milestones 均已完成。Oracle↔L4 Pair Analysis 也已完成。当前优先工作是 shared deterministic Evidence Reference Canonicalization，并在统一 output-resolution capability 下重新生成 L1/L2/Oracle/L4 20×3 对比；随后单独评估 L4 batch+parallel Tool Policy 的效率收益。
 
 DevAgentOps 使用 capability ladder 做**能力归因**：它回答“一个 condition 增加了什么能力、应与谁比较、结果能说明什么”，而不是规定所有能力必须按编号实现。
 
@@ -9,13 +9,13 @@ DevAgentOps 使用 capability ladder 做**能力归因**：它回答“一个 co
 | Level | Capability condition | Model | 控制流 | Evidence acquisition | 当前状态 |
 | --- | --- | --- | --- | --- | --- |
 | L0 | deterministic pipeline | 无 | 程序固定 | deterministic fixed access | Product Runtime baseline 已实现；历史 runtime identity 保持 `pipeline_baseline` |
-| L1 | `full_context_one_shot` | 单次调用 | 固定 Prompt，无循环 | 完整 Agent-visible Universe upfront | MiniMax-M3 20×3 formal milestone complete |
-| L2 | `fixed_model_workflow` | 多阶段调用 | 程序固定 stages | 固定显式 input flow | MiniMax-M3 20×3 formal milestone complete |
+| L1 | `full_context_one_shot` | 单次调用 | 固定 Prompt，无循环 | 完整 Agent-visible Universe upfront | historical 20×3 formal milestone complete；待 shared canonicalization 后生成新 comparison result |
+| L2 | `fixed_model_workflow` | 多阶段调用 | 程序固定 stages | 固定显式 input flow | historical 20×3 formal milestone complete；待 shared canonicalization 后生成新 comparison result |
 | L3 | `static_retrieval` | model-backed | 程序固定 | 静态 Retrieval | 尚未实现；optional diagnostic，不阻塞 L4/L5+ |
-| L4 | `self_built_react` | model-backed | 模型 adaptive next-action / stop | `read/grep/find/ls` Tool loop | **implemented; live + formal milestone complete** |
+| L4 | `self_built_react` | model-backed | 模型 adaptive next-action / stop | `read/grep/find/ls` Tool loop | historical live + 20×3 formal milestone complete；shared canonicalization 后重跑 |
 | L5+ | incremental Agent capabilities | model-backed | 逐步增强 | evidence-driven context/retrieval/planning/etc. | future controlled evolution |
 
-Oracle Evidence 与 ladder 正交，不是 rung。它的 MiniMax-M3 20×3 milestone 已完成，用于估计 ordinary evidence-discovery difficulty 被移除后的 diagnosis capacity。
+Oracle Evidence 与 ladder 正交，不是 rung。它的 historical MiniMax-M3 20×3 milestone 已完成，用于估计 ordinary evidence-discovery difficulty 被移除后的 diagnosis capacity；它也会在 shared canonicalization 下重新跑，以保持新一代 comparison 的 output-realization contract 一致。
 
 L0–L5+ 是 capability-attribution structure，不是 mandatory delivery order。
 
@@ -25,12 +25,13 @@ L0–L5+ 是 capability-attribution structure，不是 mandatory delivery order�
 
 - `triage-suite-v1` 已冻结：20 个 Schema V2 Formal Cases，五类 Failure Type 各 4 个；
 - Canonicalization Profile v1 已冻结；
-- L1 MiniMax-M3 formal milestone：60 scored，0 execution failures；
-- L2 MiniMax-M3 formal milestone：60 scored / 120 model calls，0 execution failures；
-- Oracle MiniMax-M3 formal milestone：60 scored，0 execution failures；
-- L4 MiniMax-M3 formal milestone：60 planned，59 scored / 1 provider execution failure。
+- historical L1 MiniMax-M3 formal milestone：60 scored，0 execution failures；
+- historical L2 MiniMax-M3 formal milestone：60 scored / 120 model calls，0 execution failures；
+- historical Oracle MiniMax-M3 formal milestone：60 scored，0 execution failures；
+- historical L4 MiniMax-M3 formal milestone：60 planned，59 scored / 1 provider execution failure；
+- Oracle↔L4 Pair Analyzer 已落地并完成真实 20-Case pair analysis。
 
-L4 Suite-level metrics：
+Historical L4 Suite-level metrics：
 
 | Metric | L4 |
 | --- | ---: |
@@ -40,7 +41,7 @@ L4 Suite-level metrics：
 | Required Fields Completeness | `96.67%` |
 | Protocol Validity | `81.36%` |
 
-完整结果见 [L4 MiniMax-M3 Full-Suite Milestone](milestones/l4-minimax-m3-full-suite-2026-08-19.md)。
+完整历史结果见 [L4 MiniMax-M3 Full-Suite Milestone](milestones/l4-minimax-m3-full-suite-2026-08-19.md)。Dated milestone 的状态先看 [Milestone Status Index](milestones/README.md)。
 
 ## 3. 各层现行语义
 
@@ -105,7 +106,7 @@ ls
 
 `submit_report` 不是 native tool。0 ToolCalls 表示模型尝试终止，Runtime 将 visible assistant text 解析为 Structured Triage Report candidate。
 
-Baseline Tool Policy：
+Historical baseline Tool Policy：
 
 ```text
 call_mode = single
@@ -116,6 +117,26 @@ multiple_calls = reject_all_with_error_results
 Agent hard budget：`max_steps=100`。V1 不增加 cumulative-token hard budget、sample wall-clock hard budget或 automatic compaction。
 
 L4 first input 提供完整 answer-neutral Canonical coordinate vocabulary 用于 citation，但不提供 Physical Artifact content、Required Evidence 标签、Expected Answer 或 evaluator artifacts。Physical facts 必须通过 tools 调查。
+
+### Shared final-report Evidence Reference Canonicalization
+
+Pair Analysis 之后，Canonical reference normalization 不再被定义成 L4-only capability。它是新一代 L1/L2/Oracle/L4 共同拥有的 final-report/output-realization behavior：
+
+```text
+raw candidate document
+    -> deterministic Evidence Reference Canonicalization
+    -> report validation
+    -> frozen scorer
+```
+
+Resolver 只允许：
+
+- exact Canonical ID -> preserve；
+- same-family explicit line range -> deterministic overlap mapping to frozen Canonical units；
+- deduplicate resolved IDs；
+- unresolvable -> keep invalid。
+
+它不得使用 Required Evidence、Expected Answer、semantic/fuzzy matching，也不额外检查 Agent trajectory/read-history。这个变化不创造新的 Runtime rung，也不把 Oracle 变成更高层 Runtime。
 
 ### L4 context accounting — ADR 0129
 
@@ -139,7 +160,7 @@ policy = observe_provider_usage_no_local_preflight
 
 L1/L2/Oracle 的 exact-token behavior 不受 ADR 0129 影响。
 
-Formal L4 milestone 最大观察到 `98,893` provider-reported input tokens，没有出现 context-limit rejection，因此当前没有证据要求在 baseline 中加入 compaction 或 predictive local budgeting。
+Historical formal L4 milestone 最大观察到 `98,893` provider-reported input tokens，没有出现 context-limit rejection，因此当前没有证据要求在 baseline 中加入 compaction 或 predictive local budgeting。
 
 ### L5+
 
@@ -166,7 +187,9 @@ L1、L2、L3 是 diagnostic/comparison conditions。Oracle 是 orthogonal diagno
 | Normal vs Oracle | evidence acquisition 难度被移除后，固定模型能做到什么？ |
 | Oracle vs L4 | Agent System 实际实现了多少 evidence-conditioned diagnosis capacity？ |
 
-Oracle-vs-L4 不能仅凭两个 Suite aggregate 做 causal claim。必须先验证 pairing controls，再做 per-Case / per-Failure-Type metric-vector gap 和 variance analysis。
+Oracle-vs-L4 不能仅凭两个 Suite aggregate 做 causal claim。当前 Pair Analyzer 已将比较单位固定为 Case aggregate，并保留各 condition 的独立 repeats、Execution Coverage 与 metric-vector gaps；A/B/C 仅用于 Human/AI review，不是自动标签体系。
+
+新一代 L1/L2/Oracle/L4 formal comparison 必须全部拥有相同的 shared Evidence Reference Canonicalization capability，避免把 output-realization 差异误当 Runtime/evidence-acquisition 差异。
 
 ## 6. Trace、Trajectory 与 Provider boundary
 
@@ -197,32 +220,18 @@ DevAgentOps 借鉴 typed messages、Agent loop、ToolResult recovery、read/sear
 
 ## 8. Post-L4 evidence-driven work
 
-L4 core 不再是“待实现事项”。当前未决工作分成两类。
+Pair Analysis 已完成，因此这里不再保留“先做 Pair Validator、再决定下一 ablation”的旧路线。
 
-### 8.1 当前优先级
-
-```text
-Oracle + L4 formal artifacts
-    -> Pair Validator
-    -> Agent-System Realization Gap
-    -> per-Case / per-Failure-Type badcase attribution
-    -> choose next controlled ablation
-```
-
-Badcase attribution重点区分：
+### 8.1 已确认的当前优先级
 
 ```text
-A. decisive physical content not found
-   -> acquisition / tool-use
-
-B. content found but correct Evidence ID not cited
-   -> mapping / evidence-selection / report
-
-C. evidence available/cited but diagnosis wrong
-   -> reasoning / causal analysis
+shared Evidence Reference Canonicalization
+    -> historical L1/L2/Oracle/L4 offline replay
+    -> new L1/L2/Oracle/L4 20×3 formal comparison generation
+    -> separate L4 batch + parallel Tool Policy efficiency experiment
 ```
 
-L4 milestone 中 unknown Evidence ID 是主要 protocol-invalid failure mode，因此一个 answer-neutral physical-span -> Canonical-coordinate assistance ablation 是当前最直接的候选，但它必须作为新 Treatment 明确评测。
+第一个变化解决 deterministic citation/report realization failure；第二个 L4-only 变化解决已观察到的 action-execution friction 和高 repeated-context cost。Historical L4 run 已记录 `26` 个 `multiple_tool_calls_rejected` ToolCall IDs、`802` 个 successful Model Decisions、约 `24.72M` prompt tokens 和约 `35m01s` wall-clock，因此 batch+parallel 已有真实 evidence 支持，但必须和 canonicalization 分开实现/比较。
 
 ### 8.2 仍然 evidence-gated
 
@@ -230,7 +239,6 @@ L4 milestone 中 unknown Evidence ID 是主要 protocol-invalid failure mode，�
 - dynamic context-exhaustion handling；
 - compaction / predictive context budgeting；
 - oversized single-line read slicing；
-- batch sequential / batch parallel Tool Policy；
 - planner/verifier/reflection；
 - skills/MCP/memory/multi-agent。
 
@@ -245,4 +253,5 @@ L4 milestone 中 unknown Evidence ID 是主要 protocol-invalid failure mode，�
 - [ADR 0129: L4 Provider-Reported Context Accounting](../adr/0129-l4-provider-reported-context-accounting.md)
 - [Formal Evaluation Methodology](formal-evaluation-methodology.md)
 - [L4 Self-built ReAct Runtime Design](l4-self-built-react-runtime-design.md)
-- [L4 MiniMax-M3 Full-Suite Milestone](milestones/l4-minimax-m3-full-suite-2026-08-19.md)
+- [Oracle ↔ L4 Pair Analysis Findings](milestones/oracle-l4-pair-analysis-2026-08-19.md)
+- [Milestone Status Index](milestones/README.md)
