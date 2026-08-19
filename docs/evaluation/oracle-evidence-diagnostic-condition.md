@@ -1,16 +1,14 @@
 # Oracle Evidence Diagnostic Condition 与 Agent-System Realization Gap
 
-> Current-state note (2026-08-18): Oracle Evidence execution is **implemented**. The MiniMax-M3 20 Case × 3 formal milestone completed with 60/60 scored Samples and 0 execution failures. What remains deferred is the generic Oracle-vs-Agent pairing / Agent-System Realization Gap machinery until a real L4 formal artifact exists.
+> Current-state note (2026-08-19): Oracle Evidence execution 与 L4 `self_built_react` formal milestone 都已经完成。此前“等待真实 L4 formal artifact 再做 generic pairing / realization gap”的 sequencing guard 已满足。Pair Validator 与 gap-report machinery 仍**尚未实现**，但现在是当前可执行的下一阶段，而不是被前置条件阻塞的 future work。
 
-Oracle Evidence answers:
+Oracle Evidence answers：
 
-> 当 Human-reviewed 的 Minimal Sufficient Evidence Set 已经直接提供给固定模型时，它能否按同一 diagnosis/report contract 完成当前 Case？
+> 当 Human-reviewed Minimal Sufficient Evidence Set 已经直接提供给固定模型时，它能否按同一 diagnosis/report contract 完成当前 Case？
 
 Oracle 是与 L0–L5+ capability ladder 正交的 diagnostic intervention，不是 Product Runtime，也不是 rung。
 
-## 1. Current implementation
-
-Current Oracle path:
+## 1. Current Oracle implementation
 
 ```text
 frozen required_evidence_ids
@@ -22,14 +20,14 @@ frozen required_evidence_ids
     -> existing Structured Triage Report scorer
 ```
 
-已经实现并验证：
+已实现并验证：
 
 - deterministic Oracle Evidence Item/Pack resolution；
 - source-content SHA-256 verification；
 - evaluator leakage guard / answer-neutral model-visible envelope；
 - explicit versioned `evidence_delivery` Treatment identity；
 - Matrix v2 formal scheduler / persistence / Trace integration；
-- exact context preflight；
+- exact context preflight for the Oracle condition；
 - one model call per Sample；
 - 20 Case × 3 repeat formal milestone；
 - historical L1/L2 identities preserved。
@@ -38,23 +36,23 @@ Current tracked milestone: [Oracle MiniMax-M3 Full-Suite Milestone](milestones/o
 
 ## 2. What Oracle changes
 
-Normal Agent/system result mixes two stages:
+A normal Agent/System result mixes at least two stages：
 
 ```text
 Evidence acquisition / selection / context construction
     -> diagnosis / report synthesis
 ```
 
-Oracle intentionally removes ordinary evidence discovery difficulty by supplying only the reviewed Required Evidence source content. It does **not** supply the answer.
+Oracle intentionally removes ordinary evidence-discovery difficulty by supplying only the reviewed Required Evidence source content. It does **not** supply the answer.
 
-Oracle input may contain:
+Oracle input may contain：
 
 - Stable Evidence IDs；
 - resolved raw-log spans；
 - resolved repository-file spans and paths；
 - deterministic source-faithful ordering/envelope。
 
-Oracle must never expose:
+Oracle must never expose：
 
 - `required` / `optional` labels；
 - Expected Answer fields；
@@ -72,11 +70,13 @@ The fact that the source content was selected is the intervention; no additional
 
 Sufficiency means the set contains the facts necessary to support the Expected Diagnosis under the fixed diagnosis contract. Minimality means removing an item makes at least one necessary fact or disambiguation unavailable.
 
-This is a curation/review property, not something retroactively tuned until the model passes.
+This is a curation/review property, not something retroactively tuned until the Oracle model passes.
 
 ## 4. Formal milestone status
 
-The preserved Oracle MiniMax-M3 formal milestone used the frozen `triage-suite-v1`:
+### Oracle
+
+The preserved Oracle MiniMax-M3 formal milestone used frozen `triage-suite-v1`：
 
 ```text
 20 Cases × 3 repeats
@@ -86,38 +86,104 @@ The preserved Oracle MiniMax-M3 formal milestone used the frozen `triage-suite-v
 = 0 execution failures
 ```
 
-The milestone demonstrated Oracle execution integrity; it did **not** implement or claim a completed Agent-System Realization Gap because the real L4 Agent Product Runtime did not yet exist.
+Key Suite metrics：
+
+```text
+Failure Type Exact Match = 85.00%
+Evidence Hit Rate        = 89.29%
+Protocol Validity        = 100.00%
+```
+
+### L4
+
+The corresponding L4 MiniMax-M3 milestone now exists：
+
+```text
+20 Cases × 3 repeats
+= 60 planned Samples
+= 59 scored
+= 1 provider execution failure
+```
+
+Key Suite metrics：
+
+```text
+Execution Coverage       = 98.33%
+Failure Type Exact Match = 88.33%
+Evidence Hit Rate        = 65.51%
+Protocol Validity        = 81.36%
+```
+
+See [L4 MiniMax-M3 Full-Suite Milestone](milestones/l4-minimax-m3-full-suite-2026-08-19.md).
+
+The existence of both artifacts enables pairing analysis, but does **not** by itself prove that every metric difference is a clean causal “Oracle minus Agent” estimate. Compatibility still has to be validated explicitly.
 
 ## 5. Pairing with L4
 
-After L4 has a formal artifact, Oracle-vs-L4 can be paired only when the declared controls match sufficiently, including where applicable:
+Oracle-vs-L4 should be paired only when declared controls match sufficiently, including where applicable：
 
-- same Suite / Case versions；
+- same Suite / Case versions and fingerprints；
 - same base model/provider/profile；
-- same diagnosis Task Contract / report contract / scorer；
-- same relevant inference settings and output allowance；
-- explicit known wrapper/treatment differences。
+- same diagnosis Task Contract / output contract / scorer；
+- compatible reasoning and generation settings；
+- explicit known wrapper/Treatment differences；
+- compatible repeat/sample semantics and visible execution coverage。
 
-The intended intervention is evidence acquisition/delivery. If additional behavior-affecting differences are uncontrolled, report the comparison as a combined difference rather than a formal realization-gap pair.
+The intended analysis question is：
+
+> Given the same model and diagnosis contract, how much of the evidence-conditioned diagnosis capability is realized by the actual Agent System that must investigate the Case itself?
+
+If additional behavior-affecting differences are uncontrolled, report the comparison as a **combined difference** rather than a formal realization-gap pair.
 
 ## 6. Agent-System Realization Gap
 
-For a higher-is-better diagnosis metric `m`:
+For a higher-is-better diagnosis metric `m`：
 
 ```text
 realization_gap(case, m)
   = oracle_score(case, m) - agent_score(case, m)
 ```
 
-Gap remains a metric vector, never one composite capability score. Report by Case, metric, Failure Type and Suite, together with pairing identities and variance information.
+Gap remains a metric vector, never one composite capability score.
 
-Do not fold acquisition/operational metrics such as tool-call count, steps, cost or latency into a purported “model capability” score. Those are diagnostic signals that help explain why the Agent did or did not realize Oracle-condition performance.
+Report at least：
 
-## 7. Relationship to L4 Canonical-coordinate visibility
+```text
+per Case
+per Failure Type
+Suite aggregate
+repeat / variance information
+pairing identity and compatibility result
+```
 
-Oracle source selection is still hidden Ground Truth intervention. L4 ADR 0128 separately allows the **complete answer-neutral Canonical coordinate vocabulary** to be visible at episode start purely as citation vocabulary.
+Do not fold acquisition/operational metrics such as tool-call count, steps, cost or latency into a purported model-capability score. Those are explanatory signals for why the Agent did or did not realize Oracle-condition performance.
 
-These are not equivalent:
+A negative gap on one diagnosis metric is possible and not inherently invalid. For example, L4 Suite Failure Type Exact Match (`88.33%`) is higher than Oracle (`85.00%`). Oracle is not a theoretical upper bound; it is a specific evidence-delivery intervention.
+
+## 7. Gap attribution using L4 trajectory
+
+The value of pairing is not only the numeric difference. L4 has a complete Agent trajectory, so gap analysis can distinguish several failure mechanisms：
+
+```text
+A. required / decisive physical content never entered model-visible history
+   -> evidence acquisition / tool-use problem
+
+B. decisive physical content was observed but correct Canonical ID was not cited
+   -> citation mapping / evidence selection / final report problem
+
+C. decisive evidence was available/cited but diagnosis remained wrong
+   -> reasoning / causal-chain problem
+```
+
+The first L4 milestone already suggests that class B is important: unknown/invented Evidence IDs dominated protocol-invalid final reports.
+
+This is more actionable than treating every Oracle-L4 difference as generic “Agent weakness”.
+
+## 8. Relationship to L4 Canonical-coordinate visibility
+
+Oracle source selection remains a hidden Ground Truth intervention. L4 separately receives the complete **answer-neutral Canonical coordinate vocabulary** at episode start purely as citation vocabulary.
+
+These are not equivalent：
 
 ```text
 L4:
@@ -134,21 +200,38 @@ only reviewed Required Evidence source content
 
 Therefore exposing the full coordinate vocabulary to L4 does not collapse L4 into Oracle.
 
-## 8. Deferred work
+## 9. Current implementation target
 
-Still deferred until real L4 formal results exist:
+The next implementation slice should remain small：
 
-- generic Oracle-vs-L4 Pair Validator；
-- formal Diagnosis Pass Predicate if needed for quadrant analysis；
-- per-Case/per-Failure-Type realization-gap report machinery；
-- variance audit across paired repeats。
+```text
+Pair Validator
+    -> validate compatible Oracle / L4 formal runs
+    -> construct Case-level pairs
+    -> preserve execution-failure visibility
 
-Do not reimplement Oracle Runner or redesign the evidence-delivery contract as part of Issue #52 unless a real compatibility defect is found.
+Realization Gap report
+    -> metric-vector delta per Case
+    -> Failure-Type aggregation
+    -> Suite aggregation
+    -> repeat / variance view
 
-## 9. Related decisions
+Badcase attribution support
+    -> join L4 trajectory / Trace evidence
+    -> classify acquisition vs mapping/report vs reasoning
+```
+
+Do **not** reimplement Oracle Runner, redesign the L4 Runtime, or silently normalize away protocol/execution failures as part of the gap machinery.
+
+A formal Diagnosis Pass Predicate / quadrant visualization may be added only if it provides additional analytical value beyond the metric-vector report; it is not required for the first Pair Validator slice.
+
+## 10. Related decisions and results
 
 - [ADR 0124: Oracle Evidence Diagnostic Condition](../adr/0124-oracle-evidence-diagnostic-condition.md)
 - [ADR 0125: Formal Evaluation Evidence Universe and Access](../adr/0125-formal-evaluation-evidence-universe-and-access.md)
 - [ADR 0126: Offline Case Schema V2](../adr/0126-offline-case-schema-v2-physical-artifacts-and-canonical-evidence.md)
 - [ADR 0128: L4 Self-built ReAct Runtime Contract](../adr/0128-l4-self-built-react-runtime-contract.md)
+- [ADR 0129: L4 Provider-Reported Context Accounting](../adr/0129-l4-provider-reported-context-accounting.md)
 - [Formal Evaluation Methodology](formal-evaluation-methodology.md)
+- [Oracle MiniMax-M3 Full-Suite Milestone](milestones/oracle-minimax-m3-full-suite-2026-08-15.md)
+- [L4 MiniMax-M3 Full-Suite Milestone](milestones/l4-minimax-m3-full-suite-2026-08-19.md)
