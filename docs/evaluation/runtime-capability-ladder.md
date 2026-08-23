@@ -1,6 +1,6 @@
 # Runtime Capability Ladder 与 Model-backed Diagnostic Conditions
 
-> Current-state note (2026-08-19): L1、L2、Oracle 与 L4 MiniMax-M3 historical formal milestones 均已完成。Oracle↔L4 Pair Analysis、shared deterministic Evidence Reference Canonicalization、fresh four-condition generation，以及 L4 Batch + Parallel Tool Policy 初始实验与 replication 均已完成。Batch + Parallel 现在是新 L4 evaluation / Runtime evolution 的推荐 Tool Policy；historical single/sequential 仍是 immutable reference，不 retroactively 改写。
+> Current-state note (2026-08-23): L1、L2、Oracle 与 L4 MiniMax-M3 historical formal milestones 均已完成。L3 `static_retrieval` V1 已按 ADR 0130 实现，并通过 deterministic tests、Component/Matrix doctor 与 tiny fake-provider formal-path qualification；尚未运行真实 20-Case × 3 repeats L3 model evaluation。Oracle↔L4 Pair Analysis、shared deterministic Evidence Reference Canonicalization、fresh four-condition generation，以及 L4 Batch + Parallel Tool Policy 初始实验与 replication 均已完成。Batch + Parallel 现在是新 L4 evaluation / Runtime evolution 的推荐 Tool Policy；historical single/sequential 仍是 immutable reference，不 retroactively 改写。
 
 DevAgentOps 使用 capability ladder 做**能力归因**：它回答“一个 condition 增加了什么能力、应与谁比较、结果能说明什么”，而不是规定所有能力必须按编号实现。
 
@@ -11,7 +11,7 @@ DevAgentOps 使用 capability ladder 做**能力归因**：它回答“一个 co
 | L0 | deterministic pipeline | 无 | 程序固定 | deterministic fixed access | Product Runtime baseline 已实现；历史 runtime identity 保持 `pipeline_baseline` |
 | L1 | `full_context_one_shot` | 单次调用 | 固定 Prompt，无循环 | 完整 Agent-visible Universe upfront | historical milestone + canonicalized fresh generation complete |
 | L2 | `fixed_model_workflow` | 多阶段调用 | 程序固定 stages | 固定显式 input flow | historical milestone + canonicalized fresh generation complete |
-| L3 | `static_retrieval` | model-backed | 程序固定 | 静态 Retrieval | 尚未实现；optional diagnostic，不阻塞 L4/L5+ |
+| L3 | `static_retrieval` | model-backed | 程序固定 | 静态 Retrieval | V1 已实现并完成 deterministic/tiny fake qualification；尚无 live full-suite result |
 | L4 | `self_built_react` | model-backed | 模型 adaptive next-action / stop | `read/grep/find/ls` Tool loop | historical/fresh milestones complete；Batch + Parallel replication complete；recommended forward Tool Policy accepted |
 | L5+ | incremental Agent capabilities | model-backed | 逐步增强 | evidence-driven context/retrieval/planning/etc. | future controlled evolution |
 
@@ -21,7 +21,7 @@ L0–L5+ 是 capability-attribution structure，不是 mandatory delivery order�
 
 ## 2. 当前实验基础
 
-截至 2026-08-19：
+截至 2026-08-23：
 
 - `triage-suite-v1` 已冻结：20 个 Schema V2 Formal Cases，五类 Failure Type 各 4 个；
 - Canonicalization Profile v1 已冻结；
@@ -293,7 +293,7 @@ investigate
 
 ### 8.3 仍然 evidence-gated
 
-- L3 retrieval design；
+- L3 live full-suite qualification、retrieval optimization 或新 quality metric；
 - dynamic context-exhaustion handling；
 - compaction / predictive context budgeting；
 - oversized single-line read slicing；

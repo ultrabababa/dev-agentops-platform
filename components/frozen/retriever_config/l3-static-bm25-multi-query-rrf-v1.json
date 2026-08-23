@@ -1,0 +1,63 @@
+{
+  "behavior": {
+    "settings": {
+      "chunking": {
+        "overlap_lines": 20,
+        "strategy": "fixed_line_window_v1",
+        "window_lines": 100
+      },
+      "corpus_scope": "case_physical_artifacts",
+      "fusion": {
+        "query_weights": "uniform",
+        "rank_constant": 60,
+        "strategy": "reciprocal_rank_fusion"
+      },
+      "packing": {
+        "backfill_after_merge": false,
+        "bridge_unretrieved_gaps": false,
+        "exact_chunk_deduplication": true,
+        "overlapping_span_coalescing": true,
+        "same_physical_source_only": true
+      },
+      "ranker": {
+        "b": 0.75,
+        "implementation": "bm25s",
+        "implementation_version": "0.3.10",
+        "k1": 1.5,
+        "method": "lucene",
+        "per_query_candidates": 20
+      },
+      "selection": {
+        "log_top_k": 10,
+        "redistribute_unused_slots": false,
+        "repository_top_k": 10
+      },
+      "signal_extraction": {
+        "deduplicate": "normalized_content_keep_latest",
+        "log_extractor_version": "failure_signal_extractor_v1",
+        "per_signal_type_cap": 5,
+        "priority": "specificity_then_later_line",
+        "repo_extractor_version": "repo_signal_extractor_v1"
+      },
+      "tokenizer": {
+        "lowercase": true,
+        "preserve_compound_token": true,
+        "split_camel_case": true,
+        "split_dot": true,
+        "split_hyphen": true,
+        "split_path_separator": true,
+        "split_underscore": true,
+        "stemming": false,
+        "stopword_removal": false,
+        "version": "code_aware_lexical_v1"
+      }
+    },
+    "strategy": "static_bm25_multi_query_rrf_v1"
+  },
+  "component_type": "retriever_config",
+  "component_version": "l3-static-bm25-multi-query-rrf-v1",
+  "metadata": {
+    "description": "Frozen L3 static retrieval V1 behavior from ADR 0130"
+  },
+  "schema_version": "1"
+}

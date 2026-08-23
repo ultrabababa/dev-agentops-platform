@@ -187,6 +187,8 @@ def _validate_registry_contracts(
 ) -> None:
     contracts = condition["treatment"]["contracts"]
     references = [("task", "prompt")]
+    if condition["runtime_variant"] == "static_retrieval":
+        references.append(("retriever", "retriever_config"))
     if condition["runtime_variant"] == "self_built_react":
         references.extend(
             [

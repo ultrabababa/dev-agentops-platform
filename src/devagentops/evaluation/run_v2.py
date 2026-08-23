@@ -11,6 +11,8 @@ from devagentops.conditions.l1.executor import ConfiguredL1ConditionExecutor
 from devagentops.conditions.l1.full_context_v1 import ConfiguredL1Treatment
 from devagentops.conditions.l2.development_workflow_v1 import ConfiguredL2Treatment
 from devagentops.conditions.l2.executor import ConfiguredL2ConditionExecutor
+from devagentops.conditions.l3.executor import ConfiguredL3ConditionExecutor
+from devagentops.conditions.l3.static_retrieval_v1 import ConfiguredL3Treatment
 from devagentops.conditions.l4.react_condition import (
     ConfiguredL4ConditionExecutor,
     ConfiguredL4Treatment,
@@ -118,6 +120,13 @@ def run_formal_evaluation_v2(
         tool_policy = resolve_frozen_component_manifest(
             registry_path, "tool_policy", tool_policy_contract["version"]
         )
+    elif runtime_variant == "static_retrieval":
+        retriever_contract = contracts["retriever"]
+        retriever = resolve_frozen_component_manifest(
+            registry_path,
+            "retriever_config",
+            retriever_contract["version"],
+        )
     initialize_database(database_path)
     run_id = str(uuid4())
     started_at = _now()
@@ -216,6 +225,34 @@ def run_formal_evaluation_v2(
                 evidence_delivery_contract=(
                     contracts["evidence_delivery"]
                 ),
+            ),
+            provider_factory=provider_factory,
+            output_contract_version=output_contract_version,
+        )
+    elif runtime_variant == "static_retrieval":
+        executor = ConfiguredL3ConditionExecutor(
+            prompt=prompt,
+            retriever=retriever,
+            treatment=ConfiguredL3Treatment(
+                provider_id=treatment["provider"]["id"],
+                model=treatment["model"],
+                reasoning=treatment["reasoning"],
+                generation=treatment["generation"],
+                context_limit_tokens=treatment["context"][
+                    "context_window_tokens"
+                ],
+                max_completion_tokens=treatment["generation"][
+                    "max_completion_tokens"
+                ],
+                task_contract_version=TASK_CONTRACT_VERSION,
+                output_contract_prompt_suffix=output_contract_prompt_suffix(),
+                runtime_input_serialization_version=(
+                    contracts["runtime_input"]["version"]
+                ),
+                retriever_component_version=retriever_contract["version"],
+                retriever_component_fingerprint=retriever_contract[
+                    "fingerprint"
+                ],
             ),
             provider_factory=provider_factory,
             output_contract_version=output_contract_version,
@@ -432,6 +469,7 @@ def _manifest(
     experiment_identity = {
         "full_context_one_shot": "l1-development-treatment-milestone",
         "fixed_model_workflow": "l2-development-treatment-integration",
+        "static_retrieval": "l3-static-retrieval-development",
         "model_one_shot": "oracle-evidence-diagnostic-development",
         "self_built_react": "l4-self-built-react-development",
     }[runtime_variant]
@@ -439,6 +477,7 @@ def _manifest(
     tool_protocol_reason = {
         "full_context_one_shot": "full_context_one_shot_has_no_tools",
         "fixed_model_workflow": "fixed_model_workflow_has_no_tools",
+        "static_retrieval": "static_retrieval_has_no_tools",
         "model_one_shot": "oracle_model_one_shot_has_no_tools",
         "self_built_react": "minimax_native_tools_from_frozen_tool_registry",
     }[runtime_variant]

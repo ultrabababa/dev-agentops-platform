@@ -258,6 +258,13 @@ def _render_formal_v2_markdown(document: dict[str, Any]) -> str:
             "Oracle is orthogonal to the capability ladder and is not an "
             "Agent Product Runtime or leaderboard-qualified benchmark.\n"
         )
+    elif manifest["runtime_variant"] == "static_retrieval":
+        formal_title = "# DevAgentOps Formal L3 Static Retrieval Evaluation\n\n"
+        limitations = (
+            "This is an L3 deterministic evidence-acquisition diagnostic. "
+            "It is not an adaptive Agent Product Runtime or a "
+            "leaderboard-qualified benchmark.\n"
+        )
     else:
         formal_title = "# DevAgentOps Formal Evaluation\n\n"
         limitations = (

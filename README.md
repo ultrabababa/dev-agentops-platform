@@ -61,7 +61,7 @@ DevAgentOps 使用 capability ladder 做归因，而不是把所有能力塞进�
 | L0 | deterministic pipeline | program-controlled | deterministic fixed access | implemented |
 | L1 | `full_context_one_shot` | one model call | full visible universe upfront | formal milestone complete |
 | L2 | `fixed_model_workflow` | fixed multi-stage program | fixed explicit input flow | formal milestone complete |
-| L3 | `static_retrieval` | program-controlled | static retrieval | not implemented; optional diagnostic |
+| L3 | `static_retrieval` | program-controlled | static retrieval | implemented + deterministic/fake-provider qualified; live full-suite run not performed |
 | L4 | `self_built_react` | model adaptive next-action / stop | read/search/list tool loop | **implemented + formal milestones + Batch/Parallel replication complete** |
 | L5+ | incremental Agent capabilities | evidence-driven evolution | context/retrieval/planning/etc. | future work |
 
