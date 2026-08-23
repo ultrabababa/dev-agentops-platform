@@ -2,16 +2,17 @@
 
 This directory keeps active architecture decisions for DevAgentOps.
 
-> Current-state note (2026-08-19): L4 `self_built_react` is implemented and has completed historical/fresh formal milestones. ADR 0129 supersedes only ADR 0128's mandatory **L4 local exact-token preflight** requirement. ADR 0128 remains the frozen historical L4 V1 base contract; the later L4 Batch + Parallel ToolCalls experiment explicitly refines the recommended forward Tool Policy from historical `single + sequential + reject-all` to `batch + parallel + independent-call handling` without creating a new Runtime rung or rewriting historical identities.
+> Current-state note (2026-08-23): L4 `self_built_react` is implemented and has completed historical/fresh formal milestones. L3 `static_retrieval` remains unimplemented, but its V1 design is now frozen by ADR 0130. ADR 0130 also supersedes only ADR 0118's standalone `retrieval_corpus_version` requirement for the fixed `triage-suite-v1` per-Case Physical Artifact corpus. ADR 0129 supersedes only ADR 0128's mandatory **L4 local exact-token preflight** requirement. Historical L4 identities remain unchanged, and the later L4 Batch + Parallel ToolCalls milestone refines only the recommended forward Tool Policy.
 
 ## Reading Order
 
 1. Read the foundational ADRs `0001` through `0013` for stack, runtime, trace, retrieval, dashboard, storage, eval runner, and baseline decisions.
-2. Read the consolidated topic ADRs `0112` through `0127` for the current V1 evaluation and AgentOps architecture.
-3. For the historical L4 V1 base contract, read **ADR 0128 together with ADR 0129**. Do not apply ADR 0128's original exact-preflight section without the ADR 0129 amendment.
-4. For the current recommended same-L4 Tool Policy, read the [L4 Batch + Parallel ToolCalls Milestone](../evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md) together with current `README.md` / `CONTEXT.md` and the frozen Batch Runtime-control / Tool Policy components.
-5. Use `archive/micro-decisions/` only when you need the detailed discussion trail behind the consolidated decisions.
-6. Use dated milestone reports for immutable experiment evidence; only an explicitly referenced later milestone decision may refine a forward recommendation without retroactively changing older measurements.
+2. Read the consolidated topic ADRs `0112` through `0127` for the V1 evaluation and AgentOps architecture.
+3. For L3 implementation, read **ADR 0130** together with [L3 Static Retrieval V1 — Implementation Design](../evaluation/l3-static-retrieval-v1-design.md). ADR 0130 refines ADR 0127's abstract L3 rung and partially supersedes ADR 0118 only as stated there.
+4. For the historical L4 V1 base contract, read **ADR 0128 together with ADR 0129**. Do not apply ADR 0128's original exact-preflight section without the ADR 0129 amendment.
+5. For the current recommended same-L4 Tool Policy, read the [L4 Batch + Parallel ToolCalls Milestone](../evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md) together with current `README.md` / `CONTEXT.md` and the frozen Batch Runtime-control / Tool Policy components.
+6. Use `archive/micro-decisions/` only when you need the detailed discussion trail behind the consolidated decisions.
+7. Use dated milestone reports for immutable experiment evidence; only an explicitly referenced later milestone decision may refine a forward recommendation without retroactively changing older measurements.
 
 ## Active Foundational ADRs
 
@@ -49,6 +50,7 @@ This directory keeps active architecture decisions for DevAgentOps.
 - [0127 Staged Runtime Capability Ladder and Reference Boundary](0127-staged-runtime-capability-ladder-and-reference-boundary.md)
 - [0128 L4 Self-built ReAct Runtime Contract](0128-l4-self-built-react-runtime-contract.md)
 - [0129 L4 Provider-Reported Context Accounting](0129-l4-provider-reported-context-accounting.md)
+- [0130 L3 Static Retrieval V1 Contract](0130-l3-static-retrieval-v1-contract.md)
 
 ## Current empirical / refinement references
 

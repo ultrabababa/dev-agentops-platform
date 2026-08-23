@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted.
+Accepted. ADR 0130 supersedes only the requirement for a standalone `retrieval_corpus_version` for L3 `static_retrieval` over the fixed per-Case Physical Artifact corpus in `triage-suite-v1`. All other corpus, leakage, frozen-snapshot, source-span, and Canonical Evidence boundaries in this ADR remain active.
 
 ## Context
 
@@ -11,6 +11,8 @@ Retrieval affects triage quality, but formal evaluation must avoid answer leakag
 ## Decision
 
 V1 will version retriever behavior separately from retrieval corpus content. For a Formal Case, an independently versioned Runtime Retrieval Chunker derives index chunks from allowed Physical Artifacts; static retrieval returns physical source spans, which are mapped to overlapping Canonical Evidence IDs for identity, citation, and measurement. Canonical Units are not mandatory Retrieval chunks. Formal evaluation may also retrieve separately controlled project knowledge, but not expected answers, leaderboard results, badcase reviews, debug findings, or previous evaluation reports. Repository evidence comes from frozen Case or corpus snapshots, not the current working tree.
+
+For the current `triage-suite-v1` L3 condition, ADR 0130 narrows the identity rule: the corpus is fixed to `case_physical_artifacts`, Case/Suite fingerprints already identify that content, and no redundant standalone `retrieval_corpus_version` is added. A separately mutable/shared future corpus still requires explicit identity.
 
 ## Alternatives Considered
 
@@ -25,8 +27,8 @@ Retrieval improvements are attributable to strategy, corpus, or evidence changes
 ## Implementation Notes
 
 - `retriever_version` covers chunking, algorithm, index/query, top-k/reranking, and other behavior-affecting configuration.
-- `retrieval_corpus_version` covers the allowed Physical Artifact snapshot or separately controlled project-knowledge content from which Runtime chunks are derived.
-- V1 defaults to per-case repository evidence snapshots, with future support for shared corpus references.
+- For `triage-suite-v1` L3, corpus identity is carried by the frozen Case/Suite fingerprints rather than a standalone `retrieval_corpus_version`.
+- If future retrieval introduces project knowledge, shared content, or another independently versioned corpus, restore an explicit corpus identity for that Treatment.
 - Runtime traces preserve retrieved physical spans and overlapping Canonical IDs; the formal Evidence Hit attribution rule is calibrated separately and cannot default to arbitrary overlap.
 - Project knowledge may include SOPs, runbooks, architecture notes, dependency policy, and testing conventions.
 - `eval doctor` checks path/configuration-level leakage from evaluation artifacts.
