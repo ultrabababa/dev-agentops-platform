@@ -1,6 +1,6 @@
 # L3 Static Retrieval V1 — Implementation Design
 
-Status: Design frozen and V1 implemented on 2026-08-23. Deterministic tests, Component/Matrix validation, full-suite doctor, and a tiny fake-provider formal-path qualification are complete; no live 20-Case × 3 repeats model evaluation has been run.
+Status: Design frozen and V1 implemented on 2026-08-23. Deterministic tests, Component/Matrix validation, full-suite doctor, tiny fake-provider qualification, a live smoke run, and a clean MiniMax-M3 20-Case × 3 repeats formal milestone are complete. The completed baseline and evaluator-side acquisition analysis are recorded in [L3 Static Retrieval V1 Formal Milestone](milestones/l3-static-retrieval-2026-08-24.md).
 
 Normative architecture decision: [ADR 0130](../adr/0130-l3-static-retrieval-v1-contract.md).
 

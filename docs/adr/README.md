@@ -2,13 +2,13 @@
 
 This directory keeps active architecture decisions for DevAgentOps.
 
-> Current-state note (2026-08-23): L4 `self_built_react` is implemented and has completed historical/fresh formal milestones. L3 `static_retrieval` remains unimplemented, but its V1 design is now frozen by ADR 0130. ADR 0130 also supersedes only ADR 0118's standalone `retrieval_corpus_version` requirement for the fixed `triage-suite-v1` per-Case Physical Artifact corpus. ADR 0129 supersedes only ADR 0128's mandatory **L4 local exact-token preflight** requirement. Historical L4 identities remain unchanged, and the later L4 Batch + Parallel ToolCalls milestone refines only the recommended forward Tool Policy.
+> Current-state note (2026-08-24): L4 `self_built_react` is implemented and has completed historical/fresh formal milestones. L3 `static_retrieval` V1 is implemented and has completed deterministic qualification, a clean live `20×3` formal milestone, and evaluator-side acquisition analysis. ADR 0130 supersedes only ADR 0118's standalone `retrieval_corpus_version` requirement for the fixed `triage-suite-v1` per-Case Physical Artifact corpus. ADR 0129 supersedes only ADR 0128's mandatory **L4 local exact-token preflight** requirement. Historical L4 identities remain unchanged, and the later L4 Batch + Parallel ToolCalls milestone refines only the recommended forward Tool Policy.
 
 ## Reading Order
 
 1. Read the foundational ADRs `0001` through `0013` for stack, runtime, trace, retrieval, dashboard, storage, eval runner, and baseline decisions.
 2. Read the consolidated topic ADRs `0112` through `0127` for the V1 evaluation and AgentOps architecture.
-3. For L3 implementation, read **ADR 0130** together with [L3 Static Retrieval V1 — Implementation Design](../evaluation/l3-static-retrieval-v1-design.md). ADR 0130 refines ADR 0127's abstract L3 rung and partially supersedes ADR 0118 only as stated there.
+3. For L3 behavior and completed qualification, read **ADR 0130** together with [L3 Static Retrieval V1 — Implementation Design](../evaluation/l3-static-retrieval-v1-design.md) and the [L3 Formal Milestone](../evaluation/milestones/l3-static-retrieval-2026-08-24.md). ADR 0130 refines ADR 0127's abstract L3 rung and partially supersedes ADR 0118 only as stated there.
 4. For the historical L4 V1 base contract, read **ADR 0128 together with ADR 0129**. Do not apply ADR 0128's original exact-preflight section without the ADR 0129 amendment.
 5. For the current recommended same-L4 Tool Policy, read the [L4 Batch + Parallel ToolCalls Milestone](../evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md) together with current `README.md` / `CONTEXT.md` and the frozen Batch Runtime-control / Tool Policy components.
 6. Use `archive/micro-decisions/` only when you need the detailed discussion trail behind the consolidated decisions.

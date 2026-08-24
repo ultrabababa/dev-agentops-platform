@@ -4,7 +4,7 @@
 
 Accepted and active.
 
-L3 concrete V1 design is refined by ADR 0130 and its deterministic static-retrieval implementation is complete, with Component/Matrix validation and tiny fake-provider formal-path qualification; a live full-suite L3 model evaluation has not been run. L4 concrete historical V1 design is refined by ADR 0128; L4 context accounting is further refined by ADR 0129. The L4 `self_built_react` implementation, live qualification, historical/fresh formal milestones, shared Evidence Reference Canonicalization, and Batch + Parallel Tool Policy experiment with replication are complete. The later Batch milestone refines the recommended forward Tool Policy without changing L4's rung identity or rewriting the historical single/sequential baseline.
+L3 concrete V1 design is refined by ADR 0130. Its deterministic static-retrieval implementation, Component/Matrix validation, clean live `20×3` formal milestone, and evaluator-side acquisition analysis are complete. L4 concrete historical V1 design is refined by ADR 0128; L4 context accounting is further refined by ADR 0129. The L4 `self_built_react` implementation, live qualification, historical/fresh formal milestones, shared Evidence Reference Canonicalization, and Batch + Parallel Tool Policy experiment with replication are complete. The later Batch milestone refines the recommended forward Tool Policy without changing L4's rung identity or rewriting the historical single/sequential baseline.
 
 ## Context
 
@@ -17,7 +17,7 @@ Comparing only deterministic Pipeline and full ReAct cannot isolate model reason
 | L0 | deterministic pipeline | Product Runtime baseline | implemented; shipped runtime identity remains `pipeline_baseline` |
 | L1 | `full_context_one_shot` | diagnostic/comparison | historical milestone + canonicalized fresh generation complete |
 | L2 | `fixed_model_workflow` | diagnostic/comparison | historical milestone + canonicalized fresh generation complete |
-| L3 | `static_retrieval` | evidence-acquisition diagnostic | V1 implemented + deterministic/tiny fake qualification complete; live full-suite result deferred |
+| L3 | `static_retrieval` | evidence-acquisition diagnostic | **V1 implementation + live 20×3 formal milestone + acquisition analysis complete** |
 | L4 | `self_built_react` | first Agentic Product Runtime | **implemented; historical/fresh milestones + Batch/Parallel replication complete** |
 | L5+ | incremental Agent capabilities | future Runtime evolution / controlled conditions | evidence-gated |
 
@@ -142,7 +142,7 @@ The initial apparent Batch quality drop did not reproduce; taxonomy and Required
 - L4 provides an explicit self-built kernel for controlled evolution;
 - same-L4 Tool Policy changes remain attributable through frozen Treatment identities;
 - references to Pi remain informative without inheriting an external framework contract;
-- L1/L2/Oracle/L4 milestones provide an empirical basis for capability-gap and badcase attribution;
+- L1/L2/L3/Oracle/L4 milestones provide an empirical basis for capability-gap and badcase attribution;
 - L5+ changes should be chosen from evidence rather than from a prewritten Agent feature checklist.
 
 ## Non-Decisions / evidence-gated work
@@ -163,6 +163,7 @@ Batch/parallel Tool Policy is no longer a non-decision; its frozen semantics and
 See:
 
 - [Runtime Capability Ladder](../evaluation/runtime-capability-ladder.md)
+- [L3 Static Retrieval V1 Formal Milestone](../evaluation/milestones/l3-static-retrieval-2026-08-24.md)
 - [L4 Self-built ReAct Runtime Design](../evaluation/l4-self-built-react-runtime-design.md)
 - [L4 MiniMax-M3 Full-Suite Milestone](../evaluation/milestones/l4-minimax-m3-full-suite-2026-08-19.md)
 - [L4 Batch + Parallel ToolCalls Milestone](../evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md)
@@ -178,3 +179,4 @@ ADRs: `0002`, `0112`, `0113`, `0124`, `0125`.
 - [ADR 0128: L4 Self-built ReAct Runtime Contract](0128-l4-self-built-react-runtime-contract.md)
 - [ADR 0129: L4 Provider-Reported Context Accounting](0129-l4-provider-reported-context-accounting.md)
 - [L4 Batch + Parallel ToolCalls Milestone](../evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md) — later same-L4 Tool Policy decision and replication evidence
+- [L3 Static Retrieval V1 Formal Milestone](../evaluation/milestones/l3-static-retrieval-2026-08-24.md) — completed live qualification and acquisition-vs-report diagnostic
