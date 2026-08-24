@@ -48,7 +48,7 @@
           "retriever": {
             "component_type": "retriever_config",
             "version": "l3-static-bm25-multi-query-rrf-v1",
-            "fingerprint": "fe3a1056b1afd9f9ee1765b023fcf22362f090ec05ef1d5ac9da37171a010587"
+            "fingerprint": "152e7d7a8ec0e7243e673068f50bb396940354c9660dd2ed5405525f40a2c44d"
           }
         },
         "context": {

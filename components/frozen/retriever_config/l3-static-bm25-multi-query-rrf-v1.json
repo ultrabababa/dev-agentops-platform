@@ -21,6 +21,7 @@
       },
       "ranker": {
         "b": 0.75,
+        "candidate_filter": "positive_score_only",
         "implementation": "bm25s",
         "implementation_version": "0.3.10",
         "k1": 1.5,

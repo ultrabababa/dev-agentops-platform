@@ -53,6 +53,7 @@ STATIC_RETRIEVER_BEHAVIOR = {
             "k1": 1.5,
             "b": 0.75,
             "per_query_candidates": 20,
+            "candidate_filter": "positive_score_only",
         },
         "fusion": {
             "strategy": "reciprocal_rank_fusion",

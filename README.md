@@ -330,4 +330,4 @@ batch + parallel + independent-call handling
 
 Batch + Parallel 不需要继续扩 batch cap、forced-batching prompt、scheduler heuristic 或 output repair。下一项大的 Product Runtime 能力方向转向 **executable repair / sandboxed remediation**：`investigate -> diagnose -> mutate/edit -> execute/test -> observe -> retry -> verify -> report`。这属于 V1 read-only triage 之后的独立阶段，不应静默改写现有 L4 historical contracts。
 
-L3 static retrieval、context management、planner/verifier、skills/MCP、memory/multi-agent 等仍保持 evidence-gated；当前没有证据要求把这些能力与 repair/sandbox 或 Batch + Parallel 混在同一轮实现里。
+L3 V1 已实现；其 live full-suite qualification / retrieval optimization，以及 context management、planner/verifier、skills/MCP、memory/multi-agent 等仍保持 evidence-gated。当前没有证据要求把这些能力与 repair/sandbox 或 Batch + Parallel 混在同一轮实现里。

@@ -44,6 +44,7 @@ def bm25_query_hits(
             (
                 (float(raw_scores[index]), chunk)
                 for index, chunk in enumerate(chunks)
+                if float(raw_scores[index]) > 0.0
             ),
             key=lambda item: (
                 -item[0],

@@ -200,6 +200,76 @@ def test_bm25_candidate_depth_is_top_20_with_deterministic_ties() -> None:
     assert selected_paths[-1].endswith("file-19.txt")
 
 
+def test_bm25_completely_unmatched_query_returns_no_candidates() -> None:
+    chunks = tuple(
+        chunk_physical_text(
+            content,
+            source_kind="raw_log",
+            source_path=f"physical-artifacts/{name}.log",
+        )[0]
+        for name, content in (("alpha", "alpha\n"), ("beta", "beta\n"))
+    )
+
+    result = bm25_query_hits(chunks, (_query("unmatched-term"),))[0]
+
+    assert result.hits == ()
+
+
+def test_bm25_returns_only_available_positive_matches_below_candidate_depth() -> None:
+    chunks = tuple(
+        chunk_physical_text(
+            "alpha\n" if index < 3 else "beta\n",
+            source_kind="repository_file",
+            source_path=f"physical-artifacts/repository/file-{index:02}.txt",
+            repository_relative_path=f"file-{index:02}.txt",
+        )[0]
+        for index in range(25)
+    )
+
+    result = bm25_query_hits(
+        chunks,
+        (_query("alpha"),),
+        per_query_candidates=20,
+    )[0]
+
+    assert len(result.hits) == 3
+    assert [hit.bm25_rank for hit in result.hits] == [1, 2, 3]
+    assert all(hit.bm25_score > 0.0 for hit in result.hits)
+
+
+def test_unmatched_query_contributes_nothing_to_mixed_query_rrf() -> None:
+    chunks = tuple(
+        chunk_physical_text(
+            content,
+            source_kind="raw_log",
+            source_path=source_path,
+        )[0]
+        for source_path, content in (
+            ("physical-artifacts/a-unrelated.log", "beta\n"),
+            ("physical-artifacts/z-match.log", "alpha\n"),
+        )
+    )
+    query_results = bm25_query_hits(
+        chunks,
+        (
+            _query("alpha", query_id="matched"),
+            _query("unmatched-term", query_id="unmatched"),
+        ),
+    )
+
+    fused = reciprocal_rank_fusion(
+        chunks,
+        query_results,
+        rank_constant=60,
+        final_top_k=10,
+    )
+
+    assert query_results[1].hits == ()
+    assert len(fused) == 1
+    assert fused[0].chunk.source_path == "physical-artifacts/z-match.log"
+    assert [hit.query_id for hit in fused[0].contributing_hits] == ["matched"]
+
+
 def test_equal_weight_rrf_uses_rank_constant_60_and_deterministic_fusion() -> None:
     chunks = tuple(
         chunk_physical_text(
@@ -662,7 +732,7 @@ def test_tiny_fake_provider_formal_dispatch_uses_l3_and_persists_trace(
     assert artifact["manifest"]["treatment"]["contracts"]["retriever"] == {
         "component_type": "retriever_config",
         "version": RETRIEVER_VERSION,
-        "fingerprint": "fe3a1056b1afd9f9ee1765b023fcf22362f090ec05ef1d5ac9da37171a010587",
+        "fingerprint": "152e7d7a8ec0e7243e673068f50bb396940354c9660dd2ed5405525f40a2c44d",
     }
     event_types = [event["event_type"] for event in artifact["trace"]]
     assert event_types.count("static_retrieval_completed") == 1
