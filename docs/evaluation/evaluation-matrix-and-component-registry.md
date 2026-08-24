@@ -1,6 +1,6 @@
 # Evaluation Matrix、Component Registry 与 Formal Evaluation Identity
 
-> Current-state note (2026-08-19): L1/L2/Oracle/L4 historical formal paths均使用 Matrix schema v2。Shared deterministic Evidence Reference Canonicalization 已作为 L1/L2/Oracle/L4 共同 output-realization identity 落地并完成 replay + fresh generation。L4 Batch + Parallel Tool Policy 也已完成 initial formal run 与 fresh replication；它现在是 new L4 evaluations / Runtime evolution 的推荐 Tool Policy。Historical fingerprints、single/sequential matrices 与 milestone artifacts 不改写。
+> Current-state note (2026-08-24): L1/L2/L3/Oracle/L4 formal paths 均使用 Matrix schema v2。Shared deterministic Evidence Reference Canonicalization 已作为五个 model-backed conditions 的共同 output-realization identity 落地；L3 Static Retrieval V1 已完成 clean live `20×3` formal milestone 与 evaluator-side acquisition analysis。L4 Batch + Parallel Tool Policy 也已完成 initial formal run 与 fresh replication；它现在是 new L4 evaluations / Runtime evolution 的推荐 Tool Policy。Historical fingerprints、single/sequential matrices 与 milestone artifacts 不改写。
 
 本文说明当前 Formal Evaluation 的配置身份链：
 
@@ -272,7 +272,7 @@ Historical and Batch Runtime-control prompts remain separate frozen identities. 
 
 ## 4. L4 context identity — ADR 0129
 
-ADR 0129 改变了 L4 的 context-accounting Treatment identity，但没有改 L1/L2/Oracle 的 exact-token path。
+ADR 0129 改变了 L4 的 context-accounting Treatment identity，但没有改 L1/L2/Oracle 的 exact-token path；L3 后续冻结为 L1-style exact-token preflight identity。
 
 Current L4 context contract：
 
@@ -335,7 +335,7 @@ unresolvable
 
 ### 5.1 Identity placement
 
-Shared canonicalization 不是新的 `runtime_variant`，也不是 L4 Tool Registry / Tool Policy。它改变 final output realization behavior，因此进入显式 output/Treatment identity。Current canonicalized L1/L2/Oracle/L4 matrices use output contract `development-v2` with resolver identity `canonical-line-range-normalization-v1`.
+Shared canonicalization 不是新的 `runtime_variant`，也不是 L4 Tool Registry / Tool Policy。它改变 final output realization behavior，因此进入显式 output/Treatment identity。Current canonicalized L1/L2/L3/Oracle/L4 matrices use output contract `development-v2` with resolver identity `canonical-line-range-normalization-v1`.
 
 Historical L1/L2/Oracle/L4 Treatment/Condition fingerprints 绝不能 retroactively 改写。
 
@@ -348,6 +348,7 @@ Historical L1/L2/Oracle/L4 Treatment/Condition fingerprints 绝不能 retroactiv
 - Suite / Case identity and fingerprints；
 - applicable Treatment invariants；
 - L4 Task/Runtime-control/Tool Registry/Tool Policy references；
+- L3 retriever component existence/type/fingerprint and static-retrieval Treatment invariants；
 - supported L4 Runtime-control / Tool Policy pairing；
 - run configuration construction prerequisites。
 

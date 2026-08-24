@@ -1,6 +1,6 @@
 # Formal Evaluation Methodology：Evidence Universe、Schema V2 与 Access Conditions
 
-> Current-state note (2026-08-19): `triage-suite-v1`、20 个 Schema V2 Cases 与 Canonicalization Profile v1 已冻结；historical L1/L2/Oracle/L4 milestones、Oracle↔L4 Pair Analysis、shared deterministic Evidence Reference Canonicalization、fresh four-condition canonicalized generation，以及 L4 Batch + Parallel Tool Policy initial + replication experiment 均已完成。Batch + Parallel 是 new L4 evaluations 的推荐 Tool Policy；historical single/sequential 保留为 immutable reference。
+> Current-state note (2026-08-24): `triage-suite-v1`、20 个 Schema V2 Cases 与 Canonicalization Profile v1 已冻结；L1/L2/L3/Oracle/L4 formal milestones、Oracle↔L4 Pair Analysis、shared deterministic Evidence Reference Canonicalization、fresh canonicalized generation、L3 acquisition analysis，以及 L4 Batch + Parallel Tool Policy initial + replication experiment 均已完成。Batch + Parallel 是 new L4 evaluations 的推荐 Tool Policy；historical single/sequential 保留为 immutable reference。
 
 ## 1. Trust model
 
@@ -108,7 +108,7 @@ Different conditions may expose the same underlying Case world differently becau
 | L0 Pipeline | deterministic program-defined access | no | implemented |
 | L1 Full-context One-shot | complete Agent-visible physical universe upfront | no | historical + canonicalized fresh generation complete |
 | L2 Fixed Model Workflow | fixed program-controlled multi-stage input flow | no | historical + canonicalized fresh generation complete |
-| L3 Static Retrieval | versioned static retrieval over Physical Artifacts | no | implemented + deterministic/fake-provider qualified; live full-suite run not performed |
+| L3 Static Retrieval | versioned static retrieval over Physical Artifacts | no | implementation + live 20×3 formal milestone + acquisition diagnostic complete |
 | L4 self-built ReAct | `read/grep/find/ls` investigation of physical workspace | yes | historical/fresh milestones + Batch/Parallel replication complete |
 | Oracle Evidence | Trusted resolver supplies reviewed Required Evidence source content directly | no | historical + canonicalized fresh generation complete |
 
@@ -195,9 +195,9 @@ The initial Batch run and a fresh back-to-back replication are complete. Model D
 
 ## 9. Context/accounting semantics by condition
 
-### L1/L2/Oracle
+### L1/L2/L3/Oracle
 
-These formal MiniMax paths retain their existing exact-token behavior where defined. In particular, L1 full-context identity forbids silent truncation: if its complete serialized input plus reserved completion is infeasible, it must fail rather than silently become a different condition.
+These formal MiniMax paths retain their exact-token behavior where defined. In particular, L1 full-context identity forbids silent truncation: if its complete serialized input plus reserved completion is infeasible, it must fail rather than silently become a different condition. L3 applies the same reservation rule to its frozen retrieved input and also fails rather than silently truncating or changing selection.
 
 ### L4
 
@@ -259,6 +259,8 @@ These are analysis lenses only, not persisted Pair Analyzer labels or automatic 
 
 Shared Evidence Reference Canonicalization addresses only the deterministic representation subset of B. It does not solve missing acquisition, missing evidence selection, or causal reasoning errors.
 
+L3's completed artifact makes A and B partially measurable without changing the formal scorer. Evaluator-side analysis intersects hidden Required Evidence IDs with the union of answer-neutral Canonical IDs overlapped by retrieved packed spans. The resulting Case-first acquisition recall is `76.56%`, versus `50.67%` final Report Evidence Hit; acquired-Required-Evidence utilization is `66.18%`. This diagnostic runs only after execution and must never become a Runtime retrieval input.
+
 ## 12. Comparison and causal-interpretation boundary
 
 For higher-is-better diagnosis metric `m`:
@@ -315,6 +317,7 @@ Completed measurement sequence:
 5. fresh L1/L2/Oracle/L4 canonicalized `20×3` generation;
 6. L4 Batch + Parallel initial `20×3` formal run;
 7. fresh back-to-back single/sequential vs Batch + Parallel replication.
+8. L3 Static Retrieval V1 clean live `20×3` formal run and zero-model-cost acquisition-vs-report analysis.
 
 The Batch experiment is now complete. Current evidence supports Batch + Parallel as the recommended forward L4 Tool Policy, with small Evidence Hit / Protocol deltas retained as weak residual signals to monitor rather than demonstrated regressions.
 
@@ -324,7 +327,7 @@ The next large Runtime capability direction is executable repair / sandboxed rem
 investigate -> diagnose -> mutate/edit -> execute/test -> observe -> retry -> verify -> report
 ```
 
-This is outside the completed read-only V1 boundary and must be introduced as a distinct new phase. L3 retrieval, compaction, planner/verifier, memory, skills/MCP and multi-agent remain evidence-gated rather than bundled automatically.
+This is outside the completed read-only V1 boundary and must be introduced as a distinct new phase. L3 baseline qualification is complete; retrieval optimization, compaction, planner/verifier, memory, skills/MCP and multi-agent remain evidence-gated rather than bundled automatically. Any L3 tuning requires a separate calibration/dev set and a new frozen Treatment rather than optimization against hidden Formal Suite Ground Truth.
 
 ## 15. Source-of-truth order
 
@@ -335,10 +338,11 @@ For current behavior use:
 3. this methodology for current evidence/trust/comparison semantics;
 4. ADR 0128 for the frozen historical L4 V1 Runtime contract + ADR 0129 for L4 context accounting;
 5. current Matrix / Registry / source-code contracts;
-6. [L4 Batch + Parallel ToolCalls Milestone](milestones/l4-batch-parallel-toolcalls-2026-08-19.md) for the current L4 Tool Policy recommendation and replication evidence;
-7. [Shared Evidence Reference Canonicalization Milestone](milestones/evidence-reference-canonicalization-2026-08-19.md) for the completed output-resolution decision;
-8. [Oracle ↔ L4 Pair Analysis Findings](milestones/oracle-l4-pair-analysis-2026-08-19.md) for historical badcase-driven analysis;
-9. [Milestone Status Index](milestones/README.md) before interpreting any other dated milestone;
-10. dated calibration/review/milestone docs only for historical facts and immutable experiment results.
+6. [L3 Static Retrieval V1 Formal Milestone](milestones/l3-static-retrieval-2026-08-24.md) for the completed L3 baseline and acquisition-vs-report diagnostic;
+7. [L4 Batch + Parallel ToolCalls Milestone](milestones/l4-batch-parallel-toolcalls-2026-08-19.md) for the current L4 Tool Policy recommendation and replication evidence;
+8. [Shared Evidence Reference Canonicalization Milestone](milestones/evidence-reference-canonicalization-2026-08-19.md) for the completed output-resolution decision;
+9. [Oracle ↔ L4 Pair Analysis Findings](milestones/oracle-l4-pair-analysis-2026-08-19.md) for historical badcase-driven analysis;
+10. [Milestone Status Index](milestones/README.md) before interpreting any other dated milestone;
+11. dated calibration/review/milestone docs only for historical facts and immutable experiment results.
 
 Historical milestone forward-looking recommendations may be superseded; their measured results and run identities remain historical evidence.

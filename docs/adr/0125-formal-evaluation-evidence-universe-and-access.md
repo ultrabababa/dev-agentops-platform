@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted. Refined for L4 by ADR 0128 and for L4 context accounting by ADR 0129.
+Accepted. Refined for L4 by ADR 0128, for L4 context accounting by ADR 0129, and for implemented L3 Static Retrieval V1 by ADR 0130.
 
 ## Context
 
@@ -37,11 +37,13 @@ The Case Package defines what exists; each **Evidence Acquisition Condition** de
 - Fixed Pipeline: deterministic program-defined access;
 - L1 Full-context One-shot: complete Agent-visible physical universe delivered upfront in one model request;
 - L2 Fixed Model Workflow: fixed program-controlled input/stage flow;
-- L3 Static Retrieval: optional future versioned static retrieval over Physical Artifacts;
+- L3 Static Retrieval: implemented versioned static retrieval over Physical Artifacts; clean live `20×3` formal milestone and evaluator-side acquisition analysis complete;
 - L4 self-built ReAct: adaptive physical investigation through frozen read-only tools;
 - Oracle Evidence: Trusted resolver directly supplies reviewed Required Evidence source content.
 
 The ladder does not require L3 before L4. Oracle is orthogonal to the ladder.
+
+L3's evaluator-side acquisition analysis runs only after formal execution by intersecting hidden Required Evidence with answer-neutral Canonical IDs recorded in retrieved packed-span Trace. It does not expose Required Evidence, Expected Answer, or evaluator labels to retrieval or the model.
 
 ## L4 coordinate-vocabulary refinement
 
@@ -96,7 +98,7 @@ The first L4 formal milestone made the second analytical distinction concrete: u
 
 ## Non-Decisions
 
-This ADR does not define L3 retrieval parameters, L5+ context management, compaction, planning, verifier, memory or skills. Dynamic L4 context-exhaustion semantics remain deferred until observed.
+This ADR does not define L3 retrieval parameters; ADR 0130 owns the frozen V1 retrieval contract. It also does not define L5+ context management, compaction, planning, verifier, memory or skills. Dynamic L4 context-exhaustion semantics remain deferred until observed.
 
 ## Implementation Guide
 
@@ -112,3 +114,4 @@ ADRs: `0113`, `0115`, `0118`, `0122`, `0123`, `0124`.
 - [ADR 0127: Staged Runtime Capability Ladder](0127-staged-runtime-capability-ladder-and-reference-boundary.md)
 - [ADR 0128: L4 Self-built ReAct Runtime Contract](0128-l4-self-built-react-runtime-contract.md)
 - [ADR 0129: L4 Provider-Reported Context Accounting](0129-l4-provider-reported-context-accounting.md)
+- [ADR 0130: L3 Static Retrieval V1 Contract](0130-l3-static-retrieval-v1-contract.md)

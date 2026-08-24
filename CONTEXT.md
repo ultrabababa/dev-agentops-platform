@@ -1,6 +1,6 @@
 # DevAgentOps — Current Project Context
 
-> Updated 2026-08-19. This file is a current-orientation document, not a historical log. Dated milestone documents, merged PR bodies, Case review packets, and `docs/adr/archive/` preserve historical state and may intentionally contain superseded wording. For milestone status, see `docs/evaluation/milestones/README.md`.
+> Updated 2026-08-24. This file is a current-orientation document, not a historical log. Dated milestone documents, merged PR bodies, Case review packets, and `docs/adr/archive/` preserve historical state and may intentionally contain superseded wording. For milestone status, see `docs/evaluation/milestones/README.md`.
 
 ## Project
 
@@ -47,6 +47,7 @@ Completed:
 - L4 Batch + Parallel ToolCalls implementation with frozen Runtime-control/Tool Policy identities;
 - Batch + Parallel focused regression `29 passed`, formal `eval doctor` PASS, full repository regression `377 passed, 2 skipped, 30 subtests passed`;
 - initial Batch + Parallel `20×3` formal run plus a fresh back-to-back single/sequential vs Batch + Parallel `20×3 + 20×3` replication block.
+- L3 `static_retrieval` V1 implementation, full regression `397 passed, 2 skipped, 30 subtests passed`, clean live MiniMax-M3 `20×3` formal milestone, and evaluator-side acquisition analysis.
 
 Historical L4 formal milestone:
 
@@ -80,11 +81,14 @@ Fresh canonicalized formal generation then produced:
 ```text
 L1      59/60 scored   taxonomy 80.00%   evidence 52.16%   protocol 96.61%
 L2      58/60 scored   taxonomy 83.33%   evidence 54.15%   protocol 98.28%
+L3      60/60 scored   taxonomy 88.33%   evidence 50.67%   protocol 98.33%
 Oracle  60/60 scored   taxonomy 83.33%   evidence 85.40%   protocol 96.67%
 L4      60/60 scored   taxonomy 81.67%   evidence 71.83%   protocol 93.33%
 ```
 
 Fresh-generation deltas are operational confirmation rather than single-variable causal estimates. The fresh Oracle run had `canonicalization_changed_samples = 0` but still moved from its historical metrics, demonstrating material model/provider regeneration variance.
+
+L3 Trace then enabled a zero-model-cost evaluator-side decomposition: Case-first Required Evidence acquisition recall was `76.56%`, final Report Evidence Hit was `50.67%`, and acquired-Required-Evidence utilization was `66.18%`. All 20 Cases had deterministic retrieval input hashes across three repeats. L3 is therefore accepted as a reproducible diagnostic baseline, while its quality result does not demonstrate an Evidence Hit improvement over L1/L2.
 
 Batch + Parallel then tested the observed multi-call friction independently of canonicalization. Two fresh Batch runs reduced Model Decisions by about `31–35%`. In the clean back-to-back replication, single/sequential vs Batch + Parallel was:
 
@@ -140,7 +144,7 @@ L4 self-built ReAct
 L5+ incremental Agent capabilities
 ```
 
-The ladder is an attribution framework, not a required implementation order. L3 remains optional and does not block L4 or later evidence-driven work.
+The ladder is an attribution framework, not a required implementation order. L3 is a completed optional diagnostic baseline and does not block L4 or later evidence-driven work.
 
 ## Case and evidence model
 
@@ -188,7 +192,7 @@ not visible upfront:
 
 The Agent must discover physical facts through tools. The first L4 formal milestone showed a representation defect: the model could locate a physical line range but still serialize a non-canonical aggregate Evidence ID.
 
-Deterministic Evidence Reference Canonicalization is now implemented as shared final-report/output infrastructure for L1/L2/Oracle/L4: exact frozen IDs are preserved; if source identity matches and an authored line range can be parsed, the resolver maps by deterministic physical overlap to the actual frozen Canonical unit IDs; results are stably deduplicated; unresolved references remain invalid. The resolver does not use Required Evidence, Expected Answer, fuzzy matching, semantic repair, or Agent read-history as a repair gate.
+Deterministic Evidence Reference Canonicalization is now implemented as shared final-report/output infrastructure for L1/L2/L3/Oracle/L4: exact frozen IDs are preserved; if source identity matches and an authored line range can be parsed, the resolver maps by deterministic physical overlap to the actual frozen Canonical unit IDs; results are stably deduplicated; unresolved references remain invalid. The resolver does not use Required Evidence, Expected Answer, fuzzy matching, semantic repair, or Agent read-history as a repair gate.
 
 Fresh L4 residual unknown IDs were source-identity typos, not missed line-range repairs. They were intentionally left invalid because correcting them would require guessing the intended source.
 
@@ -350,7 +354,7 @@ ADR 0129 defines the L4 context-accounting boundary:
 - L4 sample result records `assessment=provider_reported`, `method=provider_response_usage`, and `local_preflight=false`;
 - configured context-window metadata remains Treatment identity;
 - no compaction/summarization/history trimming is performed in V1;
-- L1/L2/Oracle retain their existing exact-token paths.
+- L1/L2/Oracle retain their existing exact-token paths; L3 uses its frozen L1-style exact-token preflight.
 
 The historical L4 formal milestone observed a maximum provider-reported request of `98,893` input tokens, far below the configured 1M context metadata; no real context-limit rejection occurred.
 
@@ -416,7 +420,7 @@ The historical `l4-react-runtime-control-v1` + `l4-single-sequential-tool-policy
 
 Do not add a `runtime` Component type; Runtime implementation provenance remains `runtime_variant + code_revision`.
 
-Shared Evidence Reference Canonicalization is implemented at the final report/output-realization boundary, not as a new L4 `runtime_variant`. The canonicalized L1/L2/Oracle/L4 matrices use output contract `development-v2` with resolver identity `canonical-line-range-normalization-v1`, while historical matrices remain unchanged.
+Shared Evidence Reference Canonicalization is implemented at the final report/output-realization boundary, not as a new `runtime_variant`. The canonicalized L1/L2/L3/Oracle/L4 matrices use output contract `development-v2` with resolver identity `canonical-line-range-normalization-v1`, while historical matrices remain unchanged.
 
 ## Matrix v2
 
@@ -468,6 +472,7 @@ Completed and no longer current work:
 - historical L1/L2/Oracle/L4 offline replay;
 - fresh canonicalized L1/L2/Oracle/L4 `20×3` formal generation;
 - L4 Batch + Parallel Tool Policy implementation, initial formal run, and fresh single/sequential vs Batch + Parallel replication.
+- L3 Static Retrieval V1 implementation, live `20×3` qualification, and acquisition-vs-report evidence analysis.
 
 Current recommended L4 state:
 
@@ -498,7 +503,7 @@ This is executable repair / sandboxed remediation after the read-only V1 boundar
 
 Still evidence-gated / deferred:
 
-- L3 static retrieval internals;
+- L3 retrieval optimization or new retrieval quality metrics; any tuning requires a separate calibration/dev set and a new frozen Treatment rather than hidden-Ground-Truth tuning on `triage-suite-v1`;
 - compaction / summarization / history trimming;
 - predictive context budgeting;
 - planner/verifier/reflection unless repair-loop evidence requires it;
@@ -516,10 +521,11 @@ When sources disagree, use:
 2. current `README.md` / `CONTEXT.md` and active evaluation methodology;
 3. ADR 0128 for the frozen base L4 V1 contract **plus ADR 0129 for the context-accounting amendment**;
 4. current Matrix/Registry/source-code contracts;
-5. `docs/evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md` for the current recommended Tool Policy decision and replication evidence;
-6. `docs/evaluation/milestones/evidence-reference-canonicalization-2026-08-19.md` for the completed canonicalization experiment;
-7. `docs/evaluation/milestones/oracle-l4-pair-analysis-2026-08-19.md` for the historical Pair Analysis that motivated canonicalization;
-8. `docs/evaluation/milestones/README.md` to classify dated milestone status;
-9. other dated milestone/history only for historical facts.
+5. `docs/evaluation/milestones/l3-static-retrieval-2026-08-24.md` for the completed L3 formal baseline and acquisition-vs-report diagnostic;
+6. `docs/evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md` for the current recommended Tool Policy decision and replication evidence;
+7. `docs/evaluation/milestones/evidence-reference-canonicalization-2026-08-19.md` for the completed canonicalization experiment;
+8. `docs/evaluation/milestones/oracle-l4-pair-analysis-2026-08-19.md` for the historical Pair Analysis that motivated canonicalization;
+9. `docs/evaluation/milestones/README.md` to classify dated milestone status;
+10. other dated milestone/history only for historical facts.
 
 Archived micro ADRs and old PR/Issue bodies must not override active/current decisions. Historical L4 V1 documents remain authoritative for their frozen baseline behavior, but they do not override the later explicit Batch + Parallel Treatment decision.

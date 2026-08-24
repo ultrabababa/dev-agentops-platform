@@ -4,7 +4,7 @@
 
 Accepted. Current formal path uses Matrix schema v2.
 
-L1/L2/Oracle/L4 Matrix v2 formal milestones are now complete. ADR 0129 further refines L4 context-accounting identity.
+L1/L2/L3/Oracle/L4 Matrix v2 formal milestones are now complete. ADR 0129 further refines L4 context-accounting identity. L3's completed artifact also supports evaluator-side acquisition-vs-report evidence analysis without exposing Ground Truth to Runtime execution.
 
 ## Context
 
@@ -43,8 +43,9 @@ Current implementation state：
 - L2 Matrix v2 formal milestone complete；
 - Oracle Matrix v2 formal milestone complete；
 - L4 Matrix v2 implementation, live qualification and formal milestone complete；
-- L3 remains optional/unimplemented；
-- Oracle-vs-L4 Pair Validator / Realization Gap is the next evaluation-analysis slice, not part of ordinary same-condition comparison。
+- L3 Matrix v2 implementation, clean live `20×3` formal milestone, and acquisition analysis complete；
+- Oracle-vs-L4 Pair Validator / Realization Gap analysis complete；
+- L4 Batch + Parallel initial experiment and replication complete。
 
 ## L4 Treatment refinement
 
@@ -74,7 +75,7 @@ method = provider_response_usage
 policy = observe_provider_usage_no_local_preflight
 ```
 
-The L4 Runtime critical path therefore does not perform mandatory local exact-token preflight. This does not change historical L1/L2/Oracle exact-token behavior.
+The L4 Runtime critical path therefore does not perform mandatory local exact-token preflight. This does not change historical L1/L2/Oracle exact-token behavior; L3 separately freezes L1-style exact preflight over retrieved input.
 
 ## Comparison interpretation
 

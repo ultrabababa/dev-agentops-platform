@@ -1,10 +1,12 @@
 # ADR 0130 — L3 Static Retrieval V1 Contract
 
+> Implementation status (2026-08-24): implemented and live full-Suite qualified. The pre-implementation context below is preserved as decision history. Current measured results and evaluator-side acquisition analysis are recorded in the [L3 Static Retrieval V1 Formal Milestone](../evaluation/milestones/l3-static-retrieval-2026-08-24.md).
+
 Status: Accepted — Human design freeze on 2026-08-23
 
 ## Context
 
-ADR 0127 defines L3 `static_retrieval` as an optional evidence-acquisition diagnostic between L1 full-context one-shot and L4 adaptive investigation. L3 has not yet been implemented.
+ADR 0127 defines L3 `static_retrieval` as an optional evidence-acquisition diagnostic between L1 full-context one-shot and L4 adaptive investigation. At the time of this decision, L3 had not yet been implemented; the implementation and formal milestone recorded above were completed later.
 
 The purpose of L3 V1 is narrow: isolate the effect of **program-controlled static evidence acquisition** while keeping the downstream model path as close as practical to L1. L3 is not a general RAG product, not a vector-search platform, and not a new Product Runtime.
 
