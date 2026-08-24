@@ -27,7 +27,16 @@
         }
       }
     },
-    "retriever_config": {},
+    "retriever_config": {
+      "l3-static-bm25-multi-query-rrf-v1": {
+        "fingerprint": "152e7d7a8ec0e7243e673068f50bb396940354c9660dd2ed5405525f40a2c44d",
+        "frozen_at": "2026-08-24T03:52:14Z",
+        "manifest": "frozen/retriever_config/l3-static-bm25-multi-query-rrf-v1.json",
+        "metadata": {
+          "description": "Frozen L3 static retrieval V1 behavior from ADR 0130"
+        }
+      }
+    },
     "skill_registry": {},
     "tool_policy": {
       "l4-batch-parallel-tool-policy-v1": {

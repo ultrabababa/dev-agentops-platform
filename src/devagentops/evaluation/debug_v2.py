@@ -62,6 +62,11 @@ def run_case_subset_debug_v2(
 ) -> dict[str, Any]:
     effective = condition.effective_condition
     validate_minimax_development_condition(effective, len(selected_cases))
+    if effective["runtime_variant"] == "static_retrieval":
+        raise EvaluationRunError(
+            "Matrix v2 Case Subset Debug does not dispatch static_retrieval; use the formal path with a tiny/fake provider qualification",
+            code="unsupported_v2_debug_runtime_variant",
+        )
     treatment = effective["treatment"]
     execution_policy = effective["execution_policy"]
     selected_case_ids = [suite_case.case_id for suite_case in selected_cases]

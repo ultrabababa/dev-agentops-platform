@@ -108,7 +108,7 @@ Different conditions may expose the same underlying Case world differently becau
 | L0 Pipeline | deterministic program-defined access | no | implemented |
 | L1 Full-context One-shot | complete Agent-visible physical universe upfront | no | historical + canonicalized fresh generation complete |
 | L2 Fixed Model Workflow | fixed program-controlled multi-stage input flow | no | historical + canonicalized fresh generation complete |
-| L3 Static Retrieval | versioned static retrieval over Physical Artifacts | no | not implemented; optional diagnostic |
+| L3 Static Retrieval | versioned static retrieval over Physical Artifacts | no | implemented + deterministic/fake-provider qualified; live full-suite run not performed |
 | L4 self-built ReAct | `read/grep/find/ls` investigation of physical workspace | yes | historical/fresh milestones + Batch/Parallel replication complete |
 | Oracle Evidence | Trusted resolver supplies reviewed Required Evidence source content directly | no | historical + canonicalized fresh generation complete |
 

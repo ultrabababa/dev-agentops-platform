@@ -109,7 +109,7 @@ The ladder is a capability-attribution model, not a mandatory implementation seq
 | L0 | deterministic Product Runtime baseline | implemented |
 | L1 | one-shot diagnostic/comparison condition | historical milestone + canonicalized fresh generation complete |
 | L2 | fixed multi-stage diagnostic/comparison condition | historical milestone + canonicalized fresh generation complete |
-| L3 | static-retrieval diagnostic | optional; not implemented |
+| L3 | static-retrieval diagnostic | implemented + deterministic/tiny fake qualification complete; live full-suite run deferred |
 | L4 | first Agentic Product Runtime | **historical/fresh milestones + Batch/Parallel replication complete; Batch + Parallel recommended forward** |
 | Oracle | orthogonal evidence-conditioned diagnostic | historical milestone + canonicalized fresh generation complete |
 

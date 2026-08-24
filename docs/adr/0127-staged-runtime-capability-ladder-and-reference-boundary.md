@@ -4,7 +4,7 @@
 
 Accepted and active.
 
-L4 concrete historical V1 design is refined by ADR 0128; L4 context accounting is further refined by ADR 0129. The L4 `self_built_react` implementation, live qualification, historical/fresh formal milestones, shared Evidence Reference Canonicalization, and Batch + Parallel Tool Policy experiment with replication are complete. The later Batch milestone refines the recommended forward Tool Policy without changing L4's rung identity or rewriting the historical single/sequential baseline.
+L3 concrete V1 design is refined by ADR 0130 and its deterministic static-retrieval implementation is complete, with Component/Matrix validation and tiny fake-provider formal-path qualification; a live full-suite L3 model evaluation has not been run. L4 concrete historical V1 design is refined by ADR 0128; L4 context accounting is further refined by ADR 0129. The L4 `self_built_react` implementation, live qualification, historical/fresh formal milestones, shared Evidence Reference Canonicalization, and Batch + Parallel Tool Policy experiment with replication are complete. The later Batch milestone refines the recommended forward Tool Policy without changing L4's rung identity or rewriting the historical single/sequential baseline.
 
 ## Context
 
@@ -17,7 +17,7 @@ Comparing only deterministic Pipeline and full ReAct cannot isolate model reason
 | L0 | deterministic pipeline | Product Runtime baseline | implemented; shipped runtime identity remains `pipeline_baseline` |
 | L1 | `full_context_one_shot` | diagnostic/comparison | historical milestone + canonicalized fresh generation complete |
 | L2 | `fixed_model_workflow` | diagnostic/comparison | historical milestone + canonicalized fresh generation complete |
-| L3 | `static_retrieval` | evidence-acquisition diagnostic | not implemented; optional and not required before L4/L5+ |
+| L3 | `static_retrieval` | evidence-acquisition diagnostic | V1 implemented + deterministic/tiny fake qualification complete; live full-suite result deferred |
 | L4 | `self_built_react` | first Agentic Product Runtime | **implemented; historical/fresh milestones + Batch/Parallel replication complete** |
 | L5+ | incremental Agent capabilities | future Runtime evolution / controlled conditions | evidence-gated |
 
@@ -34,6 +34,8 @@ The shared Task Contract defines diagnosis taxonomy, grounding/citation requirem
 Evidence delivery, tool surface, loop behavior, budgets and stopping belong to Runtime/Treatment identity.
 
 For L4 ADR 0128 froze a separate Runtime-control `prompt` component for stable model-visible tool/loop/stopping instructions. The later Batch Treatment freezes its own matching Runtime-control prompt because the historical prompt explicitly constrained ToolCalls to zero-or-one.
+
+Runtime-specific control instructions must not be hidden inside Case `runtime_input`; they remain explicit Runtime/Treatment identity.
 
 ## L1 full-context integrity
 
@@ -147,7 +149,7 @@ The initial apparent Batch quality drop did not reproduce; taxonomy and Required
 
 Still not frozen here:
 
-- L3 retrieval internals;
+- L3 retrieval optimization or post-V1 quality metrics;
 - dynamic context-exhaustion handling;
 - future compaction / predictive budgeting;
 - planner/verifier/memory designs unless later repair-loop evidence requires them;

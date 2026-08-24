@@ -71,6 +71,10 @@ class RuntimeCaseWorkspace:
     def read_raw_log(self) -> str:
         return self._read_controlled_file(self.case.raw_log_path)
 
+    def read_raw_log_exact(self) -> str:
+        """Read the frozen log without universal-newline translation."""
+        return self._read_controlled_file_exact(self.case.raw_log_path)
+
     def list_repository_files(self) -> tuple[str, ...]:
         return self.repository_members
 
@@ -80,6 +84,16 @@ class RuntimeCaseWorkspace:
                 f"repository file is outside the frozen workspace: {relative_path}"
             )
         return self._read_controlled_file(
+            f"{self.case.repository_root}/{relative_path}"
+        )
+
+    def read_repository_file_exact(self, relative_path: str) -> str:
+        """Read one frozen repository member without newline translation."""
+        if relative_path not in self.repository_members:
+            raise RuntimeWorkspaceError(
+                f"repository file is outside the frozen workspace: {relative_path}"
+            )
+        return self._read_controlled_file_exact(
             f"{self.case.repository_root}/{relative_path}"
         )
 
@@ -100,6 +114,19 @@ class RuntimeCaseWorkspace:
             )
         try:
             return path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as exc:
+            raise RuntimeWorkspaceError(
+                f"workspace file cannot be read as UTF-8: {relative_path}"
+            ) from exc
+
+    def _read_controlled_file_exact(self, relative_path: str) -> str:
+        path = (self.package_root / relative_path).resolve()
+        if not path.is_relative_to(self.package_root.resolve()) or not path.is_file():
+            raise RuntimeWorkspaceError(
+                f"workspace file is unavailable: {relative_path}"
+            )
+        try:
+            return path.read_bytes().decode("utf-8")
         except (OSError, UnicodeDecodeError) as exc:
             raise RuntimeWorkspaceError(
                 f"workspace file cannot be read as UTF-8: {relative_path}"

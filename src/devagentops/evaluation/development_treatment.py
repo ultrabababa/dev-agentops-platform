@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from devagentops.conditions.l1.development_output_contract import (
+    CANONICALIZING_OUTPUT_CONTRACT_VERSION,
     output_contract_identity,
 )
 from devagentops.conditions.l1.full_context_v1 import (
@@ -11,6 +12,9 @@ from devagentops.conditions.l1.full_context_v1 import (
 from devagentops.conditions.oracle.evidence_v1 import (
     ORACLE_RUNTIME_INPUT_SERIALIZATION_VERSION,
     oracle_evidence_delivery_contract,
+)
+from devagentops.conditions.l3.static_retrieval_v1 import (
+    RUNTIME_INPUT_SERIALIZATION_VERSION as L3_RUNTIME_INPUT_SERIALIZATION_VERSION,
 )
 from devagentops.providers.minimax_v1 import (
     MINIMAX_M3_CHAT_TEMPLATE_SHA256,
@@ -46,6 +50,10 @@ L4_BATCH_TOOL_POLICY_VERSION = "l4-batch-parallel-tool-policy-v1"
 L4_BATCH_TOOL_POLICY_FINGERPRINT = (
     "7a12a19e99b6b36d7cde1964a1bc42c5e101175477ed9e06564fcba97adacfe2"
 )
+L3_RETRIEVER_VERSION = "l3-static-bm25-multi-query-rrf-v1"
+L3_RETRIEVER_FINGERPRINT = (
+    "152e7d7a8ec0e7243e673068f50bb396940354c9660dd2ed5405525f40a2c44d"
+)
 
 
 def validate_minimax_development_condition(
@@ -61,6 +69,7 @@ def validate_minimax_development_condition(
         not in {
             "full_context_one_shot",
             "fixed_model_workflow",
+            "static_retrieval",
             "model_one_shot",
             "self_built_react",
         }
@@ -164,6 +173,23 @@ def validate_minimax_development_condition(
         }
         contract_label = "Oracle"
         contracts_valid = contracts == expected_contracts
+    elif runtime_variant == "static_retrieval":
+        expected_contracts = {
+            **common_contracts,
+            "runtime_input": {
+                "version": L3_RUNTIME_INPUT_SERIALIZATION_VERSION,
+            },
+            "retriever": {
+                "component_type": "retriever_config",
+                "version": L3_RETRIEVER_VERSION,
+                "fingerprint": L3_RETRIEVER_FINGERPRINT,
+            },
+        }
+        contract_label = "L3"
+        contracts_valid = (
+            contracts == expected_contracts
+            and output_version == CANONICALIZING_OUTPUT_CONTRACT_VERSION
+        )
     else:
         l4_common = {
             **common_contracts,
