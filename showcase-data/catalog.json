@@ -1,0 +1,43 @@
+{
+  "schema_version": "1",
+  "suite": {
+    "manifest": "../evaluation/suites/triage-v1/suite.json",
+    "case_count": 20,
+    "repeats_per_case": 3,
+    "samples_per_formal_run": 60,
+    "failure_type_count": 5
+  },
+  "artifacts": {
+    "canonicalization": "../docs/evaluation/milestones/evidence-reference-canonicalization-results-2026-08-19.json",
+    "runtime_optimization": "../docs/evaluation/milestones/l4-batch-parallel-toolcalls-results-2026-08-19.json",
+    "retrieval_attribution": "../docs/evaluation/milestones/l3-static-retrieval-results-2026-08-24.json"
+  },
+  "databases": [
+    {"id": "historical-l1", "path": "databases/historical-l1.sqlite3"},
+    {"id": "historical-l2", "path": "databases/historical-l2.sqlite3"},
+    {"id": "historical-oracle", "path": "databases/historical-oracle.sqlite3"},
+    {"id": "historical-l4-sequential", "path": "databases/historical-l4-sequential.sqlite3"},
+    {"id": "canonicalized-main", "path": "databases/canonicalized-main.sqlite3"},
+    {"id": "l3-static-retrieval", "path": "databases/l3-static-retrieval.sqlite3"},
+    {"id": "l4-batch-parallel-initial", "path": "databases/l4-batch-parallel-initial.sqlite3"},
+    {"id": "l4-replication-sequential", "path": "databases/l4-replication-sequential.sqlite3"},
+    {"id": "l4-replication-batch-parallel", "path": "databases/l4-replication-batch-parallel.sqlite3"}
+  ],
+  "runs": [
+    {"run_id": "de1809aa-3506-4e04-843b-099f4be00df4", "database": "historical-l1", "stage": "baseline", "role": "historical_baseline", "condition_family": "L1", "runtime_variant": "full_context_one_shot", "representative": false, "comparison_group": "pre_canonicalization"},
+    {"run_id": "82372eec-204f-4223-b87e-0f26a9ae3fb5", "database": "historical-l2", "stage": "baseline", "role": "historical_baseline", "condition_family": "L2", "runtime_variant": "fixed_model_workflow", "representative": false, "comparison_group": "pre_canonicalization"},
+    {"run_id": "388dc6a6-6483-4e11-9b4a-5c935929bd5a", "database": "historical-oracle", "stage": "baseline", "role": "historical_baseline", "condition_family": "Oracle", "runtime_variant": "model_one_shot", "representative": false, "comparison_group": "pre_canonicalization"},
+    {"run_id": "dd8ca829-5051-43b6-a0c2-b3c2889acae0", "database": "historical-l4-sequential", "stage": "baseline", "role": "historical_baseline", "condition_family": "L4", "runtime_variant": "self_built_react", "representative": false, "comparison_group": "pre_canonicalization"},
+    {"run_id": "5dd0f286-ae66-4374-a935-bc6d53e15742", "database": "canonicalized-main", "stage": "canonicalization", "role": "fresh_canonicalized", "condition_family": "L1", "runtime_variant": "full_context_one_shot", "representative": true, "comparison_group": "fresh_canonicalized"},
+    {"run_id": "345b08a2-1a9a-4b7e-be19-4c17721786a9", "database": "canonicalized-main", "stage": "canonicalization", "role": "fresh_canonicalized", "condition_family": "L2", "runtime_variant": "fixed_model_workflow", "representative": true, "comparison_group": "fresh_canonicalized"},
+    {"run_id": "023d5960-c450-42e1-a516-a874106673f4", "database": "canonicalized-main", "stage": "canonicalization", "role": "fresh_canonicalized", "condition_family": "Oracle", "runtime_variant": "model_one_shot", "representative": true, "comparison_group": "fresh_canonicalized"},
+    {"run_id": "d6fee1ba-ddd2-4ed3-ae2f-625603de5fef", "database": "canonicalized-main", "stage": "canonicalization", "role": "fresh_canonicalized", "condition_family": "L4", "runtime_variant": "self_built_react", "representative": true, "comparison_group": "fresh_canonicalized"},
+    {"run_id": "010e9a75-8ca8-44b5-8445-d82d188d11f3", "database": "l4-batch-parallel-initial", "stage": "runtime_optimization", "role": "initial_treatment", "condition_family": "L4", "runtime_variant": "self_built_react", "representative": false, "comparison_group": "l4_initial_batch_parallel"},
+    {"run_id": "b6ad2a0f-1b40-49e2-8ce6-28b14f8b2df8", "database": "l4-replication-sequential", "stage": "runtime_optimization", "role": "replication_reference", "condition_family": "L4", "runtime_variant": "self_built_react", "representative": false, "comparison_group": "l4_replication"},
+    {"run_id": "d76ac5ca-22a3-4c67-acf3-c33bba68f0d5", "database": "l4-replication-batch-parallel", "stage": "runtime_optimization", "role": "replication_treatment", "condition_family": "L4", "runtime_variant": "self_built_react", "representative": false, "comparison_group": "l4_replication"},
+    {"run_id": "a9d5bce2-d635-4573-baf1-d26c391fedf8", "database": "l3-static-retrieval", "stage": "retrieval_attribution", "role": "representative_condition", "condition_family": "L3", "runtime_variant": "static_retrieval", "representative": true, "comparison_group": "retrieval_attribution"}
+  ],
+  "comparisons": [
+    {"id": "l4-replication", "run_a": "b6ad2a0f-1b40-49e2-8ce6-28b14f8b2df8", "run_b": "d76ac5ca-22a3-4c67-acf3-c33bba68f0d5", "category": "controlled_fresh_generation_comparison", "artifact": "runtime_optimization"}
+  ]
+}
