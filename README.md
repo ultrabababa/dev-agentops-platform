@@ -253,6 +253,23 @@ Oracle 不是“更高一级 Runtime”，也不应该被解释成 L4 必须整�
 
 完整历史结果见 [L4 MiniMax-M3 Full-Suite Milestone](docs/evaluation/milestones/l4-minimax-m3-full-suite-2026-08-19.md)。Pair Analysis 见 [Oracle ↔ L4 Pair Analysis Findings](docs/evaluation/milestones/oracle-l4-pair-analysis-2026-08-19.md)。
 
+## Public Evaluation Explorer data layer
+
+Phase 1 的 public Explorer foundation 已加入只读 FastAPI 数据层。它通过
+`showcase-data/catalog.json` 统一索引 12 个正式 Run，并直接查询 9 个经确定性
+净化的 frozen SQLite snapshot；实验专属诊断继续读取现有 machine-readable
+milestone JSON，不复制成 Dashboard 指标表。
+
+公开 API 位于 `/api`，覆盖 Overview、Conditions、Experiment Evolution、Run、
+Case/Sample、Trajectory、Trace 与 Comparison。Trajectory 和 Trace 使用显式公开
+字段边界，不返回 provider thinking/reasoning、opaque continuation state 或 raw
+manifest/message JSON。所有 Explorer 路由均为 GET-only；现有 health/version/storage
+接口保持不变。
+
+数据生成、验证和 authority 说明见 [showcase-data/README](showcase-data/README.md)
+与 [ADR 0131](docs/adr/0131-public-evaluation-explorer-data-boundary.md)。最终 React/Vite
+展示界面属于 Phase 2，未在本阶段实现。
+
 ## Repository layout
 
 ```text

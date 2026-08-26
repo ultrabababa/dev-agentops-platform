@@ -8,11 +8,12 @@ This directory keeps active architecture decisions for DevAgentOps.
 
 1. Read the foundational ADRs `0001` through `0013` for stack, runtime, trace, retrieval, dashboard, storage, eval runner, and baseline decisions.
 2. Read the consolidated topic ADRs `0112` through `0127` for the V1 evaluation and AgentOps architecture.
-3. For L3 behavior and completed qualification, read **ADR 0130** together with [L3 Static Retrieval V1 — Implementation Design](../evaluation/l3-static-retrieval-v1-design.md) and the [L3 Formal Milestone](../evaluation/milestones/l3-static-retrieval-2026-08-24.md). ADR 0130 refines ADR 0127's abstract L3 rung and partially supersedes ADR 0118 only as stated there.
-4. For the historical L4 V1 base contract, read **ADR 0128 together with ADR 0129**. Do not apply ADR 0128's original exact-preflight section without the ADR 0129 amendment.
-5. For the current recommended same-L4 Tool Policy, read the [L4 Batch + Parallel ToolCalls Milestone](../evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md) together with current `README.md` / `CONTEXT.md` and the frozen Batch Runtime-control / Tool Policy components.
-6. Use `archive/micro-decisions/` only when you need the detailed discussion trail behind the consolidated decisions.
-7. Use dated milestone reports for immutable experiment evidence; only an explicitly referenced later milestone decision may refine a forward recommendation without retroactively changing older measurements.
+3. For the public read-only Explorer data boundary, read **ADR 0131** before publishing or changing frozen evaluation databases or public DTOs.
+4. For L3 behavior and completed qualification, read **ADR 0130** together with [L3 Static Retrieval V1 — Implementation Design](../evaluation/l3-static-retrieval-v1-design.md) and the [L3 Formal Milestone](../evaluation/milestones/l3-static-retrieval-2026-08-24.md). ADR 0130 refines ADR 0127's abstract L3 rung and partially supersedes ADR 0118 only as stated there.
+5. For the historical L4 V1 base contract, read **ADR 0128 together with ADR 0129**. Do not apply ADR 0128's original exact-preflight section without the ADR 0129 amendment.
+6. For the current recommended same-L4 Tool Policy, read the [L4 Batch + Parallel ToolCalls Milestone](../evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md) together with current `README.md` / `CONTEXT.md` and the frozen Batch Runtime-control / Tool Policy components.
+7. Use `archive/micro-decisions/` only when you need the detailed discussion trail behind the consolidated decisions.
+8. Use dated milestone reports for immutable experiment evidence; only an explicitly referenced later milestone decision may refine a forward recommendation without retroactively changing older measurements.
 
 ## Active Foundational ADRs
 
@@ -51,6 +52,7 @@ This directory keeps active architecture decisions for DevAgentOps.
 - [0128 L4 Self-built ReAct Runtime Contract](0128-l4-self-built-react-runtime-contract.md)
 - [0129 L4 Provider-Reported Context Accounting](0129-l4-provider-reported-context-accounting.md)
 - [0130 L3 Static Retrieval V1 Contract](0130-l3-static-retrieval-v1-contract.md)
+- [0131 Public Evaluation Explorer Data Boundary](0131-public-evaluation-explorer-data-boundary.md)
 
 ## Current empirical / refinement references
 
