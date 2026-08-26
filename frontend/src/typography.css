@@ -1,0 +1,99 @@
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+}
+
+body,
+button,
+.button {
+  font-family: var(--font-sans);
+}
+
+/* Keep the technical-report character, but avoid browser-dependent serif
+   fallback for Chinese headings. */
+.hero h1 {
+  max-width: 860px;
+  font-family: var(--font-sans);
+  font-size: clamp(2.55rem, 4.35vw, 4.2rem);
+  font-weight: 720;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+.hero h1 em {
+  font-weight: 650;
+}
+
+.hero-english {
+  font-family: var(--font-sans);
+  font-size: clamp(0.9rem, 1.05vw, 1rem);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+
+.hero-copy {
+  font-size: 0.98rem;
+  line-height: 1.72;
+}
+
+.section-heading h2 {
+  max-width: 760px;
+  font-family: var(--font-sans);
+  font-size: clamp(1.8rem, 2.75vw, 2.65rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.18;
+}
+
+.stage-copy h3 {
+  max-width: 440px;
+  font-family: var(--font-sans);
+  font-size: clamp(1.35rem, 1.75vw, 1.8rem);
+  font-weight: 680;
+  letter-spacing: -0.025em;
+  line-height: 1.28;
+}
+
+.stage-copy > p,
+.stage-annotation span,
+.stage-conclusion,
+.section-intro,
+.condition-summary p,
+.principles-list dd,
+.finding-list p {
+  font-family: var(--font-sans);
+}
+
+.condition-summary h3,
+.finding-list h3,
+.principles-list dt {
+  font-family: var(--font-sans);
+  font-weight: 650;
+  letter-spacing: -0.015em;
+}
+
+/* Technical identity remains mono; Chinese explanatory copy does not. */
+.eyebrow,
+.section-kicker p,
+.technical-label,
+.metric-pair > span,
+.benchmark-facts dt,
+.hero-loop,
+.flow-node span,
+.stage-index span {
+  font-family: var(--mono);
+}
+
+@media (max-width: 760px) {
+  .hero h1 {
+    font-size: clamp(2.1rem, 10.5vw, 3.15rem);
+    letter-spacing: -0.035em;
+  }
+
+  .section-heading h2 {
+    font-size: clamp(1.65rem, 7vw, 2.15rem);
+  }
+
+  .stage-copy h3 {
+    font-size: clamp(1.3rem, 5.8vw, 1.65rem);
+  }
+}
