@@ -3,9 +3,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 
-from devagentops.api import create_app
+from devagentops.api import configured_showcase_catalog_path, create_app
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -111,10 +112,42 @@ def test_l4_replication_comparison_is_controlled_but_not_claimed_causal(tmp_path
 
     assert comparison["semantic_category"] == "controlled_fresh_generation_comparison"
     assert comparison["causal_claim_supported"] is False
+    assert comparison["causal_reference"] is None
     assert comparison["compatibility"]["same_suite_fingerprint"] is True
     assert comparison["compatibility"]["same_code_revision"] is True
     assert comparison["compatibility"]["same_output_contract"] is True
     assert comparison["compatibility"]["same_treatment"] is False
+    assert comparison["formal_metrics"]["execution_coverage"] == {
+        "label": "Execution Coverage",
+        "a": 1.0,
+        "b": 1.0,
+        "delta_pp": 0.0,
+    }
+    expected_deltas = {
+        "failure_type_exact_match": 3.33333333333333,
+        "report_evidence_hit_rate": -1.13624338624339,
+        "required_fields_completeness": 4.79166666666667,
+        "protocol_validity_rate": -1.66666666666667,
+    }
+    for metric, expected in expected_deltas.items():
+        assert comparison["formal_metrics"][metric]["delta_pp"] == pytest.approx(
+            expected
+        )
+    runtime = comparison["runtime_optimization"]
+    assert runtime["interpretation"] == (
+        "efficiency_reproduced_no_reproducible_material_quality_regression_demonstrated"
+    )
+    assert runtime["metrics"] == {
+        "model_decisions": {"a": 877, "b": 571},
+        "executed_tool_calls": {"a": 809, "b": 775},
+        "input_tokens": {"a": 23448236, "b": 15696354},
+        "output_tokens": {"a": 301898, "b": 286089},
+        "total_tokens": {"a": 23750134, "b": 15982443},
+        "run_wall_time_seconds": {"a": 978.270385, "b": 806.685981},
+        "mean_sample_latency_seconds": {"a": 77.91716755, "b": 57.193100783333335},
+        "p50_sample_latency_seconds": {"a": 63.134314, "b": 45.8250175},
+        "p95_sample_latency_seconds": {"a": 184.51134615, "b": 132.7258861},
+    }
 
 
 def test_historical_fresh_comparison_is_not_labeled_causal(tmp_path: Path) -> None:
@@ -125,6 +158,24 @@ def test_historical_fresh_comparison_is_not_labeled_causal(tmp_path: Path) -> No
 
     assert comparison["semantic_category"] == "historical_comparison"
     assert comparison["causal_claim_supported"] is False
+    assert comparison["causal_reference"] is None
+    assert comparison["runtime_optimization"] is None
+
+
+def test_explicit_showcase_catalog_path_must_exist(monkeypatch, tmp_path: Path) -> None:
+    missing = tmp_path / "missing-catalog.json"
+    monkeypatch.setenv("DEVAGENTOPS_SHOWCASE_CATALOG_PATH", str(missing))
+
+    with pytest.raises(RuntimeError, match="DEVAGENTOPS_SHOWCASE_CATALOG_PATH"):
+        configured_showcase_catalog_path()
+
+
+def test_explicit_showcase_catalog_path_is_used(monkeypatch, tmp_path: Path) -> None:
+    catalog = tmp_path / "catalog.json"
+    catalog.write_text("{}", encoding="utf-8")
+    monkeypatch.setenv("DEVAGENTOPS_SHOWCASE_CATALOG_PATH", str(catalog))
+
+    assert configured_showcase_catalog_path() == catalog
 
 
 def test_explorer_routes_are_get_only(tmp_path: Path) -> None:

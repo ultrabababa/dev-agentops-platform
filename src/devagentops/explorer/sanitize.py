@@ -315,6 +315,27 @@ def _sanitize_json_tables(connection: sqlite3.Connection) -> tuple[int, int]:
 
 
 def _sanitize_public_text_records(connection: sqlite3.Connection) -> None:
+    if _table_exists(connection, "evaluation_run_manifests"):
+        rows = connection.execute(
+            "SELECT rowid,manifest_json FROM evaluation_run_manifests ORDER BY rowid"
+        ).fetchall()
+        for row in rows:
+            manifest = _load_json(
+                row["manifest_json"],
+                table="evaluation_run_manifests",
+                identity=str(row["rowid"]),
+            )
+            safe_manifest = _sanitize_public_value(manifest)
+            connection.execute(
+                "UPDATE evaluation_run_manifests "
+                "SET manifest_json=?,manifest_sha256=? WHERE rowid=?",
+                (
+                    _canonical_json(safe_manifest),
+                    _canonical_sha256(safe_manifest),
+                    row["rowid"],
+                ),
+            )
+
     report_tables = (
         "evaluation_reports",
         "evaluation_sample_reports",
@@ -381,7 +402,7 @@ def _walk_public_json(value: Any) -> Iterable[tuple[str | None, Any]]:
 
 
 def validate_public_database(database: Path | str) -> ValidationReport:
-    """Validate all public Trajectory and Trace JSON without exposing values."""
+    """Validate public JSON and text fields without exposing their values."""
     path = Path(database)
     forbidden: list[tuple[str, str, str]] = []
     credentials: list[tuple[str, str, str]] = []
@@ -442,10 +463,26 @@ def validate_public_database(database: Path | str) -> ValidationReport:
                         except json.JSONDecodeError:
                             parsed = None
                         if parsed is not None:
-                            values_to_scan = [
-                                child
-                                for _, child in _walk_public_json(parsed)
-                                if isinstance(child, str)
+                            walked = list(_walk_public_json(parsed))
+                            if (table, column) not in {
+                                (
+                                    "evaluation_sample_trajectory_messages",
+                                    "message_json",
+                                ),
+                                ("evaluation_trace_events", "payload_json"),
+                            }:
+                                for key, _ in walked:
+                                    normalized = (
+                                        _normalized_key(key) if key is not None else None
+                                    )
+                                    if normalized in FORBIDDEN_PUBLIC_KEYS:
+                                        forbidden.append((table, str(row[0]), str(key)))
+                                    if normalized in _CREDENTIAL_KEYS:
+                                        credentials.append((table, str(row[0]), str(key)))
+                            values_to_scan = (
+                                [parsed] if isinstance(parsed, str) else []
+                            ) + [
+                                child for _, child in walked if isinstance(child, str)
                             ]
                     if any(_looks_like_credential(item) for item in values_to_scan):
                         credentials.append((table, str(row[0]), column))

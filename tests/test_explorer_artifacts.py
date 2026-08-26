@@ -34,10 +34,44 @@ def test_featured_findings_are_read_from_milestone_artifacts(tmp_path: Path) -> 
                     "milestone_id": "runtime-sentinel",
                     "replication": {
                         "single_sequential": {
-                            "run_id": "a", "runtime_mechanism": {"successful_model_decisions": 9, "tool_calls_started": 8}, "latency": {"run_wall_seconds": 7}
+                            "run_id": "a",
+                            "runtime_mechanism": {
+                                "successful_model_decisions": 9,
+                                "tool_calls_started": 8,
+                            },
+                            "provider_usage": {
+                                "input_tokens": 70,
+                                "output_tokens": 11,
+                                "total_tokens": 81,
+                            },
+                            "latency": {
+                                "run_wall_seconds": 7,
+                                "sample_duration_seconds": {
+                                    "mean": 6,
+                                    "p50": 5,
+                                    "p95": 8,
+                                },
+                            },
                         },
                         "batch_parallel": {
-                            "run_id": "b", "runtime_mechanism": {"successful_model_decisions": 6, "tool_calls_started": 5}, "latency": {"run_wall_seconds": 4}
+                            "run_id": "b",
+                            "runtime_mechanism": {
+                                "successful_model_decisions": 6,
+                                "tool_calls_started": 5,
+                            },
+                            "provider_usage": {
+                                "input_tokens": 40,
+                                "output_tokens": 10,
+                                "total_tokens": 50,
+                            },
+                            "latency": {
+                                "run_wall_seconds": 4,
+                                "sample_duration_seconds": {
+                                    "mean": 3,
+                                    "p50": 2,
+                                    "p95": 5,
+                                },
+                            },
                         },
                     },
                 },
@@ -63,3 +97,8 @@ def test_featured_findings_are_read_from_milestone_artifacts(tmp_path: Path) -> 
     assert findings["canonicalization"]["l4"]["protocol_validity_before"] == 0.11
     assert findings["runtime_optimization"]["model_decisions"] == [9, 6]
     assert findings["retrieval_attribution"]["retrieval_acquisition_recall"] == 0.44
+
+    comparison = artifacts.runtime_optimization_comparison("b", "a")
+    assert comparison is not None
+    assert comparison["metrics"]["model_decisions"] == {"a": 6, "b": 9}
+    assert comparison["metrics"]["p95_sample_latency_seconds"] == {"a": 5, "b": 8}

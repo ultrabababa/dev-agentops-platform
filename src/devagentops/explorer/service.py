@@ -26,6 +26,14 @@ _SAFE_TRACE_KEYS = {
     "quality_metrics",
 }
 
+_FORMAL_METRICS = {
+    "execution_coverage": "Execution Coverage",
+    "failure_type_exact_match": "Failure Type Exact Match",
+    "report_evidence_hit_rate": "Report Evidence Hit Rate",
+    "required_fields_completeness": "Required Fields Completeness",
+    "protocol_validity_rate": "Protocol Validity",
+}
+
 
 class ExplorerService:
     def __init__(self, catalog_path: Path):
@@ -281,11 +289,26 @@ class ExplorerService:
             category = "operational_comparison"
         else:
             category = "not_comparable"
+        left_metrics = left["suite_aggregate"]["formal_metric_vector"]
+        right_metrics = right["suite_aggregate"]["formal_metric_vector"]
+        formal_metrics = {
+            key: {
+                "label": label,
+                "a": left_metrics[key],
+                "b": right_metrics[key],
+                "delta_pp": (right_metrics[key] - left_metrics[key]) * 100,
+            }
+            for key, label in _FORMAL_METRICS.items()
+        }
         return {
             "run_a": left,
             "run_b": right,
             "compatibility": signals,
             "semantic_category": category,
             "causal_claim_supported": False,
-            "causal_reference": "canonicalization_fixed_output_replay" if category != "not_comparable" else None,
+            "causal_reference": None,
+            "formal_metrics": formal_metrics,
+            "runtime_optimization": self.artifacts.runtime_optimization_comparison(
+                run_a, run_b
+            ),
         }

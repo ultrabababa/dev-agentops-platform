@@ -216,6 +216,60 @@ def test_validator_scans_credential_like_content_across_all_text_columns(tmp_pat
     assert not destination.exists()
 
 
+def test_validator_rejects_forbidden_key_in_another_json_column(tmp_path):
+    database = tmp_path / "diagnostics.sqlite3"
+    with sqlite3.connect(database) as connection:
+        connection.execute(
+            "CREATE TABLE evaluation_diagnostics (diagnostics_json TEXT NOT NULL)"
+        )
+        connection.execute(
+            "INSERT INTO evaluation_diagnostics VALUES (?)",
+            (
+                _canonical(
+                    {"public": {"nested": {"provider_fields": {"opaque": True}}}}
+                ),
+            ),
+        )
+
+    with pytest.raises(SanitizationError, match="forbidden_keys=1") as caught:
+        validate_public_database(database)
+
+    assert "evaluation_diagnostics row 1 key provider_fields" in str(caught.value)
+
+
+def test_sanitizer_filters_run_manifest_private_keys_and_recomputes_hash(tmp_path):
+    source = tmp_path / "manifest.sqlite3"
+    destination = tmp_path / "public.sqlite3"
+    _source_database(source, schema_version="5")
+    with sqlite3.connect(source) as connection:
+        connection.execute(
+            "CREATE TABLE evaluation_run_manifests ("
+            "manifest_json TEXT NOT NULL,manifest_sha256 TEXT NOT NULL)"
+        )
+        connection.execute(
+            "INSERT INTO evaluation_run_manifests VALUES (?,?)",
+            (
+                _canonical(
+                    {
+                        "condition": {"reasoning": {"thinking": {"type": "enabled"}}},
+                        "public": "retained",
+                    }
+                ),
+                "0" * 64,
+            ),
+        )
+
+    sanitize_database(source, destination)
+
+    with sqlite3.connect(destination) as connection:
+        manifest_json, manifest_sha256 = connection.execute(
+            "SELECT manifest_json,manifest_sha256 FROM evaluation_run_manifests"
+        ).fetchone()
+    assert json.loads(manifest_json) == {"condition": {}, "public": "retained"}
+    assert manifest_sha256 == hashlib.sha256(manifest_json.encode()).hexdigest()
+    validate_public_database(destination)
+
+
 def test_sanitizer_redacts_credential_like_report_text_and_recomputes_hash(tmp_path):
     source = tmp_path / "report.sqlite3"
     destination = tmp_path / "public.sqlite3"

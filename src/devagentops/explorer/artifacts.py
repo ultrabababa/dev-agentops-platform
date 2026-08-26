@@ -63,6 +63,59 @@ class MilestoneArtifacts:
             "interpretation": "efficiency_reproduced_no_reproducible_material_quality_regression_demonstrated",
         }
 
+    def runtime_optimization_comparison(
+        self, run_a: str, run_b: str
+    ) -> dict[str, Any] | None:
+        document = self._documents["runtime_optimization"]
+        replication = document["replication"]
+        reference = replication["single_sequential"]
+        treatment = replication["batch_parallel"]
+        by_run = {
+            reference["run_id"]: reference,
+            treatment["run_id"]: treatment,
+        }
+        if {run_a, run_b} != set(by_run):
+            return None
+
+        def values(path: tuple[str, ...]) -> dict[str, Any]:
+            def read(run_id: str) -> Any:
+                value: Any = by_run[run_id]
+                for key in path:
+                    value = value[key]
+                return value
+
+            return {"a": read(run_a), "b": read(run_b)}
+
+        return {
+            "artifact_id": document["milestone_id"],
+            "authority": "milestone_artifact",
+            "interpretation": (
+                "efficiency_reproduced_no_reproducible_material_quality_"
+                "regression_demonstrated"
+            ),
+            "metrics": {
+                "model_decisions": values(
+                    ("runtime_mechanism", "successful_model_decisions")
+                ),
+                "executed_tool_calls": values(
+                    ("runtime_mechanism", "tool_calls_started")
+                ),
+                "input_tokens": values(("provider_usage", "input_tokens")),
+                "output_tokens": values(("provider_usage", "output_tokens")),
+                "total_tokens": values(("provider_usage", "total_tokens")),
+                "run_wall_time_seconds": values(("latency", "run_wall_seconds")),
+                "mean_sample_latency_seconds": values(
+                    ("latency", "sample_duration_seconds", "mean")
+                ),
+                "p50_sample_latency_seconds": values(
+                    ("latency", "sample_duration_seconds", "p50")
+                ),
+                "p95_sample_latency_seconds": values(
+                    ("latency", "sample_duration_seconds", "p95")
+                ),
+            },
+        }
+
     def retrieval_attribution_finding(self) -> dict[str, Any]:
         document = self._documents["retrieval_attribution"]
         diagnostic = document["acquisition_diagnostic"]

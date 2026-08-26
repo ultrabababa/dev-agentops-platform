@@ -23,9 +23,10 @@ PYTHONPATH=src python -m devagentops.explorer.sanitize \
 
 Pass `--run-id` once for each retained Run when one public database contains
 multiple cataloged Runs. The destination must not already exist. Generation
-opens the source read-only, filters to the requested Runs, sanitizes Trajectory
-and Trace, recomputes message hashes, vacuums the copy, and runs leakage
-validation. Source paths are operator inputs and are never a runtime dependency.
+opens the source read-only, filters to the requested Runs, sanitizes Run
+manifests, Trajectory, and Trace, recomputes affected hashes, vacuums the copy,
+and runs leakage validation. Source paths are operator inputs and are never a
+runtime dependency.
 
 Validate a snapshot without exposing sensitive values:
 

@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -10,6 +11,26 @@ from devagentops.storage.database import inspect_database
 DEFAULT_SHOWCASE_CATALOG_PATH = (
     Path(__file__).resolve().parents[2] / "showcase-data" / "catalog.json"
 )
+SHOWCASE_CATALOG_ENV = "DEVAGENTOPS_SHOWCASE_CATALOG_PATH"
+
+
+def configured_showcase_catalog_path() -> Path | None:
+    configured = os.environ.get(SHOWCASE_CATALOG_ENV)
+    if configured is not None:
+        if not configured.strip():
+            raise RuntimeError(f"{SHOWCASE_CATALOG_ENV} is configured but empty")
+        path = Path(configured).expanduser().resolve(strict=False)
+        if not path.is_file():
+            raise RuntimeError(
+                f"{SHOWCASE_CATALOG_ENV} does not point to a catalog file: {path}"
+            )
+        return path
+    if (
+        DEFAULT_SHOWCASE_CATALOG_PATH.is_file()
+        and (DEFAULT_SHOWCASE_CATALOG_PATH.parent / "databases").is_dir()
+    ):
+        return DEFAULT_SHOWCASE_CATALOG_PATH
+    return None
 
 
 def create_app(
@@ -45,10 +66,5 @@ def create_app(
 
 app = create_app(
     DEFAULT_DATABASE_PATH,
-    explorer_catalog_path=(
-        DEFAULT_SHOWCASE_CATALOG_PATH
-        if DEFAULT_SHOWCASE_CATALOG_PATH.is_file()
-        and (DEFAULT_SHOWCASE_CATALOG_PATH.parent / "databases").is_dir()
-        else None
-    ),
+    explorer_catalog_path=configured_showcase_catalog_path(),
 )
