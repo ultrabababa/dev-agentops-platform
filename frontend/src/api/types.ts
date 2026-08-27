@@ -6,6 +6,8 @@ export type FormalMetricVector = {
   protocol_validity_rate: number;
 };
 
+export type ConditionId = "L1" | "L2" | "L3" | "L4" | "Oracle";
+
 export type CanonicalizationFinding = {
   artifact_id: string;
   authority: "fixed_output_offline_replay";
@@ -61,7 +63,7 @@ export type Overview = {
 };
 
 export type Condition = {
-  condition: "L1" | "L2" | "L3" | "L4" | "Oracle";
+  condition: ConditionId;
   runtime_variant: string;
   representative_run: {
     run_id: string;

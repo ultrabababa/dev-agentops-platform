@@ -1,0 +1,121 @@
+@import url("https://cdn.jsdelivr.net/npm/@fontsource-variable/inter@5.3.0/wght.css");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource-variable/noto-sans-sc@5.3.0/wght.css");
+
+/*
+ * DevAgentOps type system
+ * - Latin UI/display: Inter Variable
+ * - Simplified Chinese: Noto Sans SC Variable
+ * - Technical labels/data/code: existing monospace stack
+ *
+ * Both webfonts are progressive enhancement only: system fallbacks remain so
+ * the Explorer stays readable if the font CDN is unavailable.
+ */
+:root {
+  --font-sans: "Inter Variable", "Noto Sans SC Variable", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
+
+html {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+body,
+button,
+.button,
+input,
+textarea,
+select {
+  font-family: var(--font-sans);
+}
+
+/*
+ * The previous typography used aggressive grotesk-style tracking and 700+
+ * weights. That works for Latin display text, but makes CJK headings feel too
+ * black and cramped. Keep the hierarchy, reduce the visual pressure.
+ */
+.hero h1 {
+  font-weight: 640;
+  letter-spacing: -0.02em;
+}
+
+.hero h1 em {
+  font-weight: 620;
+}
+
+.section-heading h2,
+.conditions-page h1,
+.conditions-page h2,
+.condition-detail-page h2,
+.l3-attribution h2,
+.result-interpretation h2,
+.visibility-boundary h2 {
+  font-family: var(--font-sans);
+  font-weight: 620;
+  letter-spacing: -0.012em;
+}
+
+.condition-detail-page .condition-hero-copy h1 {
+  font-family: var(--font-sans);
+  font-weight: 640;
+  letter-spacing: -0.018em;
+}
+
+.stage-copy h3,
+.condition-summary h3,
+.finding-list h3,
+.principles-list dt,
+.condition-detail-page .architecture-frame > figcaption strong,
+.condition-detail-page .architecture-node > strong,
+.condition-detail-page .observation-channels strong,
+.condition-detail-page .baseline-policy-error strong {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.008em;
+}
+
+.hero-copy,
+.section-intro,
+.stage-copy > p,
+.condition-detail-page .detail-question > p,
+.condition-detail-page .result-interpretation > p,
+.condition-detail-page .condition-hero-copy > p:last-child,
+.condition-detail-page .research-question p,
+.condition-detail-page .architecture-frame > figcaption p,
+.condition-detail-page .visibility-boundary > header > p:last-child,
+.condition-detail-page .visibility-lane li,
+.condition-detail-page .l3-attribution > header > p:last-child,
+.condition-detail-page .l3-attribution > p {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* Keep canonical technical identities visually separate from narrative copy. */
+.technical-label,
+.eyebrow,
+code,
+pre,
+.metric-vector dt,
+.metric-vector dd,
+.condition-metric-vector dt,
+.condition-metric-vector dd,
+.run-provenance,
+.diagram-lane-label,
+.architecture-node > span,
+.architecture-node > small,
+.visibility-label {
+  font-family: var(--mono);
+}
+
+@media (max-width: 760px) {
+  .hero h1 {
+    letter-spacing: -0.015em;
+  }
+
+  .section-heading h2,
+  .conditions-page h1,
+  .conditions-page h2,
+  .condition-detail-page h2 {
+    letter-spacing: -0.008em;
+  }
+}

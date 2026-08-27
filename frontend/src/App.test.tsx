@@ -18,8 +18,15 @@ const responses: Record<string, object> = {
   ] },
 };
 
-afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
+for (const condition of responses["/api/conditions"] as Array<Record<string, unknown>>) {
+  const id = String(condition.condition).toLowerCase();
+  const runtimeVariants: Record<string, string> = { l1: "full_context_one_shot", l2: "fixed_model_workflow", l3: "static_retrieval", l4: "self_built_react", oracle: "model_one_shot" };
+  responses[`/api/conditions/${id}`] = { ...condition, runtime_variant: runtimeVariants[id] };
+}
+
+afterEach(() => { cleanup(); vi.unstubAllGlobals(); window.history.pushState({}, "", "/"); });
 function stubSuccess() { const mock = vi.fn(async (input: string | URL | Request) => ({ ok: true, json: async () => responses[String(input)] })); vi.stubGlobal("fetch", mock); return mock; }
+function renderRoute(path: string) { window.history.pushState({}, "", path); return render(<App />); }
 
 describe("Public Evaluation Explorer", () => {
   it("renders the homepage from API fixtures with all four evolution stages", async () => {
@@ -46,5 +53,91 @@ describe("Public Evaluation Explorer", () => {
   it("does not invent metric values when the API fails", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => ({ ok: false, status: 503 }))); render(<App />);
     expect(await screen.findByText("产品说明仍可阅读，实验事实暂不展示。")).toBeInTheDocument(); expect(screen.getByText(/HTTP 503/)).toBeInTheDocument(); expect(document.body.textContent).not.toContain("96.61%"); expect(document.body.textContent).not.toContain("877");
+  });
+
+  it("renders /conditions from the real Condition API contract", async () => {
+    const fetchMock = stubSuccess(); renderRoute("/conditions");
+    expect(await screen.findByRole("heading", { name: /我们怎样一步步改变 Agent/ })).toBeInTheDocument();
+    expect(screen.getAllByText("full_context_one_shot").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Failure Type Exact Match").length).toBeGreaterThan(0);
+    expect(fetchMock).toHaveBeenCalledWith("/api/conditions");
+    expect(document.body.textContent).not.toContain("Phase 2B");
+    expect(document.body.textContent).not.toContain("PHASE 2B");
+    expect(document.body.textContent).not.toContain("Diagnosis Accuracy");
+    expect(document.body.textContent).not.toContain("Root Cause Accuracy");
+  });
+
+  it("renders L1 identity, one-shot architecture, and API-backed metrics", async () => {
+    const fetchMock = stubSuccess(); renderRoute("/conditions/l1");
+    expect(await screen.findByRole("heading", { name: "Full Context / One Shot" })).toBeInTheDocument();
+    expect(screen.getByText("单次模型调用")).toBeInTheDocument();
+    expect(screen.getByText("88.33%")).toBeInTheDocument();
+    expect(screen.getByText(/一次把全部上下文交给模型/)).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith("/api/conditions/l1");
+  });
+
+  it("describes L2 as the fixed evidence_analysis to report_synthesis workflow", async () => {
+    stubSuccess(); renderRoute("/conditions/l2");
+    await screen.findByRole("heading", { name: "Fixed Model Workflow" });
+    expect(screen.getAllByText(/evidence_analysis/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/report_synthesis/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/程序不提供工具或 Retrieval，也没有额外的 verifier \/ repair stage/)).toBeInTheDocument();
+    const evaluatorLane = screen.getAllByText(/模型看不到 \/ 仅评测侧/).map((label) => label.closest(".diagram-evaluator-rail")).find(Boolean);
+    expect(evaluatorLane).not.toBeNull();
+    expect(evaluatorLane).not.toHaveTextContent("verifier");
+    expect(document.body.textContent).toContain("先分析证据、再写报告");
+  });
+
+  it("keeps L3 acquisition and utilization denominators distinct", async () => {
+    stubSuccess(); renderRoute("/conditions/l3");
+    await screen.findByRole("heading", { name: "Static Retrieval" });
+    expect(screen.getByText("76.56%")).toBeInTheDocument();
+    expect(screen.getByText("66.18%")).toBeInTheDocument();
+    expect(screen.getByText(/Retrieval Acquisition Recall.*分母：全部 Required Evidence/)).toBeInTheDocument();
+    expect(screen.getByText(/Acquired Required Evidence Utilization.*分母：已被 Retrieval 获取的 Required Evidence/)).toBeInTheDocument();
+    expect(document.body.textContent).toContain("并没有证明它的 Report Evidence Hit 高于 L1/L2");
+    expect(document.body.textContent).toContain("answer-neutral Canonical Evidence 坐标 / IDs");
+    expect(document.body.textContent).toContain("Evidence context 只含检索片段");
+  });
+
+  it("identifies L4 as the self-built ReAct Runtime and separates Trace from Trajectory", async () => {
+    stubSuccess(); renderRoute("/conditions/l4");
+    await screen.findByRole("heading", { name: "Self-built ReAct Runtime" });
+    expect(screen.getByText("Runtime 每轮最多接受 1 个 ToolCall")).toBeInTheDocument();
+    expect(screen.getByText(/全部不执行；每个调用收到 policy-error ToolResult/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Single \+ Sequential/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Batch \+ Parallel/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/上面的代表性指标也不是这次优化实验的结果/)).toBeInTheDocument();
+    expect(screen.getByText(/TRAJECTORY · 模型交互轨迹/)).toBeInTheDocument();
+    expect(screen.getByText(/TRACE · Runtime 运行记录/)).toBeInTheDocument();
+    expect(screen.getByText(/Trace ≠ Trajectory/)).toBeInTheDocument();
+    const runtimeLane = screen.getByText(/Runtime 自己记录 · RUNTIME OBSERVABILITY/).closest(".visibility-lane");
+    const evaluatorLane = screen.getAllByText(/模型看不到 \/ 仅评测侧 · EVALUATOR ONLY/).at(-1)?.closest(".visibility-lane");
+    expect(runtimeLane).toHaveTextContent("Trace：工具执行和 Runtime 生命周期事件");
+    expect(evaluatorLane).not.toHaveTextContent("Trace：工具执行和 Runtime 生命周期事件");
+    expect(evaluatorLane).toHaveTextContent("scorer ground truth");
+  });
+
+  it("renders the Oracle evaluator selector and model-visible source-evidence boundary without forbidden wording", async () => {
+    stubSuccess(); renderRoute("/conditions/oracle");
+    await screen.findByRole("heading", { name: "Selected Source Evidence / One Shot" });
+    expect(screen.getByText("独立诊断条件 · 不属于 L1–L4")).toBeInTheDocument();
+    expect(screen.getByText("required_evidence_ids")).toBeInTheDocument();
+    expect(screen.getByText("选中的原始 Source Evidence")).toBeInTheDocument();
+    expect(screen.getByText("只有原始证据片段通过")).toBeInTheDocument();
+    expect(document.body.textContent).toContain("它不是 L5、不是 Product Runtime，也不是理论上界");
+    expect(document.body.textContent).not.toContain("directly provides Required Evidence");
+    expect(document.body.textContent).not.toContain("直接提供 Required Evidence");
+    expect(document.body.textContent).not.toContain("Oracle is L5");
+  });
+
+  it("keeps editorial architecture visible but invents no formal metrics after a Condition API failure", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => ({ ok: false, status: 503 })));
+    renderRoute("/conditions/l1");
+    expect(await screen.findByRole("heading", { name: "Full Context / One Shot" })).toBeInTheDocument();
+    expect(screen.getByText("单次模型调用")).toBeInTheDocument();
+    expect(await screen.findByText(/正式实验数据读取失败/)).toBeInTheDocument();
+    expect(document.body.textContent).not.toContain("88.33%");
+    expect(document.body.textContent).not.toContain("50.67%");
   });
 });

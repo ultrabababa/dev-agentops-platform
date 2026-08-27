@@ -1,0 +1,385 @@
+/* Condition Explorer readability and diagram polish. Loaded after base styles/typography. */
+
+/* ---------- Global detail readability ---------- */
+.condition-detail-page .detail-question > p,
+.condition-detail-page .result-interpretation > p {
+  font-size: 1.16rem;
+  line-height: 1.82;
+}
+
+.condition-detail-page .condition-hero-copy > p:last-child,
+.condition-detail-page .research-question p {
+  font-size: 1.14rem;
+  line-height: 1.72;
+}
+
+.condition-detail-page .research-question > span,
+.condition-detail-page .condition-hero-id small,
+.condition-detail-page .condition-hero-copy > code {
+  font-size: .78rem;
+}
+
+.condition-detail-page .architecture-frame > figcaption strong {
+  font-size: 1.36rem;
+  line-height: 1.32;
+}
+
+.condition-detail-page .architecture-frame > figcaption p {
+  font-size: 1.04rem;
+  line-height: 1.72;
+}
+
+.condition-detail-page .diagram-lane-label {
+  font-size: .8rem;
+  line-height: 1.45;
+}
+
+.condition-detail-page .architecture-node > span {
+  font-size: .72rem;
+}
+
+.condition-detail-page .architecture-node > strong {
+  font-size: 1.08rem;
+  line-height: 1.38;
+}
+
+.condition-detail-page .architecture-node > small {
+  font-size: .86rem;
+  line-height: 1.58;
+}
+
+.condition-detail-page .diagram-evaluator-rail,
+.condition-detail-page .program-stop-rail {
+  gap: 14px;
+  font-size: .86rem;
+  line-height: 1.6;
+}
+
+.condition-detail-page .attribution-flow > span,
+.condition-detail-page .observation-channels span,
+.condition-detail-page .baseline-policy-error span {
+  font-size: .78rem;
+  line-height: 1.45;
+}
+
+.condition-detail-page .attribution-flow > p,
+.condition-detail-page .oracle-anonymity-note,
+.condition-detail-page .l4-policy-note p,
+.condition-detail-page .visibility-oracle-note {
+  font-size: 1rem;
+  line-height: 1.72;
+}
+
+.condition-detail-page .observation-channels strong {
+  font-size: 1.04rem;
+  line-height: 1.45;
+}
+
+.condition-detail-page .observation-channels small {
+  font-size: .88rem;
+  line-height: 1.62;
+}
+
+.condition-detail-page .baseline-policy-error strong {
+  font-size: .92rem;
+  line-height: 1.62;
+}
+
+.condition-detail-page .l3-attribution > header > p:last-child,
+.condition-detail-page .l3-attribution > p {
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.condition-detail-page .attribution-metrics span {
+  font-size: .9rem;
+  line-height: 1.45;
+}
+
+.condition-detail-page .attribution-metrics small {
+  font-size: .82rem;
+  line-height: 1.55;
+}
+
+.condition-detail-page .condition-results > header > p,
+.condition-detail-page .run-provenance,
+.condition-detail-page .condition-navigation {
+  font-size: .82rem;
+}
+
+.condition-detail-page .condition-metric-vector dt {
+  font-size: .8rem;
+  line-height: 1.45;
+}
+
+/* ---------- Information boundary: no tiny vertical text strip ---------- */
+.condition-detail-page .visibility-boundary > header > p:last-child {
+  max-width: 760px;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.72;
+}
+
+.condition-detail-page .visibility-lanes,
+.condition-detail-page .visibility-lanes.has-observability {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--line-dark);
+}
+
+.condition-detail-page .visibility-lanes.has-observability {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.condition-detail-page .visibility-lane {
+  min-width: 0;
+  padding: 30px 32px;
+  border: 0;
+}
+
+.condition-detail-page .visibility-lane + .visibility-lane {
+  border-left: 1px dashed var(--line-dark);
+}
+
+.condition-detail-page .visibility-lane li {
+  font-size: 1.04rem;
+  line-height: 1.68;
+}
+
+.condition-detail-page .visibility-label {
+  font-size: .78rem;
+  line-height: 1.4;
+}
+
+.condition-detail-page .visibility-oracle-note {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border-left: 3px solid var(--signal);
+  background: var(--signal-soft);
+}
+
+/* ---------- L4: stable, easy-to-follow flow without floating return arrows ---------- */
+.l4-diagram .architecture-canvas {
+  display: block;
+}
+
+.l4-diagram .l4-context-row {
+  display: grid;
+  grid-template-columns: minmax(220px, .6fr) minmax(0, 1.4fr);
+  gap: 28px;
+  align-items: center;
+  margin-bottom: 34px;
+}
+
+.l4-diagram .l4-context-row .architecture-node {
+  min-height: 132px;
+}
+
+.l4-diagram .l4-context-row > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.72;
+}
+
+.l4-diagram .l4-main-flow {
+  display: flex;
+  align-items: stretch;
+}
+
+.l4-diagram .l4-main-flow .architecture-node {
+  flex: 1;
+  min-width: 0;
+}
+
+.l4-diagram .l4-cycle-note {
+  margin: 14px 0 26px;
+  padding: 13px 16px;
+  color: var(--signal);
+  border-left: 3px solid var(--signal);
+  background: var(--signal-soft);
+  font: 700 .88rem/1.5 var(--mono);
+  text-align: center;
+}
+
+.l4-diagram .baseline-policy-error {
+  margin: 0 0 30px;
+  padding: 16px 18px;
+}
+
+.l4-diagram .terminal-label {
+  margin-top: 8px;
+}
+
+.l4-diagram .l4-terminal-flow {
+  display: flex;
+  width: min(720px, 100%);
+  align-items: stretch;
+  margin: 12px auto 34px;
+}
+
+.l4-diagram .l4-terminal-flow .architecture-node {
+  flex: 1;
+}
+
+.l4-diagram .observation-channels {
+  margin-top: 8px;
+}
+
+/* ---------- Oracle: explicit transfer card, no misaligned vertical rail ---------- */
+.oracle-diagram .architecture-canvas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 190px minmax(0, 1fr);
+  gap: 28px;
+  align-items: stretch;
+}
+
+.oracle-diagram .oracle-transfer {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 14px;
+  color: var(--muted);
+  border-right: 1px dashed var(--signal);
+  border-left: 1px dashed var(--signal);
+  background: var(--signal-soft);
+  text-align: center;
+}
+
+.oracle-diagram .oracle-transfer span {
+  color: var(--signal);
+  font: 700 .78rem/1.4 var(--mono);
+}
+
+.oracle-diagram .oracle-transfer strong {
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.oracle-diagram .oracle-transfer i {
+  color: var(--signal);
+  font: normal 700 2rem/1 var(--mono);
+}
+
+.oracle-diagram .oracle-transfer small {
+  font-size: .86rem;
+  line-height: 1.6;
+}
+
+/* ---------- Overview readability ---------- */
+.conditions-page .condition-index-hero > p:last-child,
+.conditions-page .ladder-architecture > header > p:last-child,
+.conditions-page .condition-comparison > header > p:last-child,
+.conditions-page .oracle-overview-copy > p:not(.oracle-index) {
+  font-size: 1.06rem;
+  line-height: 1.74;
+}
+
+.conditions-page .ladder-dimensions strong,
+.conditions-page .ladder-dimensions span {
+  font-size: .9rem;
+  line-height: 1.5;
+}
+
+.conditions-page .overview-condition-copy > p,
+.conditions-page .overview-condition-copy > div > span {
+  font-size: 1.02rem;
+  line-height: 1.72;
+}
+
+.conditions-page .overview-condition-id small,
+.conditions-page .ladder-rungs small {
+  font-size: .72rem;
+}
+
+.conditions-page .condition-metric-vector dt {
+  font-size: .76rem;
+}
+
+@media (max-width: 1024px) {
+  .condition-detail-page .visibility-lanes.has-observability {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .condition-detail-page .visibility-lanes.has-observability .evaluator-only {
+    grid-column: 1 / -1;
+    border-top: 1px dashed var(--line-dark);
+    border-left: 0;
+  }
+
+  .oracle-diagram .architecture-canvas {
+    grid-template-columns: minmax(0, 1fr) 150px minmax(0, 1fr);
+    gap: 18px;
+  }
+}
+
+@media (max-width: 820px) {
+  .condition-detail-page .visibility-lanes,
+  .condition-detail-page .visibility-lanes.has-observability {
+    grid-template-columns: 1fr;
+  }
+
+  .condition-detail-page .visibility-lane + .visibility-lane,
+  .condition-detail-page .visibility-lanes.has-observability .evaluator-only {
+    grid-column: auto;
+    border-top: 1px dashed var(--line-dark);
+    border-left: 0;
+  }
+
+  .l4-diagram .l4-context-row {
+    grid-template-columns: 1fr;
+  }
+
+  .l4-diagram .l4-main-flow,
+  .l4-diagram .l4-terminal-flow {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .l4-diagram .l4-main-flow > .architecture-edge,
+  .l4-diagram .l4-terminal-flow > .architecture-edge {
+    width: 100%;
+    height: 30px;
+  }
+
+  .l4-diagram .l4-main-flow > .architecture-edge i,
+  .l4-diagram .l4-terminal-flow > .architecture-edge i {
+    width: 1px;
+    height: 100%;
+  }
+
+  .l4-diagram .l4-main-flow > .architecture-edge i::after,
+  .l4-diagram .l4-terminal-flow > .architecture-edge i::after {
+    margin: auto 0 0 -3px;
+    transform: rotate(135deg);
+  }
+
+  .oracle-diagram .architecture-canvas {
+    grid-template-columns: 1fr;
+  }
+
+  .oracle-diagram .oracle-transfer {
+    min-height: 130px;
+    border-top: 1px dashed var(--signal);
+    border-right: 0;
+    border-bottom: 1px dashed var(--signal);
+    border-left: 0;
+  }
+
+  .oracle-diagram .oracle-transfer i {
+    transform: rotate(90deg);
+  }
+}
+
+@media print {
+  .condition-detail-page .architecture-node > strong { font-size: 10.5pt; }
+  .condition-detail-page .architecture-node > small { font-size: 8.5pt; }
+  .condition-detail-page .visibility-lane li { font-size: 10pt; }
+  .condition-detail-page .detail-question > p,
+  .condition-detail-page .result-interpretation > p { font-size: 11pt; }
+}
