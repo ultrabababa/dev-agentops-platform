@@ -36,9 +36,11 @@ describe("Public Evaluation Explorer", () => {
   it("keeps Oracle separate from the L1-L4 ladder and never calls it L5", async () => {
     stubSuccess(); render(<App />); const oracle = await screen.findByRole("complementary"); expect(within(oracle).getByText("独立诊断条件")).toBeInTheDocument(); expect(within(oracle).getByText("不属于 L1–L4")).toBeInTheDocument(); expect(document.body.textContent).not.toContain("L5"); expect(document.body.textContent).not.toContain("ORTHOGONAL DIAGNOSTIC INTERVENTION");
   });
-  it("states the Oracle exception to ordinary evaluator isolation", async () => {
+  it("states the Oracle source-evidence exception without exposing evaluator labels", async () => {
     stubSuccess(); render(<App />); await screen.findByText("Evaluator Isolation");
-    expect(screen.getByText(/Oracle 是显式标记的诊断干预例外/)).toBeInTheDocument();
+    expect(screen.getByText(/Oracle 仅暴露该 selection 定位出的原始证据片段/)).toBeInTheDocument();
+    expect(document.body.textContent).toContain("绕过证据查找，提供关键原始证据片段");
+    expect(document.body.textContent).not.toContain("直接提供 Required Evidence");
     expect(document.body.textContent).not.toContain("Expected Answer / Required Evidence 不进入 Agent input");
   });
   it("does not invent metric values when the API fails", async () => {
