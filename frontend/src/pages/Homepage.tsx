@@ -82,7 +82,7 @@ function EvolutionSection({ evolution }: { evolution: Evolution }) {
           <div className="baseline-map" aria-label="L1、L2、L4 平行基线与独立 Oracle 诊断条件">
             <span className="suite-spine">SAME FROZEN 20-CASE SUITE</span>
             <div className="baseline-lane"><code>L1</code><code>L2</code><code>L4</code></div>
-            <div className="baseline-oracle"><div><span>独立诊断条件</span><b>不属于 L1–L4</b></div><code>Oracle</code><p>直接提供 Required Evidence</p></div>
+            <div className="baseline-oracle"><div><span>独立诊断条件</span><b>不属于 L1–L4</b></div><code>Oracle</code><p>绕过证据查找，提供关键原始证据片段</p></div>
             <small>同一 Ground Truth · 同一 Deterministic Scorer</small>
           </div>
         </article>
