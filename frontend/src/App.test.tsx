@@ -25,7 +25,7 @@ describe("Public Evaluation Explorer", () => {
   it("renders the homepage from API fixtures with all four evolution stages", async () => {
     const fetchMock = stubSuccess(); render(<App />);
     expect(await screen.findByRole("heading", { name: /Agent Runtime.*Formal Evaluation/ })).toBeInTheDocument(); expect(screen.getByText("20")).toBeInTheDocument();
-    ["建立可比较的 Runtime 基线", "修复 Evidence Reference 的表示错误", "减少不必要的 Model Decision 轮次", "拆开 Evidence Acquisition 与 Utilization"].forEach((title) => expect(screen.getByRole("heading", { name: title })).toBeInTheDocument());
+    ["建立第一组可比较的诊断基线", "修复 Evidence Reference 的表示错误", "减少不必要的 Model Decision 轮次", "拆开“没找到”与“找到但没用好”"].forEach((title) => expect(screen.getByRole("heading", { name: title })).toBeInTheDocument());
     expect(fetchMock).toHaveBeenCalledWith("/api/overview"); expect(fetchMock).toHaveBeenCalledWith("/api/conditions"); expect(fetchMock).toHaveBeenCalledWith("/api/experiments/evolution");
   });
   it("renders representative API-backed values and canonical terminology", async () => {
@@ -34,7 +34,12 @@ describe("Public Evaluation Explorer", () => {
     expect(document.body.textContent).not.toContain("Diagnosis Accuracy"); expect(document.body.textContent).not.toContain("Root Cause Accuracy");
   });
   it("keeps Oracle separate from the L1-L4 ladder and never calls it L5", async () => {
-    stubSuccess(); render(<App />); const oracle = await screen.findByRole("complementary"); expect(within(oracle).getByText("Diagnostic Condition")).toBeInTheDocument(); expect(document.body.textContent).not.toContain("L5");
+    stubSuccess(); render(<App />); const oracle = await screen.findByRole("complementary"); expect(within(oracle).getByText("独立诊断条件")).toBeInTheDocument(); expect(within(oracle).getByText("不属于 L1–L4")).toBeInTheDocument(); expect(document.body.textContent).not.toContain("L5"); expect(document.body.textContent).not.toContain("ORTHOGONAL DIAGNOSTIC INTERVENTION");
+  });
+  it("states the Oracle exception to ordinary evaluator isolation", async () => {
+    stubSuccess(); render(<App />); await screen.findByText("Evaluator Isolation");
+    expect(screen.getByText(/Oracle 是显式标记的诊断干预例外/)).toBeInTheDocument();
+    expect(document.body.textContent).not.toContain("Expected Answer / Required Evidence 不进入 Agent input");
   });
   it("does not invent metric values when the API fails", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => ({ ok: false, status: 503 }))); render(<App />);

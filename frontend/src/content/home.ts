@@ -5,19 +5,19 @@ export const conditionCopy = {
   },
   L2: {
     name: "Fixed Model Workflow",
-    question: "固定多阶段 workflow 是否能稳定提升结构化诊断？",
+    question: "把一次模型调用拆成固定的“分析 → 报告”两阶段后，结果会出现什么差异？",
   },
   L3: {
     name: "Static Retrieval",
-    question: "静态 Retrieval 在哪里丢失 Required Evidence？",
+    question: "加入确定性的 Static Retrieval 后，Required Evidence 主要丢在哪一步？",
   },
   L4: {
     name: "Self-built ReAct Runtime",
-    question: "自主 ToolUse Runtime 能否更有效地获取并使用证据？",
+    question: "让模型自己决定何时调用 read / grep / find / ls 等工具后，诊断过程会发生什么变化？",
   },
   Oracle: {
     name: "Evaluator-controlled Evidence intervention",
-    question: "当 Required Evidence 由 evaluator 直接提供时，模型上限如何？",
+    question: "如果直接把关键 Evidence 提供给模型，模型本身还能做到什么？",
   },
 } as const;
 
@@ -31,7 +31,7 @@ export const metricLabels = [
 
 export const evaluationPrinciples = [
   ["Frozen Inputs", "冻结输入，避免 benchmark 在运行间漂移"],
-  ["Evaluator Isolation", "Expected Answer / Required Evidence 不进入 Agent input"],
-  ["Deterministic Scoring", "Structured Report 由确定性 validator / scorer 评分"],
-  ["Reproducible Provenance", "Run / Suite / Condition / Treatment fingerprints 保留实验身份"],
+  ["Evaluator Isolation", "普通 Conditions 中，Expected Answer 与 evaluator Required Evidence 不进入模型输入；Oracle 是显式标记的诊断干预例外。"],
+  ["Deterministic Scoring", "Structured Report 由确定性的 validator / scorer 评分，避免人工主观打分。"],
+  ["Reproducible Provenance", "保存 Run / Suite / Condition / Treatment fingerprints，让每个结果都能追溯到具体实验配置。"],
 ] as const;
