@@ -1,0 +1,497 @@
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", Arial, sans-serif;
+}
+
+body,
+button,
+.button {
+  font-family: var(--font-sans);
+}
+
+/* Public-page type scale: display 58, section 40, stage 28, body 16-18. */
+.hero h1 {
+  max-width: 980px;
+  margin-bottom: 26px;
+  font-family: var(--font-sans);
+  font-size: clamp(2.65rem, 3.35vw, 3.3rem);
+  font-weight: 720;
+  letter-spacing: -0.045em;
+  line-height: 1.13;
+  text-wrap: balance;
+}
+
+.hero h1 > span {
+  display: block;
+}
+
+.hero h1 em {
+  font-style: normal;
+  font-weight: 660;
+  white-space: normal;
+}
+
+.hero-english {
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 1.15vw, 1.08rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.55;
+}
+
+.hero-copy {
+  max-width: 780px;
+  font-size: 1.0625rem;
+  line-height: 1.78;
+}
+
+.section-heading h2 {
+  max-width: 800px;
+  font-family: var(--font-sans);
+  font-size: clamp(2rem, 2.55vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.24;
+  text-wrap: balance;
+}
+
+.section-intro {
+  max-width: 760px;
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+
+.stage-copy h3 {
+  max-width: 470px;
+  font-family: var(--font-sans);
+  font-size: clamp(1.5rem, 1.75vw, 1.75rem);
+  font-weight: 680;
+  letter-spacing: -0.025em;
+  line-height: 1.34;
+  text-wrap: balance;
+}
+
+.stage-copy > p {
+  max-width: 510px;
+  color: #c5c8c8;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.82;
+}
+
+.stage-annotation {
+  grid-template-columns: 52px 1fr;
+  gap: 14px;
+}
+
+.stage-annotation b,
+.stage-annotation span,
+.stage-conclusion,
+.stage-verdict {
+  font-family: var(--font-sans);
+}
+
+.stage-annotation b {
+  font-size: .8125rem;
+}
+
+.stage-annotation span,
+.stage-conclusion,
+.stage-verdict {
+  font-size: .9rem;
+  line-height: 1.75;
+}
+
+.stage-conclusion {
+  color: #e2e3df;
+}
+
+.stage-verdict {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 14px;
+  margin-top: 18px;
+  padding: 15px 0;
+  border-top: 1px solid #477c68;
+  border-bottom: 1px solid #477c68;
+  color: #e2e3df;
+}
+
+.stage-verdict b {
+  color: #71b69a;
+  font-size: .8125rem;
+}
+
+.technical-label,
+.eyebrow,
+.section-kicker p,
+.benchmark-facts dt,
+.metric-pair > span,
+.metric-vector dt,
+.metric-vector dd,
+.evidence-caption,
+.flow-node span,
+.hero-loop,
+.stage-index span {
+  font-family: var(--mono);
+}
+
+.technical-label {
+  min-height: 27px;
+  padding: 5px 8px;
+  font-size: .75rem;
+  letter-spacing: .055em;
+}
+
+.eyebrow,
+.section-kicker p {
+  font-size: .75rem;
+}
+
+.evidence-caption {
+  margin-top: 14px;
+  color: #a0a5a6;
+  font-size: .75rem;
+  line-height: 1.55;
+}
+
+.condition-summary h3,
+.finding-list h3,
+.principles-list dt {
+  font-family: var(--font-sans);
+  font-weight: 650;
+  letter-spacing: -0.015em;
+}
+
+.condition-summary h3,
+.finding-list h3 {
+  font-size: 1.2rem;
+  line-height: 1.45;
+}
+
+.condition-summary p,
+.finding-list p,
+.principles-list dd {
+  font-family: var(--font-sans);
+}
+
+.condition-summary p {
+  font-size: .9375rem;
+  line-height: 1.75;
+}
+
+.finding-list p {
+  max-width: 560px;
+  font-size: .875rem;
+  line-height: 1.65;
+}
+
+.principles-list dt {
+  font-size: 1rem;
+}
+
+.principles-list dd {
+  font-size: .9375rem;
+  line-height: 1.72;
+}
+
+.metric-pair > span,
+.metric > span,
+.metric-vector dt,
+.metric-vector dd {
+  font-size: .75rem;
+  line-height: 1.5;
+}
+
+.metric-pair strong {
+  font-size: 1.15rem;
+}
+
+.metric strong {
+  font-size: 1.45rem;
+}
+
+/* Diagram labels align around a true vertical center rather than the card edge. */
+.evaluation-flow {
+  overflow: visible;
+}
+
+.flow-node {
+  min-height: 144px;
+  grid-template-rows: 16px 44px 17px;
+  align-content: center;
+  gap: 8px;
+  padding: 20px 13px;
+  text-align: left;
+}
+
+.flow-node span {
+  font-size: .7rem;
+}
+
+.flow-node strong {
+  align-self: center;
+  max-width: 132px;
+  font-size: .875rem;
+  line-height: 1.45;
+}
+
+.flow-node small {
+  min-height: 17px;
+  color: var(--muted);
+  font: .75rem/1.4 var(--mono);
+}
+
+.evaluation-flow .flow-arrow {
+  align-self: center;
+}
+
+.loop-return {
+  font-size: .72rem;
+}
+
+.mechanism-flow code {
+  font-size: .75rem;
+  line-height: 1.45;
+}
+
+/* Final QA: keep essential utility copy at a readable 12px floor. */
+.brand small,
+.hero-loop,
+.benchmark-facts dt,
+.section-kicker > span,
+.flow-node span,
+.loop-return,
+.stage-index span,
+.suite-spine,
+.baseline-map > small,
+.runtime-mechanism small,
+.runtime-mechanism .flow-arrow small,
+.finding-list article > span,
+.condition-id > span,
+.condition-summary a,
+.oracle-heading > span,
+.oracle-heading > .technical-label,
+.principles-list dt span,
+.site-footer p,
+.site-footer > div:last-child {
+  font-size: .75rem;
+}
+
+/* Baseline keeps Oracle visibly outside the Runtime comparison lane. */
+.baseline-map > .baseline-lane {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 22px 0;
+  border-top: 1px solid #63686a;
+  border-bottom: 1px solid #454a4c;
+}
+
+.baseline-map .baseline-lane code {
+  padding: 12px 8px;
+  border: 1px solid #555b5c;
+  background: #1c2022;
+  font-size: 1.05rem;
+  text-align: center;
+}
+
+.baseline-map .baseline-lane code::before,
+.baseline-map .baseline-oracle code::before {
+  display: none;
+}
+
+.baseline-map > .baseline-oracle {
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) auto minmax(170px, 1fr);
+  align-items: center;
+  gap: 20px;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid #8a4c3d;
+  background: rgba(181, 71, 44, .08);
+}
+
+.baseline-oracle div {
+  display: grid;
+  gap: 5px;
+}
+
+.baseline-oracle span,
+.baseline-oracle b {
+  color: #d89986;
+  font: .75rem/1.4 var(--mono);
+}
+
+.baseline-oracle b {
+  color: #9fa4a5;
+  font-weight: 500;
+}
+
+.baseline-map .baseline-oracle code {
+  padding: 0;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.baseline-oracle p {
+  margin: 0;
+  color: #d8dad7;
+  font-size: .8125rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+.conditions-provenance {
+  max-width: 880px;
+  margin: -18px 0 34px 182px;
+  padding-left: 14px;
+  border-left: 2px solid var(--signal);
+  color: var(--muted);
+  font-size: .8125rem;
+  line-height: 1.65;
+}
+
+/* L3 percentages have explicit, intentionally different denominators. */
+.retrieval-attribution {
+  border-top: 1px solid #555b5c;
+}
+
+.retrieval-attribution > div {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto;
+  gap: 10px 28px;
+  padding: 18px 0;
+  border-bottom: 1px solid #454a4c;
+}
+
+.retrieval-attribution > div > span {
+  color: #e2e3df;
+  font-size: .9375rem;
+  line-height: 1.55;
+}
+
+.retrieval-attribution > div > strong {
+  grid-row: 1 / 3;
+  grid-column: 2;
+  align-self: center;
+  color: #fff;
+  font: 600 1.55rem/1 var(--mono);
+}
+
+.retrieval-attribution > div > small {
+  color: #a0a5a6;
+  font-size: .75rem;
+  line-height: 1.5;
+}
+
+.retrieval-attribution > p {
+  margin: 18px 0 0;
+  color: #d0d2d0;
+  font-size: .875rem;
+  line-height: 1.7;
+}
+
+/* Spacing is tighter than the first draft, but still document-like. */
+.section {
+  padding-top: clamp(76px, 7.5vw, 104px);
+  padding-bottom: clamp(76px, 7.5vw, 104px);
+}
+
+.section-heading {
+  margin-bottom: 46px;
+}
+
+.evolution-stage {
+  padding-top: 58px;
+  padding-bottom: 58px;
+}
+
+@media (min-width: 1440px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) 150px;
+    column-gap: 56px;
+  }
+}
+
+@media (max-width: 980px) {
+  .hero h1 > span {
+    display: inline;
+  }
+
+  .flow-node {
+    min-height: 116px;
+    grid-template-rows: 16px 44px 17px;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero h1 {
+    font-size: clamp(2.1rem, 9.5vw, 3rem);
+    letter-spacing: -0.035em;
+    line-height: 1.16;
+  }
+
+  .section-heading h2 {
+    font-size: clamp(1.75rem, 7vw, 2.15rem);
+  }
+
+  .stage-copy h3 {
+    font-size: clamp(1.4rem, 6vw, 1.7rem);
+  }
+
+  .section-intro,
+  .hero-copy,
+  .stage-copy > p {
+    font-size: 1rem;
+  }
+
+  .flow-node {
+    min-height: 76px;
+    grid-template-rows: none;
+    align-content: initial;
+    text-align: left;
+  }
+
+  .flow-node strong {
+    max-width: none;
+  }
+
+  .flow-node small {
+    margin-left: auto;
+  }
+
+  .flow-node small:empty {
+    display: none;
+  }
+
+  .baseline-map > .baseline-oracle {
+    align-items: flex-start;
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .baseline-oracle p {
+    text-align: left;
+  }
+
+  .conditions-provenance {
+    margin: -12px 0 28px;
+  }
+
+  .retrieval-attribution > div {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+@media (max-width: 430px) {
+  .retrieval-attribution > div {
+    grid-template-columns: 1fr;
+  }
+
+  .retrieval-attribution > div > strong {
+    grid-row: auto;
+    grid-column: 1;
+  }
+}

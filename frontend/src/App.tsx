@@ -1,230 +1,82 @@
 import { useCallback, useEffect, useState } from "react";
 
-type HealthResponse = {
-  status: string;
+import { getHomepageData } from "./api/client";
+import type { HomepageData } from "./api/types";
+import { Homepage } from "./pages/Homepage";
+
+const navigation = [
+  ["项目概览", "/"], ["实验条件", "/conditions"], ["正式实验", "/runs"],
+  ["实验对比", "/compare"], ["Cases", "/cases"],
+] as const;
+
+const placeholderCopy: Record<string, [string, string]> = {
+  "/conditions": ["实验条件", "Condition 总览已在首页呈现；详细条件页将在后续阶段开放。"],
+  "/conditions/l1": ["L1 · Full Context / One Shot", "完整 Condition 证据页将在后续阶段开放。"],
+  "/conditions/l2": ["L2 · Fixed Model Workflow", "完整 Condition 证据页将在后续阶段开放。"],
+  "/conditions/l3": ["L3 · Static Retrieval", "完整 Condition 证据页将在后续阶段开放。"],
+  "/conditions/l4": ["L4 · Self-built ReAct Runtime", "完整 Condition 证据页将在后续阶段开放。"],
+  "/conditions/oracle": ["Oracle · Diagnostic Condition", "Oracle 是正交诊断干预，不是更高的 Runtime rung。详细证据页将在后续阶段开放。"],
+  "/runs": ["正式实验", "Runs Explorer 将在后续阶段开放。"],
+  "/compare": ["实验对比", "完整 comparison page 将在后续阶段开放。"],
+  "/cases": ["Cases", "Case drill-down 将在后续阶段开放。"],
 };
 
-type VersionResponse = {
-  version: string;
-};
-
-type StorageStatus = {
-  path: string;
-  exists: boolean;
-  initialized: boolean;
-  schema_version: string | null;
-  table_count: number;
-  tables: string[];
-};
-
-type DashboardStatus = {
-  health: HealthResponse;
-  version: VersionResponse;
-  storage: StorageStatus;
-};
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "/api";
-
-async function fetchJson<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`);
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
-  }
-  return response.json() as Promise<T>;
+function SiteHeader({ path }: { path: string }) {
+  return (
+    <header className="site-header">
+      <a className="brand" href="/" aria-label="DevAgentOps 项目概览">
+        <span className="brand-mark" aria-hidden="true"><i /><i /><i /></span>
+        <span><strong>DevAgentOps</strong><small>Evaluation Explorer</small></span>
+      </a>
+      <nav aria-label="主导航">
+        {navigation.map(([label, href]) => <a key={href} href={href} aria-current={path === href ? "page" : undefined}>{label}</a>)}
+        <a href="https://github.com/ultrabababa/dev-agentops-platform" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </nav>
+    </header>
+  );
 }
 
-function StatusDot({ active }: { active: boolean }) {
-  return <span className={active ? "status-dot active" : "status-dot"} />;
+function LoadingState() {
+  return <div className="loading-page" aria-busy="true" aria-label="正在读取正式评测数据"><div><span>PUBLIC EVALUATION EXPLORER</span><h1>正在读取冻结实验数据</h1><p>Overview · Conditions · Experiment Evolution</p></div><i /></div>;
+}
+
+function ErrorState({ message, retry }: { message: string; retry: () => void }) {
+  return (
+    <main className="error-page" id="main" role="alert">
+      <p className="eyebrow">Evaluation data unavailable</p><h1>产品说明仍可阅读，实验事实暂不展示。</h1>
+      <p>首页没有用静态值替代失败的 API 响应。请确认 FastAPI 与 Phase 1 showcase data 可用后重试。</p>
+      <code>{message}</code><button type="button" onClick={retry}>重新读取</button>
+    </main>
+  );
+}
+
+function Placeholder({ path }: { path: string }) {
+  const [title, description] = placeholderCopy[path] ?? ["页面不存在", "返回项目概览继续浏览。"];
+  return <main className="placeholder-page" id="main"><p className="eyebrow">Phase 2A · Route prepared</p><h1>{title}</h1><p>{description}</p><a className="text-link" href="/">← 返回项目概览</a></main>;
+}
+
+function SiteFooter() {
+  return <footer className="site-footer"><div><strong>DevAgentOps</strong><p>Evaluation-driven runtime engineering for reproducible agent failure triage.</p></div><div><span>Frozen inputs</span><span>Deterministic scoring</span><span>Reproducible provenance</span></div></footer>;
 }
 
 function App() {
-  const [status, setStatus] = useState<DashboardStatus | null>(null);
+  const path = window.location.pathname.replace(/\/$/, "") || "/";
+  const [data, setData] = useState<HomepageData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-
-  const loadStatus = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const [health, version, storage] = await Promise.all([
-        fetchJson<HealthResponse>("/health"),
-        fetchJson<VersionResponse>("/version"),
-        fetchJson<StorageStatus>("/storage/status"),
-      ]);
-      setStatus({ health, version, storage });
-      setLastUpdated(new Date());
-    } catch (requestError) {
-      const message =
-        requestError instanceof Error ? requestError.message : "未知错误";
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void loadStatus();
-  }, [loadStatus]);
-
-  const apiHealthy = status?.health.status === "ok";
-
+  const [loading, setLoading] = useState(path === "/");
+  const load = useCallback(async () => {
+    if (path !== "/") return;
+    setLoading(true); setError(null);
+    try { setData(await getHomepageData()); }
+    catch (requestError) { setError(requestError instanceof Error ? requestError.message : "未知 API 错误"); }
+    finally { setLoading(false); }
+  }, [path]);
+  useEffect(() => { void load(); }, [load]);
   return (
     <div className="app-shell">
-      <header className="topbar">
-        <a className="brand" href="#main" aria-label="DevAgentOps 首页">
-          <span className="brand-mark">DA</span>
-          <span>
-            <strong>DevAgentOps</strong>
-            <small>Evaluation Foundation</small>
-          </span>
-        </a>
-        <div className="environment-pill">
-          <StatusDot active={apiHealthy} />
-          Local V1
-        </div>
-      </header>
-
-      <main id="main">
-        <section className="hero">
-          <div>
-            <p className="eyebrow">Issue #3 · Application smoke path</p>
-            <h1>本地评测基础设施状态</h1>
-            <p className="hero-copy">
-              从 CLI、SQLite 到 FastAPI 与 React 的最小只读链路。当前页面只展示真实系统状态，不触发 Agent、评测或数据写入。
-            </p>
-          </div>
-          <div className="refresh-cluster">
-            <button type="button" onClick={() => void loadStatus()} disabled={loading}>
-              {loading ? "正在读取…" : "刷新状态"}
-            </button>
-            <small aria-live="polite">
-              {lastUpdated
-                ? `更新于 ${lastUpdated.toLocaleTimeString("zh-CN", {
-                    hour12: false,
-                  })}`
-                : "等待首次读取"}
-            </small>
-          </div>
-        </section>
-
-        {error ? (
-          <section className="error-panel" role="alert">
-            <p className="eyebrow">Backend unavailable</p>
-            <h2>无法读取后端状态</h2>
-            <p>
-              请确认 FastAPI 已在 <code>127.0.0.1:8000</code> 启动。请求结果：
-              <code>{error}</code>
-            </p>
-            <button type="button" onClick={() => void loadStatus()}>
-              重新连接
-            </button>
-          </section>
-        ) : null}
-
-        {!error && loading && !status ? (
-          <section className="status-grid" aria-label="正在读取后端状态">
-            <div className="status-card skeleton-card" />
-            <div className="status-card skeleton-card" />
-            <div className="status-card storage-card skeleton-card" />
-          </section>
-        ) : null}
-
-        {!error && status ? (
-          <section className="status-grid" aria-label="后端状态">
-            <article className="status-card">
-              <div className="card-heading">
-                <span className="card-index">01</span>
-                <span className={apiHealthy ? "state-tag good" : "state-tag bad"}>
-                  {apiHealthy ? "API 在线" : "API 异常"}
-                </span>
-              </div>
-              <div>
-                <p className="card-label">FastAPI health</p>
-                <h2>{status.health.status}</h2>
-              </div>
-              <p className="card-note">HTTP 服务能够接收并响应请求。</p>
-            </article>
-
-            <article className="status-card">
-              <div className="card-heading">
-                <span className="card-index">02</span>
-                <span className="state-tag neutral">Build identity</span>
-              </div>
-              <div>
-                <p className="card-label">Application version</p>
-                <h2>v{status.version.version}</h2>
-              </div>
-              <p className="card-note">由 Python 包版本提供，而不是前端写死。</p>
-            </article>
-
-            <article className="status-card storage-card">
-              <div className="card-heading">
-                <span className="card-index">03</span>
-                <span
-                  className={
-                    status.storage.initialized ? "state-tag good" : "state-tag neutral"
-                  }
-                >
-                  {status.storage.initialized ? "已初始化" : "尚未初始化"}
-                </span>
-              </div>
-
-              <div className="storage-summary">
-                <div>
-                  <p className="card-label">SQLite storage</p>
-                  <h2>{status.storage.exists ? "Ready" : "Not created"}</h2>
-                </div>
-                <dl>
-                  <div>
-                    <dt>Schema</dt>
-                    <dd>{status.storage.schema_version ?? "—"}</dd>
-                  </div>
-                  <div>
-                    <dt>Tables</dt>
-                    <dd>{status.storage.table_count}</dd>
-                  </div>
-                </dl>
-              </div>
-
-              <div className="path-row">
-                <span>Resolved path</span>
-                <code>{status.storage.path}</code>
-              </div>
-
-              <div className="table-list" aria-label="SQLite 数据表">
-                {status.storage.tables.length > 0 ? (
-                  status.storage.tables.map((table) => <code key={table}>{table}</code>)
-                ) : (
-                  <span>当前数据库没有可展示的表。</span>
-                )}
-              </div>
-            </article>
-          </section>
-        ) : null}
-
-        <section className="boundary-strip" aria-label="V1 边界">
-          <div>
-            <p className="eyebrow">Current boundary</p>
-            <h2>只读观察，不执行任务</h2>
-          </div>
-          <ul>
-            <li>无模型 API</li>
-            <li>无外部服务</li>
-            <li>不修改数据库</li>
-          </ul>
-        </section>
-      </main>
-
-      <footer>
-        <span>CLI</span>
-        <i>→</i>
-        <span>SQLite</span>
-        <i>→</i>
-        <span>FastAPI</span>
-        <i>→</i>
-        <span>React</span>
-      </footer>
+      <a className="skip-link" href="#main">跳到主要内容</a><SiteHeader path={path} />
+      {path !== "/" ? <Placeholder path={path} /> : loading && !data ? <LoadingState /> : error || !data ? <ErrorState message={error ?? "API 未返回数据"} retry={() => void load()} /> : <main id="main"><Homepage data={data} /></main>}
+      <SiteFooter />
     </div>
   );
 }
