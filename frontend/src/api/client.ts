@@ -33,3 +33,21 @@ export async function getHomepageData(): Promise<HomepageData> {
   }
   return { overview, conditions, evolution };
 }
+
+export async function getConditions(): Promise<Condition[]> {
+  const conditions = await fetchJson<Condition[]>("/conditions");
+  if (conditions.length !== 5 || !conditions.some((condition) => condition.condition === "Oracle")) {
+    throw new Error("Condition API 响应不完整");
+  }
+  return conditions;
+}
+
+export async function getCondition(condition: Condition["condition"]): Promise<Condition> {
+  const detail = await fetchJson<Condition>(`/conditions/${condition.toLowerCase()}`);
+  if (detail.condition !== condition) throw new Error(`Condition API 返回了错误身份：${detail.condition}`);
+  return detail;
+}
+
+export async function getEvolution(): Promise<Evolution> {
+  return fetchJson<Evolution>("/experiments/evolution");
+}

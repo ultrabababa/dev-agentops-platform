@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { getHomepageData } from "./api/client";
-import type { HomepageData } from "./api/types";
+import type { ConditionId, HomepageData } from "./api/types";
+import { ConditionDetailPage } from "./pages/ConditionDetailPage";
+import { ConditionOverviewPage } from "./pages/ConditionOverviewPage";
 import { Homepage } from "./pages/Homepage";
 
 const navigation = [
@@ -10,12 +12,6 @@ const navigation = [
 ] as const;
 
 const placeholderCopy: Record<string, [string, string]> = {
-  "/conditions": ["实验条件", "Condition 总览已在首页呈现；详细条件页将在后续阶段开放。"],
-  "/conditions/l1": ["L1 · Full Context / One Shot", "完整 Condition 证据页将在后续阶段开放。"],
-  "/conditions/l2": ["L2 · Fixed Model Workflow", "完整 Condition 证据页将在后续阶段开放。"],
-  "/conditions/l3": ["L3 · Static Retrieval", "完整 Condition 证据页将在后续阶段开放。"],
-  "/conditions/l4": ["L4 · Self-built ReAct Runtime", "完整 Condition 证据页将在后续阶段开放。"],
-  "/conditions/oracle": ["Oracle · Diagnostic Condition", "Oracle 是正交诊断干预，不是更高的 Runtime rung。详细证据页将在后续阶段开放。"],
   "/runs": ["正式实验", "Runs Explorer 将在后续阶段开放。"],
   "/compare": ["实验对比", "完整 comparison page 将在后续阶段开放。"],
   "/cases": ["Cases", "Case drill-down 将在后续阶段开放。"],
@@ -29,7 +25,10 @@ function SiteHeader({ path }: { path: string }) {
         <span><strong>DevAgentOps</strong><small>Evaluation Explorer</small></span>
       </a>
       <nav aria-label="主导航">
-        {navigation.map(([label, href]) => <a key={href} href={href} aria-current={path === href ? "page" : undefined}>{label}</a>)}
+        {navigation.map(([label, href]) => {
+          const active = path === href || (href === "/conditions" && path.startsWith("/conditions/"));
+          return <a key={href} href={href} aria-current={active ? "page" : undefined}>{label}</a>;
+        })}
         <a href="https://github.com/ultrabababa/dev-agentops-platform" target="_blank" rel="noreferrer">GitHub ↗</a>
       </nav>
     </header>
@@ -61,6 +60,8 @@ function SiteFooter() {
 
 function App() {
   const path = window.location.pathname.replace(/\/$/, "") || "/";
+  const detailMatch = path.match(/^\/conditions\/(l1|l2|l3|l4|oracle)$/);
+  const detailId = detailMatch ? (detailMatch[1] === "oracle" ? "Oracle" : detailMatch[1].toUpperCase()) as ConditionId : null;
   const [data, setData] = useState<HomepageData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(path === "/");
@@ -75,7 +76,7 @@ function App() {
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main">跳到主要内容</a><SiteHeader path={path} />
-      {path !== "/" ? <Placeholder path={path} /> : loading && !data ? <LoadingState /> : error || !data ? <ErrorState message={error ?? "API 未返回数据"} retry={() => void load()} /> : <main id="main"><Homepage data={data} /></main>}
+      {path === "/conditions" ? <ConditionOverviewPage /> : detailId ? <ConditionDetailPage id={detailId} /> : path !== "/" ? <Placeholder path={path} /> : loading && !data ? <LoadingState /> : error || !data ? <ErrorState message={error ?? "API 未返回数据"} retry={() => void load()} /> : <main id="main"><Homepage data={data} /></main>}
       <SiteFooter />
     </div>
   );
