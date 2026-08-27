@@ -1,0 +1,107 @@
+/* Phase 2C interview-facing polish. Loaded after explorer.css. */
+
+/* Filters explain themselves and avoid OS-native select popovers. */
+.interview-filterbar { display: grid; grid-template-columns: 1fr; gap: 18px; align-items: stretch; padding: 26px 0 28px; }
+.interview-filterbar fieldset, .interview-sample-picker fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.interview-filterbar legend, .interview-sample-picker legend { margin-bottom: 10px; color: var(--quiet); font: 700 .72rem/1.35 var(--mono); letter-spacing: .035em; text-transform: uppercase; }
+.filter-explainer { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; max-width: 980px; }
+.filter-explainer p { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 14px; margin: 0; padding: 13px 15px; border-left: 2px solid var(--line-dark); background: color-mix(in srgb, var(--surface) 72%, transparent); }
+.filter-explainer strong { color: var(--ink); font-size: .92rem; }
+.filter-explainer span { color: var(--muted); font-size: .9rem; line-height: 1.6; }
+.filter-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.filter-chips button, .run-choice-grid button, .trace-mode button, .compact-content button { min-height: 40px; border: 1px solid var(--line-dark); border-radius: 1px; color: var(--muted); background: transparent; font-family: var(--font-sans); cursor: pointer; }
+.filter-chips button { padding: 0 14px; font-size: .9rem; font-weight: 570; }
+.filter-chips button:hover, .run-choice-grid button:hover, .filter-chips button[aria-pressed="true"], .run-choice-grid button[aria-pressed="true"] { color: var(--ink); border-color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); }
+.filter-chips button[aria-pressed="true"], .run-choice-grid button[aria-pressed="true"] { box-shadow: inset 0 -3px 0 var(--signal); }
+.filter-count { justify-self: end; color: var(--quiet); font: .76rem/1.5 var(--mono); }
+
+/* Runs list: fewer, more useful numbers and a stable action column. */
+.runs-table th:nth-child(1) { width: 24%; }.runs-table th:nth-child(2) { width: 21%; }.runs-table th:nth-child(3) { width: 11%; }.runs-table th:nth-child(4) { width: 29%; }.runs-table th:nth-child(5) { width: 15%; }
+.run-key-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; min-width: 0; }
+.run-key-metrics > span:not(.sr-only) { display: grid; min-width: 0; gap: 7px; padding: 1px 10px 1px 11px; border-left: 1px solid var(--line); }
+.run-key-metrics > span:not(.sr-only):first-child { border-left: 0; padding-left: 0; }
+.run-key-metrics small { margin: 0; color: var(--quiet); font: .72rem/1.35 var(--font-sans); white-space: normal; }
+.run-key-metrics strong { color: var(--ink); font: 600 .9rem/1 var(--mono); }
+.run-start-cell time { display: block; color: var(--muted); font-size: .85rem; line-height: 1.55; white-space: normal; }
+.run-start-cell .row-action { display: flex; width: fit-content; margin-top: 8px; align-items: center; min-height: 32px; white-space: nowrap; }
+
+/* Metrics are useful only when the viewer knows what they mean. */
+.metric-guide { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: 18px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.metric-guide > div { min-width: 0; padding: 14px 15px 16px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.metric-guide strong { display: block; margin-bottom: 7px; color: var(--ink); font: 650 .76rem/1.4 var(--mono); }
+.metric-guide span { color: var(--muted); font-size: .86rem; line-height: 1.55; }
+
+/* Case detail: only the five representative Conditions are offered by default. */
+.interview-sample-picker { grid-template-columns: 1fr; gap: 22px; align-items: start; }
+.run-choice-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.run-choice-grid button { display: grid; gap: 5px; min-height: 72px; padding: 12px 13px; text-align: left; }
+.run-choice-grid strong { color: var(--ink); font: 700 .85rem/1.2 var(--mono); }
+.run-choice-grid span { font-size: .82rem; line-height: 1.35; }
+.interview-sample-picker .segmented-control { width: fit-content; }
+.interview-sample-picker .button.primary { width: fit-content; }
+.secondary-link { width: fit-content; color: var(--signal); font-size: .85rem; font-weight: 600; text-decoration: none; }
+
+/* Dense result tables prefer the readable label; canonical snake_case remains in detail views. */
+.aggregate-grid .failure-type-display code, .case-aggregate-table .failure-type-display code { display: none; }
+.aggregate-grid h3 { min-height: 42px; }
+
+/* Sample header/context stays aligned and prioritizes the evidence viewer. */
+.sample-context-bar { align-items: center; }
+.sample-context-bar > div:first-child { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.sample-context-bar .failure-type-display { display: inline-flex; }
+.sample-context-bar > div:last-child { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; }
+.sample-tabs button { display: grid; place-items: center; gap: 3px; min-height: 58px; padding: 8px 10px; }
+.sample-tabs button > span { color: inherit; font-size: .9rem; font-weight: 620; }
+.sample-tabs button > small { color: var(--quiet); font: .65rem/1.2 var(--mono); }
+.sample-tabs button[aria-selected="true"] > small { color: var(--muted); }
+
+/* A 30-second summary precedes optional raw evidence. */
+.timeline-explainer { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 16px; align-items: baseline; }
+.timeline-explainer strong { color: var(--signal); }
+.timeline-explainer span { color: var(--ink); font-size: 1rem; font-weight: 600; }
+.timeline-explainer p { grid-column: 2; max-width: 760px; margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.6; }
+.journey-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 16px 0 24px; border-top: 1px solid var(--ink); border-left: 1px solid var(--line); }
+.journey-summary > div { display: grid; gap: 8px; min-width: 0; padding: 13px 15px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.journey-summary span { color: var(--muted); font-size: .8rem; }
+.journey-summary strong { color: var(--ink); font: 600 1.05rem/1.2 var(--mono); }
+.compact-content { display: grid; gap: 0; }
+.compact-content .visible-content { margin-bottom: 0; border-bottom: 0; }
+.compact-content button, .trace-mode button { width: fit-content; min-height: 36px; padding: 0 11px; color: var(--signal); border-color: var(--line); border-top: 0; font-size: .78rem; font-weight: 620; }
+.compact-trajectory .trajectory-message { padding-bottom: 18px; }
+.compact-trajectory .trajectory-message article > header { margin-bottom: 10px; }
+.compact-trajectory .visible-content { max-width: 100%; font-size: .78rem; line-height: 1.55; }
+.canonical-inline { margin-left: 5px; color: var(--quiet); font: 650 .62rem/1 var(--mono); }
+.trace-mode { display: flex; justify-content: flex-end; margin: -10px 0 14px; }
+.trace-mode button { border-top: 1px solid var(--line-dark); }
+.compact-trace > li { padding-bottom: 14px; }
+.compact-trace article > header > div { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: baseline; }
+.compact-trace article > header code { color: var(--quiet); font-size: .66rem; }
+.compact-trace article > header time { white-space: nowrap; }
+
+/* Raw technical strings can wrap; human labels should not break arbitrarily. */
+.failure-type-display > span, .run-primary a, .run-role > span, .explorer-metrics dt, .aggregate-grid dt { overflow-wrap: normal; word-break: normal; hyphens: none; }
+.failure-type-display code, .provenance-sheet code, .case-fingerprint-band code, .evidence-list code, .tool-block code, .visible-content { overflow-wrap: anywhere; }
+
+@media (max-width: 1120px) {
+  .filter-explainer { grid-template-columns: 1fr; }
+  .metric-guide { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .run-choice-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .runs-table th:nth-child(1) { width: 25%; }.runs-table th:nth-child(2) { width: 20%; }.runs-table th:nth-child(4) { width: 31%; }.runs-table th:nth-child(5) { width: 13%; }
+}
+
+@media (max-width: 760px) {
+  .filter-explainer p { grid-template-columns: 1fr; gap: 5px; }
+  .filter-count { justify-self: start; }
+  .metric-guide, .journey-summary { grid-template-columns: 1fr; }
+  .run-choice-grid { grid-template-columns: 1fr 1fr; }
+  .sample-tabs button { min-width: 118px; }
+  .compact-trace article > header > div { grid-template-columns: 1fr; gap: 4px; }
+  .sample-context-bar > div:last-child { justify-content: flex-start; }
+  .timeline-explainer { grid-template-columns: 1fr; }
+  .timeline-explainer p { grid-column: 1; }
+}
+
+@media (max-width: 460px) {
+  .run-choice-grid { grid-template-columns: 1fr; }
+  .filter-chips button { flex: 1 1 auto; }
+}
