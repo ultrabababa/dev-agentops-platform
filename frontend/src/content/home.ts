@@ -16,8 +16,8 @@ export const conditionCopy = {
     question: "让模型自己决定何时调用 read / grep / find / ls 等工具后，诊断过程会发生什么变化？",
   },
   Oracle: {
-    name: "Evaluator-controlled Evidence intervention",
-    question: "如果直接把关键 Evidence 提供给模型，模型本身还能做到什么？",
+    name: "Selected Source Evidence / One Shot",
+    question: "如果绕过 Evidence discovery，直接提供关键原始证据片段，模型还能做到什么？",
   },
 } as const;
 
@@ -31,7 +31,7 @@ export const metricLabels = [
 
 export const evaluationPrinciples = [
   ["Frozen Inputs", "冻结输入，避免 benchmark 在运行间漂移"],
-  ["Evaluator Isolation", "普通 Conditions 中，Expected Answer 与 evaluator Required Evidence 不进入模型输入；Oracle 是显式标记的诊断干预例外。"],
+  ["Evaluator Isolation", "普通 Conditions 不暴露 Expected Answer 或 evaluator 的 evidence selection；Oracle 仅暴露该 selection 定位出的原始证据片段，并继续隐藏答案、evaluator 标签和选择理由。"],
   ["Deterministic Scoring", "Structured Report 由确定性的 validator / scorer 评分，避免人工主观打分。"],
   ["Reproducible Provenance", "保存 Run / Suite / Condition / Treatment fingerprints，让每个结果都能追溯到具体实验配置。"],
 ] as const;
