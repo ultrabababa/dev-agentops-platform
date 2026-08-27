@@ -1,4 +1,4 @@
-import type { Condition, Evolution, HomepageData, Overview } from "./types";
+import type { CaseMetadata, Condition, Evolution, HomepageData, Overview, Run, RunCaseAggregate, Sample, TraceResponse, TrajectoryResponse } from "./types";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "/api";
 
@@ -51,3 +51,13 @@ export async function getCondition(condition: Condition["condition"]): Promise<C
 export async function getEvolution(): Promise<Evolution> {
   return fetchJson<Evolution>("/experiments/evolution");
 }
+
+export const getOverview = () => fetchJson<Overview>("/overview");
+export const getRuns = () => fetchJson<Run[]>("/runs");
+export const getRun = (runId: string) => fetchJson<Run>(`/runs/${encodeURIComponent(runId)}`);
+export const getRunCases = (runId: string) => fetchJson<RunCaseAggregate[]>(`/runs/${encodeURIComponent(runId)}/cases`);
+export const getCases = () => fetchJson<CaseMetadata[]>("/cases");
+export const getCase = (caseId: string) => fetchJson<CaseMetadata>(`/cases/${encodeURIComponent(caseId)}`);
+export const getSample = (runId: string, caseId: string, repeat: number) => fetchJson<Sample>(`/runs/${encodeURIComponent(runId)}/cases/${encodeURIComponent(caseId)}/${repeat}`);
+export const getTrajectory = (runId: string, caseId: string, repeat: number) => fetchJson<TrajectoryResponse>(`/runs/${encodeURIComponent(runId)}/cases/${encodeURIComponent(caseId)}/${repeat}/trajectory`);
+export const getTrace = (runId: string, caseId: string, repeat: number) => fetchJson<TraceResponse>(`/runs/${encodeURIComponent(runId)}/cases/${encodeURIComponent(caseId)}/${repeat}/trace`);

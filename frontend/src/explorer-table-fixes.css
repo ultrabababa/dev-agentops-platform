@@ -1,0 +1,48 @@
+/* Phase 2C table-structure fixes. Loaded after Explorer polish styles. */
+
+/* Keep table cells as real table cells so every column shares one row height.
+   The row number is a separate visual gutter; Case content starts at the same
+   vertical position as the other data columns. */
+.cases-table td:first-child {
+  display: table-cell;
+}
+
+.cases-table th:nth-child(1) { width: 4%; }
+.cases-table th:nth-child(2) { width: 22%; }
+.cases-table th:nth-child(3) { width: 20%; }
+.cases-table th:nth-child(4) { width: 12%; }
+.cases-table th:nth-child(5) { width: 28%; }
+.cases-table th:nth-child(6) { width: 14%; }
+
+.case-index-head,
+.case-index-cell {
+  padding-right: 10px !important;
+}
+
+.case-index-cell {
+  vertical-align: top;
+}
+
+.case-index-cell .case-sequence {
+  display: block;
+  min-width: 0;
+  padding-top: 2px;
+  font-size: .72rem;
+  line-height: 1.5;
+}
+
+.case-primary {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .cases-table .case-index-cell {
+    display: none;
+  }
+
+  .case-primary {
+    min-width: 0;
+  }
+}

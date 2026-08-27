@@ -5,6 +5,11 @@ import type { ConditionId, HomepageData } from "./api/types";
 import { ConditionDetailPage } from "./pages/ConditionDetailPage";
 import { ConditionOverviewPage } from "./pages/ConditionOverviewPage";
 import { Homepage } from "./pages/Homepage";
+import { RunsPage } from "./pages/RunsPage";
+import { RunDetailPage } from "./pages/RunDetailPage";
+import { CasesPage } from "./pages/CasesPage";
+import { CaseDetailPage } from "./pages/CaseDetailPage";
+import { SampleDetailPage } from "./pages/SampleDetailPage";
 
 const navigation = [
   ["项目概览", "/"], ["实验条件", "/conditions"], ["正式实验", "/runs"],
@@ -12,9 +17,7 @@ const navigation = [
 ] as const;
 
 const placeholderCopy: Record<string, [string, string]> = {
-  "/runs": ["正式实验", "Runs Explorer 将在后续阶段开放。"],
   "/compare": ["实验对比", "完整 comparison page 将在后续阶段开放。"],
-  "/cases": ["Cases", "Case drill-down 将在后续阶段开放。"],
 };
 
 function SiteHeader({ path }: { path: string }) {
@@ -26,7 +29,7 @@ function SiteHeader({ path }: { path: string }) {
       </a>
       <nav aria-label="主导航">
         {navigation.map(([label, href]) => {
-          const active = path === href || (href === "/conditions" && path.startsWith("/conditions/"));
+          const active = path === href || (href !== "/" && path.startsWith(`${href}/`));
           return <a key={href} href={href} aria-current={active ? "page" : undefined}>{label}</a>;
         })}
         <a href="https://github.com/ultrabababa/dev-agentops-platform" target="_blank" rel="noreferrer">GitHub ↗</a>
@@ -62,6 +65,9 @@ function App() {
   const path = window.location.pathname.replace(/\/$/, "") || "/";
   const detailMatch = path.match(/^\/conditions\/(l1|l2|l3|l4|oracle)$/);
   const detailId = detailMatch ? (detailMatch[1] === "oracle" ? "Oracle" : detailMatch[1].toUpperCase()) as ConditionId : null;
+  const runDetailMatch = path.match(/^\/runs\/([^/]+)$/);
+  const sampleMatch = path.match(/^\/runs\/([^/]+)\/cases\/([^/]+)\/(\d+)$/);
+  const caseDetailMatch = path.match(/^\/cases\/([^/]+)$/);
   const [data, setData] = useState<HomepageData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(path === "/");
@@ -73,10 +79,22 @@ function App() {
     finally { setLoading(false); }
   }, [path]);
   useEffect(() => { void load(); }, [load]);
+  let page;
+  if (path === "/conditions") page = <ConditionOverviewPage />;
+  else if (detailId) page = <ConditionDetailPage id={detailId} />;
+  else if (path === "/runs") page = <RunsPage />;
+  else if (sampleMatch) page = <SampleDetailPage runId={decodeURIComponent(sampleMatch[1])} caseId={decodeURIComponent(sampleMatch[2])} repeat={Number(sampleMatch[3])} />;
+  else if (runDetailMatch) page = <RunDetailPage runId={decodeURIComponent(runDetailMatch[1])} />;
+  else if (path === "/cases") page = <CasesPage />;
+  else if (caseDetailMatch) page = <CaseDetailPage caseId={decodeURIComponent(caseDetailMatch[1])} />;
+  else if (path !== "/") page = <Placeholder path={path} />;
+  else if (loading && !data) page = <LoadingState />;
+  else if (error || !data) page = <ErrorState message={error ?? "API 未返回数据"} retry={() => void load()} />;
+  else page = <main id="main"><Homepage data={data} /></main>;
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main">跳到主要内容</a><SiteHeader path={path} />
-      {path === "/conditions" ? <ConditionOverviewPage /> : detailId ? <ConditionDetailPage id={detailId} /> : path !== "/" ? <Placeholder path={path} /> : loading && !data ? <LoadingState /> : error || !data ? <ErrorState message={error ?? "API 未返回数据"} retry={() => void load()} /> : <main id="main"><Homepage data={data} /></main>}
+      {page}
       <SiteFooter />
     </div>
   );
