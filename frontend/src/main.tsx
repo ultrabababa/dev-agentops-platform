@@ -10,6 +10,8 @@ import "./font-system.css";
 import "./explorer.css";
 import "./explorer-interview-polish.css";
 import "./explorer-table-fixes.css";
+import "./compare.css";
+import "./compare-final.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

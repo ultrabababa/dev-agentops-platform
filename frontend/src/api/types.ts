@@ -152,6 +152,68 @@ export type Run = {
   failure_type_aggregates: FailureTypeAggregate[];
 };
 
+export type ComparisonPreset = {
+  id: string;
+  run_a: string;
+  run_b: string;
+  category: ComparisonSemanticCategory;
+  artifact: string | null;
+};
+
+export type ComparisonCompatibility = {
+  same_suite: boolean;
+  same_suite_fingerprint: boolean;
+  same_model_configuration: boolean;
+  same_evaluation_method: boolean;
+  same_output_contract: boolean;
+  same_code_revision: boolean;
+  same_runtime_variant: boolean;
+  same_treatment: boolean;
+};
+
+export type FormalMetricComparison = {
+  label: string;
+  a: number;
+  b: number;
+  delta_pp: number;
+};
+
+export type RuntimeMetricComparison = { a: number; b: number };
+
+export type RuntimeOptimizationComparison = {
+  artifact_id: string;
+  authority: "milestone_artifact";
+  interpretation: "efficiency_reproduced_no_reproducible_material_quality_regression_demonstrated" | string;
+  metrics: {
+    model_decisions: RuntimeMetricComparison;
+    executed_tool_calls: RuntimeMetricComparison;
+    input_tokens: RuntimeMetricComparison;
+    output_tokens: RuntimeMetricComparison;
+    total_tokens: RuntimeMetricComparison;
+    run_wall_time_seconds: RuntimeMetricComparison;
+    mean_sample_latency_seconds: RuntimeMetricComparison;
+    p50_sample_latency_seconds: RuntimeMetricComparison;
+    p95_sample_latency_seconds: RuntimeMetricComparison;
+  };
+};
+
+export type ComparisonSemanticCategory =
+  | "controlled_fresh_generation_comparison"
+  | "historical_comparison"
+  | "operational_comparison"
+  | "not_comparable";
+
+export type RunComparison = {
+  run_a: Run;
+  run_b: Run;
+  compatibility: ComparisonCompatibility;
+  semantic_category: ComparisonSemanticCategory;
+  causal_claim_supported: boolean;
+  causal_reference: string | null;
+  formal_metrics: Record<keyof FormalMetricVector, FormalMetricComparison>;
+  runtime_optimization: RuntimeOptimizationComparison | null;
+};
+
 export type FailureTypeAggregate = Aggregate & {
   failure_type: string;
 };
