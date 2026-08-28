@@ -37,15 +37,56 @@ function SiteHeader({ path }: { path: string }) {
   );
 }
 
-function LoadingState() {
-  return <div className="loading-page" aria-busy="true" aria-label="正在读取正式评测数据"><div><span>PUBLIC EVALUATION EXPLORER</span><h1>正在读取冻结实验数据</h1><p>Overview · Conditions · Experiment Evolution</p></div><i /></div>;
+function formatElapsed(seconds: number) {
+  const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
+  const remaining = (seconds % 60).toString().padStart(2, "0");
+  return `${minutes}:${remaining}`;
+}
+
+function LoadingState({ seconds }: { seconds: number }) {
+  const phase = seconds >= 50
+    ? {
+        title: "仍在等待 Evaluation API",
+        copy: "冷启动时间较长，但当前请求仍在进行。请保持页面打开；API 返回后会自动进入项目概览。",
+      }
+    : seconds >= 8
+      ? {
+          title: "正在唤醒 Evaluation API",
+          copy: "Render 免费实例可能正在从休眠中唤醒。首次访问可能需要 50 秒以上，API 就绪后页面会自动继续。",
+        }
+      : {
+          title: "正在连接 Evaluation API",
+          copy: "正在请求 Overview · Conditions · Experiment Evolution。",
+        };
+
+  return (
+    <main className="loading-page" id="main" aria-busy="true" aria-label="正在读取正式评测数据">
+      <section className="loading-panel">
+        <p className="loading-kicker">PUBLIC EVALUATION EXPLORER</p>
+        <h1 aria-live="polite">{phase.title}</h1>
+        <p className="loading-copy">{phase.copy}</p>
+        <div className="loading-elapsed" aria-label={`已等待 ${seconds} 秒`}>
+          <strong>{formatElapsed(seconds)}</strong>
+          <span>已等待</span>
+        </div>
+        <div className="loading-progress" role="progressbar" aria-label="Evaluation API 请求进行中"><i /></div>
+        <div className="loading-status" aria-label="当前加载状态">
+          <span><b>REQUEST</b> IN FLIGHT</span>
+          <span><b>DATA</b> PENDING</span>
+        </div>
+      </section>
+      <aside className="loading-context" aria-hidden="true">
+        <span>RUN</span><i /><span>RECORD</span><i /><span>SCORE</span><i /><span>ATTRIBUTE</span><i /><strong>EVOLVE</strong>
+      </aside>
+    </main>
+  );
 }
 
 function ErrorState({ message, retry }: { message: string; retry: () => void }) {
   return (
     <main className="error-page" id="main" role="alert">
       <p className="eyebrow">Evaluation data unavailable</p><h1>产品说明仍可阅读，实验事实暂不展示。</h1>
-      <p>首页没有用静态值替代失败的 API 响应。请确认 FastAPI 与 Phase 1 showcase data 可用后重试。</p>
+      <p>首页没有用静态值替代失败的 API 响应。请确认 Evaluation API 可用后重试。</p>
       <code>{message}</code><button type="button" onClick={retry}>重新读取</button>
     </main>
   );
@@ -70,14 +111,23 @@ function App() {
   const [data, setData] = useState<HomepageData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(path === "/");
+  const [waitSeconds, setWaitSeconds] = useState(0);
   const load = useCallback(async () => {
     if (path !== "/") return;
-    setLoading(true); setError(null);
+    setWaitSeconds(0); setLoading(true); setError(null);
     try { setData(await getHomepageData()); }
     catch (requestError) { setError(requestError instanceof Error ? requestError.message : "未知 API 错误"); }
     finally { setLoading(false); }
   }, [path]);
   useEffect(() => { void load(); }, [load]);
+  useEffect(() => {
+    if (!loading || data) return;
+    const startedAt = Date.now();
+    const tick = () => setWaitSeconds(Math.floor((Date.now() - startedAt) / 1000));
+    tick();
+    const timer = window.setInterval(tick, 1000);
+    return () => window.clearInterval(timer);
+  }, [loading, data]);
   let page;
   if (path === "/conditions") page = <ConditionOverviewPage />;
   else if (detailId) page = <ConditionDetailPage id={detailId} />;
@@ -88,7 +138,7 @@ function App() {
   else if (path === "/cases") page = <CasesPage />;
   else if (caseDetailMatch) page = <CaseDetailPage caseId={decodeURIComponent(caseDetailMatch[1])} />;
   else if (path !== "/") page = <Placeholder path={path} />;
-  else if (loading && !data) page = <LoadingState />;
+  else if (loading && !data) page = <LoadingState seconds={waitSeconds} />;
   else if (error || !data) page = <ErrorState message={error ?? "API 未返回数据"} retry={() => void load()} />;
   else page = <main id="main"><Homepage data={data} /></main>;
   return (

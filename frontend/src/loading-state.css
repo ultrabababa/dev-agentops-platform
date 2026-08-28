@@ -1,0 +1,163 @@
+.loading-page {
+  display: grid;
+  width: min(1200px, calc(100% - 48px));
+  min-height: calc(100vh - 190px);
+  grid-template-columns: minmax(0, 1fr) 180px;
+  align-items: center;
+  gap: clamp(42px, 7vw, 86px);
+  margin: 0 auto;
+  padding: clamp(72px, 9vw, 118px) 0;
+}
+
+.loading-panel {
+  max-width: 780px;
+}
+
+.loading-kicker {
+  margin: 0 0 18px;
+  color: var(--signal);
+  font: 700 .68rem/1.4 var(--mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.loading-page h1 {
+  max-width: 760px;
+  margin: 0 0 18px;
+  font-family: "Iowan Old Style", "Songti SC", "STSong", Georgia, serif;
+  font-size: clamp(2.35rem, 5vw, 4.35rem);
+  font-weight: 520;
+  letter-spacing: -.045em;
+  line-height: 1.08;
+}
+
+.loading-copy {
+  max-width: 690px;
+  min-height: 3.4em;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.72;
+}
+
+.loading-elapsed {
+  display: inline-grid;
+  gap: 5px;
+  margin: 34px 0 24px;
+}
+
+.loading-elapsed strong {
+  font: 500 clamp(2.7rem, 5vw, 4.3rem)/1 var(--mono);
+  letter-spacing: -.07em;
+  font-variant-numeric: tabular-nums;
+}
+
+.loading-elapsed span {
+  color: var(--quiet);
+  font: 650 .62rem/1.3 var(--mono);
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.loading-progress {
+  position: relative;
+  width: min(660px, 100%);
+  height: 3px;
+  overflow: hidden;
+  background: var(--line);
+}
+
+.loading-progress i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: block;
+  width: 28%;
+  background: var(--signal);
+  animation: devagentops-loading-sweep 1.55s ease-in-out infinite;
+}
+
+.loading-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  margin-top: 16px;
+  color: var(--quiet);
+  font: 650 .6rem/1.4 var(--mono);
+  letter-spacing: .08em;
+}
+
+.loading-status span {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.loading-status b {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.loading-context {
+  display: grid;
+  align-content: center;
+  justify-content: start;
+  color: var(--quiet);
+  font: 650 .67rem/1 var(--mono);
+  letter-spacing: .08em;
+}
+
+.loading-context span,
+.loading-context strong {
+  display: flex;
+  min-height: 31px;
+  align-items: center;
+}
+
+.loading-context strong {
+  color: var(--signal);
+}
+
+.loading-context i {
+  display: block;
+  width: 1px;
+  height: 20px;
+  margin-left: 7px;
+  background: var(--line-dark);
+}
+
+@keyframes devagentops-loading-sweep {
+  0% { transform: translateX(-110%); }
+  50% { transform: translateX(155%); }
+  100% { transform: translateX(360%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-progress i {
+    width: 42%;
+    animation: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .loading-page {
+    width: min(100% - 32px, 680px);
+    min-height: calc(100vh - 150px);
+    grid-template-columns: 1fr;
+    gap: 34px;
+    padding: 60px 0 72px;
+  }
+
+  .loading-context {
+    grid-auto-flow: column;
+    grid-template-columns: repeat(9, auto);
+    align-items: center;
+    justify-content: start;
+    overflow: hidden;
+  }
+
+  .loading-context i {
+    width: 22px;
+    height: 1px;
+    margin: 0 8px;
+  }
+}
