@@ -11,3 +11,5 @@ services:
     envVars:
       - key: DEVAGENTOPS_SHOWCASE_CATALOG_PATH
         value: showcase-data/catalog.json
+      - key: DEVAGENTOPS_CORS_ORIGINS
+        value: https://devagentops.onrender.com
