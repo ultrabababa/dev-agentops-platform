@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: devagentops-showcase-api
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -e .
+    startCommand: uvicorn devagentops.api:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: DEVAGENTOPS_SHOWCASE_CATALOG_PATH
+        value: showcase-data/catalog.json
