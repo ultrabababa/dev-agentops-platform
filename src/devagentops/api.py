@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from devagentops import __version__
 from devagentops.config import DEFAULT_DATABASE_PATH
@@ -12,6 +13,7 @@ DEFAULT_SHOWCASE_CATALOG_PATH = (
     Path(__file__).resolve().parents[2] / "showcase-data" / "catalog.json"
 )
 SHOWCASE_CATALOG_ENV = "DEVAGENTOPS_SHOWCASE_CATALOG_PATH"
+CORS_ORIGINS_ENV = "DEVAGENTOPS_CORS_ORIGINS"
 
 
 def configured_showcase_catalog_path() -> Path | None:
@@ -33,12 +35,44 @@ def configured_showcase_catalog_path() -> Path | None:
     return None
 
 
+def configured_cors_origins() -> list[str]:
+    configured = os.environ.get(CORS_ORIGINS_ENV)
+    if configured is None:
+        return []
+
+    origins: list[str] = []
+    for raw_origin in configured.split(","):
+        origin = raw_origin.strip().rstrip("/")
+        if not origin:
+            continue
+        if not origin.startswith(("http://", "https://")):
+            raise RuntimeError(
+                f"{CORS_ORIGINS_ENV} contains an invalid origin: {raw_origin.strip()}"
+            )
+        if origin not in origins:
+            origins.append(origin)
+
+    if not origins:
+        raise RuntimeError(f"{CORS_ORIGINS_ENV} is configured but empty")
+    return origins
+
+
 def create_app(
     database_path: Path,
     *,
     explorer_catalog_path: Path | None = None,
+    cors_origins: list[str] | None = None,
 ) -> FastAPI:
     app = FastAPI(title="DevAgentOps", version=__version__)
+
+    if cors_origins:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=cors_origins,
+            allow_credentials=False,
+            allow_methods=["GET"],
+            allow_headers=["*"],
+        )
 
     @app.get("/health")
     def health():
@@ -67,4 +101,5 @@ def create_app(
 app = create_app(
     DEFAULT_DATABASE_PATH,
     explorer_catalog_path=configured_showcase_catalog_path(),
+    cors_origins=configured_cors_origins(),
 )

@@ -1,9 +1,10 @@
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 
 from devagentops import __version__
-from devagentops.api import app, create_app
+from devagentops.api import CORS_ORIGINS_ENV, app, configured_cors_origins, create_app
 from devagentops.cli import main
 from devagentops.storage.database import initialize_database
 
@@ -66,3 +67,43 @@ def test_default_api_reads_database_initialized_by_cli(
     assert response.json()["path"] == str(
         (tmp_path / ".devagentops" / "devagentops.db").resolve()
     )
+
+
+def test_configured_cors_origins_normalizes_and_deduplicates(monkeypatch) -> None:
+    monkeypatch.setenv(
+        CORS_ORIGINS_ENV,
+        " https://showcase.example/ ,http://127.0.0.1:5173,https://showcase.example ",
+    )
+
+    assert configured_cors_origins() == [
+        "https://showcase.example",
+        "http://127.0.0.1:5173",
+    ]
+
+
+def test_configured_cors_origins_rejects_invalid_origin(monkeypatch) -> None:
+    monkeypatch.setenv(CORS_ORIGINS_ENV, "showcase.example")
+
+    with pytest.raises(RuntimeError, match="invalid origin"):
+        configured_cors_origins()
+
+
+def test_cors_allows_only_configured_showcase_origin(tmp_path: Path) -> None:
+    cors_client = TestClient(
+        create_app(
+            tmp_path / "devagentops.db",
+            cors_origins=["https://showcase.example"],
+        )
+    )
+
+    allowed = cors_client.get(
+        "/health",
+        headers={"Origin": "https://showcase.example"},
+    )
+    blocked = cors_client.get(
+        "/health",
+        headers={"Origin": "https://unlisted.example"},
+    )
+
+    assert allowed.headers["access-control-allow-origin"] == "https://showcase.example"
+    assert "access-control-allow-origin" not in blocked.headers
