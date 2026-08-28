@@ -1,8 +1,24 @@
 # DevAgentOps
 
-DevAgentOps 是一个面向 **CI / Test Failure Triage** 的 Agent Runtime 与 Formal Evaluation 平台。
+<p align="center">
+  <a href="https://devagentops.onrender.com">
+    <img src="docs/assets/devagentops-hero-cn.png" alt="DevAgentOps — 面向 CI / 测试失败归因的 Agent Runtime 与形式化评测平台" width="100%">
+  </a>
+</p>
 
-**Live Demo:** https://devagentops.onrender.com
+<p align="center">
+  <a href="https://devagentops.onrender.com"><strong>在线演示</strong></a>
+  ·
+  <a href="#formal-evaluation">Formal Evaluation</a>
+  ·
+  <a href="#l4-self-built-react-runtime">Agent Runtime</a>
+  ·
+  <a href="#four-experiments-that-drove-runtime-evolution">Experiments</a>
+  ·
+  <a href="#documentation-map">Docs</a>
+</p>
+
+DevAgentOps 是一个面向 **CI / Test Failure Triage** 的 Agent Runtime 与 Formal Evaluation 平台。
 
 它把真实工程失败冻结为可重放的 Offline Case Environment，让不同 Runtime、Evidence Acquisition 与 Agent-control Treatment 在同一 Suite、同一 Ground Truth 和同一 Scorer 下运行，并把执行、评分和归因证据完整保留下来。
 
@@ -212,6 +228,12 @@ Oracle  85.40%
 
 公网展示：**https://devagentops.onrender.com**
 
+<p align="center">
+  <a href="https://devagentops.onrender.com">
+    <img src="docs/assets/evaluation-explorer-home.png" alt="DevAgentOps Public Evaluation Explorer 首页" width="100%">
+  </a>
+</p>
+
 Explorer 是只读的 interviewer-facing evidence surface，覆盖：
 
 - 项目概览与 Evaluation-driven development 主线；
@@ -310,7 +332,7 @@ Current-facing docs：
 10. [Public Showcase Deployment](docs/showcase-deployment.md) — deployed Explorer topology and operations;
 11. [Milestone Status Index](docs/evaluation/milestones/README.md) — dated formal experiment history.
 
-Historical ADRs, dated milestone docs, Case review packets and merged PR discussions intentionally preserve historical wording and are not retroactively rewritten.
+Historical ADRs, dated milestone docs, Case review packets and merged PR discussions intentionally preserve historical wording and are not retroactively rewritten。
 
 ## Current direction
 
