@@ -14,22 +14,7 @@ Use the default five-label triage vocabulary: `needs-triage`, `needs-info`, `rea
 
 This is a single-context repo with one root `CONTEXT.md` and root `docs/adr/`. See `docs/agents/domain.md`.
 
-## Learning collaboration
-
-When the user is learning:
-
-- Teach primarily through short conversational prompts, not generated HTML or web pages.
-- Let the user think and write tests or implementation first; write complete functionality only when explicitly asked.
-- Advance in small loops: explain failures, then provide graduated hints.
-- Keep personal issue learning notes local; do not stage, commit, or publish them.
-
-## Local issue learning notes
-
-`docs/issues-notes/` is an ignored, local-only area for the user's personal learning and review material. Do not treat it as an implementation requirements source, and never stage, commit, or publish its contents.
-
-AI agents must not proactively create or edit local issue notes. Help with a local note only when the user explicitly requests that specific note or section, and preserve sections intended for the user's own understanding or reflection.
-
-When implementing or triaging issues, use these sources of truth instead:
+When implementing or triaging issues, use these sources of truth:
 
 - GitHub issue body and acceptance criteria.
 - Parent PRD in `docs/prd/`.
@@ -37,8 +22,6 @@ When implementing or triaging issues, use these sources of truth instead:
 - Domain glossary in `CONTEXT.md`.
 - Agent guidance in `AGENTS.md` and `docs/agents/`.
 - Existing code and tests.
-
-If a local note conflicts with any source of truth, ignore the note. If it contains a decision that should affect implementation, promote that decision into a GitHub issue, PRD update, or ADR update before relying on it.
 
 ## Subagent delegation
 
@@ -56,7 +39,6 @@ Keep the following work in the main agent:
 - Integrating results, reviewing every subagent change, resolving contradictions, and giving the final answer.
 - Small tasks where delegation overhead is comparable to doing the work directly.
 - Work that depends on rapid back-and-forth across shared state or would require multiple agents to edit the same files.
-- Local personal notes under `docs/issues-notes/`; keep this work in the main agent and edit it only when explicitly requested.
 
 When delegating:
 
@@ -81,6 +63,6 @@ Use one dedicated Git worktree per implementation Issue.
 - Run Claude Code, Codex, or other implementation agents from the Issue worktree, not from the primary `main` checkout.
 - Do not modify another active Issue's worktree.
 - Before removing any worktree, inspect `git status --short`. Never discard tracked, staged, or untracked files without first determining whether they are still needed.
-- After the PR is merged, update `main`, verify the Issue worktree is clean, remove the worktree, prune worktree metadata, and delete the obsolete local and remote Issue branches.
+- After the PR is merged, update `main`, verify the Issue worktree is clean, remove the worktree, prune worktree metadata, and delete obsolete local and remote Issue branches.
 - If normal branch deletion reports that a branch is not fully merged, do not immediately force-delete it. Verify the PR state and commit ancestry first.
 - Use `/private/tmp` worktrees only for disposable review, reproduction, or experimental work. Use the persistent `dev-agentops-worktrees/` directory for normal Issue implementation.

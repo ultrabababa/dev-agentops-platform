@@ -11,3 +11,11 @@ build/
 dist/
 artifacts/evaluation-milestones/
 docs/issues-notes/
+
+# Local planning / learning / editor state
+.planning/
+.scratch/
+learning-records/
+learning_exercises/
+lessons/
+docs/.obsidian/
