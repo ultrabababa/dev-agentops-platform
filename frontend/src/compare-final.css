@@ -1,0 +1,60 @@
+/* Final Phase 2D refinement: make conclusion -> EDD action read as a sequence, not two forced columns. */
+
+.conclusion-decision {
+  display: block;
+  margin-top: 28px;
+  border-top: 1px solid var(--ink);
+  border-left: 1px solid var(--line);
+}
+
+.conclusion-decision > section {
+  min-width: 0;
+  padding: 22px 24px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.conclusion-decision > section:first-child h4,
+.conclusion-decision > section:first-child > p {
+  max-width: 920px;
+}
+
+.conclusion-decision > section:last-child {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 8px 24px;
+  align-items: start;
+  background: var(--signal-soft);
+}
+
+.conclusion-decision > section:last-child h3 {
+  grid-row: 1 / span 2;
+  margin: 2px 0 0;
+}
+
+.conclusion-decision > section:last-child > p {
+  grid-column: 2;
+  max-width: 920px;
+  font-weight: 620;
+}
+
+.conclusion-decision > section:last-child .decision-chain {
+  grid-column: 2;
+  margin-top: 8px;
+}
+
+@media (max-width: 760px) {
+  .conclusion-decision > section:last-child {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .conclusion-decision > section:last-child h3 {
+    grid-row: auto;
+  }
+
+  .conclusion-decision > section:last-child > p,
+  .conclusion-decision > section:last-child .decision-chain {
+    grid-column: 1;
+  }
+}

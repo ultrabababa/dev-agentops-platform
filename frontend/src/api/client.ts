@@ -1,4 +1,4 @@
-import type { CaseMetadata, Condition, Evolution, HomepageData, Overview, Run, RunCaseAggregate, Sample, TraceResponse, TrajectoryResponse } from "./types";
+import type { CaseMetadata, ComparisonPreset, Condition, Evolution, HomepageData, Overview, Run, RunCaseAggregate, RunComparison, Sample, TraceResponse, TrajectoryResponse } from "./types";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "/api";
 
@@ -54,6 +54,8 @@ export async function getEvolution(): Promise<Evolution> {
 
 export const getOverview = () => fetchJson<Overview>("/overview");
 export const getRuns = () => fetchJson<Run[]>("/runs");
+export const getComparisons = () => fetchJson<ComparisonPreset[]>("/comparisons");
+export const compareRuns = (runA: string, runB: string) => fetchJson<RunComparison>(`/compare?run_a=${encodeURIComponent(runA)}&run_b=${encodeURIComponent(runB)}`);
 export const getRun = (runId: string) => fetchJson<Run>(`/runs/${encodeURIComponent(runId)}`);
 export const getRunCases = (runId: string) => fetchJson<RunCaseAggregate[]>(`/runs/${encodeURIComponent(runId)}/cases`);
 export const getCases = () => fetchJson<CaseMetadata[]>("/cases");

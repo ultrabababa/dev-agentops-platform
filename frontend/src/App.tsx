@@ -10,15 +10,14 @@ import { RunDetailPage } from "./pages/RunDetailPage";
 import { CasesPage } from "./pages/CasesPage";
 import { CaseDetailPage } from "./pages/CaseDetailPage";
 import { SampleDetailPage } from "./pages/SampleDetailPage";
+import { ComparePage } from "./pages/ComparePage";
 
 const navigation = [
   ["项目概览", "/"], ["实验条件", "/conditions"], ["正式实验", "/runs"],
-  ["实验对比", "/compare"], ["Cases", "/cases"],
+  ["实验与归因", "/compare"], ["Cases", "/cases"],
 ] as const;
 
-const placeholderCopy: Record<string, [string, string]> = {
-  "/compare": ["实验对比", "完整 comparison page 将在后续阶段开放。"],
-};
+const placeholderCopy: Record<string, [string, string]> = {};
 
 function SiteHeader({ path }: { path: string }) {
   return (
@@ -83,6 +82,7 @@ function App() {
   if (path === "/conditions") page = <ConditionOverviewPage />;
   else if (detailId) page = <ConditionDetailPage id={detailId} />;
   else if (path === "/runs") page = <RunsPage />;
+  else if (path === "/compare") page = <ComparePage />;
   else if (sampleMatch) page = <SampleDetailPage runId={decodeURIComponent(sampleMatch[1])} caseId={decodeURIComponent(sampleMatch[2])} repeat={Number(sampleMatch[3])} />;
   else if (runDetailMatch) page = <RunDetailPage runId={decodeURIComponent(runDetailMatch[1])} />;
   else if (path === "/cases") page = <CasesPage />;
