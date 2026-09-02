@@ -4,7 +4,10 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "sync:architecture": "node scripts/sync-architecture.mjs",
+    "predev": "npm run sync:architecture",
     "dev": "vite --host 127.0.0.1",
+    "prebuild": "npm run sync:architecture",
     "build": "tsc --noEmit && vite build",
     "test": "vitest run"
   },
