@@ -13,6 +13,9 @@ https://devagentops-showcase-api.onrender.com
 
 Explorer API base
 https://devagentops-showcase-api.onrender.com/api
+
+Architecture Explorer
+https://devagentops.onrender.com/architecture
 ```
 
 The deployment intentionally separates the static frontend and read-only API:
@@ -31,6 +34,8 @@ https://devagentops-showcase-api.onrender.com
 ```
 
 The frontend stays available as a static site even when the free API instance is sleeping. The API contains no public write endpoints and reads frozen sanitized showcase data bundled with the repository.
+
+The Architecture Explorer is also static-only. Its Archify HTML/SVG assets are built from the versioned files under `docs/architecture/` and do not depend on the FastAPI process.
 
 ## Backend deployment
 
@@ -84,6 +89,26 @@ Build-time environment variable:
 VITE_API_BASE_URL=https://devagentops-showcase-api.onrender.com/api
 ```
 
+Before both `npm run dev` and `npm run build`, npm lifecycle hooks execute:
+
+```text
+npm run sync:architecture
+```
+
+`frontend/scripts/sync-architecture.mjs` copies the frozen Archify HTML/SVG outputs from:
+
+```text
+docs/architecture/
+```
+
+into the generated Vite public-assets directory:
+
+```text
+frontend/public/architecture-assets/
+```
+
+That destination is gitignored. `docs/architecture/` remains the only version-controlled source of the rendered architecture artifacts; do not maintain a second committed copy under `frontend/`.
+
 Because the Explorer uses client-side routing, the Static Site must keep this rewrite:
 
 ```text
@@ -92,7 +117,9 @@ Destination: /index.html
 Action: Rewrite
 ```
 
-Without that rewrite, direct browser refreshes on nested routes such as `/compare`, `/runs/...` or `/conditions/l4` can return a hosting-layer 404.
+Without that rewrite, direct browser refreshes on nested routes such as `/compare`, `/runs/...`, `/conditions/l4` or `/architecture` can return a hosting-layer 404.
+
+Static files under `/architecture-assets/` must continue to be served as files rather than routed through the SPA rewrite.
 
 ## CORS
 
@@ -137,7 +164,18 @@ https://devagentops.onrender.com/conditions/l4
 https://devagentops.onrender.com/runs
 https://devagentops.onrender.com/compare
 https://devagentops.onrender.com/cases
+https://devagentops.onrender.com/architecture
 ```
+
+Architecture assets should also be checked directly:
+
+```text
+https://devagentops.onrender.com/architecture-assets/system.html
+https://devagentops.onrender.com/architecture-assets/evaluation-workflow.html
+https://devagentops.onrender.com/architecture-assets/l4-runtime.html
+```
+
+Verify that the `/architecture` page can switch among all three views, render the embedded diagrams, and open each full interactive Archify document in a new tab.
 
 Then open one real Run and one Sample drill-down and verify:
 
@@ -155,6 +193,8 @@ Then open one real Run and one Sample drill-down and verify:
 The static frontend is independent of the FastAPI process. On Render's free web-service plan, the API can sleep after inactivity and the first API request after a cold period can take longer while the service wakes up.
 
 Do not interpret the first cold request latency as a DevAgentOps Runtime benchmark result. It is hosting behavior only.
+
+The `/architecture` route and `/architecture-assets/*` remain available while the API is sleeping because they are part of the static frontend deployment.
 
 ## Environment variables
 
@@ -185,7 +225,7 @@ The public deployment must remain read-only:
 - no provider reasoning/thinking;
 - no unsanitized raw message/manifest dump.
 
-The deployed Explorer is a presentation, evidence-inspection and experiment-attribution surface for already-frozen formal experiment data.
+The deployed Explorer is a presentation, evidence-inspection and experiment-attribution surface for already-frozen formal experiment data. Architecture HTML/SVG is static documentation and does not widen the API or execution boundary.
 
 ## Local preflight before deployment changes
 
@@ -196,6 +236,7 @@ pytest -q -p no:cacheprovider
 
 cd frontend
 npm ci
+npm run sync:architecture
 npm test
 npm run build
 cd ..
