@@ -1,0 +1,270 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "DevAgentOps L4 ReAct Runtime Sequence",
+    "output": "docs/architecture/l4-runtime.html",
+    "animation": "none",
+    "quality_profile": "showcase",
+    "column_fit": "spread",
+    "viewBox": [1600, 1030]
+  },
+  "participants": [
+    {
+      "id": "executor",
+      "type": "backend",
+      "label": "Condition Executor"
+    },
+    {
+      "id": "runtime",
+      "type": "backend",
+      "label": "L4 ReAct Runtime"
+    },
+    {
+      "id": "provider",
+      "type": "cloud",
+      "label": "MiniMax Provider"
+    },
+    {
+      "id": "model",
+      "type": "external",
+      "label": "MiniMax API · MiniMax-M3"
+    },
+    {
+      "id": "tools",
+      "type": "security",
+      "label": "Tool Dispatcher"
+    },
+    {
+      "id": "workspace",
+      "type": "backend",
+      "label": "Frozen Case Workspace"
+    },
+    {
+      "id": "scorer",
+      "type": "backend",
+      "label": "Deterministic Scorer"
+    },
+    {
+      "id": "trace",
+      "type": "messagebus",
+      "label": "Trace Recorder"
+    }
+  ],
+  "segments": [
+    { "from": 150, "to": 305, "label": "Initialize one L4 sample" },
+    { "from": 315, "to": 705, "label": "loop · one assistant decision = one step" },
+    { "from": 710, "to": 825, "label": "normal stops · valid report | invalid output | max_steps" },
+    { "from": 835, "to": 925, "label": "deterministic score + SampleResult" }
+  ],
+  "messages": [
+    {
+      "id": "l4-started",
+      "from": "executor",
+      "to": "trace",
+      "y": 170,
+      "label": "l4_execution_started",
+      "variant": "dashed"
+    },
+    {
+      "id": "construct-workspace",
+      "from": "executor",
+      "to": "workspace",
+      "y": 230,
+      "label": "construct controlled Case-visible workspace",
+      "variant": "security"
+    },
+    {
+      "id": "workspace-view",
+      "from": "workspace",
+      "to": "executor",
+      "y": 260,
+      "label": "public Case view · fixed members · citation coordinates",
+      "variant": "return"
+    },
+    {
+      "id": "initialize-runtime",
+      "from": "executor",
+      "to": "runtime",
+      "y": 290,
+      "label": "initial user message + validated tools/policy mode + max_steps=100",
+      "variant": "emphasis"
+    },
+    {
+      "id": "attempt-started",
+      "from": "runtime",
+      "to": "trace",
+      "y": 330,
+      "label": "model_call_started · then completed / failed per attempt",
+      "variant": "dashed"
+    },
+    {
+      "id": "logical-request",
+      "from": "runtime",
+      "to": "provider",
+      "y": 360,
+      "label": "logical request · system + complete ordered trajectory + tools",
+      "variant": "emphasis"
+    },
+    {
+      "id": "chat-completion",
+      "from": "provider",
+      "to": "model",
+      "y": 390,
+      "label": "OpenAI-compatible Chat Completions request",
+      "variant": "default"
+    },
+    {
+      "id": "native-response",
+      "from": "model",
+      "to": "provider",
+      "y": 420,
+      "label": "native assistant text / reasoning / ToolCall(s)",
+      "variant": "return"
+    },
+    {
+      "id": "typed-assistant",
+      "from": "provider",
+      "to": "runtime",
+      "y": 450,
+      "label": "typed AssistantMessage · append exactly to trajectory",
+      "variant": "return"
+    },
+    {
+      "id": "provider-attempt-error",
+      "from": "provider",
+      "to": "runtime",
+      "y": 480,
+      "label": "alt · retryable provider-attempt error",
+      "variant": "dashed"
+    },
+    {
+      "id": "same-request-retry",
+      "from": "runtime",
+      "to": "provider",
+      "y": 510,
+      "label": "retry same logical request · whole-sample retry = 0",
+      "variant": "dashed",
+      "note": "Ordinary: 2s / 4s / 8s backoffs (up to 4 attempts); timeout: one 2s backoff (up to 2 attempts); nonretryable: 1 attempt. This is not a whole-sample retry."
+    },
+    {
+      "id": "inspect-action",
+      "from": "runtime",
+      "to": "tools",
+      "y": 540,
+      "label": "dispatch ToolCall(s) under prevalidated policy mode",
+      "variant": "security",
+      "note": "Frozen registry and policy semantics are validated before runtime startup. Each ToolCall then passes through the selected runtime policy mode, tool allowlist/schema validation, and controlled workspace path boundary."
+    },
+    {
+      "id": "controlled-execution",
+      "from": "tools",
+      "to": "workspace",
+      "y": 570,
+      "label": "validate tool allowlist + argument schema; execute controlled read-only call(s)",
+      "variant": "security"
+    },
+    {
+      "id": "bounded-observation",
+      "from": "workspace",
+      "to": "tools",
+      "y": 600,
+      "label": "bounded content or expected error",
+      "variant": "return"
+    },
+    {
+      "id": "ordered-results",
+      "from": "tools",
+      "to": "runtime",
+      "y": 630,
+      "label": "ToolResultMessage observation(s) in model-authored order",
+      "variant": "return",
+      "note": "Batch policy executes valid siblings in parallel behind a barrier; historical single-call policy rejects all siblings when more than one is requested."
+    },
+    {
+      "id": "tool-events",
+      "from": "runtime",
+      "to": "trace",
+      "y": 660,
+      "label": "tool_call_started · then completed / error in stable order",
+      "variant": "dashed"
+    },
+    {
+      "id": "next-turn",
+      "from": "runtime",
+      "to": "provider",
+      "y": 690,
+      "label": "next turn sees assistant request + exact observations",
+      "variant": "emphasis"
+    },
+    {
+      "id": "terminal-output",
+      "from": "provider",
+      "to": "runtime",
+      "y": 720,
+      "label": "assistant text with no ToolCalls · report candidate",
+      "variant": "return"
+    },
+    {
+      "id": "runtime-terminal-trace",
+      "from": "runtime",
+      "to": "trace",
+      "y": 750,
+      "label": "report_submitted when valid · agent_terminal on normal stop",
+      "variant": "dashed"
+    },
+    {
+      "id": "terminal-classification",
+      "from": "runtime",
+      "to": "executor",
+      "y": 780,
+      "label": "candidate document + terminal reason + ordered messages",
+      "variant": "emphasis",
+      "note": "Valid report, invalid terminal report, and max-step exhaustion return normally for deterministic scoring."
+    },
+    {
+      "id": "infrastructure-failure",
+      "from": "runtime",
+      "to": "executor",
+      "y": 810,
+      "label": "alt · provider retry exhausted or infrastructure fault",
+      "variant": "dashed",
+      "note": "Executor records failure(code, stage, partial counts), then returns SampleResult(status=execution_failed) with the partial ordered trajectory."
+    },
+    {
+      "id": "score-report",
+      "from": "executor",
+      "to": "scorer",
+      "y": 845,
+      "label": "evaluate candidate against frozen Case",
+      "variant": "emphasis"
+    },
+    {
+      "id": "score-result",
+      "from": "scorer",
+      "to": "executor",
+      "y": 875,
+      "label": "structured report validation + deterministic metrics",
+      "variant": "return",
+      "note": "Executor then returns SampleResult(status=scored) carrying the provider-neutral ordered trajectory."
+    },
+    {
+      "id": "evaluation-completed",
+      "from": "executor",
+      "to": "trace",
+      "y": 905,
+      "label": "evaluation_completed · quality metrics",
+      "variant": "dashed"
+    }
+  ],
+  "activations": [
+    { "participant": "executor", "from": 165, "to": 920, "type": "backend" },
+    { "participant": "runtime", "from": 285, "to": 815, "type": "backend" },
+    { "participant": "provider", "from": 355, "to": 725, "type": "cloud" },
+    { "participant": "model", "from": 385, "to": 430, "type": "external" },
+    { "participant": "tools", "from": 535, "to": 640, "type": "security" },
+    { "participant": "workspace", "from": 225, "to": 610, "type": "backend" },
+    { "participant": "scorer", "from": 840, "to": 885, "type": "backend" },
+    { "participant": "trace", "from": 165, "to": 920, "type": "messagebus" }
+  ]
+}

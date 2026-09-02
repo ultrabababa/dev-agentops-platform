@@ -1,0 +1,281 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "DevAgentOps Formal Evaluation Execution Workflow",
+    "locale": "en",
+    "output": "docs/architecture/evaluation-workflow.html",
+    "animation": "none",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "successful_run",
+        "label": "Successful formal run",
+        "focus": ["formal_preflight", "resolve_contracts", "plan_samples", "assemble_manifest", "sample_execution", "minimax_provider", "sample_outcome", "aggregate_results", "persist_finalizing", "complete_db_run", "write_run_artifacts"],
+        "note": "Follow frozen contracts through planned identity, deterministic execution, DB completion, and in-memory run artifacts."
+      },
+      {
+        "id": "condition_paths",
+        "label": "Condition-specific execution",
+        "focus": ["sample_execution", "l4_runtime", "minimax_provider", "sample_outcome"],
+        "note": "Configured model paths share one executor contract; L4 visibly branches into the self-built ReAct runtime."
+      },
+      {
+        "id": "durable_evidence",
+        "label": "Durable evidence ordering",
+        "focus": ["sample_outcome", "aggregate_results", "persist_finalizing", "complete_db_run", "write_run_artifacts"],
+        "note": "SQLite finalization completes before JSON and Markdown are written from the in-memory evaluation document."
+      },
+      {
+        "id": "failure_boundaries",
+        "label": "Failure boundaries",
+        "focus": ["formal_preflight", "preflight_rejected", "sample_execution", "sample_outcome", "aggregate_results", "persist_finalizing", "complete_db_run", "write_run_artifacts", "formal_run_stops", "durability_failure"],
+        "note": "Handled sample failures continue; uncaught execution, aggregation, persistence, finalization, and artifact errors stop the formal run."
+      }
+    ]
+  },
+  "lanes": [
+    { "id": "orchestration", "label": "Formal Orchestration" },
+    { "id": "execution", "label": "Scheduling + Condition Runtime" },
+    { "id": "outcomes", "label": "Provider, Evidence + Failure Boundaries", "variant": "exception" }
+  ],
+  "phases": [
+    { "id": "validate_assemble", "label": "Validate + assemble", "fromCol": 0, "toCol": 1, "variant": "security" },
+    { "id": "schedule_execute", "label": "Schedule + execute", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "aggregate_finalize", "label": "Aggregate + finalize", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "groups": [],
+  "mainPath": [
+    "formal_preflight",
+    "resolve_contracts",
+    "plan_samples",
+    "assemble_manifest",
+    "sample_execution",
+    "minimax_provider",
+    "sample_outcome",
+    "aggregate_results",
+    "persist_finalizing",
+    "complete_db_run",
+    "write_run_artifacts"
+  ],
+  "semanticChecks": {
+    "allowedRoots": ["formal_preflight"],
+    "allowedTerminals": ["write_run_artifacts", "preflight_rejected", "formal_run_stops", "durability_failure"],
+    "requiredEdges": [
+      { "from": "plan_samples", "to": "assemble_manifest" },
+      { "from": "persist_finalizing", "to": "complete_db_run" },
+      { "from": "complete_db_run", "to": "write_run_artifacts" },
+      { "from": "sample_execution", "to": "l4_runtime" }
+    ],
+    "requiredPaths": [
+      { "from": "formal_preflight", "to": "write_run_artifacts" },
+      { "from": "sample_execution", "to": "aggregate_results" },
+      { "from": "sample_outcome", "to": "write_run_artifacts" }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "formal_preflight",
+      "lane": "orchestration",
+      "col": 0,
+      "type": "security",
+      "label": "Formal Preflight",
+      "sublabel": "Matrix v2 · Suite · Registry",
+      "tag": "fail before model call",
+      "width": 150
+    },
+    {
+      "id": "resolve_contracts",
+      "lane": "orchestration",
+      "col": 1,
+      "type": "backend",
+      "label": "Resolve Condition + Frozen Contracts",
+      "sublabel": "runtime variant · components",
+      "tag": "frozen fingerprints",
+      "width": 252
+    },
+    {
+      "id": "plan_samples",
+      "lane": "execution",
+      "col": 1,
+      "type": "messagebus",
+      "label": "Plan Samples",
+      "sublabel": "Case order × repeats",
+      "tag": "contiguous sequence",
+      "width": 132
+    },
+    {
+      "id": "assemble_manifest",
+      "lane": "orchestration",
+      "col": 2,
+      "type": "backend",
+      "label": "Assemble Run Manifest",
+      "sublabel": "run identity · frozen provenance",
+      "tag": "planned sample count known",
+      "width": 174
+    },
+    {
+      "id": "sample_execution",
+      "lane": "execution",
+      "col": 2,
+      "type": "backend",
+      "label": "Schedule + Execute Condition",
+      "sublabel": "runtime · concurrent Cases",
+      "tag": "uncaught / run-level → formal_execution_failed",
+      "width": 252
+    },
+    {
+      "id": "l4_runtime",
+      "lane": "outcomes",
+      "col": 2,
+      "type": "cloud",
+      "label": "L4 ReAct Runtime",
+      "sublabel": "frozen workspace + tools",
+      "tag": "trajectory retained",
+      "width": 124
+    },
+    {
+      "id": "minimax_provider",
+      "lane": "outcomes",
+      "col": 3,
+      "type": "external",
+      "label": "MiniMax Provider",
+      "sublabel": "OpenAI-compatible API",
+      "tag": "request attempts",
+      "width": 136
+    },
+    {
+      "id": "sample_outcome",
+      "lane": "outcomes",
+      "col": 4,
+      "type": "security",
+      "label": "Score Sample + Outcome",
+      "sublabel": "executor-owned scoring",
+      "tag": "scored | execution_failed",
+      "width": 150
+    },
+    {
+      "id": "aggregate_results",
+      "lane": "orchestration",
+      "col": 4,
+      "type": "backend",
+      "label": "Aggregate Results",
+      "sublabel": "Case · Suite · failures · ordered",
+      "tag": "on error: formal_execution_failed",
+      "width": 196
+    },
+    {
+      "id": "persist_finalizing",
+      "lane": "orchestration",
+      "col": 5,
+      "type": "database",
+      "label": "Persist Finalizing Run",
+      "sublabel": "trace · results · aggregates",
+      "tag": "on error: run_persistence_failed",
+      "width": 194,
+      "yOffset": -76
+    },
+    {
+      "id": "complete_db_run",
+      "lane": "orchestration",
+      "col": 5,
+      "type": "database",
+      "label": "Complete DB Run",
+      "sublabel": "completed | sample failures",
+      "tag": "on error: run_finalization_failed",
+      "width": 200,
+      "yOffset": 76
+    },
+    {
+      "id": "write_run_artifacts",
+      "lane": "outcomes",
+      "col": 5,
+      "type": "external",
+      "label": "Write Run Artifacts",
+      "sublabel": "JSON / Markdown from memory",
+      "tag": "DB finalize before file write",
+      "width": 154
+    },
+    {
+      "id": "preflight_rejected",
+      "lane": "outcomes",
+      "col": 1,
+      "type": "security",
+      "label": "Preflight Rejected",
+      "sublabel": "no provider · DB · artifacts",
+      "tag": "no run started",
+      "width": 146
+    },
+    {
+      "id": "formal_run_stops",
+      "lane": "execution",
+      "col": 5,
+      "type": "security",
+      "label": "Formal Execution Stops",
+      "sublabel": "uncaught execution · aggregation",
+      "tag": "formal_execution_failed",
+      "width": 166
+    },
+    {
+      "id": "durability_failure",
+      "lane": "outcomes",
+      "col": 5,
+      "type": "security",
+      "label": "Durability Failure Stops Run",
+      "sublabel": "persist · finalize · artifact write",
+      "tag": "stage-specific failure code",
+      "width": 220,
+      "yOffset": 120
+    }
+  ],
+  "edges": [
+    { "id": "preflight_to_resolve", "from": "formal_preflight", "to": "resolve_contracts", "variant": "emphasis", "role": "main" },
+    { "id": "resolve_to_plan", "from": "resolve_contracts", "to": "plan_samples", "variant": "emphasis", "role": "main", "fromSide": "bottom", "toSide": "top", "route": "straight" },
+    { "id": "plan_to_manifest", "from": "plan_samples", "to": "assemble_manifest", "label": "planned sample count", "variant": "emphasis", "role": "main", "fromSide": "top", "toSide": "bottom", "via": [[352, 350], [573, 350]] },
+    { "id": "manifest_to_execution", "from": "assemble_manifest", "to": "sample_execution", "variant": "emphasis", "role": "main", "fromSide": "bottom", "toSide": "top", "via": [[573, 300], [603, 300], [603, 450], [573, 450]] },
+    { "id": "execution_to_provider", "from": "sample_execution", "to": "minimax_provider", "label": "call", "variant": "emphasis", "role": "main" },
+    { "id": "execution_to_l4", "from": "sample_execution", "to": "l4_runtime", "variant": "dashed", "role": "branch" },
+    { "id": "l4_to_provider", "from": "l4_runtime", "to": "minimax_provider", "variant": "dashed", "role": "branch" },
+    { "id": "provider_to_outcome", "from": "minimax_provider", "to": "sample_outcome", "label": "result", "variant": "emphasis", "role": "main" },
+    { "id": "outcome_to_aggregate", "from": "sample_outcome", "to": "aggregate_results", "variant": "emphasis", "role": "main", "fromSide": "top", "toSide": "bottom", "via": [[920.8, 900], [1202, 900], [1202, 390], [920.8, 390]] },
+    { "id": "aggregate_to_persist", "from": "aggregate_results", "to": "persist_finalizing", "variant": "security", "role": "main" },
+    { "id": "persist_to_complete", "from": "persist_finalizing", "to": "complete_db_run", "variant": "security", "role": "main" },
+    { "id": "complete_to_artifacts", "from": "complete_db_run", "to": "write_run_artifacts", "variant": "security", "role": "main" },
+    { "id": "preflight_to_rejected", "from": "formal_preflight", "to": "preflight_rejected", "label": "invalid contract", "variant": "security", "role": "error", "fromSide": "left", "toSide": "top", "via": [[30, 240], [30, 900], [352, 900]] },
+    { "id": "execution_to_run_stop", "from": "sample_execution", "to": "formal_run_stops", "variant": "security", "role": "error" },
+    { "id": "aggregate_to_run_stop", "from": "aggregate_results", "to": "formal_run_stops", "variant": "security", "role": "error" },
+    { "id": "persist_to_durability_failure", "from": "persist_finalizing", "to": "durability_failure", "variant": "security", "role": "error" },
+    { "id": "complete_to_durability_failure", "from": "complete_db_run", "to": "durability_failure", "variant": "security", "role": "error", "fromSide": "right", "toSide": "right", "channelX": 1222 },
+    { "id": "artifacts_to_durability_failure", "from": "write_run_artifacts", "to": "durability_failure", "variant": "security", "role": "error", "fromSide": "bottom", "toSide": "top", "route": "straight" }
+  ],
+  "cards": [
+    {
+      "dot": "violet",
+      "title": "Condition Semantics",
+      "items": [
+        "L1 and Oracle are configured one-shot paths; L2 is a fixed two-stage workflow",
+        "L3 performs deterministic static retrieval before its single model call",
+        "L4 enters the self-built ReAct runtime with a frozen Case workspace and tools"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Evidence Streams Stay Distinct",
+      "items": [
+        "TraceRecorder captures run, sample, executor, provider-attempt, and runtime lifecycle events",
+        "Only L4 carries the exact message trajectory; SQLite persists it separately from Trace",
+        "Reports, validation, scores, diagnostics, aggregates, and run files remain separate evidence layers"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Outcome + Durability Rules",
+      "items": [
+        "Cases may run concurrently; repeats within each Case stay sequential; results restore sample_sequence order",
+        "Malformed model output can still be deterministically scored; execution failure has no report or score",
+        "Sample failures continue through aggregation and may yield completed_with_sample_failures",
+        "DB completion precedes JSON/Markdown from the in-memory document; trajectories stay unexported"
+      ]
+    }
+  ]
+}

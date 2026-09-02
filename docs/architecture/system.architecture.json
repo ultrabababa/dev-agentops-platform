@@ -1,0 +1,260 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "DevAgentOps High-Level System Architecture",
+    "locale": "en",
+    "output": "docs/architecture/system.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/ultrabababa/dev-agentops-platform",
+      "revision": "f6f60de7b0f7969b174945a78ec002ab1475aaad"
+    },
+    "views": [
+      {
+        "id": "formal-run",
+        "label": "Formal evaluation run",
+        "focus": ["cli", "preflight", "orchestrator", "executors", "scoring", "persistence"],
+        "note": "Follow the primary write path from validated repository inputs to persisted scores."
+      },
+      {
+        "id": "runtime-evidence",
+        "label": "Runtime evidence access",
+        "focus": ["executors", "evidence_access", "provider", "minimax", "trace"],
+        "note": "Inspect evidence access, MiniMax calls, cross-cutting trace events, and separate L4 message trajectories."
+      },
+      {
+        "id": "read-only-explorer",
+        "label": "Read-only explorer",
+        "focus": ["persistence", "explorer"],
+        "note": "The Explorer reads catalog-selected immutable public SQLite snapshots, not the active run database."
+      }
+    ]
+  },
+  "layout": {
+    "mode": "grid",
+    "origin": [34, 72],
+    "cols": 6,
+    "gapX": 32,
+    "gapY": 38,
+    "cellW": 120,
+    "cellH": 60
+  },
+  "components": [
+    {
+      "id": "cli",
+      "type": "frontend",
+      "label": "DevAgentOps CLI",
+      "sublabel": "eval run / doctor / score",
+      "tag": "primary write entry",
+      "row": 1,
+      "col": 0,
+      "sources": [
+        {"path": "pyproject.toml", "line": 31, "end_line": 32, "label": "console entry point"},
+        {"path": "src/devagentops/cli.py", "line": 74, "end_line": 160, "label": "evaluation commands"},
+        {"path": "src/devagentops/cli.py", "line": 278, "end_line": 351, "label": "command dispatch"}
+      ]
+    },
+    {
+      "id": "config",
+      "type": "database",
+      "label": "Eval Definitions",
+      "sublabel": "Matrix · Suite · Components",
+      "tag": "repository-controlled",
+      "row": 0,
+      "col": 1,
+      "sources": [
+        {"path": "src/devagentops/evaluation/matrix_v2.py", "line": 132, "end_line": 219, "label": "condition contracts"},
+        {"path": "src/devagentops/evaluation/suite.py", "line": 191, "end_line": 260, "label": "Case and Suite model"},
+        {"path": "src/devagentops/evaluation/components.py", "line": 17, "end_line": 63, "label": "component types"}
+      ]
+    },
+    {
+      "id": "preflight",
+      "type": "security",
+      "label": "Formal Preflight",
+      "sublabel": "identity + fingerprint checks",
+      "tag": "fail before model call",
+      "row": 1,
+      "col": 1,
+      "sources": [
+        {"path": "src/devagentops/evaluation/preflight.py", "line": 27, "end_line": 35, "label": "formal doctor"},
+        {"path": "src/devagentops/evaluation/run.py", "line": 86, "end_line": 119, "label": "run gate and dispatch"}
+      ]
+    },
+    {
+      "id": "orchestrator",
+      "type": "backend",
+      "label": "Orchestrator",
+      "sublabel": "manifest · samples · rollups",
+      "tag": "formal run control",
+      "row": 1,
+      "col": 2,
+      "sources": [
+        {"path": "src/devagentops/evaluation/run_v2.py", "line": 63, "end_line": 160, "label": "run assembly"},
+        {"path": "src/devagentops/evaluation/execution.py", "line": 76, "end_line": 160, "label": "sample scheduler"},
+        {"path": "src/devagentops/evaluation/run_v2.py", "line": 293, "end_line": 326, "label": "post-sample aggregation"}
+      ]
+    },
+    {
+      "id": "executors",
+      "type": "backend",
+      "label": "Condition Executors",
+      "sublabel": "L1 / L2 / L3 / L4 / Oracle",
+      "tag": "runtime + per-sample score",
+      "row": 1,
+      "col": 3,
+      "sources": [
+        {"path": "src/devagentops/evaluation/run_v2.py", "line": 162, "end_line": 292, "label": "executor selection"},
+        {"path": "src/devagentops/conditions/l4/react_condition.py", "line": 58, "end_line": 106, "label": "L4 sample bridge"},
+        {"path": "src/devagentops/runtime/react.py", "line": 150, "end_line": 288, "label": "ReAct loop"}
+      ]
+    },
+    {
+      "id": "evidence_access",
+      "type": "backend",
+      "label": "Evidence Access",
+      "sublabel": "workspace · tools · retrieval",
+      "tag": "Case-visible evidence",
+      "row": 2,
+      "col": 3,
+      "sources": [
+        {"path": "src/devagentops/runtime/workspace.py", "line": 34, "end_line": 86, "label": "controlled workspace"},
+        {"path": "src/devagentops/runtime/react.py", "line": 103, "end_line": 126, "label": "L4 visible input"},
+        {"path": "src/devagentops/evaluation/run_v2.py", "line": 232, "end_line": 259, "label": "L3 retriever wiring"}
+      ]
+    },
+    {
+      "id": "provider",
+      "type": "cloud",
+      "label": "MiniMax Provider",
+      "sublabel": "OpenAI-compatible transport",
+      "tag": "typed request boundary",
+      "row": 0,
+      "col": 3,
+      "sources": [
+        {"path": "src/devagentops/providers/minimax_v1.py", "line": 66, "end_line": 217, "label": "MiniMax adapter"},
+        {"path": "src/devagentops/providers/openai_compatible.py", "line": 43, "end_line": 122, "label": "HTTP transport"},
+        {"path": "src/devagentops/providers/execution.py", "line": 1, "end_line": 115, "label": "request attempts"}
+      ]
+    },
+    {
+      "id": "minimax",
+      "type": "external",
+      "label": "MiniMax API",
+      "sublabel": "chat/completions API",
+      "tag": "external model service",
+      "row": 0,
+      "col": 4
+    },
+    {
+      "id": "scoring",
+      "type": "backend",
+      "label": "Score & Aggregate",
+      "sublabel": "sample · case/suite/type",
+      "tag": "executor + orchestrator",
+      "row": 1,
+      "col": 4,
+      "sources": [
+        {"path": "src/devagentops/scoring/case.py", "line": 74, "end_line": 143, "label": "per-Case scoring"},
+        {"path": "src/devagentops/evaluation/aggregation.py", "line": 119, "end_line": 227, "label": "Case, Suite, type rollups"},
+        {"path": "src/devagentops/evaluation/run_v2.py", "line": 293, "end_line": 326, "label": "aggregation after samples"}
+      ]
+    },
+    {
+      "id": "trace",
+      "type": "backend",
+      "label": "Trace & Trajectory",
+      "sublabel": "events · L4 messages",
+      "tag": "separate evidence streams",
+      "row": 2,
+      "col": 2,
+      "sources": [
+        {"path": "src/devagentops/evaluation/trace.py", "line": 14, "end_line": 83, "label": "thread-safe trace"},
+        {"path": "src/devagentops/evaluation/execution.py", "line": 132, "end_line": 145, "label": "sample lifecycle events"},
+        {"path": "src/devagentops/evaluation/run_v2.py", "line": 347, "end_line": 378, "label": "trace + trajectory persistence"}
+      ]
+    },
+    {
+      "id": "persistence",
+      "type": "database",
+      "label": "Persistence + Files",
+      "sublabel": "SQLite · JSON / Markdown",
+      "tag": "DB finalize before file write",
+      "row": 1,
+      "col": 5,
+      "sources": [
+        {"path": "src/devagentops/evaluation/persistence.py", "line": 157, "end_line": 420, "label": "formal run persistence"},
+        {"path": "src/devagentops/evaluation/run_v2.py", "line": 359, "end_line": 421, "label": "finalize then write files"},
+        {"path": "src/devagentops/evaluation/artifacts.py", "line": 14, "end_line": 49, "label": "artifact files"}
+      ]
+    },
+    {
+      "id": "explorer",
+      "type": "frontend",
+      "label": "Evaluation Explorer",
+      "sublabel": "React + snapshot API",
+      "tag": "offline immutable reads",
+      "row": 0,
+      "col": 5,
+      "sources": [
+        {"path": "frontend/src/App.tsx", "line": 104, "end_line": 150, "label": "Explorer routes"},
+        {"path": "src/devagentops/explorer/catalog.py", "line": 27, "end_line": 56, "label": "immutable snapshot catalog"},
+        {"path": "src/devagentops/explorer/repository.py", "line": 120, "end_line": 309, "label": "read-only projections"}
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Repository-controlled evaluation definition",
+      "wraps": ["config", "preflight"],
+      "pad": 18
+    },
+    {
+      "kind": "region",
+      "label": "DevAgentOps evaluation engine",
+      "wraps": ["orchestrator", "executors", "evidence_access", "provider", "scoring", "trace"],
+      "pad": 22
+    },
+    {
+      "kind": "region",
+      "label": "Read-only presentation surface",
+      "wraps": ["explorer"],
+      "pad": 16
+    }
+  ],
+  "connections": [
+    {"id": "cli_preflight", "from": "cli", "to": "preflight", "variant": "emphasis"},
+    {"id": "config_preflight", "from": "config", "to": "preflight", "label": "fingerprints", "variant": "security", "fromSide": "bottom", "toSide": "top", "labelAt": [246, 146]},
+    {"id": "preflight_orchestrator", "from": "preflight", "to": "orchestrator", "variant": "emphasis"},
+    {"id": "orchestrator_executors", "from": "orchestrator", "to": "executors", "variant": "emphasis"},
+    {"id": "executors_scoring", "from": "executors", "to": "scoring", "variant": "emphasis"},
+    {"id": "scoring_persistence", "from": "scoring", "to": "persistence", "variant": "emphasis"},
+    {"id": "executors_evidence", "from": "executors", "to": "evidence_access", "fromSide": "bottom", "toSide": "top"},
+    {"id": "executors_provider", "from": "executors", "to": "provider", "fromSide": "top", "toSide": "bottom"},
+    {"id": "provider_minimax", "from": "provider", "to": "minimax"},
+    {"id": "orchestrator_trace", "from": "orchestrator", "to": "trace", "variant": "dashed", "fromSide": "bottom", "toSide": "top"},
+    {"id": "executors_trace", "from": "executors", "to": "trace", "variant": "dashed", "fromSide": "bottom", "toSide": "right"},
+    {"id": "trace_persistence", "from": "trace", "to": "persistence", "variant": "dashed", "fromSide": "bottom", "toSide": "bottom"},
+    {"id": "persistence_explorer", "from": "persistence", "to": "explorer", "label": "frozen snapshots", "variant": "dashed", "fromSide": "top", "toSide": "bottom"}
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Primary execution path",
+      "items": [
+        "CLI → preflight → orchestration → condition execution / per-sample scoring → orchestration rollups → persistence",
+        "TraceRecorder receives run, scheduler, and runtime events; L4 message trajectories are persisted separately"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Current implementation boundaries",
+      "items": [
+        "SQLite run finalization precedes write_evaluation_artifacts() output of evaluation.json and evaluation.md",
+        "The Explorer opens catalog-selected public SQLite snapshots with read-only immutable connections"
+      ]
+    }
+  ]
+}
