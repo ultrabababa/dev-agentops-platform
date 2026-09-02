@@ -1,3 +1,4 @@
+main#main.architecture-page { width: min(1560px, calc(100% - 48px)); }
 .architecture-page { padding-bottom: 96px; }
 .architecture-hero { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 48px; padding: clamp(72px, 9vw, 120px) 0 64px; border-bottom: 1px solid var(--ink); }
 .architecture-hero > .eyebrow { grid-column: 1 / -1; margin-bottom: -22px; }
@@ -26,7 +27,7 @@
 .architecture-viewer > header p { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.55; }
 .architecture-viewer > header > div:first-child p { color: var(--ink); font-weight: 680; }
 .architecture-viewer > header h3 { margin: 0 0 8px; font-size: 1.25rem; font-weight: 650; letter-spacing: -.02em; }
-.architecture-preview { display: block; width: 100%; padding: 18px; overflow: visible; background: #eef0ed; text-decoration: none; }
+.architecture-preview { display: block; width: 100%; padding: 18px; overflow: visible; background: #eef0ed; text-decoration: none; cursor: zoom-in; }
 .architecture-preview img { display: block; width: 100%; height: auto; max-width: none; border: 1px solid var(--line-dark); background: #f8fafc; }
 .architecture-preview:hover img { border-color: var(--ink); }
 .architecture-viewer > footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px 24px; border-top: 1px solid var(--line); }
@@ -57,6 +58,7 @@
 }
 
 @media (max-width: 720px) {
+  main#main.architecture-page { width: calc(100% - 32px); }
   .architecture-page { padding-bottom: 64px; }
   .architecture-hero { padding-top: 56px; }
   .architecture-tabs { grid-template-columns: 1fr; }
