@@ -110,7 +110,7 @@ export function ArchitecturePage() {
             </div>
           </header>
 
-          <div className="architecture-frame">
+          <div className="architecture-embed">
             <iframe
               key={selected.id}
               src={`${selected.html}?embed=1&theme=light`}
