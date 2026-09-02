@@ -18,7 +18,7 @@ The production frontend exposes all three interactive documents through:
 https://devagentops.onrender.com/architecture
 ```
 
-The Vite frontend does not maintain a second committed copy of these files. `frontend/scripts/sync-architecture.mjs` copies the frozen HTML/SVG artifacts into a gitignored public-assets directory before local development and production builds.
+The Vite frontend does not maintain a second committed copy of these files. `frontend/scripts/sync-architecture.mjs` stages the frozen HTML/SVG artifacts into a gitignored public-assets directory before local development and production builds. Local builds read this directory directly; the Render static-site build is rooted at `frontend`, so it fetches the same files from the exact `RENDER_GIT_COMMIT` when the parent `docs/architecture/` directory is unavailable.
 
 ## Source-of-truth policy
 
