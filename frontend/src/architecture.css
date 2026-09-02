@@ -26,8 +26,8 @@
 .architecture-viewer > header p { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.55; }
 .architecture-viewer > header > div:first-child p { color: var(--ink); font-weight: 680; }
 .architecture-viewer > header h3 { margin: 0 0 8px; font-size: 1.25rem; font-weight: 650; letter-spacing: -.02em; }
-.architecture-frame { padding: 14px; background: #eef0ed; }
-.architecture-frame iframe { display: block; width: 100%; height: min(760px, 76vh); min-height: 590px; border: 1px solid var(--line-dark); background: #f8fafc; }
+.architecture-embed { margin: 0; padding: 14px; border: 0; background: #eef0ed; }
+.architecture-embed iframe { display: block; width: 100%; height: min(760px, 76vh); min-height: 590px; border: 1px solid var(--line-dark); background: #f8fafc; }
 .architecture-viewer > footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px 24px; border-top: 1px solid var(--line); }
 .architecture-viewer > footer > p { display: flex; gap: 9px; margin: 0; color: var(--muted); font-size: .73rem; line-height: 1.45; }
 .architecture-viewer > footer > p span { color: var(--verified); font: 700 .6rem/1.5 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
@@ -61,8 +61,8 @@
   .architecture-tabs { grid-template-columns: 1fr; }
   .architecture-tabs button { min-height: 96px; }
   .architecture-viewer > header { grid-template-columns: 1fr; gap: 12px; padding: 22px; }
-  .architecture-frame { padding: 8px; }
-  .architecture-frame iframe { height: 620px; min-height: 520px; }
+  .architecture-embed { padding: 8px; }
+  .architecture-embed iframe { height: 620px; min-height: 520px; }
   .architecture-actions { width: 100%; flex-wrap: wrap; }
   .architecture-actions .button { flex: 1 1 150px; }
   .architecture-level-cards article { grid-template-columns: 30px 1fr; }
