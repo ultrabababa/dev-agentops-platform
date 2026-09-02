@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { getHomepageData } from "./api/client";
 import type { ConditionId, HomepageData } from "./api/types";
+import { ArchitecturePage } from "./pages/ArchitecturePage";
 import { ConditionDetailPage } from "./pages/ConditionDetailPage";
 import { ConditionOverviewPage } from "./pages/ConditionOverviewPage";
 import { Homepage } from "./pages/Homepage";
@@ -14,7 +15,7 @@ import { ComparePage } from "./pages/ComparePage";
 
 const navigation = [
   ["项目概览", "/"], ["实验条件", "/conditions"], ["正式实验", "/runs"],
-  ["实验与归因", "/compare"], ["Cases", "/cases"],
+  ["实验与归因", "/compare"], ["系统架构", "/architecture"], ["Cases", "/cases"],
 ] as const;
 
 const placeholderCopy: Record<string, [string, string]> = {};
@@ -133,6 +134,7 @@ function App() {
   else if (detailId) page = <ConditionDetailPage id={detailId} />;
   else if (path === "/runs") page = <RunsPage />;
   else if (path === "/compare") page = <ComparePage />;
+  else if (path === "/architecture") page = <ArchitecturePage />;
   else if (sampleMatch) page = <SampleDetailPage runId={decodeURIComponent(sampleMatch[1])} caseId={decodeURIComponent(sampleMatch[2])} repeat={Number(sampleMatch[3])} />;
   else if (runDetailMatch) page = <RunDetailPage runId={decodeURIComponent(runDetailMatch[1])} />;
   else if (path === "/cases") page = <CasesPage />;
