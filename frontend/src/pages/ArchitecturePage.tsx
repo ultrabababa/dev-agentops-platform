@@ -58,10 +58,10 @@ export function ArchitecturePage() {
     <main className="architecture-page" id="main">
       <section className="architecture-hero">
         <p className="eyebrow">SYSTEM DESIGN · EVIDENCE-BACKED</p>
-        <h1>从系统边界到 Agent loop，三层看清 DevAgentOps。</h1>
+        <h1>从系统边界到 Agent Runtime，三层展示 DevAgentOps 的工程设计。</h1>
         <p>
-          这不是三张重复的流程图。Architecture 解释系统组成，Workflow 解释正式评测生命周期，Sequence
-          解释 L4 Agent Runtime 的真实交互。三层都来自当前实现，并保留可版本化的 Archify IR。
+          High-Level Architecture 描述系统组件与边界；Formal Evaluation Workflow 描述一次可复现评测的完整生命周期；
+          L4 Runtime Sequence 展开单个 Agent sample 内模型、工具、工作区与证据流的真实交互。
         </p>
         <div className="architecture-hero-meta" aria-label="架构文档属性">
           <span>3 views</span>
@@ -75,7 +75,7 @@ export function ArchitecturePage() {
         <div className="architecture-browser-heading">
           <div>
             <p className="eyebrow">INTERACTIVE ARCHITECTURE</p>
-            <h2 id="architecture-browser-title">选择一个层级，直接检查系统关系。</h2>
+            <h2 id="architecture-browser-title">选择一个层级，查看对应的系统设计。</h2>
           </div>
           <p>交互图与 Evaluation API 解耦；即使只读 API 冷启动，这些静态架构资料也可以独立浏览。</p>
         </div>
@@ -133,8 +133,8 @@ export function ArchitecturePage() {
       <section className="architecture-level-map" aria-labelledby="architecture-level-map-title">
         <div className="architecture-level-copy">
           <p className="eyebrow">THREE LEVELS · ONE SYSTEM</p>
-          <h2 id="architecture-level-map-title">面试时按“结构 → 生命周期 → Runtime”逐层下钻。</h2>
-          <p>先用高层架构建立共同语言，再用正式 Evaluation Workflow 解释可靠执行，最后进入 L4 Sequence 讨论 Harness、Tool boundary、retry、trajectory 与 termination。</p>
+          <h2 id="architecture-level-map-title">同一系统，从组件边界到 Runtime 交互逐层展开。</h2>
+          <p>High-Level Architecture 展示系统组件、边界与主路径；Formal Evaluation Workflow 展示正式评测的控制流、并发、失败边界与持久化；L4 Runtime Sequence 展示模型、工具、冻结工作区、Trace 与 Trajectory 如何在一次 Agent 执行中协作。</p>
         </div>
         <div className="architecture-level-cards">
           {diagrams.map((diagram) => (
