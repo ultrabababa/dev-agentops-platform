@@ -95,19 +95,23 @@ Before both `npm run dev` and `npm run build`, npm lifecycle hooks execute:
 npm run sync:architecture
 ```
 
-`frontend/scripts/sync-architecture.mjs` copies the frozen Archify HTML/SVG outputs from:
-
-```text
-docs/architecture/
-```
-
-into the generated Vite public-assets directory:
+`frontend/scripts/sync-architecture.mjs` writes the six frozen Archify HTML/SVG outputs into:
 
 ```text
 frontend/public/architecture-assets/
 ```
 
-That destination is gitignored. `docs/architecture/` remains the only version-controlled source of the rendered architecture artifacts; do not maintain a second committed copy under `frontend/`.
+That destination is gitignored and is copied by Vite into `dist/`.
+
+Local development normally reads the source files directly from:
+
+```text
+docs/architecture/
+```
+
+Render's configured Root Directory is `frontend`, so files outside that root are not available to the static-site build. In that environment the sync script instead uses Render's build-time `RENDER_GIT_REPO_SLUG` and `RENDER_GIT_COMMIT` values to fetch the same six files from the exact GitHub revision being deployed. This preserves `docs/architecture/` as the only committed source of the rendered architecture artifacts while keeping production builds revision-pinned.
+
+Because the Root Directory is `frontend`, a future commit that changes only `docs/architecture/**` does not by itself trigger the static-site autodeploy. After an architecture-only update, either trigger a manual frontend redeploy for that commit or include an intentional frontend-side deployment change in the same update.
 
 Because the Explorer uses client-side routing, the Static Site must keep this rewrite:
 
@@ -210,6 +214,8 @@ The `/architecture` route and `/architecture-assets/*` remain available while th
 | Variable | Production value | Purpose |
 | --- | --- | --- |
 | `VITE_API_BASE_URL` | `https://devagentops-showcase-api.onrender.com/api` | Build-time public API base URL. |
+
+Render also provides `RENDER_GIT_REPO_SLUG` and `RENDER_GIT_COMMIT` during the build; the architecture sync uses them only when the local `docs/architecture/` source is unavailable because of the frontend Root Directory boundary.
 
 Vite environment variables are compiled into the static bundle at build time. Changing `VITE_API_BASE_URL` requires a frontend rebuild/redeploy.
 
