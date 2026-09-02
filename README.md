@@ -9,6 +9,8 @@
 <p align="center">
   <a href="https://devagentops.onrender.com"><strong>在线演示</strong></a>
   ·
+  <a href="#architecture-maps">Architecture</a>
+  ·
   <a href="#formal-evaluation">Formal Evaluation</a>
   ·
   <a href="#l4-self-built-react-runtime">Agent Runtime</a>
@@ -47,6 +49,26 @@ Frozen Case / Environment
 ```
 
 Evaluation 不是最后一张成绩单，而是下一轮工程决策的起点。
+
+## Architecture maps
+
+在线交互架构页：**https://devagentops.onrender.com/architecture**
+
+<p align="center">
+  <a href="https://devagentops.onrender.com/architecture">
+    <img src="docs/architecture/system.svg" alt="DevAgentOps High-Level System Architecture" width="100%">
+  </a>
+</p>
+
+三张 Archify 图从三个层级解释同一个系统；Typed IR 是版本化 source of truth，HTML 是自包含交互视图，SVG 用于 README / 文档静态预览。
+
+| View | 回答的问题 | Artifacts |
+| --- | --- | --- |
+| High-Level System Architecture | 系统由什么组成？ | [IR](docs/architecture/system.architecture.json) · [HTML](docs/architecture/system.html) · [SVG](docs/architecture/system.svg) |
+| Formal Evaluation Execution Workflow | 一次正式 Eval 怎么跑完？ | [IR](docs/architecture/evaluation-workflow.workflow.json) · [HTML](docs/architecture/evaluation-workflow.html) · [SVG](docs/architecture/evaluation-workflow.svg) |
+| L4 ReAct Runtime Sequence | Agent Runtime 内部怎么循环？ | [IR](docs/architecture/l4-runtime.sequence.json) · [HTML](docs/architecture/l4-runtime.html) · [SVG](docs/architecture/l4-runtime.svg) |
+
+High-Level Architecture 绑定生成时的 Git revision 与源码范围；Workflow / Sequence schema 不伪造不受 Archify 2.16 支持的 source-reference 字段。完整交互体验统一由线上 `/architecture` 页面提供。
 
 ## Runtime / condition ladder
 
@@ -242,7 +264,8 @@ Explorer 是只读的 interviewer-facing evidence surface，覆盖：
 - Case-first / Sample drill-down；
 - Structured Report 与 Evidence；
 - Agent Trajectory 与 Runtime Trace 的显式分离；
-- Experiment & Attribution：Canonicalization、L4 Tool Policy、L3 Retrieval、Oracle 四个 curated case studies。
+- Experiment & Attribution：Canonicalization、L4 Tool Policy、L3 Retrieval、Oracle 四个 curated case studies；
+- Architecture Explorer：系统结构、正式 Evaluation Workflow 与 L4 ReAct Runtime Sequence 三层交互视图。
 
 Public data layer 通过 `showcase-data/catalog.json` 索引 12 个正式 Run，并查询 9 个经过确定性净化的 frozen SQLite snapshot。公开 API 为 GET-only，不暴露 raw `.devagentops/` databases、Expected Answer body、provider reasoning/thinking、opaque continuation state 或未净化 raw message/manifest JSON。
 
@@ -278,8 +301,9 @@ src/devagentops/
 components/         # frozen behavior components + registry
 evaluation/         # suites, cases, matrices, formal evaluation inputs
 showcase-data/      # sanitized public Run snapshots + catalog
+docs/architecture/  # Archify typed IR + interactive HTML + SVG exports
 docs/               # ADRs, methodology, milestones, deployment
-frontend/           # React/Vite public Evaluation Explorer
+frontend/           # React/Vite public Evaluation Explorer + Architecture Explorer
 ```
 
 ## Quick start
@@ -316,21 +340,24 @@ npm ci
 npm run dev
 ```
 
+`npm run dev` / `npm run build` 会先把 `docs/architecture/` 中冻结的 HTML/SVG 同步到 Vite 的生成型 static assets 目录；不要手工维护第二份架构图副本。
+
 ## Documentation map
 
 Current-facing docs：
 
 1. [CONTEXT.md](CONTEXT.md) — compact current project context and terminology;
-2. [Formal Evaluation Methodology](docs/evaluation/formal-evaluation-methodology.md) — Case / evidence / trust model;
-3. [Evaluation Matrix & Component Registry](docs/evaluation/evaluation-matrix-and-component-registry.md) — experiment identity;
-4. [Runtime Capability Ladder](docs/evaluation/runtime-capability-ladder.md) — controlled capability comparisons;
-5. [L4 Runtime Design](docs/evaluation/l4-self-built-react-runtime-design.md) — frozen historical L4 V1 Runtime contract;
-6. [L4 Batch + Parallel ToolCalls Milestone](docs/evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md) — current Tool Policy evidence;
-7. [L3 Static Retrieval V1 Formal Milestone](docs/evaluation/milestones/l3-static-retrieval-2026-08-24.md) — retrieval attribution;
-8. [Oracle Evidence Diagnostic Condition](docs/evaluation/oracle-evidence-diagnostic-condition.md) — Oracle semantic boundary;
-9. [Shared Evidence Reference Canonicalization Milestone](docs/evaluation/milestones/evidence-reference-canonicalization-2026-08-19.md) — fixed-output causal isolation;
-10. [Public Showcase Deployment](docs/showcase-deployment.md) — deployed Explorer topology and operations;
-11. [Milestone Status Index](docs/evaluation/milestones/README.md) — dated formal experiment history.
+2. [Architecture Maps](docs/architecture/) — system architecture, formal Evaluation workflow, L4 Runtime sequence;
+3. [Formal Evaluation Methodology](docs/evaluation/formal-evaluation-methodology.md) — Case / evidence / trust model;
+4. [Evaluation Matrix & Component Registry](docs/evaluation/evaluation-matrix-and-component-registry.md) — experiment identity;
+5. [Runtime Capability Ladder](docs/evaluation/runtime-capability-ladder.md) — controlled capability comparisons;
+6. [L4 Runtime Design](docs/evaluation/l4-self-built-react-runtime-design.md) — frozen historical L4 V1 Runtime contract;
+7. [L4 Batch + Parallel ToolCalls Milestone](docs/evaluation/milestones/l4-batch-parallel-toolcalls-2026-08-19.md) — current Tool Policy evidence;
+8. [L3 Static Retrieval V1 Formal Milestone](docs/evaluation/milestones/l3-static-retrieval-2026-08-24.md) — retrieval attribution;
+9. [Oracle Evidence Diagnostic Condition](docs/evaluation/oracle-evidence-diagnostic-condition.md) — Oracle semantic boundary;
+10. [Shared Evidence Reference Canonicalization Milestone](docs/evaluation/milestones/evidence-reference-canonicalization-2026-08-19.md) — fixed-output causal isolation;
+11. [Public Showcase Deployment](docs/showcase-deployment.md) — deployed Explorer topology and operations;
+12. [Milestone Status Index](docs/evaluation/milestones/README.md) — dated formal experiment history.
 
 Historical ADRs, dated milestone docs, Case review packets and merged PR discussions intentionally preserve historical wording and are not retroactively rewritten。
 
