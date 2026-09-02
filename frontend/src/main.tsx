@@ -13,6 +13,7 @@ import "./explorer-table-fixes.css";
 import "./compare.css";
 import "./compare-final.css";
 import "./loading-state.css";
+import "./architecture.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
