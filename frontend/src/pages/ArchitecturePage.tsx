@@ -53,6 +53,7 @@ const diagrams: Diagram[] = [
 export function ArchitecturePage() {
   const [selectedId, setSelectedId] = useState<DiagramId>("system");
   const selected = diagrams.find((diagram) => diagram.id === selectedId) ?? diagrams[0];
+  const presentationHref = `${selected.html}?present=1&theme=light`;
 
   return (
     <main className="architecture-page" id="main">
@@ -77,7 +78,7 @@ export function ArchitecturePage() {
             <p className="eyebrow">ARCHITECTURE MAPS</p>
             <h2 id="architecture-browser-title">选择一个层级，查看完整系统设计。</h2>
           </div>
-          <p>页面内展示完整 SVG，避免嵌套滚动和裁切；需要检查节点关系、路径与源码证据时，可打开对应的完整交互图。</p>
+          <p>页面内展示完整 SVG 便于快速阅读；“打开阅读版交互图” 会进入更适合查看复杂 Workflow / Sequence 的全屏展示模式。</p>
         </div>
 
         <div className="architecture-tabs" role="tablist" aria-label="架构图层级">
@@ -112,10 +113,10 @@ export function ArchitecturePage() {
 
           <a
             className="architecture-preview"
-            href={selected.html}
+            href={presentationHref}
             target="_blank"
             rel="noreferrer"
-            aria-label={`打开 ${selected.title} 完整交互图`}
+            aria-label={`打开 ${selected.title} 阅读版交互图`}
           >
             <img
               key={selected.id}
@@ -127,7 +128,7 @@ export function ArchitecturePage() {
           <footer>
             <p><span>Evidence</span>{selected.evidence}</p>
             <div className="architecture-actions">
-              <a className="button primary" href={selected.html} target="_blank" rel="noreferrer">打开完整交互图 ↗</a>
+              <a className="button primary" href={presentationHref} target="_blank" rel="noreferrer">打开阅读版交互图 ↗</a>
               <a className="button secondary" href={selected.svg} target="_blank" rel="noreferrer">查看 SVG ↗</a>
               <a className="text-link" href={selected.ir} target="_blank" rel="noreferrer">查看 Typed IR ↗</a>
             </div>
