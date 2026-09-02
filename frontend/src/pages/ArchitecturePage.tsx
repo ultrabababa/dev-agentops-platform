@@ -74,10 +74,10 @@ export function ArchitecturePage() {
       <section className="architecture-browser" aria-labelledby="architecture-browser-title">
         <div className="architecture-browser-heading">
           <div>
-            <p className="eyebrow">INTERACTIVE ARCHITECTURE</p>
-            <h2 id="architecture-browser-title">选择一个层级，查看对应的系统设计。</h2>
+            <p className="eyebrow">ARCHITECTURE MAPS</p>
+            <h2 id="architecture-browser-title">选择一个层级，查看完整系统设计。</h2>
           </div>
-          <p>交互图与 Evaluation API 解耦；即使只读 API 冷启动，这些静态架构资料也可以独立浏览。</p>
+          <p>页面内展示完整 SVG，避免嵌套滚动和裁切；需要检查节点关系、路径与源码证据时，可打开对应的完整交互图。</p>
         </div>
 
         <div className="architecture-tabs" role="tablist" aria-label="架构图层级">
@@ -110,14 +110,19 @@ export function ArchitecturePage() {
             </div>
           </header>
 
-          <div className="architecture-embed">
-            <iframe
+          <a
+            className="architecture-preview"
+            href={selected.html}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`打开 ${selected.title} 完整交互图`}
+          >
+            <img
               key={selected.id}
-              src={`${selected.html}?embed=1&theme=light`}
-              title={`${selected.title} interactive diagram`}
-              loading="lazy"
+              src={selected.svg}
+              alt={`${selected.title} 完整静态图`}
             />
-          </div>
+          </a>
 
           <footer>
             <p><span>Evidence</span>{selected.evidence}</p>
@@ -147,7 +152,7 @@ export function ArchitecturePage() {
                 <button type="button" className="architecture-select" onClick={() => {
                   setSelectedId(diagram.id);
                   document.getElementById("architecture-browser-title")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                }}>在上方交互查看 ↑</button>
+                }}>在上方查看完整图 ↑</button>
               </div>
             </article>
           ))}
