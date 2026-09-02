@@ -1,0 +1,71 @@
+.architecture-page { padding-bottom: 96px; }
+.architecture-hero { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 48px; padding: clamp(72px, 9vw, 120px) 0 64px; border-bottom: 1px solid var(--ink); }
+.architecture-hero > .eyebrow { grid-column: 1 / -1; margin-bottom: -22px; }
+.architecture-hero h1 { max-width: 860px; margin: 0; font-family: "Iowan Old Style", "Songti SC", "STSong", Georgia, serif; font-size: clamp(2.5rem, 5vw, 4.8rem); font-weight: 520; letter-spacing: -.045em; line-height: 1.08; }
+.architecture-hero > p:not(.eyebrow) { align-self: end; margin: 0; color: var(--muted); font-size: .95rem; line-height: 1.8; }
+.architecture-hero-meta { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; padding-top: 28px; border-top: 1px solid var(--line); }
+.architecture-hero-meta span { padding: 7px 9px; border: 1px solid var(--line-dark); color: var(--muted); font: 650 .61rem/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+
+.architecture-browser { padding: 78px 0 94px; border-bottom: 1px solid var(--ink); }
+.architecture-browser-heading { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 48px; align-items: end; margin-bottom: 42px; }
+.architecture-browser-heading h2, .architecture-level-copy h2 { max-width: 760px; margin: 0; font-size: clamp(1.9rem, 3.5vw, 3.2rem); font-weight: 560; letter-spacing: -.04em; line-height: 1.14; }
+.architecture-browser-heading > p { margin: 0; color: var(--muted); font-size: .86rem; line-height: 1.7; }
+
+.architecture-tabs { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line-dark); border-left: 1px solid var(--line-dark); background: var(--surface); }
+.architecture-tabs button { display: grid; min-height: 120px; align-content: start; gap: 8px; padding: 17px 18px; border: 0; border-right: 1px solid var(--line-dark); border-bottom: 1px solid var(--line-dark); border-radius: 0; color: var(--ink); background: transparent; text-align: left; }
+.architecture-tabs button:hover { background: #f0f0eb; }
+.architecture-tabs button.active { box-shadow: inset 0 -3px 0 var(--signal); background: #fff; }
+.architecture-tabs button span { color: var(--signal); font: 700 .6rem/1 var(--mono); }
+.architecture-tabs button strong { margin-top: 4px; font-size: .88rem; line-height: 1.35; }
+.architecture-tabs button small { color: var(--muted); font: 600 .61rem/1.45 var(--mono); }
+
+.architecture-viewer { border: 1px solid var(--line-dark); border-top: 0; background: #fff; }
+.architecture-viewer > header { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 32px; padding: 28px 30px; border-bottom: 1px solid var(--line); }
+.architecture-viewer > header > div:first-child { display: flex; align-items: baseline; gap: 12px; }
+.architecture-viewer > header span { color: var(--signal); font: 700 .62rem/1 var(--mono); }
+.architecture-viewer > header p { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.55; }
+.architecture-viewer > header > div:first-child p { color: var(--ink); font-weight: 680; }
+.architecture-viewer > header h3 { margin: 0 0 8px; font-size: 1.25rem; font-weight: 650; letter-spacing: -.02em; }
+.architecture-frame { padding: 14px; background: #eef0ed; }
+.architecture-frame iframe { display: block; width: 100%; height: min(760px, 76vh); min-height: 590px; border: 1px solid var(--line-dark); background: #f8fafc; }
+.architecture-viewer > footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px 24px; border-top: 1px solid var(--line); }
+.architecture-viewer > footer > p { display: flex; gap: 9px; margin: 0; color: var(--muted); font-size: .73rem; line-height: 1.45; }
+.architecture-viewer > footer > p span { color: var(--verified); font: 700 .6rem/1.5 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+.architecture-actions { display: flex; align-items: center; gap: 9px; }
+.architecture-actions .button { min-height: 38px; padding: 0 14px; font-size: .72rem; }
+.architecture-actions .text-link { margin-left: 5px; font-size: .72rem; font-weight: 650; }
+
+.architecture-level-map { display: grid; grid-template-columns: minmax(240px, .72fr) minmax(0, 1.55fr); gap: clamp(42px, 7vw, 96px); padding: 94px 0 0; }
+.architecture-level-copy { position: sticky; top: 116px; align-self: start; }
+.architecture-level-copy > p:last-child { max-width: 420px; margin-top: 24px; color: var(--muted); font-size: .88rem; line-height: 1.75; }
+.architecture-level-cards { border-top: 1px solid var(--ink); }
+.architecture-level-cards article { display: grid; grid-template-columns: 42px minmax(220px, .85fr) minmax(220px, 1fr); gap: 22px; align-items: center; padding: 28px 0; border-bottom: 1px solid var(--line-dark); }
+.architecture-level-index { color: var(--signal); font: 700 .64rem/1 var(--mono); }
+.architecture-level-cards img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: contain; border: 1px solid var(--line); background: #fff; }
+.architecture-level-cards h3 { margin: 7px 0 14px; font-size: 1.02rem; line-height: 1.3; }
+.architecture-level-cards p { margin: 0; color: var(--muted); font-size: .75rem; }
+.architecture-select { min-height: auto; padding: 0; border: 0; color: var(--signal); background: transparent; font-size: .72rem; text-decoration: underline; text-underline-offset: 3px; }
+
+@media (max-width: 940px) {
+  .architecture-hero, .architecture-browser-heading, .architecture-level-map { grid-template-columns: 1fr; }
+  .architecture-hero > .eyebrow, .architecture-hero-meta { grid-column: 1; }
+  .architecture-browser-heading { gap: 18px; }
+  .architecture-level-copy { position: static; }
+  .architecture-level-cards article { grid-template-columns: 32px minmax(180px, .75fr) 1fr; }
+  .architecture-viewer > footer { align-items: flex-start; flex-direction: column; }
+}
+
+@media (max-width: 720px) {
+  .architecture-page { padding-bottom: 64px; }
+  .architecture-hero { padding-top: 56px; }
+  .architecture-tabs { grid-template-columns: 1fr; }
+  .architecture-tabs button { min-height: 96px; }
+  .architecture-viewer > header { grid-template-columns: 1fr; gap: 12px; padding: 22px; }
+  .architecture-frame { padding: 8px; }
+  .architecture-frame iframe { height: 620px; min-height: 520px; }
+  .architecture-actions { width: 100%; flex-wrap: wrap; }
+  .architecture-actions .button { flex: 1 1 150px; }
+  .architecture-level-cards article { grid-template-columns: 30px 1fr; }
+  .architecture-level-cards img { grid-column: 2; }
+  .architecture-level-cards article > div:last-child { grid-column: 2; }
+}
