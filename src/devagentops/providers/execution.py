@@ -60,8 +60,9 @@ def execute_completion_request(
     """执行一个逻辑请求及其同请求重试，不修改模型可见上下文。
 
     每次 attempt 调用同一 ``provider.complete(request)``；before/after callbacks 用于
-    Trace，latency 为单次 attempt 耗时。ordinary 与 timeout 使用独立 backoff 序列，
-    nonretryable 不等待；序列长度就是初次请求之后允许的最大 retry 次数。
+    Trace，latency 为单次 attempt 耗时。根据错误类别选择 ordinary/timeout backoff 表，
+    但两者共用累计 ``attempt_index``，切换错误类别不会重新计数；仅当累计索引小于
+    当前类别的 backoff 表长度时才允许再次尝试。nonretryable 不等待、直接失败。
 
     成功返回最终 AssistantMessage、最后一次 attempt latency 和总 attempts。耗尽后抛
     ``ProviderRequestFailed`` 并保留最后 typed error；函数不会把失败写成 ToolResult、
