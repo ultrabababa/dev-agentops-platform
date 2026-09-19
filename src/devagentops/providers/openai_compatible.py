@@ -10,6 +10,7 @@ from devagentops.providers.contracts import CompletionProviderError
 
 
 class OpenAICompatibleTransportError(CompletionProviderError):
+    """把 HTTP/网络错误归类为 Runtime retry layer 可理解的 disposition。"""
     def __init__(
         self,
         message: str,
@@ -41,7 +42,12 @@ class OpenAICompatibleTransportError(CompletionProviderError):
 
 
 class OpenAICompatibleChatCompletionsTransport:
-    """One-attempt OpenAI-compatible `/chat/completions` HTTP transport."""
+    """执行一次 OpenAI-compatible ``/chat/completions`` HTTP/JSON 传输。
+
+    timeout 来自 Matrix Execution Policy，经 Harness/provider factory 传入单次 HTTP
+    request。Transport 不重试；429、5xx、timeout 与其他网络/协议错误只做 typed
+    classification，是否重试由 ``execute_completion_request`` 决定。
+    """
 
     def __init__(
         self,
@@ -60,6 +66,11 @@ class OpenAICompatibleChatCompletionsTransport:
         self._timeout_seconds = timeout_seconds
 
     def complete(self, payload: dict[str, Any]) -> dict[str, Any]:
+        """发送一个 JSON payload 并返回未解释的 response object。
+
+        此层只验证外层 JSON 是 object；choices、ToolCall、usage 与 provider status
+        均由 MiniMaxProvider 解析，从而使通用 HTTP 层不承担模型协议语义。
+        """
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         request = urllib.request.Request(
             self._endpoint,

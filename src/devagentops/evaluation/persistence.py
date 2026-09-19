@@ -12,6 +12,10 @@ from devagentops.storage.database import StorageError, create_database_engine
 
 
 def canonical_json(value: Any) -> str:
+    """按排序键和紧凑分隔符序列化持久化文档，稳定其 JSON 文本与配套摘要。
+
+    这是此模块的文档序列化，不会读取 Case 文件，也不等同于 Case Fingerprint。
+    """
     return json.dumps(
         value,
         ensure_ascii=False,
@@ -32,6 +36,11 @@ def persist_finalizing_run(
     case_results: list[dict[str, Any]],
     started_at: str,
 ) -> None:
+    """在单一数据库事务中保存旧版 Case 级结果，初始状态为 finalizing。
+
+    每个 Case 先落 outcome；仅 scored 写报告和分数，协议无效仍可为 scored。
+    不在此生成文件产物或标记完成；SQLAlchemyError 包装为 StorageError。
+    """
     engine = create_database_engine(database_path)
     try:
         with engine.begin() as connection:
@@ -104,6 +113,8 @@ def persist_finalizing_run(
                         "failure_message": outcome.get("failure_message"),
                     },
                 )
+                # 执行失败有 outcome 但没有可评分报告；协议无效的 scored 报告仍保留，
+                # 使模型输出缺陷不会被当成基础设施缺失而从评测数据中消失。
                 if outcome["status"] != "scored":
                     continue
                 candidate_document = result.get(
@@ -168,6 +179,13 @@ def persist_finalizing_sample_run(
         tuple[str, int], tuple[dict[str, Any], ...]
     ] | None = None,
 ) -> None:
+    """保存重复实验的 sample、轨迹和聚合，作为完成状态提交前的数据库阶段。
+
+    顺序必须唯一且递增；三层聚合要么全有，要么全无，轨迹不得指向未知 sample。
+    事务同时覆盖 manifest、trace、outcome、report、score 和聚合，异常会回滚；
+    SQLAlchemyError 转为 StorageError，输入合同错误保留 ValueError。
+    此事务不包含后续 complete_run 或文件 artifact 写入，不是跨存储原子提交。
+    """
     sample_sequences = [result["sample_sequence"] for result in sample_results]
     if sample_sequences != sorted(sample_sequences) or len(sample_sequences) != len(
         set(sample_sequences)
@@ -413,6 +431,10 @@ def complete_run(
     run_completed_event: dict[str, Any],
     status: str = "completed",
 ) -> None:
+    """在独立事务中同时保存完成事件与最终状态；文件产物由调用方另行写入。
+
+    此处不重算评分或 quality gate，completed 描述执行生命周期而不是质量达标。
+    """
     engine = create_database_engine(database_path)
     try:
         with engine.begin() as connection:
@@ -434,6 +456,8 @@ def complete_run(
         engine.dispose()
 
 
+# finalization/artifact 出错后，调用方使用此补偿路径撤销已持久化的评分结果；
+# 它不是回滚此前的跨事务操作，失败时仍可能留下需要诊断的数据库状态。
 def mark_run_failed(
     database_path: Path,
     *,

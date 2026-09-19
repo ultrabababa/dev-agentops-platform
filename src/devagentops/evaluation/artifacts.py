@@ -15,6 +15,13 @@ def write_evaluation_artifacts(
     artifacts_dir: Path,
     document: dict[str, Any],
 ) -> dict[str, str]:
+    """将运行文档导出为 JSON 明细与 Markdown 摘要，返回两者的绝对路径。
+
+    先在同一输出根目录的临时目录写完两份文件，再 rename 成 run_id 目录，
+    避免正常发布路径暴露只写了一半的文件集；已存在的运行目录会被拒绝。
+    OSError 包装为 EvaluationArtifactError，finally 清理残留临时目录。
+    这不与 SQLite 提交组成原子事务，失败状态补偿由上层 runner 负责。
+    """
     root = artifacts_dir.expanduser().resolve(strict=False)
     run_directory = root / document["run_id"]
     if run_directory.exists():

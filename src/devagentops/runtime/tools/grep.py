@@ -29,6 +29,12 @@ def execute_grep(
     context: int = 0,
     limit: int = MAX_GREP_MATCHES,
 ) -> ToolExecutionResult:
+    """在冻结虚拟成员中执行确定性 regex/literal 搜索并返回带物理行号的结果。
+
+    path/glob 只筛选 ``visible_files``，不会扫描实时目录或重新应用 ``.gitignore``。
+    文件按路径排序，命中按文件内行序输出；context 行在同一文件中去重。match count、
+    单行字符数和总 UTF-8 bytes 各自有上限，截断同时写入模型文本与 metadata。
+    """
     if not isinstance(pattern, str) or not pattern:
         raise ExpectedToolError("pattern must be a non-empty string", code="invalid_pattern")
     if not isinstance(context, int) or isinstance(context, bool) or context < 0:

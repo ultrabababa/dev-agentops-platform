@@ -131,6 +131,12 @@ def execute_tool(
     name: str,
     arguments: dict[str, JsonValue],
 ) -> ToolExecutionResult:
+    """按冻结 Tool Registry allowlist 校验并分派一次只读工具调用。
+
+    名称必须存在于 ``TOOL_DEFINITIONS``，参数先按同一份 JSON Schema 的受支持子集
+    校验，再调用具体实现。未知工具或参数错误抛 ``ExpectedToolError``，由 Runtime
+    转成模型可见 ToolResult；本函数不捕获意外实现异常，也不负责并发或重试。
+    """
     definition = next((item for item in TOOL_DEFINITIONS if item.name == name), None)
     if definition is None:
         raise ExpectedToolError(f"unknown or disallowed tool: {name}", code="unknown_tool")
@@ -148,6 +154,12 @@ def _validate_arguments(
     definition: ToolDefinition,
     arguments: dict[str, JsonValue],
 ) -> None:
+    """校验当前四个 Tool Schema 实际使用的 object/string/boolean/integer 约束。
+
+    这是 Runtime 的确定性防线，不能依赖模型或 provider 一定遵守 tool schema。
+    校验器只实现 definitions 当前需要的字段、类型和 min/max 约束，并非通用
+    JSON Schema engine；新增 schema 关键字必须同步扩展实现及冻结组件身份。
+    """
     if not isinstance(arguments, dict):
         raise ExpectedToolError("tool arguments must be an object", code="schema_invalid_arguments")
     schema = definition.parameters

@@ -15,6 +15,12 @@ def chunk_physical_text(
     window_lines: int = 100,
     overlap_lines: int = 20,
 ) -> tuple[RetrievalChunk, ...]:
+    """把单个 Physical Artifact 切成固定行窗，保留可复现的物理坐标与内容 hash。
+
+    窗口不会跨文件；stride = window - overlap，尾部不足一窗仍保留。chunk ID 绑定
+    版本、source identity、1-based inclusive 行范围及正文 hash，因此它是 Retrieval
+    内部身份，不等同于 Case 的 Canonical Evidence ID，也不参与隐藏答案选择。
+    """
     if window_lines < 1:
         raise ValueError("window_lines must be positive")
     if overlap_lines < 0 or overlap_lines >= window_lines:

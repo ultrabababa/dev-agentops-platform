@@ -69,6 +69,13 @@ def run_formal_evaluation_v2(
     database_path: Path,
     artifacts_dir: Path,
 ) -> dict[str, Any]:
+    """执行已完成 preflight 的 Matrix v2 Condition，并返回运行摘要与产物位置。
+
+    先校验当前支持的 Treatment/Policy，解析冻结组件，按 runtime_variant 构造
+    ConditionExecutor；executor 负责 Case 输入投影、Runtime 调用及逐样本评分。
+    本层按 Case/repeat 规划调度，再做 Case-first 聚合并持久化。可预期的样本
+    执行失败由 executor 返回 execution_failed；调度/聚合阶段逸出的异常使整个 run 失败。
+    该函数会调用外部 provider、写 SQLite 和 JSON/Markdown，不是仅验证配置。"""
     effective = condition.effective_condition
     validate_minimax_development_condition(effective, len(suite.cases))
     if effective["suite"] != suite.suite_id:
@@ -154,11 +161,19 @@ def run_formal_evaluation_v2(
         event_listener=progress.on_event,
     )
     recorder.record("run_started", occurred_at=started_at)
+    # timeout 传给 provider 的请求层，不是 execute_sample_plan 的整 Case 截止时间；
+    # Harness 没有在此设置线程取消或总运行超时。模型/生成参数则由下方 Treatment 传入。
     provider_factory = lambda: create_minimax_provider(
         base_url=treatment["provider"]["base_url"],
         timeout_seconds=execution_policy["request_timeout_seconds"],
     )
 
+    # 分派的是受支持的显式 executor，并非动态导入任意 Runtime。普通 executor 从
+    # package 构造 RuntimeCaseWorkspace；Oracle 则由可信 resolver 根据隐藏 Required
+    # IDs 定位物理证据再交给模型。完整 package 保留在 evaluator 侧供评分，不直接发给模型。
+    # L4 工具的虚拟路径由 runtime/tools/_common.py 限定为 /raw.log 与
+    # /repository/ 声明成员，不开放 evaluator/、canonical-evidence/ 或包 manifest。
+    # 这是受控 API 的可见性约束；执行这些 API 的 Python 进程并未被 OS sandbox 隔离。
     if runtime_variant == "full_context_one_shot":
         executor = ConfiguredL1ConditionExecutor(
             prompt=prompt,
@@ -298,6 +313,8 @@ def run_formal_evaluation_v2(
             policy=ExecutionPolicy(
                 repeat_count=execution_policy["repeat_count"],
                 max_case_concurrency=execution_policy["max_case_concurrency"],
+                # L4 声明的 retry 属于 provider request；调度器本身禁止重跑样本。
+                # 因此这里给调度器 0，避免把请求重试混入 repeat_count 的独立样本。
                 retry_count=(
                     0
                     if runtime_variant == "self_built_react"
@@ -305,6 +322,8 @@ def run_formal_evaluation_v2(
                 ),
             ),
         )
+        # executor 已完成候选报告校验/评分，result.data 同时保留 validation 和质量指标。
+        # scored 表示已进入评分，不保证报告合法或分类正确；execution_failed 无质量分数。
         sample_results = [result.data for result in results]
         by_case = {
             suite_case.case_id: [
@@ -356,6 +375,8 @@ def run_formal_evaluation_v2(
         },
     )
     trace = list(recorder.snapshot())
+    # 数据库先存 finalizing 状态及结果，再 complete_run；完成后才导出产物。
+    # SQLite 与文件系统没有跨介质事务：产物写入失败会再将已完成的数据库 run 标失败。
     try:
         persist_finalizing_sample_run(
             database_path,

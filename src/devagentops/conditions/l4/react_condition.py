@@ -57,6 +57,12 @@ class ConfiguredL4Treatment:
 
 @dataclass(frozen=True)
 class ConfiguredL4ConditionExecutor:
+    """连接 Evaluation Harness 与 L4 Runtime 的 sample 级 adapter。
+
+    Harness 注入冻结 components、Treatment、provider factory 与 Trace recorder；本类
+    校验 Runtime identity，构造安全 workspace/初始消息，调用 ``run_react``，再把
+    Runtime 结果交给 Evaluator。它不控制 Suite 调度、Case 并发或聚合。
+    """
     prompt: ComponentManifest
     runtime_control: ComponentManifest
     tool_registry: ComponentManifest
@@ -70,11 +76,19 @@ class ConfiguredL4ConditionExecutor:
         sample: PlannedSample,
         recorder: EventRecorder,
     ) -> SampleResult:
+        """执行一个 PlannedSample，并返回 scored 或 execution_failed 的统一结果。
+
+        Runtime infrastructure 异常在此转为 sample failure，并保留可用的 partial
+        trajectory；正常 capability terminals（无效报告、max steps）仍为 scored，
+        随后由 Evaluator 使用隐藏 Ground Truth 给出 validation/metrics。
+        """
         identity = sample.identity
         suite_case = sample.suite_case
         recorder.record("l4_execution_started", identity=identity)
         messages = ()
         try:
+            # Component manifest 与代码内置语义必须精确一致，然后才把 provider-visible
+            # tools 和 policy mode 交给 Runtime，防止 Registry 身份与实际执行漂移。
             tools, policy_mode = self._validated_runtime()
             workspace = RuntimeCaseWorkspace.from_package(suite_case.package)
             initial_message = build_initial_user_message(
@@ -157,6 +171,8 @@ class ConfiguredL4ConditionExecutor:
             suite_case.package,
         )
         candidate_document = runtime_result.candidate_document
+        # run_react 已完成 JSON 解析、可选引用规范化和“协议是否有效”的终止判断；
+        # 这里才进入 Evaluator，使用完整 package 的隐藏答案评分。Runtime 不读取这些标签。
         response = runtime_result.final_assistant
         result = {
             "case_id": suite_case.case_id,
@@ -224,6 +240,11 @@ class ConfiguredL4ConditionExecutor:
         )
 
     def _validated_runtime(self) -> tuple[tuple[ToolDefinition, ...], ToolPolicyMode]:
+        """把四个冻结 Component identities 核对为代码实际支持的 L4 组合。
+
+        Task Contract、Runtime Control、Tool Registry、Tool Policy 任一类型/版本或
+        behavior 不匹配都在模型调用前失败；不允许运行时“尽量兼容”未知 policy。
+        """
         expected_versions = (
             (self.prompt, "prompt", self.treatment.task_contract_version),
             (
@@ -267,6 +288,11 @@ class ConfiguredL4ConditionExecutor:
 def validate_l4_tool_registry(
     tool_registry: ComponentManifest,
 ) -> tuple[ToolDefinition, ...]:
+    """验证冻结 Registry 的 schema 与 semantics 和内置四工具实现逐项一致。
+
+    对比包含名称、描述、parameters 和行为限制，因此改动工具协议必须产生新的
+    component identity；校验成功后返回同一 ``TOOL_DEFINITIONS`` 给 provider 请求。
+    """
     expected_tools = [
         {
             "name": definition.name,

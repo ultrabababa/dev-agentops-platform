@@ -35,7 +35,7 @@ EXECUTION_POLICY_FIELDS = {
     "retry_count",
     "request_timeout_seconds",
 }
-CONDITION_TYPES = {"anchor", "ablation", "candidate"}
+CONDITION_TYPES = {"anchor", "ablation", "candidate"} # 基准条件 消融条件 候选条件
 
 
 def canonical_sha256(value: Any) -> str:
@@ -48,22 +48,22 @@ def canonical_sha256(value: Any) -> str:
     return hashlib.sha256(canonical).hexdigest()
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True) # @dataclass 会自动帮你生成一个 __init__() 初始化函数；还会生成一些常用方法，比如 __repr__()、__eq__()；frozen=True 这个 dataclass 创建之后，字段不能再直接重新赋值。
 class ResolvedConditionV2:
     condition_id: str
     effective_condition: dict[str, Any]
 
-    @property
-    def treatment_fingerprint(self) -> str:
+    @property # 让一个方法可以像“成员变量”一样访问，并非真实的成员变量，而是访问时现场计算的
+    def treatment_fingerprint(self) -> str: # 跑什么 → provider / model / reasoning / generation / contracts / context
         return canonical_sha256(self.effective_condition["treatment"])
 
     @property
-    def execution_policy_fingerprint(self) -> str:
+    def execution_policy_fingerprint(self) -> str: # 怎么跑 → repeat / concurrency / retry / timeout
         return canonical_sha256(self.effective_condition["execution_policy"])
 
     @property
     def condition_fingerprint(self) -> str:
-        return canonical_sha256(
+        return canonical_sha256( # 故意没有放 execution_policy_fingerprint，因为 condition_fingerprint 主要表示“这个实验条件在语义上是什么”；而 execution_policy_fingerprint 被视为“执行这个条件时采用的运行策略”
             {
                 "type": self.effective_condition["type"],
                 "runtime_variant": self.effective_condition["runtime_variant"],
@@ -73,7 +73,7 @@ class ResolvedConditionV2:
             }
         )
 
-    def as_dict(self) -> dict[str, Any]:
+    def as_dict(self) -> dict[str, Any]: # 把这个对象整理成一个普通的 Python dict 返回
         return {
             "condition_id": self.condition_id,
             "effective_condition": self.effective_condition,
@@ -109,6 +109,12 @@ def calculate_run_configuration_fingerprint(
     git_dirty: bool,
     run_kind: str | None = None,
 ) -> str:
+    """组合本次运行的配置身份，而非计算模型输出或运行结果的摘要。
+
+    Condition/Treatment 与 Execution Policy 分开取指纹，再绑定 Suite、按序选中的
+    Case 身份/权重、Matrix 元信息、代码 revision、dirty 标记及可选 run_kind。
+    dirty 仅是布尔值，不包含未提交源码内容；此指纹不能独自证明源码完全一致，
+    也不保证外部 provider 在相同配置下返回相同结果。"""
     identity = {
         "matrix": {
             "matrix_id": matrix.matrix_id,
@@ -133,6 +139,11 @@ def load_evaluation_matrix_v2(
     path: Path,
     component_registry_path: Path | None = None,
 ) -> EvaluationMatrixV2:
+    """读取显式定义的 v2 Conditions，检查结构、执行策略及可选 Registry 身份。
+
+    v2 不接受 defaults/extends，也不执行隐式继承；effective_condition 仅移除 id。
+    此处主要校验字段与类型，具体 Runtime 支持的模型、contract 和策略组合，
+    还需由 run_formal_evaluation_v2 的执行前校验确定。失败抛 EvaluationMatrixError。"""
     try:
         document = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
@@ -164,29 +175,29 @@ def load_evaluation_matrix_v2(
         _validate_treatment(raw["treatment"], condition_id)
         _validate_execution_policy(raw["execution_policy"], condition_id)
         if component_registry_path is not None:
-            _validate_registry_contracts(
+            _validate_registry_contracts( # 如果调用 load_evaluation_matrix_v2() 时传了 Component Registry 的路径，就额外验证这个 condition 里声明的组件引用
                 raw,
                 component_registry_path,
                 condition_id=condition_id,
-            )
+            ) # 完成了三层一致性校验: Matrix 里声明的 fingerprint = Registry record 里登记的 fingerprint = 真实 component 的 manifest.behavior 当前重新计算出的 fingerprint
         effective = {key: value for key, value in raw.items() if key != "id"}
         resolved.append(ResolvedConditionV2(condition_id, effective))
-    return EvaluationMatrixV2(
+    return EvaluationMatrixV2( # 把前面已经验证、解析好的所有 condition，组装成最终的 Matrix 对象
         matrix_id=document["matrix_id"],
         matrix_version=document["matrix_version"],
         schema_version="2",
-        conditions=tuple(resolved),
+        conditions=tuple(resolved), # → 前面已经验证完成的 ResolvedConditionV2 集合；最终放进 EvaluationMatrixV2 时转成了 tuple，也就是不可直接增删的序列。
     )
 
 
 def _validate_registry_contracts(
     condition: dict[str, Any],
     registry_path: Path,
-    *,
+    *, # 函数参数列表中单独出现的 *：它后面的参数必须通过 参数名=值 来传。
     condition_id: str,
 ) -> None:
     contracts = condition["treatment"]["contracts"]
-    references = [("task", "prompt")]
+    references = [("task", "prompt")] # contracts 里的 key ->  Registry 里的组件类型
     if condition["runtime_variant"] == "static_retrieval":
         references.append(("retriever", "retriever_config"))
     if condition["runtime_variant"] == "self_built_react":
@@ -198,7 +209,7 @@ def _validate_registry_contracts(
             ]
         )
     for contract_key, component_type in references:
-        identity = contracts.get(contract_key, {})
+        identity = contracts.get(contract_key, {}) # Matrix 对这个 frozen component 的“身份声明”
         if (
             identity.get("component_type") != component_type
             or not isinstance(identity.get("version"), str)
@@ -207,12 +218,12 @@ def _validate_registry_contracts(
             raise EvaluationMatrixError(
                 f"condition {condition_id!r} has invalid {contract_key} contract identity"
             )
-        fingerprints = validate_component_references(
+        fingerprints = validate_component_references( # 这里先校验registry中声明的fingerprints和实际component的manifest文件中的behavior计算出来的fingerprint是一致的
             {component_type: identity["version"]},
             registry_path,
             condition_id=condition_id,
         )
-        if identity.get("fingerprint") != fingerprints[component_type]:
+        if identity.get("fingerprint") != fingerprints[component_type]: # 这里校验matrix中声明引用的component的fingerprint和经过验证的registry中的以及实际behavior计算出来的fingerprint是一致的
             raise EvaluationMatrixError(
                 f"condition {condition_id!r} {contract_key} contract fingerprint "
                 "does not match the Component Registry"

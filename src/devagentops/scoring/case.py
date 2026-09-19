@@ -75,6 +75,11 @@ def _classification_matches(
     analysis: CandidateReportAnalysis,
     package: OfflineCasePackage,
 ) -> tuple[float, float]:
+    """按 Diagnosis Ground Truth 分开记录精确命中与人工认可的替代分类命中。
+
+    两项互斥，primary 命中不会再累加 acceptable；Case 不匹配或 inconclusive
+    都没有分类得分。其他字段的协议错误不会自动抹去此项独立的分类结果。
+    """
     if (
         not analysis.case_id_matches
         or analysis.classification_status != "classified"
@@ -93,6 +98,12 @@ def _evidence_score(
     analysis: CandidateReportAnalysis,
     package: OfflineCasePackage,
 ) -> tuple[float, EvidenceDiagnostics]:
+    """计算 Required Evidence 的集合召回率，并仅返回计数型诊断。
+
+    去重后求交，重复引用不能增加命中；出现任一未知 ID 则此项归零。
+    分母非空依赖 Case loader 的 Ground Truth 合同。诊断不输出 Required/Missed
+    ID 清单，避免从评分结果直接泄露隐藏答案；此函数本身不提供进程级隔离。
+    """
     required = set(package.evidence_ground_truth.required_evidence_ids)
     cited = set(analysis.cited_evidence_ids)
     matched_count = len(required & cited)
@@ -117,6 +128,12 @@ def evaluate_case_report(
     raw_report: Any,
     package: OfflineCasePackage,
 ) -> CaseScoreResult:
+    """Evaluator 侧使用完整 Case Package，对候选报告做确定性校验与四项评分。
+
+    Diagnosis 与 Evidence Ground Truth 分别用于分类和引用比较；摘要、根因文本
+    不做语义正确性判定。Schema 无效仍返回独立指标和错误，仅 structured_report
+    为 None；执行失败应由上游记录，不能伪造零分报告传入此函数混淆两类失败。
+    """
     analysis = analyze_candidate_report(
         raw_report,
         case_id=package.case_id,

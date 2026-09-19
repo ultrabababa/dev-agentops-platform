@@ -11,7 +11,12 @@ _CAMEL_WORD_BOUNDARY = re.compile(r"([a-z0-9])([A-Z])")
 
 
 def code_aware_tokens(text: str) -> list[str]:
-    """Tokenize code/log text without stopwords, stemming, or hidden NLP state."""
+    """确定性拆分代码/日志 token，不使用 stopwords、stemming 或隐藏 NLP 状态。
+
+    每个 technical compound 既保留 lowercase 原形，也按路径/点/下划线/连字符和
+    camelCase 拆出子词；compound 内去重但保留出现顺序。相同函数同时处理 document
+    与 query，避免两套 tokenizer 造成无法解释的 lexical mismatch。
+    """
     tokens: list[str] = []
     for match in _TECHNICAL_TOKEN.finditer(text):
         raw_compound = match.group(0)

@@ -22,6 +22,11 @@ def execute_ls(
     path: str | None = None,
     limit: int = MAX_LS_ENTRIES,
 ) -> ToolExecutionResult:
+    """列出冻结虚拟目录的直属成员，并稳定标记子目录后缀 ``/``。
+
+    目录集合从 manifest 成员推导，包含 dotfiles 且不读取真实目录；结果按名称排序，
+    再应用 entry/byte 上限。该工具没有递归语义，深入调查需模型继续调用 ls/find。
+    """
     if (
         not isinstance(limit, int)
         or isinstance(limit, bool)

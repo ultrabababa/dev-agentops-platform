@@ -78,6 +78,7 @@ STATIC_RETRIEVER_BEHAVIOR = {
 
 @dataclass(frozen=True)
 class StaticRetrievalResult:
+    """保存 L3 确定性 retrieval 全链路结果，供模型输入与 Trace 分别投影。"""
     log_chunk_count: int
     repository_chunk_count: int
     log_queries: tuple[RetrievalQuery, ...]
@@ -107,6 +108,16 @@ class StaticRetrievalResult:
 def run_static_retrieval(
     workspace: RuntimeCaseWorkspace,
 ) -> StaticRetrievalResult:
+    """在冻结 Case Physical Artifacts 上执行 L3 静态 evidence acquisition。
+
+    完整 raw log 与 manifest-declared repo 成员只在程序内建立临时 per-Case 索引；
+    先从 log 本身提取确定性 queries、选择 log chunks，再仅从已选 log chunks 提取
+    repo queries。两个 pool 独立 Top-K，不转移空余名额。最后 packing 重建物理 spans
+    并附加 Canonical overlaps，模型只收到 packed spans，不收到完整 corpus 或 ranks。
+
+    该函数没有 LLM 决策、外部检索服务、持久化索引或 Ground Truth 调优；同一冻结
+    workspace 与 Retriever behavior 应产生确定性输出。读取失败向上作为 Runtime 错误。
+    """
     settings = STATIC_RETRIEVER_BEHAVIOR["settings"]
     chunking = settings["chunking"]
     extraction = settings["signal_extraction"]
@@ -125,6 +136,8 @@ def run_static_retrieval(
         overlap_lines=chunking["overlap_lines"],
     )
     repository_chunks = []
+    # corpus membership 完全来自 Case repository manifest；不扫描当前工作树，也不把
+    # canonical-evidence/evaluator 文件加入 BM25 documents。
     for relative_path in workspace.list_repository_files():
         source_path = f"{workspace.case.repository_root}/{relative_path}"
         source_text = workspace.read_repository_file_exact(relative_path)
@@ -158,6 +171,7 @@ def run_static_retrieval(
         final_top_k=selection["log_top_k"],
     )
     repository_queries = extract_repository_queries(
+        # repo query 只能来自模型将看到的 selected log evidence，而非隐藏 Required IDs。
         tuple(hit.chunk for hit in selected_log),
         per_signal_type_cap=extraction["per_signal_type_cap"],
     )

@@ -119,6 +119,12 @@ class CanonicalOverlap:
 
 @dataclass(frozen=True)
 class PackedSpan:
+    """Retrieval selection 经物理合并后的模型输入单元。
+
+    ``content`` 是 source-faithful bytes 解码文本；rank/chunk provenance 供 Trace，
+    ``overlapping_canonical_evidence`` 供模型把所见行映射到引用坐标。两类 metadata
+    在 ``model_visible_dict`` 中有意分流：模型看到物理内容与坐标，不看到 ranking。
+    """
     source_kind: SourceKind
     source_path: str
     repository_relative_path: str | None
@@ -149,6 +155,7 @@ class PackedSpan:
         return document
 
     def model_visible_dict(self) -> dict[str, object]:
+        """输出模型可见 evidence，不泄露 BM25/RRF rank 或 hidden Ground Truth。"""
         document: dict[str, object] = {
             "kind": self.source_kind,
             "path": self.source_path,

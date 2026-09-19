@@ -106,6 +106,11 @@ def extract_log_queries(
     start_line: int = 1,
     per_signal_type_cap: int = 5,
 ) -> tuple[RetrievalQuery, ...]:
+    """从完整 raw log 提取固定类别的失败信号，不调用模型或 evaluator labels。
+
+    每个候选保留物理 source/line；最终由 ``_select_queries`` 做 normalization 后去重、
+    specificity/later-line 排序与每类 cap。规则是冻结 Retriever behavior 的一部分。
+    """
     candidates: list[_Candidate] = []
     for offset, line in enumerate(text.splitlines(), start=start_line):
         normalized_line = normalize_signal_text(line)
@@ -150,6 +155,11 @@ def extract_repository_queries(
     *,
     per_signal_type_cap: int = 5,
 ) -> tuple[RetrievalQuery, ...]:
+    """仅从已选 log chunks 提取 repo 路径、symbol、test 与错误语义 queries。
+
+    这形成 log → repository 的确定性桥接，不读取完整日志以外的 curator 提示，也不
+    让模型改写 query。重叠 log chunks 产生的重复信号由统一选择逻辑消除。
+    """
     candidates: list[_Candidate] = []
     for chunk in sorted(
         selected_log_chunks,
@@ -216,6 +226,11 @@ def _select_queries(
     family_order: tuple[str, ...],
     cap: int,
 ) -> tuple[RetrievalQuery, ...]:
+    """按 (family, normalized text) 去重并生成稳定 query identity。
+
+    重复信号保留较晚物理位置；每个 family 内先 specificity、再 later line，最后以
+    source/text 稳定 tie-break。family 本身按冻结顺序输出，各 query 在 RRF 中等权。
+    """
     if cap < 1:
         raise ValueError("per-signal-family cap must be positive")
     latest_by_identity: dict[tuple[str, str], _Candidate] = {}

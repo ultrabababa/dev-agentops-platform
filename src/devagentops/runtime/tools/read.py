@@ -19,6 +19,12 @@ def execute_read(
     offset: int = 1,
     limit: int = MAX_READ_LINES,
 ) -> ToolExecutionResult:
+    """按 1-based 行号读取一个虚拟文件，并返回可继续分页的 bounded observation。
+
+    ``limit`` 约束行数，50 KiB 约束最终 ToolResult bytes；若后续仍有完整行，结果
+    包含 ``next_offset``。单行无法装入 envelope 时返回可恢复错误，而不是字节切割
+    源码并让模型看到损坏的证据文本。
+    """
     if not isinstance(offset, int) or isinstance(offset, bool) or offset < 1:
         raise ExpectedToolError("offset must be an integer >= 1", code="invalid_offset")
     if (

@@ -183,7 +183,11 @@ class _CandidateReportProjection:
 
 @dataclass(frozen=True)
 class CandidateReportAnalysis:
-    """Package-level view of candidate validation without exposing raw projection state."""
+    """同时提供协议错误与可评分字段，不向调用方暴露内部 projection。
+
+    validation 无效时仍可读取分类、引用计数等部分信息；只有全部校验通过，
+    construct_structured_report 才构造类型化报告，避免把部分解析当成合规输出。
+    """
 
     validation: ReportValidationResult
     _projection: _CandidateReportProjection
@@ -227,6 +231,12 @@ class CandidateReportAnalysis:
 
 
 def load_candidate_report_json(path: Path) -> Any:
+    """读取离线候选报告 JSON；文件/编码/JSON 语法错误转为 ReportInputError。
+
+    此处仅负责输入解析，Schema 与 Case 一致性由 analyze_candidate_report 校验。
+    数字先保留为 Decimal，让越界或极大数进入后续校验而非提前损失精度；
+    NaN/Infinity 等非标准 JSON 常量直接拒绝，不替模型修复输入。
+    """
     try:
         raw = path.read_text(encoding="utf-8")
     except FileNotFoundError as exc:
@@ -313,6 +323,11 @@ def _validate_candidate_report(
     case_id: str,
     evidence_ids: tuple[str, ...],
 ) -> tuple[ReportValidationResult, _CandidateReportProjection]:
+    """累积 Schema V1 错误并保留可评分投影，不因首个字段错误丢失其余诊断。
+
+    evidence_ids 是 Case 的完整合法引用集合，不是隐藏的 Required Evidence 集合；
+    这里只校验引用是否合法，是否命中 Ground Truth 留给 Case scorer。
+    """
     if not isinstance(raw_report, dict):
         error = ReportValidationError(
             code="invalid_report_type",
@@ -676,6 +691,9 @@ def _validate_candidate_report(
             )
         )
 
+    # completeness 当前衡量八组字段是否填充，而不是 Schema 校验通过率：
+    # 例如非空但未知的枚举、越界数字、含无效引用的非空列表仍可能计为已填充。
+    # 因此必须同时查看 validation；不能用 completeness=1 推断报告合规。
     raw_status = document.get("classification_status", _MISSING)
     raw_type = document.get("failure_type", _MISSING)
     classification_filled = _non_empty_text(raw_status) and (
@@ -724,6 +742,11 @@ def analyze_candidate_report(
     case_id: str,
     evidence_ids: tuple[str, ...],
 ) -> CandidateReportAnalysis:
+    """把任意已解析候选值转换为统一校验/评分视图，不读取文件或 Ground Truth。
+
+    非 object 或字段违规返回 validation.errors，属于可观察的报告协议结果，
+    不在此抛出基础设施失败；调用方仍可据投影计算各自独立的质量指标。
+    """
     validation, projection = _validate_candidate_report(
         raw_report,
         case_id=case_id,
@@ -735,7 +758,7 @@ def analyze_candidate_report(
 def _construct_valid_report(
     projection: _CandidateReportProjection,
 ) -> StructuredTriageReport:
-    # This helper is called only after validation has proven every assertion below.
+    # 仅在 validation.valid 后调用；这些断言依赖此前完整校验，不能替代校验入口。
     assert projection.schema_version is not None
     assert projection.case_id is not None
     assert projection.classification_status is not None
