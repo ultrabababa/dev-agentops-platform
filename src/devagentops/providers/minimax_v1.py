@@ -64,7 +64,13 @@ class _SerializedMiniMaxRequest:
 
 
 class MiniMaxProvider:
-    """MiniMax official API profile over an OpenAI-compatible transport."""
+    """在 OpenAI-compatible transport 上实现 MiniMax-M3 的协议适配。
+
+    此层负责把 provider-neutral request 序列化为 MiniMax wire payload，并把响应
+    归一化为 typed AssistantMessage；HTTP 层只做一次传输，Agent loop 不理解
+    reasoning_details、base_resp 等 MiniMax 字段。tokenizer/template 只服务仍需要
+    本地精确计数的其他条件与诊断，L4 ``run_react`` 不调用 ``count_input_tokens``。
+    """
 
     def __init__(self, *, transport: ChatCompletionsTransport) -> None:
         self._transport = transport
@@ -74,6 +80,11 @@ class MiniMaxProvider:
     def count_input_tokens(
         self, request: LogicalCompletionRequest
     ) -> ExactTokenCount:
+        """用固定资产和同一序列化路径计算精确输入 token，必要时延迟加载资产。
+
+        asset SHA-256 防止 tokenizer/template 静默漂移。该路径要求历史 ToolCall
+        raw arguments 可被模板解析；malformed history 会明确失败而不擅自修复。
+        """
         serialized = self._serialize_request(request)
         if self._tokenizer is None or self._chat_template is None:
             try:
@@ -118,6 +129,12 @@ class MiniMaxProvider:
         )
 
     def complete(self, request: LogicalCompletionRequest) -> AssistantMessage:
+        """发送一次已序列化请求，并把 MiniMax 响应严格归一化为 Model Decision。
+
+        transport/provider status 或外层协议损坏在产生 AssistantMessage 前抛 typed
+        error；合法 envelope 内 malformed ``function.arguments`` 仍保留成 ToolCall，
+        让 Runtime 以 Agent-visible error 继续，而不是把动作错误误判为传输故障。
+        """
         serialized = self._serialize_request(request)
         document = self._transport.complete(serialized.payload)
         _validate_provider_status(document)
@@ -160,6 +177,11 @@ class MiniMaxProvider:
     def _serialize_request(
         request: LogicalCompletionRequest,
     ) -> _SerializedMiniMaxRequest:
+        """验证冻结 MiniMax profile，并序列化完整 history、System Prompt 与 tools。
+
+        profile 精确匹配使 Matrix Treatment 与实际 wire 行为一致；adapter 不接受
+        任意 generation 组合。每轮都会重放完整 typed history，没有隐藏摘要或裁剪。
+        """
         expected_reasoning = {
             "thinking": {"type": "adaptive"},
             "reasoning_split": True,
@@ -208,6 +230,7 @@ def create_minimax_provider(
     base_url: str,
     timeout_seconds: float,
 ) -> MiniMaxProvider:
+    """以环境变量 credential 和 Execution Policy 的单请求 timeout 构造 adapter。"""
     return MiniMaxProvider(
         transport=OpenAICompatibleChatCompletionsTransport(
             base_url=base_url,
@@ -235,6 +258,13 @@ def _reasoning_output(message: dict[str, Any]) -> str | None:
 def _serialize_messages(
     request: LogicalCompletionRequest,
 ) -> tuple[dict[str, Any], ...]:
+    """把完整 provider-neutral trajectory 转成 MiniMax continuation wire messages。
+
+    ToolResult 用原 call ID 关联；AssistantMessage 的 opaque provider_fields 会先复制，
+    再补标准 role/content/tool_calls。这样 reasoning continuation 可原样重放，Runtime
+    无需理解 provider 私有字段。ToolCall 优先使用 raw_arguments，避免 parse/reserialize
+    改写模型实际输出，也允许 malformed arguments 在下一轮继续出现于历史中。
+    """
     messages: list[dict[str, Any]] = []
     if request.system_prompt is not None:
         messages.append({"role": "system", "content": request.system_prompt})
@@ -375,6 +405,12 @@ def _assistant_content(message: dict[str, Any]) -> tuple[AssistantContent, ...]:
 
 
 def _parse_tool_call(raw_call: Any) -> ToolCall:
+    """严格解析 ToolCall 外层身份，同时保留不可修复的 raw arguments。
+
+    call ID/name/type/arguments 字符串不合法会使整个 provider envelope 失败；只有
+    arguments 字符串内部不是标准 JSON object 时才设置 ``arguments=None``。这一区分
+    让协议损坏成为 infrastructure error，而模型动作错误可以收到 ToolResult 后自修复。
+    """
     if not isinstance(raw_call, dict):
         raise TypeError("tool call is not an object")
     call_id = raw_call.get("id")
@@ -416,6 +452,11 @@ def _normalize_stop_reason(
     raw_stop_reason: str | None,
     content: tuple[AssistantContent, ...],
 ) -> Literal["stop", "length", "tool_use"]:
+    """把 provider finish_reason 与实际 content 合并为 Runtime 的三个终止类别。
+
+    provider 即使返回 stop/None，只要含 ToolCall 仍归一为 tool_use；未知 reason
+    拒绝为协议错误。Runtime 之后仍以“是否存在 ToolCall”作为提交报告的主分支。
+    """
     has_tool_call = any(isinstance(block, ToolCall) for block in content)
     if raw_stop_reason in {"tool_calls", "function_call", "tool_use"}:
         return "tool_use"
@@ -466,6 +507,11 @@ def _optional_string(document: dict[str, Any], key: str) -> str | None:
 
 
 def _validate_provider_status(document: dict[str, Any]) -> None:
+    """解释 MiniMax ``base_resp`` 并给同请求重试层提供稳定错误分类。
+
+    1001 为 timeout；1000/1002/1024/1033 为 ordinary transient；其他非零状态
+    nonretryable。该映射不执行 sleep/retry，也不把 provider 拒绝变成 AssistantMessage。
+    """
     base_resp = document.get("base_resp")
     if base_resp is None:
         return

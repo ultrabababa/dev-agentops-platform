@@ -75,6 +75,12 @@ def serialize_static_retrieval_runtime_input(
     workspace: RuntimeCaseWorkspace,
     retrieval: StaticRetrievalResult,
 ) -> StaticRetrievalRuntimeInput:
+    """把 L3 packed spans 投影成唯一一次模型调用的 source-faithful 输入。
+
+    每个 span 包含物理 path/range/content 与相交的答案无关 Canonical coordinates；
+    不包含 BM25/RRF 分数、完整未选 corpus 或 evaluator labels。SHA-256/byte_count
+    用于 Trace 与运行身份观测，不替代 Case/Suite Fingerprint。
+    """
     document = {
         "runtime_input_serialization_version": RUNTIME_INPUT_SERIALIZATION_VERSION,
         "case": workspace.case.as_dict(),
@@ -109,6 +115,15 @@ def run_configured_static_retrieval_one_shot(
     after_token_preflight: Callable[[dict[str, Any]], None] | None = None,
     before_model_call: Callable[[dict[str, Any]], None] | None = None,
 ) -> StaticRetrievalOneShotResult:
+    """执行 L3 的确定性 retrieval → 单次模型请求路径。
+
+    与 L4 不同，模型不选择 query、工具或停止时机；程序先完成全部 retrieval，渲染
+    Task/Output Contract，并在请求前用 Provider 精确计数。输入加预留 completion
+    超出 context 时直接 execution failure，不截断 evidence，也不发模型请求。
+
+    成功响应只拼接可见 text 并尝试 JSON 解析；Evidence Reference Canonicalization、
+    report validation 与评分由外层 Condition executor 的共享 final-report 路径完成。
+    """
     _validate_contracts(prompt, retriever, treatment)
     retrieval = run_static_retrieval(workspace)
     runtime_input = serialize_static_retrieval_runtime_input(workspace, retrieval)
@@ -208,6 +223,7 @@ def _validate_contracts(
     retriever: ComponentManifest,
     treatment: ConfiguredL3Treatment,
 ) -> None:
+    """在 retrieval/model 副作用前核对 Task、Runtime Input 与 Retriever 身份。"""
     if (
         prompt.component_type != "prompt"
         or prompt.component_version != treatment.task_contract_version

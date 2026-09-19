@@ -48,6 +48,14 @@ RuntimeEventCallback = Callable[[str, dict[str, Any]], None]
 
 @dataclass(frozen=True)
 class ReactConfiguration:
+    """一次 L4 Runtime 执行所需的冻结配置。
+
+    Harness/Condition adapter 负责从 Matrix 与 Component Registry 组装这些字段；
+    Runtime 只消费已经解析好的 model、System Prompt、ToolDefinition 与 Tool Policy。
+    ``context_limit_tokens`` 和 ``max_completion_tokens`` 随 Treatment 记录到下游结果，
+    但当前控制循环并不读取它们做本地 token preflight；实际输入 token 取 provider
+    usage，completion 上限则已包含在 ``generation`` 的 provider 请求配置中。
+    """
     model: str
     system_prompt: str
     reasoning: dict[str, Any]
@@ -62,6 +70,12 @@ class ReactConfiguration:
 
 @dataclass(frozen=True)
 class ReactRuntimeResult:
+    """把控制循环终态、完整内存轨迹和 provider 观测返回 Condition adapter。
+
+    ``candidate_document`` 是可选 Evidence Mapping 后交给 Evaluator 的版本；
+    ``model_candidate_document`` 保留模型原始 JSON 解析结果，用于区分模型输出与
+    确定性引用规范化的影响。Runtime 本身不读取 Ground Truth，也不计算得分。
+    """
     terminal_reason: TerminalReason
     candidate_document: Any
     visible_output: str | None
@@ -101,7 +115,13 @@ class ReactInfrastructureError(RuntimeError):
 
 
 def serialize_initial_runtime_input(workspace: RuntimeCaseWorkspace) -> str:
-    """Serialize only public metadata, virtual workspace, and citation coordinates."""
+    """序列化首轮模型可见输入：公开 Case 信息、虚拟工作区与引用坐标。
+
+    这里不嵌入 ``/raw.log`` 或仓库正文，模型必须通过工具获取物理证据；完整
+    Canonical coordinate vocabulary 只提供答案中可用的引用坐标，不包含哪些 ID
+    是 Required/Optional。该字段边界防止正常输入泄露 evaluator Ground Truth，
+    但它是应用层数据投影，不构成 OS 级文件权限隔离。
+    """
     document = {
         "runtime_input_serialization_version": "l4_tool_workspace_runtime_input_v1",
         "case": {
@@ -132,6 +152,12 @@ def build_initial_user_message(
     task_contract_template: str,
     output_contract_suffix: str,
 ) -> UserMessage:
+    """用冻结 Task Contract 渲染首条 UserMessage，并追加 Output Contract。
+
+    Task Contract 负责面向 Case 的任务说明；L4 的 System Prompt 由调用方通过
+    ``ReactConfiguration.system_prompt`` 独立传入。模板变量不匹配属于 Runtime
+    配置/组件错误，在首次模型请求前转成 ``ReactInfrastructureError``。
+    """
     runtime_input = serialize_initial_runtime_input(workspace)
     try:
         content = task_contract_template.format(runtime_input=runtime_input)
@@ -156,6 +182,18 @@ def run_react(
     on_event: RuntimeEventCallback | None = None,
     sleep: Callable[[float], None] = time.sleep,
 ) -> ReactRuntimeResult:
+    """控制 L4 的 Model Decision → Tool observation → 下一决策循环。
+
+    ``messages`` 是权威会话状态：初始 UserMessage、每次成功返回的完整
+    AssistantMessage，以及按策略产生的 ToolResultMessage 都以不可变 tuple 追加，
+    下一次请求会重放全部历史。失败的 provider attempt 不产生 AssistantMessage，
+    所以只进入 Trace，不进入 trajectory，也不消耗 ``max_steps``。
+
+    模型决定是否提出 ToolCall 以及最终报告文本；Runtime 确定性控制 allowlist、
+    参数校验、Tool Policy、执行、请求重试、step budget 和终止。函数有 provider
+    请求、工具读取、等待重试与事件回调副作用；可恢复动作错误写成 ToolResult 后
+    继续，不可恢复的 provider/tool 基础设施错误抛 ``ReactInfrastructureError``。
+    """
     messages: tuple[Message, ...] = (initial_user_message,)
     provider_input_tokens: list[int | None] = []
     steps = 0
@@ -164,6 +202,8 @@ def run_react(
     final_latency_ms: int | None = None
 
     while True:
+        # budget 在发起下一次逻辑请求前检查：第 100 个成功 Model Decision 可以完成，
+        # 也可以执行工具；若它仍未提交报告，则工具结果会保留，但不会出现第 101 次请求。
         if steps >= configuration.max_steps:
             _emit(
                 on_event,
@@ -197,6 +237,8 @@ def run_react(
         )
 
         try:
+            # 重试层反复发送同一个 request 对象，不插入模型可见错误消息。因此 request
+            # retry 是基础设施恢复，不是新的 Agent 决策，也不是重跑整个 sample。
             execution = execute_completion_request(
                 provider,
                 request,
@@ -237,6 +279,8 @@ def run_react(
         calls = tool_calls(assistant)
 
         if not calls:
+            # “没有 ToolCall”是提交最终报告的唯一信号；submit_report 不是伪装的工具。
+            # JSON 解析失败时保留原始字符串，交给 validator 形成可评分的协议失败。
             visible_output = assistant_text(assistant)
             try:
                 model_candidate_document: Any = json.loads(visible_output)
@@ -288,6 +332,8 @@ def run_react(
             )
 
         if assistant.stop_reason == "length":
+            # provider 明确表示输出被截断时，任何随响应到达的 ToolCall 都可能不完整；
+            # 因而全部拒绝并逐个回写 error ToolResult，避免执行半截参数。
             error = (
                 "ToolCalls returned with stop_reason=length are truncated; "
                 "none were executed"
@@ -329,6 +375,8 @@ def run_react(
 
         policy = evaluate_baseline_policy(calls)
         if not policy.accepted:
+            # 历史 single policy 对同轮多个调用采用 reject-all，不能只挑第一个执行，
+            # 否则模型本次决策的语义会被 Runtime 暗中改写。
             assert policy.error is not None
             messages = _append_error_results(messages, calls, policy.error)
             for call in calls:
@@ -346,6 +394,8 @@ def run_react(
 
         call = calls[0]
         if call.arguments is None:
+            # Provider adapter 保存 raw_arguments，却不修复非法 JSON。错误结果连同原始
+            # AssistantMessage 留在 history，使模型下一轮可以自行纠正。
             result_message = _malformed_tool_arguments_result(call)
             messages = (*messages, result_message)
             _emit(
@@ -433,6 +483,16 @@ def _execute_parallel_tool_batch(
     request_attempts: int,
     on_event: RuntimeEventCallback | None,
 ) -> tuple[Message, ...]:
+    """并发执行同一 Model Decision 中可运行的 ToolCalls，并按原顺序提交结果。
+
+    malformed arguments 先成为独立错误 outcome；其余调用以一个
+    ``ThreadPoolExecutor`` 并发执行。每个 future 都会在 barrier 内收集，outcomes
+    以原 ToolCall index 落位，故完成先后不会改变下一轮模型看到的 ToolResult 顺序。
+
+    工具只读同一个不可变 workspace，没有 Runtime 共享可变状态；重复调用不会去重。
+    ``ExpectedToolError`` 只影响对应调用。任何意外异常会等兄弟 future 结束后让整个
+    sample 失败，并且不把已完成的部分结果加入 history，避免模型看到半个 batch。
+    """
     outcomes: list[_ToolCallOutcome | None] = [None] * len(calls)
     runnable: list[tuple[int, ToolCall]] = []
 
@@ -469,6 +529,8 @@ def _execute_parallel_tool_batch(
                 for _, call in runnable
             ]
             for (index, call), future in zip(runnable, futures, strict=True):
+                # zip 使用提交顺序而非完成顺序；future.result() 可能等待较慢的前序调用，
+                # 但所有任务已经提交并发执行，因此这只固定 materialization 顺序。
                 try:
                     outcomes[index] = future.result()
                 except Exception as exc:  # infrastructure failure, never Agent-visible
@@ -499,6 +561,11 @@ def _execute_one_tool_call(
     call: ToolCall,
     step: int,
 ) -> _ToolCallOutcome:
+    """把一次工具调用归一化为成功或 Agent 可见的预期错误 outcome。
+
+    未知工具、schema/path/limit 等 ``ExpectedToolError`` 不抛出到 batch；真正的
+    实现异常原样逸出，由 batch barrier 升级为 sample 级基础设施失败。
+    """
     assert call.arguments is not None
     try:
         result = execute_tool(workspace, call.name, call.arguments)
@@ -559,6 +626,11 @@ def _record_model_attempt(
     step: int,
     attempt: CompletionRequestAttempt,
 ) -> None:
+    """把一次 provider attempt 的元数据写入 Trace，不复制完整消息正文。
+
+    完整 AssistantMessage 由 ``messages`` trajectory 保存；Trace 只记录重试索引、
+    usage、latency、response ID 与错误分类，支持区分 provider 故障和 Agent 决策。
+    """
     if attempt.error is not None:
         _emit(
             on_event,

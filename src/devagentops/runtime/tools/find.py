@@ -23,6 +23,11 @@ def execute_find(
     path: str | None = None,
     limit: int = MAX_FIND_RESULTS,
 ) -> ToolExecutionResult:
+    """对冻结虚拟文件/目录成员做 glob 匹配，不访问宿主机目录遍历 API。
+
+    结果先按完整虚拟路径排序，再同时受条目数和 byte cap 限制；不做去重以外的
+    relevance ranking。空匹配是成功 observation，路径本身不存在才是可恢复错误。
+    """
     if not isinstance(pattern, str) or not pattern:
         raise ExpectedToolError("pattern must be a non-empty glob", code="invalid_pattern")
     if (

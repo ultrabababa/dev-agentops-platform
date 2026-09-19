@@ -37,6 +37,13 @@ def pack_selected_hits(
     source_texts: Mapping[str, str],
     canonical_coordinates: Iterable[CanonicalCoordinate],
 ) -> tuple[PackedSpan, ...]:
+    """把两个 pool 的已选 chunks 压成模型可见物理 spans，并映射坐标 overlap。
+
+    log 按物理行顺序；repo 先按文件最佳 fused rank 排文件，再按文件内行顺序。
+    相同 chunk 去重，只有同 source 且实际重叠的 spans 才合并，不跨未召回 gap、
+    不跨文件，也不因合并后空出名额而 backfill。最后用 source + 行区间相交规则
+    附加答案无关 Canonical IDs；该步骤不知道 Required Evidence，不能判断证据是否充分。
+    """
     log_spans = _coalesce(
         sorted(log_hits, key=lambda hit: (hit.chunk.start_line, hit.chunk.end_line)),
     )
@@ -65,6 +72,7 @@ def pack_selected_hits(
 
 
 def _coalesce(hits: list[FusedHit]) -> tuple[_MutableSpan, ...]:
+    """按输入顺序合并同 source 的重叠区间，保留来源 chunk IDs 与最佳 rank。"""
     spans: list[_MutableSpan] = []
     seen_chunk_ids: set[str] = set()
     for hit in hits:
@@ -102,6 +110,11 @@ def _finalize(
     source_texts: Mapping[str, str],
     coordinates: tuple[CanonicalCoordinate, ...],
 ) -> PackedSpan:
+    """从原始物理正文重建 span，并以 inclusive line overlap 关联 Canonical units。
+
+    Mapping 只回答“该模型可见 span 与哪些冻结坐标物理重叠”，不会复制 evaluator
+    标签，也不会把 BM25 rank 当作 Evidence correctness。越过 source EOF 是实现错误。
+    """
     source_text = source_texts[span.source_path]
     lines = source_text.splitlines(keepends=True)
     if span.start_line < 1 or span.end_line > len(lines):

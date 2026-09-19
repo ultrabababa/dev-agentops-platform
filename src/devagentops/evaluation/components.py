@@ -231,13 +231,13 @@ def _validate_behavior(component_type: str, behavior: dict[str, Any]) -> None:
 
 
 def component_fingerprint(manifest: ComponentManifest) -> str:
-    canonical = json.dumps(
+    canonical = json.dumps( # 把 Python 对象转换成 JSON 字符串
         manifest.behavior,
-        ensure_ascii=False,
-        separators=(",", ":"),
-        sort_keys=True,
-    ).encode("utf-8")
-    return hashlib.sha256(canonical).hexdigest()
+        ensure_ascii=False, # 表示不要把中文等非 ASCII 字符转成 \uXXXX
+        separators=(",", ":"), # 控制 JSON 中元素之间的分隔符, 不会受无关空格影响, 更适合做哈希
+        sort_keys=True, # 表示字典的 key 按固定顺序排序
+    ).encode("utf-8") # 把 Python 字符串 str 转成字节 bytes, as hashlib.sha256() 要求输入的是 bytes，不是普通字符串
+    return hashlib.sha256(canonical).hexdigest() # hashlib.sha256(canonical) 计算 SHA-256 哈希, .hexdigest() 把 SHA-256 结果转换成方便阅读的十六进制字符串
 
 
 def _empty_registry() -> dict[str, Any]:
@@ -282,7 +282,7 @@ def _load_registry(path: Path, *, allow_missing: bool = False) -> dict[str, Any]
             raise ComponentRegistryError(
                 f"component registry group {component_type!r} must be an object"
             )
-    for component_type in COMPONENT_TYPES:
+    for component_type in COMPONENT_TYPES: # 如果某一种合法 component type 在 JSON 里完全没出现，就自动补成 "某种类型": {}
         document["components"].setdefault(component_type, {})
     return document
 
@@ -368,9 +368,9 @@ def _validate_record(
             f"registry record for {component_type}:{component_version} has invalid metadata"
         )
 
-    registry_root = registry_path.parent.resolve()
-    manifest_path = (registry_path.parent / record["manifest"]).resolve()
-    if not manifest_path.is_relative_to(registry_root):
+    registry_root = registry_path.parent.resolve() # registry.json 所在目录的绝对路径
+    manifest_path = (registry_path.parent / record["manifest"]).resolve() # Registry 里 manifest 字段指向的那个具体 manifest 文件的绝对路径
+    if not manifest_path.is_relative_to(registry_root): # 检查manifest_path 最终解析出来以后，是否仍然位于 Registry 所在目录之下
         raise ComponentRegistryError(
             f"registry record for {component_type}:{component_version} points outside the registry"
         )
@@ -503,17 +503,17 @@ def validate_component_references(
             f"condition {condition_id!r} components must be an object"
         )
     registry = _load_registry(registry_path)
-    fingerprints: dict[str, str] = {}
-    matrix_keys_by_type: dict[str, str] = {}
+    fingerprints: dict[str, str] = {} # Matrix 里引用的 component → Registry 中实际验证出来的 fingerprint
+    matrix_keys_by_type: dict[str, str] = {} # 防止同一个 component type 被两个不同别名重复声明
     for matrix_key, component_version in components.items():
-        component_type = MATRIX_COMPONENT_TYPES.get(matrix_key)
+        component_type = MATRIX_COMPONENT_TYPES.get(matrix_key) # Matrix 里的名字和 Registry 里的正式 component type 不一定完全相同, 比如 retriever -> retriever_config
         if component_type is None:
             raise ComponentRegistryError(
                 f"condition {condition_id!r} references unsupported component "
                 f"{matrix_key!r}"
             )
         previous_key = matrix_keys_by_type.get(component_type)
-        if previous_key is not None:
+        if previous_key is not None: # 用来保证一个 condition 对同一种 component type 只能声明一次，不能通过两个不同 alias 重复引用。比如retriever、retriever_config在同一个condition里面不能同时存在
             raise ComponentRegistryError(
                 f"condition {condition_id!r} declares aliases {previous_key!r} and "
                 f"{matrix_key!r} for component type {component_type!r}"
@@ -524,7 +524,7 @@ def validate_component_references(
                 f"condition {condition_id!r} component {matrix_key!r} "
                 "must reference a component version string"
             )
-        if _is_draft_version(component_version):
+        if _is_draft_version(component_version): # Formal evaluation 不允许引用 draft 版本，只允许引用已经 frozen 的版本
             raise ComponentRegistryError(
                 f"condition {condition_id!r} references draft component "
                 f"{matrix_key}:{component_version}; formal evaluation requires frozen versions"
@@ -535,7 +535,7 @@ def validate_component_references(
                 f"condition {condition_id!r} references missing frozen component "
                 f"{component_type}:{component_version}"
             )
-        frozen = _validate_record(
+        frozen = _validate_record( # 把“已经验证为合法、未污染的 frozen component 记录”变成一个更明确的 Python 对象
             registry_path,
             component_type,
             component_version,

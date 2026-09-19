@@ -18,6 +18,12 @@ def bm25_query_hits(
     per_query_candidates: int = 20,
     include_repository_path: bool = False,
 ) -> tuple[QueryHits, ...]:
+    """在一个 Case 内为每个确定性 query 独立计算 BM25 Top-K 正分候选。
+
+    repo pool 可把 relative path tokens 与正文 tokens 放入同一 document，使日志中的
+    文件名能召回源码；没有额外 path 权重。分数相同按物理路径/行范围/chunk ID
+    稳定排序。此处只产生 per-query ranks，不读取 Canonical/Required Evidence。
+    """
     if per_query_candidates < 1:
         raise ValueError("per_query_candidates must be positive")
     if not chunks or not queries:

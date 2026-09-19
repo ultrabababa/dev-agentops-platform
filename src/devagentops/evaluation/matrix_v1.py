@@ -62,6 +62,10 @@ def _merge(
     override: dict[str, Any],
 ) -> dict[str, Any]:
     # Preserve shared defaults so resolving one condition cannot affect another one.
+    """递归合并配置字典：override 覆盖 base，非字典值整体替换。
+
+    为被合并的字典创建新容器，避免解析某个 Condition 时改写共享 defaults；
+    这里不是对所有嵌套值的深拷贝，后续代码仍不应原地修改共享配置值。"""
     merged = dict(base)
     for key, value in override.items():
         if isinstance(value, dict) and isinstance(merged.get(key), dict):
@@ -113,6 +117,11 @@ def load_evaluation_matrix(
     path: Path,
     component_registry_path: Path | None = None,
 ) -> EvaluationMatrix:
+    """加载历史 Matrix v1，按 defaults → 父 Condition → 当前 Condition 解析。
+
+    仅支持一层 extends；先检查循环，再拒绝多层继承。id/extends 不进入
+    effective_condition，必需字段在合并后检查。提供 Registry 时，将已验证的
+    组件指纹附到解析结果，参与后续 Condition 指纹计算；本函数不调度 Runtime。"""
     try:
         document = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:

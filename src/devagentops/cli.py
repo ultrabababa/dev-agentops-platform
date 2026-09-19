@@ -41,6 +41,11 @@ def _database_path(value: str) -> Path:
 
 
 def build_parser() -> argparse.ArgumentParser:
+    """构造 CLI 参数入口；路径转换和输出位置默认值在此确定。
+
+    正式 eval run 必须显式提供 Matrix、Registry、Suite 和 Condition ID；
+    数据库与产物目录有默认值。模型、重复次数等实验参数来自 Matrix，
+    这里没有对应的命令行覆盖参数。help 文本由 argparse 显式参数提供。"""
     parser = argparse.ArgumentParser(
         prog="devagentops",
         description="Inspect and initialize the local DevAgentOps foundation.",
@@ -276,6 +281,11 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    """将解析后的路径与 Condition ID 传入 Harness，并将结果序列化为 JSON。
+
+    doctor 仅做 preflight；score 加载已验证 Case 与候选报告；run 执行完整 Suite，
+    debug 执行子集诊断。已捕获的异常写 stderr 并返回 2，部分样本执行失败返回 1。
+    报告不合法会进入评分结果，不等同于这里的输入文件读取失败。"""
     parser = build_parser()
     args = parser.parse_args(argv)
     exit_code = 0

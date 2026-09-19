@@ -21,6 +21,12 @@ class ThinkingContent:
 
 @dataclass(frozen=True)
 class ToolCall:
+    """Provider-neutral 工具动作，同时保留严格解析值和 provider 原始表示。
+
+    ``arguments=None`` 表示 provider 确实返回了一个 ToolCall，但 arguments 不是
+    严格 JSON object；它仍是一次有效 Model Decision，由 Runtime 回写可恢复错误。
+    ``raw_arguments`` 用于后续 provider continuation replay，不供工具直接执行。
+    """
     id: str
     name: str
     arguments: dict[str, JsonValue] | None
@@ -53,6 +59,12 @@ class UserMessage:
 
 @dataclass(frozen=True)
 class AssistantMessage:
+    """Provider adapter 归一化后的单次 Model Decision。
+
+    content 保留 text、provider 暴露的 thinking 与 ToolCall 的原始顺序；Runtime
+    只解释 ToolCall/可见文本，不解释 ``provider_fields``。后者由同一 adapter 在
+    下一轮序列化时重放，以维持 provider 特有的多轮 continuation contract。
+    """
     content: tuple[AssistantContent, ...]
     response_id: str | None
     response_model: str | None
@@ -81,14 +93,14 @@ class ToolDefinition:
 
 
 def assistant_text(message: AssistantMessage) -> str:
-    """Return visible assistant text without provider-specific interpretation."""
+    """拼接模型可见文本块，不把 thinking 或 ToolCall 误当成最终报告内容。"""
     return "".join(
         block.text for block in message.content if isinstance(block, TextContent)
     )
 
 
 def assistant_thinking(message: AssistantMessage) -> str | None:
-    """Return provider-exposed thinking for diagnostic metadata only."""
+    """提取 provider 暴露的 thinking，仅用于 trajectory/诊断，不参与评分。"""
     thinking = "".join(
         block.thinking
         for block in message.content
@@ -98,13 +110,18 @@ def assistant_thinking(message: AssistantMessage) -> str | None:
 
 
 def tool_calls(message: AssistantMessage) -> tuple[ToolCall, ...]:
+    """按 provider content 顺序提取 ToolCalls，供 Tool Policy 确定性调度。"""
     return tuple(
         block for block in message.content if isinstance(block, ToolCall)
     )
 
 
 def message_to_dict(message: Message) -> dict[str, JsonValue]:
-    """Return the stable provider-neutral representation persisted per sample."""
+    """生成 sample trajectory 的稳定 provider-neutral 持久化表示。
+
+    该表示保留完整对话内容、ToolCall raw arguments、usage 与 continuation fields；
+    它不同于只记录生命周期元数据的 Trace，也不是重新发给 provider 的 wire schema。
+    """
     if isinstance(message, UserMessage):
         return {"role": "user", "content": message.content}
     if isinstance(message, ToolResultMessage):

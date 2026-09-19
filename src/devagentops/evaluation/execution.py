@@ -79,6 +79,10 @@ def plan_samples(
     suite_cases: Sequence[SuiteCaseT],
     repeat_count: int,
 ) -> tuple[PlannedSample[SuiteCaseT], ...]:
+    """按 Suite 顺序展开 Case × repeat，固定与线程完成顺序无关的样本身份。
+
+    repeat_index 从 0 开始，sample_sequence 从 1 连续编号；重试不能偷偷新增
+    repeat，否则会改变后续聚合的样本数和比较含义。返回值只描述计划，不执行 Runtime。"""
     if repeat_count < 1:
         raise ValueError("repeat_count must be a positive integer")
     planned: list[PlannedSample[SuiteCaseT]] = []
@@ -105,6 +109,11 @@ def execute_sample_plan(
     recorder: EventRecorder,
     policy: ExecutionPolicy,
 ) -> tuple[SampleResult, ...]:
+    """验证计划后按 Case 并发、同一 Case 内按 repeat 顺序调用 executor。
+
+    每个样本必须返回相同 identity，结果最后按 sample_sequence 排序，避免线程
+    完成顺序改变产物顺序。调度器不重试、不设置 Future 超时，也不吞掉 executor
+    异常；可预期失败应由 executor 转为 SampleResult，其他异常交给上层 run 处理。"""
     policy.validate()
     if not planned_samples:
         return ()

@@ -16,6 +16,10 @@ def load_evaluation_matrix(
     path: Path,
     component_registry_path: Path | None = None,
 ) -> EvaluationMatrix | EvaluationMatrixV2:
+    """按 schema_version 分派 Matrix loader，不在此选择要运行的 Condition。
+
+    v2 使用显式 Treatment/Execution Policy；其他版本交给历史 v1 loader。
+    传入 Registry 才会校验组件引用，故 structural-only 不等同于正式 preflight。"""
     try:
         document = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:

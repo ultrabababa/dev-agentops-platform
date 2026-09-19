@@ -92,6 +92,12 @@ def run_evaluation(
     database_path: Path,
     artifacts_dir: Path,
 ) -> dict[str, Any]:
+    """eval run 的 Harness 入口：完整 preflight 后按 ID 选 Condition 并分派版本。
+
+    v2 交给正式采样 runner；v1 保留单 Case、单次运行的 tracer-bullet 路径，
+    先检查支持的 Runtime/模型配置，再构造公开 workspace、执行并评分。
+    本函数会初始化数据库、记录 Trace/结果并输出产物；输入校验失败发生在这些
+    执行副作用之前。模型报告不合法仍可评分，执行异常则走失败持久化路径。"""
     preflight = run_formal_eval_doctor(matrix_path, registry_path, suite_path)
     condition = next(
         (
@@ -277,6 +283,9 @@ def run_evaluation(
     for suite_case in preflight.suite.cases:
         case_id = suite_case.case_id
         _append_event(trace, run_id, "case_started", _now(), case_id=case_id)
+        # Harness 保留完整 package 供后续评分；workspace 仅投影公开字段、声明的
+        # repo 成员和无答案标签的 Canonical 坐标。其公共读取接口提供 raw log 与
+        # 已声明 repo 文件；package_root 仍在同进程可见，不构成恶意 Python 的 OS 隔离。
         workspace = RuntimeCaseWorkspace.from_package(suite_case.package)
         if runtime_variant == "pipeline_baseline":
             _append_event(trace, run_id, "pipeline_started", _now(), case_id=case_id)
@@ -495,10 +504,15 @@ def run_evaluation(
                 ),
             },
         )
+        # candidate_document 来自 Runtime 返回值，并非在此重新读取报告文件。
+        # L1/L2 在 JSON 解析失败时保留原始字符串，交由 scorer 记录协议错误；
+        # 已知执行异常先走 _fail_run，不能伪装为一次低质量但执行成功的报告。
         score = evaluate_case_report(
             candidate_document,
             suite_case.package,
         )
+        # 确定性 Pipeline 产出不合法结构被视为实现失败；模型输出则保留 validation
+        # 与质量分数。这一历史 v1 特例不能推广为所有 Runtime 的失败规则。
         if runtime_variant == "pipeline_baseline" and score.structured_report is None:
             failure_code = "invalid_pipeline_report"
             failure_message = (
@@ -623,6 +637,10 @@ def _validate_condition(
     effective_condition: dict[str, Any],
     case_count: int,
 ) -> None:
+    """限制历史 v1 runner 的实际可执行范围，不等同于 Matrix 的结构校验。
+
+    当前仅允许单 Case/单次执行；L1/L2 的模型、组件和预算必须等于冻结配置。
+    因此 Matrix 能被解析不代表其任意配置都可执行，不能把 repeats 当作此处已支持的循环。"""
     runtime_variant = effective_condition["runtime_variant"]
     if runtime_variant not in {
         "pipeline_baseline",

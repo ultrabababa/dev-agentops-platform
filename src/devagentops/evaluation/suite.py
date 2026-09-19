@@ -225,6 +225,11 @@ class OfflineCasePackage:
     fingerprint_input: dict[str, Any]
 
     def public_view(self) -> PublicCaseView:
+        """投影普通 Runtime 所需的 Case 身份、物理路径和禁止动作声明。
+
+        不传递 expected_answer、Evidence Ground Truth 或完整 fingerprint_input，
+        避免参考答案沿对象序列化进入模型输入。这是字段层面的隔离，不会改变
+        文件系统权限；forbidden_actions 在此也只是数据，不是动作拦截器。"""
         return PublicCaseView(
             case_id=self.case_id,
             case_schema_version=self.case_schema_version,
@@ -361,6 +366,10 @@ def _controlled_relative_path(value: Any, description: str) -> str:
 
 
 def _resolve_artifact(root: Path, relative_path: str, description: str) -> Path:
+    """解析实际文件路径并检查其仍位于包根目录，阻止路径或 symlink 越界。
+
+    这是加载时的路径校验，不是 OS sandbox；不会隔离同进程代码的文件权限，
+    也没有锁定校验后的文件。仓库目录的 symlink 另由 _resolve_directory 拒绝。"""
     resolved_root = root.resolve()
     resolved = (root / relative_path).resolve()
     if not resolved.is_relative_to(resolved_root):
@@ -417,6 +426,11 @@ def _load_repository_snapshot(
     manifest_path: Path,
     repository_root_path: Path,
 ) -> RepositorySnapshot:
+    """验证 manifest 声明的仓库快照，并返回按路径排序的文件身份。
+
+    逐个读取真实文件 bytes，核对 size_bytes 和 SHA-256，而非盲信声明摘要；
+    再扫描目录拒绝 symlink 和额外文件，防止 Runtime 看见未纳入身份的材料。
+    返回对象保留来源/revision、路径、大小及已验证摘要，不保存文件正文。"""
     document = _validate_fields(
         _read_json(manifest_path, "repository manifest"),
         REPOSITORY_MANIFEST_FIELDS,
@@ -478,7 +492,7 @@ def _load_repository_snapshot(
             )
         candidate = repository_root_path / relative_path
         relative_candidate = candidate.relative_to(repository_root_path)
-        member_chain = [
+        member_chain = [ # 校验路径链不能经过 symlink
             repository_root_path / Path(*relative_candidate.parts[:index])
             for index in range(1, len(relative_candidate.parts) + 1)
         ]
@@ -510,7 +524,7 @@ def _load_repository_snapshot(
     actual_paths: set[str] = set()
     for directory, directory_names, file_names in os.walk(
         repository_root_path, followlinks=False
-    ):
+    ): # 用于保证真实 repository snapshot 中的文件集合，必须和 repository manifest 声明的文件集合完全一致。否则就可能有未纳入 fingerprint/manifest 管理的“幽灵文件”影响 Agent
         directory_path = Path(directory)
         for directory_name in directory_names:
             if (directory_path / directory_name).is_symlink():
@@ -559,6 +573,11 @@ def _load_canonical_units(
     repository_root_path: Path,
     repository_members: set[str],
 ) -> tuple[CanonicalEvidenceUnit, ...]:
+    """将 Canonical Evidence 坐标核对到真实物理内容，返回按 ID 排序的 units。
+
+    log 使用调用方读取的原始 bytes；repo 从已声明成员重新读取。按 1-based、
+    两端包含的行范围拼接 bytes 并核对 content_sha256，越界/未知成员/摘要漂移
+    均阻止加载。坐标是引用与评分单位，不是在这里生成的 Retrieval chunks。"""
     description = f"canonical {kind} evidence"
     document = _validate_fields(
         _read_json(path, description),
@@ -644,7 +663,7 @@ def _load_canonical_units(
             unit["content_sha256"],
             f"{description} unit {evidence_id!r} content_sha256",
         )
-        if _sha256(resolved) != content_sha256:
+        if _sha256(resolved) != content_sha256: # 验证读取的实际文件的指定的那些行的sha256是否和canonical-evidence json文件中声明的一致
             raise EvaluationSuiteError(
                 f"canonical evidence unit {evidence_id!r} content hash does not match source"
             )
@@ -822,6 +841,12 @@ def _load_case_package(
     *,
     verify_fingerprint: bool,
 ) -> OfflineCasePackage:
+    """加载仅支持 Schema V2 的 Case，建立经验证的物理/坐标/Ground Truth 身份。
+
+    依次检查目录分层和物理内容、Canonical spans、两份 Ground Truth 及元数据，
+    再计算 Case 指纹。返回对象属于可信 Harness/Evaluator，含隐藏答案；
+    普通 Runtime 输入应由 public_view/RuntimeCaseWorkspace 投影，不能直接序列化它。
+    verify_fingerprint=False 只跳过最终声明值比对，仍执行文件与内容一致性检查。"""
     raw_document = _read_json(manifest_path, "case manifest")
     if isinstance(raw_document, dict):
         if "case_schema_version" not in raw_document:
@@ -855,7 +880,7 @@ def _load_case_package(
         document["artifacts"], CASE_ARTIFACT_FIELDS, "case manifest artifacts"
     )
     normalized_paths = {
-        field: _controlled_relative_path(
+        field: _controlled_relative_path( # 先把 artifacts 里声明的每个路径都经过 _controlled_relative_path() 规范化
             artifacts[field], f"case {case_id!r} artifact {field}"
         )
         for field in CASE_ARTIFACT_FIELDS
@@ -870,8 +895,8 @@ def _load_case_package(
         "repository_units": "canonical-evidence/",
         "required_evidence": "evaluator/",
         "expected_answer": "evaluator/",
-    }
-    for field, prefix in expected_layers.items():
+    } # 所有 artifact 都只能引用 Case Package 内部受控路径；每类 artifact 必须待在它应该属于的语义层。
+    for field, prefix in expected_layers.items(): # 校验是在强制 Case Package 的物理目录结构与语义层次一致
         if not normalized_paths[field].startswith(prefix):
             raise EvaluationSuiteError(
                 f"case artifact {field!r} must be located under {prefix!r}"
@@ -922,7 +947,7 @@ def _load_case_package(
             f"case {case_id!r} contains duplicate stable evidence IDs across artifacts"
         )
     all_evidence_ids = tuple(sorted(all_evidence_ids))
-    evidence_ground_truth = _load_evidence_ground_truth(
+    evidence_ground_truth = _load_evidence_ground_truth( # 读取 required_evidence_ids 读取 optional_evidence_ids → 两者不能重叠 → 两边引用的 evidence_id 都必须真的存在于前面已经验证过的 canonical evidence 集合里 → 最后构造成 EvidenceGroundTruth
         artifact_paths["required_evidence"], set(all_evidence_ids)
     )
     expected_answer = _load_expected_answer(artifact_paths["expected_answer"])
@@ -936,7 +961,7 @@ def _load_case_package(
             )
         )
     )
-    provenance = _validate_fields(
+    provenance = _validate_fields( # 这个 Case 从哪来、有没有合法来源
         document["provenance"], PROVENANCE_FIELDS, "case manifest provenance"
     )
     source_type = _non_empty_string(
@@ -964,7 +989,7 @@ def _load_case_package(
         "source_url_or_construction_note": source_note,
         "license_or_permission": permission,
     }
-    curation = _validate_fields(
+    curation = _validate_fields( # 是不是人工审核过
         document["curation"], CURATION_FIELDS, "case manifest curation"
     )
     created_by = _non_empty_string(curation["created_by"], "case curation created_by")
@@ -984,11 +1009,11 @@ def _load_case_package(
         f"{normalized_paths['repository_root']}/{member}"
         for member in repository_members
     }
-    normalized_sanitization = _load_sanitization(
+    normalized_sanitization = _load_sanitization( # 有没有对原始 artifact 做脱敏/清洗，以及这些修改是否声明为 semantics_preserving
         document["sanitization"], physical_sources=physical_sources
     )
 
-    declared_case_fingerprint = _declared_fingerprint(
+    declared_case_fingerprint = _declared_fingerprint( # 先读 case package manifest 里冻结时写下来的 fingerprint
         document["case_fingerprint"], f"case {case_id!r} case_fingerprint"
     )
     normalized_manifest = {
@@ -1000,6 +1025,12 @@ def _load_case_package(
         "curation": normalized_curation,
         "sanitization": normalized_sanitization,
     }
+    # Case 指纹对规范化 JSON 做 SHA-256，而不是直接拼接各 JSON 文件原文。
+    # raw.log 使用实际 bytes 的长度/hash；repo 使用刚校验过的成员路径/大小/hash
+    # 与来源 revision；Canonical units 使用坐标和已核对的 span hash。两份 evaluator
+    # 文件使用解析后的字段（集合语义列表已排序），不把 JSON 排版当成实验身份。
+    # provenance/curation/sanitization 是受校验的声明，hash 不证明声明本身真实，
+    # 也不证明人工 Ground Truth 在语义上正确。包目录中任意额外文件并非都进入摘要。
     fingerprint_input = {
         "fingerprint_schema": "devagentops.case-fingerprint.v2",
         "manifest": normalized_manifest,
@@ -1048,6 +1079,10 @@ def _load_case_package(
 
 
 def load_case_package(manifest_path: Path) -> OfflineCasePackage:
+    """正式加载并比对 Case 声明指纹；失败时不给下游返回可执行的 Case。
+
+    将 EvaluationSuiteError 的公开消息收敛为通用包错误，避免 CLI 在报错时
+    泄露 evaluator 内容；原始诊断仍保留在异常文本和异常链，供可信调用方排查。"""
     try:
         return _load_case_package(manifest_path, verify_fingerprint=True)
     except EvaluationSuiteError as exc:
@@ -1068,6 +1103,10 @@ def load_case_package(manifest_path: Path) -> OfflineCasePackage:
 
 
 def calculate_case_fingerprint(manifest_path: Path) -> str:
+    """计算待冻结 Case 的实际指纹，不写文件、不自动修复声明值。
+
+    只关闭最终 Case 指纹相等性检查；声明格式、成员 hash、Canonical span
+    和 Ground Truth 等检查仍生效，不能用它绕过损坏数据的验证。"""
     return _load_case_package(
         manifest_path,
         verify_fingerprint=False,
@@ -1079,6 +1118,11 @@ def _load_evaluation_suite(
     *,
     verify_fingerprint: bool,
 ) -> EvaluationSuite:
+    """加载有序 Case 清单并组合其已验证身份；Suite schema v1 与 Case v2 独立。
+
+    每个条目核对 Case ID、相对路径及正且相等的权重，逐个调用正式 Case loader。
+    Suite 指纹包含规范化 manifest 和按清单顺序排列的 Case 指纹；故 Case 变更、
+    条目顺序/权重变更都会改变 Suite 身份。这里不强制正式 triage Suite 的 20 Case 配额。"""
     document = _validate_fields(
         _read_json(manifest_path, "suite manifest"),
         SUITE_FIELDS,
@@ -1196,6 +1240,7 @@ def load_evaluation_suite(manifest_path: Path) -> EvaluationSuite:
 
 
 def calculate_suite_fingerprint(manifest_path: Path) -> str:
+    """重算 Suite 指纹但仍验证所有 Case 的声明指纹；不写入任何 manifest。"""
     return _load_evaluation_suite(
         manifest_path,
         verify_fingerprint=False,

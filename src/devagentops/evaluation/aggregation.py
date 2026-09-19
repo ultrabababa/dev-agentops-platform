@@ -121,6 +121,12 @@ def aggregate_case(
     suite_case: SuiteCaseLike,
     samples: Sequence[dict[str, Any]],
 ) -> CaseAggregate:
+    """先在同一 Case 内平均 scored repeats，再供 Suite 按 Case 权重聚合。
+
+    execution_failed 不进入质量均值分母，以 coverage 单独暴露执行缺失；
+    scored 中协议无效的报告仍进入均值，不能通过过滤坏报告抬高质量结果。
+    没有任何 scored sample 时质量向量为 None，而不是人为补零。
+    """
     if not samples:
         raise ValueError(f"Case {suite_case.case_id!r} has no planned samples")
     if any(sample["case_id"] != suite_case.case_id for sample in samples):
@@ -175,6 +181,10 @@ def aggregate_suite(
     suite: SuiteLike,
     case_aggregates: Sequence[CaseAggregate],
 ) -> SuiteAggregate:
+    """校验 Case 结果与 Suite 顺序完全一致，再输出加权质量及覆盖率。
+
+    先平均每个 Case 的 repeats，使重复成功数量不同的 Case 不会暗中改变权重。
+    """
     _validate_case_order(suite, case_aggregates)
     values = _aggregate_group(case_aggregates)
     return SuiteAggregate(
@@ -197,6 +207,10 @@ def aggregate_failure_types(
     suite: SuiteLike,
     case_aggregates: Sequence[CaseAggregate],
 ) -> tuple[FailureTypeAggregate, ...]:
+    """按 Ground Truth 的 primary_failure_type 分组，顺序取 Suite 中首次出现顺序。
+
+    分组不依赖模型预测类别，否则错误分类会改变统计分母，掩盖该类别的失败。
+    """
     _validate_case_order(suite, case_aggregates)
     failure_type_order = tuple(
         dict.fromkeys(
@@ -254,6 +268,8 @@ def _aggregate_group(
     )
     with_quality = [item for item in case_aggregates if item.metric_vector is not None]
     available_weight = math.fsum(item.suite_weight for item in with_quality)
+    # 必须每个 Case 都有质量向量才发布组均值，不能悄悄丢掉未执行成功的 Case
+    # 并对剩余权重重新归一化。complete 仅指 Case 质量覆盖，不代表所有 repeat 成功。
     complete = len(with_quality) == len(case_aggregates)
     metric_vector = None
     if complete:

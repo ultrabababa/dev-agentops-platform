@@ -21,15 +21,12 @@ def canonicalize_evidence_references(
     raw_report: Any,
     canonical_coordinates: Iterable[CanonicalEvidenceCoordinate],
 ) -> Any:
-    """Normalize model-authored line-range references into canonical Evidence IDs.
+    """在启用对应 Output Contract 时，将模型行范围引用转换为冻结 Canonical IDs。
 
-    Only ``evidence_references`` is touched. Exact canonical IDs are preserved.
-    A non-canonical ``...:lines-START-END`` reference is expanded to every
-    existing canonical ID with the same prefix whose line range overlaps the
-    requested range. References that cannot be resolved deterministically are
-    preserved for the normal report validator to reject. Duplicate Evidence IDs
-    are removed while preserving first occurrence order.
-    """
+    只处理 evidence_references：精确 ID 保留；可解析的非精确 ID 按相同前缀及
+    行范围重叠展开，并按首次出现去重。无法解析的引用保留给 report validator 判错，
+    不是猜测答案或丢弃错误引用。输入只有完整坐标集合，不读取 Required/Optional 标签。
+    不原地改写原始报告；有变化才返回替换引用列表的新字典，便于保留模型原始输出。"""
 
     if not isinstance(raw_report, dict):
         return raw_report

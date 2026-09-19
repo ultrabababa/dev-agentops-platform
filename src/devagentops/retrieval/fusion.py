@@ -12,6 +12,12 @@ def reciprocal_rank_fusion(
     rank_constant: int = 60,
     final_top_k: int = 10,
 ) -> tuple[FusedHit, ...]:
+    """以等权 RRF 合并多组 BM25 ranks，并确定稳定的 pool 内 Top-K。
+
+    每个 query 对 chunk 的贡献为 ``1 / (rank_constant + bm25_rank)``；未命中的 query
+    不贡献分数。tie-break 依次使用最佳单 query rank 与物理位置，避免 dict/库返回
+    顺序影响结果。RRF score/rank 只用于选择和 Trace，不作为模型可见 relevance hint。
+    """
     if rank_constant < 1 or final_top_k < 1:
         raise ValueError("RRF rank constant and final_top_k must be positive")
     chunks_by_id = {chunk.chunk_id: chunk for chunk in chunks}
