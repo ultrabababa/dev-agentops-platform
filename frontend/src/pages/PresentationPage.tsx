@@ -10,7 +10,7 @@ type Slide = {
 const slides: Slide[] = [
   {
     section: "INTRODUCTION",
-    title: "Agent 评测：答对了，就算成功吗？",
+    title: "Agent 评测与实验归因实践",
     lead: "从一个简单的 CI 失败案例，理解如何设计评测、定位 Badcase，并通过实验验证改进。",
     notes: "开场可以问大家：一道数学题答案写对了，但没有计算过程，能否确信他真的会？Agent 也一样。今天用一个贯穿全场的小例子说明思路；它是教学示例，正式的指标仍来自冻结的 20-Case Suite。",
   },
@@ -102,8 +102,8 @@ function SlideBody({ index }: { index: number }) {
       return <div className="pres-cover">
         <div className="pres-cover-main">
           <div className="pres-tag">DEVAGENTOPS · AGENT EVALUATION</div>
-          <h1>Agent 评测：<br /><em>答对了</em>，就算成功吗？</h1>
-          <p>从一次 CI 测试失败，讲清评测设计、失败归因和实验优化。</p>
+          <h1>Agent 评测与<br /><em>实验归因实践</em></h1>
+          <p>以 DevAgentOps 的 CI 失败诊断场景为例</p>
           <p className="pres-cover-desc">比「分数是多少」更重要的是：为什么失分？下一步该改哪里？</p>
         </div>
         <div className="pres-cover-bottom">
