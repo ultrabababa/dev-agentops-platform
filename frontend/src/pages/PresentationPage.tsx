@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 type Slide = {
   section: string;
@@ -76,7 +76,7 @@ function Stat({ value, label, detail }: { value: string; label: string; detail?:
   return <div className="pres-stat"><strong>{value}</strong><span>{label}</span>{detail && <small>{detail}</small>}</div>;
 }
 
-function Eyebrow({ children }: { children: React.ReactNode }) {
+function Eyebrow({ children }: { children: ReactNode }) {
   return <p className="pres-eyebrow">{children}</p>;
 }
 
@@ -88,7 +88,7 @@ function LinkRow({ links }: { links: Array<{ name: string; url: string }> }) {
   return <div className="pres-link-row">{links.map((link) => <a key={link.url} href={link.url} target="_blank" rel="noreferrer">{link.name}<span aria-hidden="true">↗</span></a>)}</div>;
 }
 
-function Panel({ className = "", children }: { className?: string; children: React.ReactNode }) {
+function Panel({ className = "", children }: { className?: string; children: ReactNode }) {
   return <div className={"pres-panel " + className}>{children}</div>;
 }
 
