@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getHomepageData } from "./api/client";
 import type { ConditionId, HomepageData } from "./api/types";
 import { ArchitecturePage } from "./pages/ArchitecturePage";
+import { PresentationPage } from "./pages/PresentationPage";
 import { ConditionDetailPage } from "./pages/ConditionDetailPage";
 import { ConditionOverviewPage } from "./pages/ConditionOverviewPage";
 import { Homepage } from "./pages/Homepage";
@@ -130,7 +131,8 @@ function App() {
     return () => window.clearInterval(timer);
   }, [loading, data]);
   let page;
-  if (path === "/conditions") page = <ConditionOverviewPage />;
+  if (path === "/presentation") page = <PresentationPage />;
+  else if (path === "/conditions") page = <ConditionOverviewPage />;
   else if (detailId) page = <ConditionDetailPage id={detailId} />;
   else if (path === "/runs") page = <RunsPage />;
   else if (path === "/compare") page = <ComparePage />;
@@ -143,6 +145,7 @@ function App() {
   else if (loading && !data) page = <LoadingState seconds={waitSeconds} />;
   else if (error || !data) page = <ErrorState message={error ?? "API 未返回数据"} retry={() => void load()} />;
   else page = <main id="main"><Homepage data={data} /></main>;
+  if (path === "/presentation") return page;
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main">跳到主要内容</a><SiteHeader path={path} />
