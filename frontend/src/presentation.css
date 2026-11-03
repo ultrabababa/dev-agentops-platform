@@ -256,3 +256,162 @@ main#main.pres-root {
   .pres-slide { animation: none; }
   .pres-progress span { transition: none; }
 }
+
+/* Explanatory slide patterns: a single constructed CI failure is reused as a teaching aid. */
+.pres-example-heading {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: clamp(10px, .93vw, 14px);
+  color: #668176;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+.pres-demo-label {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 850;
+  letter-spacing: .02em;
+  font-size: clamp(9px, .82vw, 13px);
+  color: #18735e;
+  background: #daf1e4;
+  border: 1px solid #a8ddc6;
+  padding: 5px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.pres-demo-neutral { background: #eef2e9; border-color: #dbe3d7; color: #577369; }
+.pres-code {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  background: #193831;
+  border: 1px solid #35584c;
+  color: #e8f3e9;
+  padding: clamp(13px, 1.3vw, 21px);
+  border-radius: 10px;
+  margin: 17px 0 16px;
+  font-size: clamp(12px, 1.06vw, 17px);
+  line-height: 1.5;
+}
+.pres-code code {
+  font: 650 1em/1.5 "SFMono-Regular", "Consolas", "Menlo", monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: inherit;
+}
+.pres-code .pres-code-label {
+  color: #9ed8b9;
+  letter-spacing: .045em;
+  margin-bottom: 3px;
+  font-size: .75em;
+  font-weight: 780;
+}
+.pres-code .pres-code-error { color: #ffd19e; }
+.pres-slide .pres-example-caption { color: #5f756c; font-size: clamp(11px, .96vw, 15px); line-height: 1.5; }
+.pres-example-answer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 9px 17px;
+  border: 1px solid #cce7d8;
+  border-radius: 11px;
+  background: #e7f5ea;
+  padding: clamp(12px, 1.15vw, 18px);
+  font-size: clamp(11px, .98vw, 15px);
+  flex-shrink: 0;
+}
+.pres-example-answer > strong { color: #1b735d; }
+.pres-example-answer > span { color: #547569; }
+.pres-example-answer b { color: #1c5645; }
+.pres-example-lines {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0;
+}
+.pres-example-lines span {
+  padding: 10px 12px;
+  border-radius: 7px;
+  border: 1px solid #d8e8dc;
+  background: #f3f7f2;
+  font: 650 clamp(11px, .97vw, 15px)/1.35 "SFMono-Regular", "Consolas", "PingFang SC", sans-serif;
+  overflow-wrap: anywhere;
+}
+.pres-panel-tint .pres-example-lines span { background: #f7fbf5; border-color: #cbe6d7; }
+.pres-example-smallprint {
+  color: #82928b;
+  font-size: clamp(9px, .8vw, 12px);
+  line-height: 1.3;
+  flex-shrink: 0;
+}
+.pres-simple-metrics .pres-panel { display: flex; flex-direction: column; }
+.pres-big-example {
+  background: #edf6ef;
+  border-radius: 9px;
+  padding: 13px 12px;
+  margin: 4px 0 13px;
+  font-size: clamp(12px, 1.15vw, 18px);
+  font-weight: 750;
+  color: #365d4f;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.pres-big-example strong { color: #1b8469; font-size: clamp(19px, 2vw, 32px); white-space: nowrap; }
+.pres-plain-language {
+  margin-top: auto;
+  display: block;
+  border-top: 1px solid #e1ebe5;
+  padding-top: 10px;
+  font-size: clamp(10px, .95vw, 15px);
+  color: #476c5e;
+}
+.pres-simple-metrics .pres-panel p { flex: 1; }
+.pres-badcases .pres-panel { display: flex; flex-direction: column; gap: 6px; }
+.pres-badcases .pres-panel p { margin-top: auto; }
+.pres-evidence-list { display: grid; gap: 7px; margin: 10px 0 12px; }
+.pres-evidence-list span {
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: clamp(10px, .95vw, 15px);
+  font-weight: 730;
+}
+.pres-evidence-ok { color: #1d7859; background: #e7f7e9; border: 1px solid #b9e8c7; }
+.pres-evidence-miss { color: #9d6346; background: #fbf0e7; border: 1px solid #f0d7c1; }
+.pres-attribution-compact .pres-stat {
+  padding: clamp(10px, 1.2vw, 18px);
+}
+.pres-attribution-compact .pres-stat strong { font-size: clamp(22px, 2.3vw, 38px); }
+.pres-attribution-compact .pres-stat small { font-size: clamp(9px, .82vw, 13px); }
+.pres-reference-example .pres-panel { padding: clamp(15px, 1.45vw, 23px); }
+.pres-reference-example .pres-panel h3 { font-size: clamp(15px, 1.45vw, 23px); }
+.pres-small-code { margin: 9px 0 9px; padding: 11px 14px; }
+.pres-small-code code { color: #d3f4d8; }
+.pres-policy-simple .pres-panel { display: flex; flex-direction: column; }
+.pres-policy-simple .pres-panel > p { margin-top: auto; }
+.pres-policy-simple .pres-flow { margin: 8px 0 14px; gap: 3px; padding: 16px 8px; }
+.pres-policy-simple .pres-flow-item span { font-size: clamp(9px, .8vw, 13px); }
+.pres-policy-simple .pres-flow-item b { font-size: clamp(13px, 1.4vw, 22px); }
+.pres-parallel-demo { display: grid; gap: 7px; margin: 6px 0 14px; text-align: center; }
+.pres-parallel-demo > span { background: #daeee1; color: #1b6552; padding: 8px; border-radius: 6px; font-weight: 720; font-size: clamp(10px, .91vw, 14px); }
+.pres-parallel-demo > div { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.pres-parallel-demo b { padding: 8px; border-radius: 7px; border: 1px solid #95d7ba; background: #f3fff5; color: #14745c; font-size: clamp(10px, .91vw, 14px); }
+.pres-bottom-note small { display: block; margin-top: 3px; font-size: .88em; color: #668377; }
+@media (max-width: 750px) {
+  .pres-demo-label { font-size: 6px; padding: 3px 6px; }
+  .pres-example-heading, .pres-example-smallprint, .pres-example-answer, .pres-plain-language { font-size: 7px; }
+  .pres-code { font-size: 7px; gap: 3px; margin: 3px 0; padding: 6px; border-radius: 4px; }
+  .pres-example-lines { margin: 4px 0; gap: 4px; }
+  .pres-example-lines span, .pres-evidence-list span { padding: 4px; font-size: 6px; }
+  .pres-big-example { padding: 5px; margin: 2px 0; font-size: 7px; }
+  .pres-big-example strong { font-size: 10px; }
+  .pres-evidence-list { gap: 3px; margin: 3px 0; }
+  .pres-example-answer { padding: 5px; }
+  .pres-attribution-compact .pres-stat { padding: 5px; }
+  .pres-attribution-compact .pres-stat strong { font-size: 12px; }
+  .pres-bottom-note small { font-size: 6px; }
+}
