@@ -1,4 +1,15 @@
-/* Standalone, presentation-only visual system. All rules are scoped to .pres-root. */
+/* Standalone, presentation-only visual system. */
+/* The Explorer's global main#main selector constrains pages to 1200px.
+   Use a more specific rule so presentation slides occupy the viewport.
+   Without this override, the full-width slide is clipped by its narrow parent. */
+main#main.pres-root {
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+}
+
 .pres-root,
 .pres-root * { box-sizing: border-box; }
 .pres-root {
