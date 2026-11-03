@@ -10,7 +10,7 @@ Internal Agent Evaluation technical sharing, focusing on evaluation contracts, e
 - After merge and deployment: https://devagentops.onrender.com/presentation
 - Direct link to a slide: append ?slide=1 through ?slide=9
 
-The route uses frozen, publicly documented figures and does not fetch the Showcase API. Original Explorer routes and API behavior remain unchanged.
+The route combines a **clearly labeled constructed teaching example** (expected 5, got 6; correct code would add rather than multiply) with frozen, publicly documented experiment figures. The example is aligned with the documented `constructed-assertion-001` illustration in `docs/evaluation/structured-triage-report-and-per-case-scoring.md` and is **not** claimed to be one of the 20 formal benchmark Cases. The route does not fetch the Showcase API. Original Explorer routes and API behavior remain unchanged.
 
 ## Controls
 
@@ -25,14 +25,14 @@ The route uses frozen, publicly documented figures and does not fetch the Showca
 
 | Slide | Topic | Approx. |
 | --- | --- | --- |
-| 1 | Intro and problem | 0:30 |
-| 2 | System and triage scenario | 1:00 |
-| 3 | Frozen Cases, Ground Truth, Scorer | 2:00 |
-| 4 | Exact Match, Evidence Hit, Protocol Validity | 1:30 |
-| 5 | L1–L4 comparison and Oracle boundary | 1:00 |
-| 6 | L3 evidence acquisition/utilization attribution | 2:00 |
+| 1 | Hook: is getting the right answer enough? | 0:30 |
+| 2 | Worked example: 2 + 3 should be 5, code returns 6 | 1:00 |
+| 3 | Frozen Case, hidden Ground Truth, repeated Samples | 2:00 |
+| 4 | Three questions: category, evidence, report contract | 1:30 |
+| 5 | Different ways L1–L4 acquire material | 1:00 |
+| 6 | Badcase A: not retrieved; B: found but not cited | 2:00 |
 | 7 | Fixed-output canonicalization replay | 2:00 |
-| 8 | Batch vs Parallel Tool Policy experiment | 1:00 |
+| 8 | Single/Sequential vs Batch/Parallel | 1:00 |
 | 9 | Evaluation-driven development and transfer | 1:00 |
 
 Leave up to three minutes for questions and optional Case drill-down.
