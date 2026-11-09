@@ -11,7 +11,7 @@ describe("PresentationPage", () => {
   it("starts with an evaluation-led cover and a nine-slide counter", () => {
     render(<PresentationPage />);
     expect(screen.getByText("01 / 09")).toBeInTheDocument();
-    expect(screen.getByText(/怎么评、怎么归因、怎么用实验证明改进有效/)).toBeInTheDocument();
+    expect(screen.getByText(/评测标准怎么设计、分数不理想时怎么分析原因/)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Agent 评测与\s*实验归因实践/ })).toBeInTheDocument();
   });
 
@@ -38,7 +38,7 @@ describe("PresentationPage", () => {
     render(<PresentationPage />);
     expect(screen.getByText(/简化教学示例 · 非正式评测 Case/)).toBeInTheDocument();
     expect(screen.getByText("1 / 2")).toBeInTheDocument();
-    expect(screen.getByText(/分类正确 ≠ 证据充分 ≠ 输出合法/)).toBeInTheDocument();
+    expect(screen.getByText(/分类正确，不代表整个任务做好了/)).toBeInTheDocument();
   });
 
   it("shows all five conditions in one comparison table while identifying Oracle as diagnostic", () => {
@@ -71,6 +71,27 @@ describe("PresentationPage", () => {
     expect(screen.getByText("只改一处")).toBeInTheDocument();
     expect(screen.getByText("重新验证")).toBeInTheDocument();
     expect(screen.getByText("12 → 0")).toBeInTheDocument();
+  });
+
+  it("shows read-aloud cues on the slide itself without requiring the Notes overlay", () => {
+    const { container } = render(<PresentationPage />);
+    expect(container.querySelector(".pres-cover-desc")?.textContent).toMatch(/今天重点不是 Agent 怎么实现/);
+    expect(container.querySelector(".pres-speaker-notes")).not.toBeInTheDocument();
+
+    fireEvent.keyDown(window, { key: "ArrowRight" });
+    const track = container.querySelector(".pres-talk-track");
+    expect(track).toBeInTheDocument();
+    expect(track?.textContent).toMatch(/只看日志，我们知道断言失败了/);
+    expect(container.querySelector(".pres-speaker-notes")).not.toBeInTheDocument();
+  });
+
+  it("has a visible spoken cue on every content slide", () => {
+    const { container } = render(<PresentationPage />);
+    for (let slide = 2; slide <= 9; slide += 1) {
+      fireEvent.keyDown(window, { key: "ArrowRight" });
+      // Re-query the currently rendered page after each keyboard action.
+      expect(container.querySelector(".pres-talk-track")).toBeInTheDocument();
+    }
   });
 
   it("clamps navigation at the final slide", () => {
