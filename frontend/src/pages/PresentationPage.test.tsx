@@ -11,7 +11,8 @@ describe("PresentationPage", () => {
   it("starts with an evaluation-led cover and a nine-slide counter", () => {
     render(<PresentationPage />);
     expect(screen.getByText("01 / 09")).toBeInTheDocument();
-    expect(screen.getByText(/比「分数是多少」更重要/)).toBeInTheDocument();
+    expect(screen.getByText(/怎么评、怎么归因、怎么用实验证明改进有效/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Agent 评测与实验归因实践/ })).toBeInTheDocument();
   });
 
   it("navigates with keyboard arrows and updates the shareable slide number", () => {
@@ -38,6 +39,32 @@ describe("PresentationPage", () => {
     expect(screen.getByText(/简化教学示例 · 非正式评测 Case/)).toBeInTheDocument();
     expect(screen.getByText("1 / 2")).toBeInTheDocument();
     expect(screen.getByText(/结论正确、证据不全、报告格式有错/)).toBeInTheDocument();
+  });
+
+  it("keeps Oracle separate from the L1-L4 conditions", () => {
+    window.history.replaceState({}, "", "/presentation?slide=5");
+    render(<PresentationPage />);
+    expect(screen.getByText("Oracle ≠ L5")).toBeInTheDocument();
+    expect(screen.getByText(/L3 分类准确率/)).toBeInTheDocument();
+    expect(screen.getByText(/这些|以上为代表性正式运行的观测数据/)).toBeInTheDocument();
+  });
+
+  it("distinguishes missing acquisition from missing citation", () => {
+    window.history.replaceState({}, "", "/presentation?slide=6");
+    render(<PresentationPage />);
+    expect(screen.getByText("BADCASE A · 没找到")).toBeInTheDocument();
+    expect(screen.getByText("BADCASE B · 找到了没用")).toBeInTheDocument();
+    expect(screen.getByText("76.56%")).toBeInTheDocument();
+    expect(screen.getByText("66.18%")).toBeInTheDocument();
+    expect(screen.getByText("50.67%")).toBeInTheDocument();
+  });
+
+  it("displays experimental controls before fixed-output replay metrics", () => {
+    window.history.replaceState({}, "", "/presentation?slide=7");
+    render(<PresentationPage />);
+    expect(screen.getByText("只改一处")).toBeInTheDocument();
+    expect(screen.getByText("重新验证")).toBeInTheDocument();
+    expect(screen.getByText("12 → 0")).toBeInTheDocument();
   });
 
   it("clamps navigation at the final slide", () => {
