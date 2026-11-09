@@ -205,7 +205,7 @@
    Bars and labels no longer compete for the same horizontal width. */
 .pres-root .pres-comparison .pres-chart-table {
   display: grid;
-  grid-template-rows: 38px repeat(4, minmax(0, 1fr));
+  grid-template-rows: 38px repeat(5, minmax(0, 1fr));
   flex: 1 1 auto;
   min-height: 0;
   border-radius: 12px;
@@ -215,9 +215,9 @@
 .pres-root .pres-comparison .pres-chart-head,
 .pres-root .pres-comparison .pres-chart-row {
   display: grid;
-  grid-template-columns: .48fr 1.75fr 1.48fr 1.48fr;
+  grid-template-columns: .48fr 1.55fr 1.5fr 1.5fr;
   align-items: center;
-  gap: clamp(8px, .95cqw, 15px);
+  gap: clamp(18px, 1.55cqw, 25px);
   padding: 0 clamp(12px, 1.2cqw, 19px);
 }
 .pres-root .pres-comparison .pres-chart-head {
@@ -237,13 +237,21 @@
 .pres-root .pres-comparison .pres-chart-row.pres-highlight {
   background: #eaf6ed;
 }
-.pres-root .pres-comparison .pres-chart-row > div {
+.pres-root .pres-comparison .pres-chart-row > .pres-metric-cell {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 9px;
+  grid-template-columns: minmax(0, 1fr) 76px;
+  gap: clamp(10px, 1cqw, 16px);
   align-items: center;
   min-width: 0;
   height: auto;
+}
+.pres-root .pres-comparison .pres-chart-row > .pres-metric-cell:last-child {
+  border-left: 1px solid #e0e9e2;
+  padding-left: clamp(10px, 1cqw, 16px);
+}
+.pres-root .pres-comparison .pres-chart-head > span:last-child {
+  border-left: 1px solid #d6e4da;
+  padding-left: clamp(10px, 1cqw, 16px);
 }
 .pres-root .pres-comparison .pres-chart-row .pres-bar {
   display: block;
@@ -260,6 +268,14 @@
   font-size: clamp(11px, .95cqw, 15px);
   line-height: 1;
   white-space: nowrap;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.pres-root .pres-comparison .pres-chart-row.pres-oracle-row {
+  background: #f2f6f7;
+}
+.pres-root .pres-comparison .pres-chart-row.pres-oracle-row > strong {
+  color: #2b6274;
 }
 .pres-root .pres-legend { font-size: clamp(10px, .86cqw, 13px); gap: 24px; color: #678071; }
 .pres-root .pres-oracle-strip {
@@ -418,6 +434,7 @@
   .pres-root .pres-oracle-strip { font-size: 10px; padding: 7px 10px; }
   .pres-root .pres-oracle-strip b { font-size: 11px; }
   .pres-root .pres-comparison .pres-chart-row b { font-size: 10px; }
+  .pres-root .pres-comparison .pres-chart-row > .pres-metric-cell { grid-template-columns: minmax(0, 1fr) 60px; gap: 8px; }
 }
 @media (max-width: 750px) {
   .pres-root .pres-stage {
@@ -436,10 +453,13 @@
   .pres-root .pres-stat strong,
   .pres-root .pres-attribution-compact .pres-stat strong { font-size: 11px; }
   .pres-root .pres-stat span, .pres-root .pres-stat small { font-size: 6px; }
-  .pres-root .pres-comparison .pres-chart-table { grid-template-rows: 17px repeat(4, 1fr); }
+  .pres-root .pres-comparison .pres-chart-table { grid-template-rows: 17px repeat(5, minmax(0,1fr)); }
   .pres-root .pres-comparison .pres-chart-head,
   .pres-root .pres-comparison .pres-chart-row { font-size: 6px; padding: 0 4px; gap: 3px; }
   .pres-root .pres-comparison .pres-chart-row b { font-size: 6px; }
+  .pres-root .pres-comparison .pres-chart-row > .pres-metric-cell { grid-template-columns: minmax(0,1fr) 34px; gap: 3px; }
+  .pres-root .pres-comparison .pres-chart-row > .pres-metric-cell:last-child { padding-left: 3px; }
+  .pres-root .pres-comparison .pres-chart-head > span:last-child { padding-left: 3px; }
   .pres-root .pres-comparison .pres-chart-row > strong { font-size: 8px; }
   .pres-root .pres-oracle-strip { gap: 5px; padding: 4px; font-size: 6px; }
   .pres-root .pres-oracle-strip b { font-size: 7px; }
