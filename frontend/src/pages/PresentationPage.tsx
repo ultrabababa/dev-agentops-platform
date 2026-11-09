@@ -109,7 +109,7 @@ function SlideBody({ index }: { index: number }) {
           <Panel>
             <Eyebrow>01 / 测试日志：识别失败现象</Eyebrow>
             <div className="pres-code">
-              <span className="pres-code-label">tests/test_calculate.py</span>
+              <span className="pres-code-label">CI 失败输出 · tests/test_calculate.py</span>
               <code>assert calculate_total(2, 3) == 5</code>
               <code className="pres-code-error">AssertionError: expected 5, got 6</code>
             </div>
