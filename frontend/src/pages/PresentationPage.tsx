@@ -196,14 +196,13 @@ function SlideBody({ index }: { index: number }) {
         <div className="pres-legend"><span>故障类型 Exact Match</span><span>报告证据 Evidence Hit</span></div>
         <div className="pres-chart-table">
           <div className="pres-chart-head"><span>条件</span><span>资料从哪里来</span><span>分类准确</span><span>证据命中</span></div>
-          {conditions.filter((c) => c.name !== "Oracle").map((c) => <div key={c.name} className={"pres-chart-row" + (c.name === "L3" ? " pres-highlight" : "")}>
+          {conditions.map((c) => <div key={c.name} className={"pres-chart-row" + (c.name === "L3" ? " pres-highlight" : "") + (c.name === "Oracle" ? " pres-oracle-row" : "")}>
             <strong>{c.name}</strong><span>{c.control}</span>
-            <div><span className="pres-bar pres-bar-muted" style={{ width: String(c.exact) + "%" }} /><b>{c.exact.toFixed(2)}%</b></div>
-            <div><span className="pres-bar pres-bar-strong" style={{ width: String(c.evidence) + "%" }} /><b>{c.evidence.toFixed(2)}%</b></div>
+            <div className="pres-metric-cell"><span className="pres-bar pres-bar-muted" style={{ width: String(c.exact) + "%" }} /><b>{c.exact.toFixed(2)}%</b></div>
+            <div className="pres-metric-cell"><span className="pres-bar pres-bar-strong" style={{ width: String(c.evidence) + "%" }} /><b>{c.evidence.toFixed(2)}%</b></div>
           </div>)}
         </div>
-        <div className="pres-oracle-strip"><strong>Oracle ≠ L5</strong><span>评测侧直接提供关键原始证据，用于诊断 Evidence Discovery 瓶颈</span><b>Evidence Hit 85.40%</b></div>
-        <div className="pres-bottom-note"><strong>关键观察：</strong>L3 分类准确率 <b>88.33%</b>，证据命中只有 <b>50.67%</b>。问题究竟出在「没找到」，还是「找到了没用」？<small>以上为代表性正式运行的观测数据；跨 fresh Run 的指标差异不能直接解释为单变量因果效应。</small></div>
+        <div className="pres-bottom-note"><strong>关键观察：</strong>L3 分类准确率 <b>88.33%</b>，证据命中只有 <b>50.67%</b>。问题究竟出在「没找到」，还是「找到了没用」？<small>Oracle ≠ L5：它是评测侧提供关键原始证据的诊断干预，不是产品 Runtime。跨 fresh Run 的观测差异不能直接当成单变量因果效应。</small></div>
       </div>;
     case 5:
       return <div className="pres-stack">
