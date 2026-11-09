@@ -17,7 +17,6 @@ The route combines a **clearly labeled constructed teaching example** (expected 
 - Right / Down / Space / PageDown: next slide
 - Left / Up / PageUp: previous slide
 - Home / End: first / last slide
-- N or Notes: toggle speaker notes
 - F: fullscreen
 - Footer links: open Explorer, Experiment & Attribution, or Architecture in a new tab
 
@@ -37,9 +36,23 @@ The route combines a **clearly labeled constructed teaching example** (expected 
 
 Leave up to three minutes for questions and optional Case drill-down.
 
+## Public-facing content contract
+
+The /presentation route is the **audience-facing artifact**. It must display
+only understandable slide titles, experiment evidence, controlled examples, and
+concise professional conclusions. It must not display first-person speech,
+read-aloud scripts, rehearsal cues, or private presenter notes. There is no
+Notes button and no N-key presenter overlay. Keep any rehearsal script outside
+the deployed frontend.
+
+Metric provenance: slides 5 and 7 refer to **different L4 experiment runs**:
+the representative condition-comparison Run and a separate historical fixed-output
+canonicalization Replay. Their Exact Match percentages should not be compared
+as measurements from the same Run.
+
 ## Presentation narrative and design
 
-The deck follows the talk's nine-part structure, from CI triage context through
+The deck follows a nine-part technical narrative, from CI triage context through
 Frozen Case / Ground Truth, scoring, L1–L4 comparison, evidence attribution,
 fixed-output Replay, Runtime efficiency, and a transferable evaluation loop.
 
@@ -54,7 +67,6 @@ Typography and card layouts are defined in `frontend/src/presentation-polish.css
 loaded after `presentation.css`. Sizes scale with the 16:9 slide's own width
 rather than the browser viewport, so changes to window height cannot accidentally
 inflate text beyond the slide. All selectors are scoped to the presentation.
-Speaker notes (N key) now follow the same explanatory progression as the talk.
 
 ## Provenance and caveats
 
