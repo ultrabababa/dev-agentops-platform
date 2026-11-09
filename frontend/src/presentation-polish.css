@@ -1,0 +1,462 @@
+/* Presentation refinement · isolated to /presentation.
+   Typography uses cqw (the slide's own width), not browser vw. */
+.pres-root .pres-stage {
+  container-type: inline-size;
+  width: min(calc(100vw - 44px), calc((100dvh - 62px) * 16 / 9));
+  max-height: calc(100dvh - 62px);
+  grid-template-rows: 48px minmax(0, 1fr) 48px 4px;
+  border: 1px solid #d3e1d7;
+  border-radius: 14px;
+  box-shadow: 0 22px 80px rgba(15, 49, 39, .13), 0 3px 14px rgba(15, 49, 39, .06);
+  background: #f9fbf8;
+}
+.pres-root {
+  background: radial-gradient(circle at 50% -25%, #f0f6ef 0%, #e3ebe6 75%);
+}
+.pres-root .pres-topbar {
+  padding-inline: 3.1cqw;
+  background: #f9fbf8;
+  color: #70867b;
+  border-bottom-color: #e0e9e2;
+  font-size: clamp(10px, .78cqw, 13px);
+}
+.pres-root .pres-brand { gap: 11px; color: #214f42; letter-spacing: 0; }
+.pres-root .pres-brand-mark { background: #207a63; }
+.pres-root .pres-slide {
+  padding: clamp(18px, 2.15cqw, 33px) clamp(22px, 3.2cqw, 49px) clamp(14px, 1.55cqw, 24px);
+  gap: clamp(11px, .98cqw, 16px);
+}
+.pres-root .pres-slide-intro { max-width: 100%; }
+.pres-root .pres-slide-intro h1 {
+  font-family: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  font-weight: 820;
+  font-size: clamp(27px, 2.48cqw, 42px);
+  letter-spacing: -.032em;
+  line-height: 1.22;
+  color: #173e32;
+  margin: 0 0 clamp(5px, .56cqw, 9px);
+  text-wrap: balance;
+}
+.pres-root .pres-slide-intro > p:last-child {
+  color: #637e70;
+  font-size: clamp(13px, 1.08cqw, 17px);
+  line-height: 1.48;
+  max-width: 100%;
+}
+.pres-root .pres-eyebrow {
+  font-size: clamp(10px, .82cqw, 13px);
+  margin-bottom: clamp(6px, .63cqw, 10px);
+  letter-spacing: .085em;
+  color: #267d62;
+}
+.pres-root .pres-slide h2 { font-size: clamp(19px, 1.8cqw, 29px); letter-spacing: -.02em; }
+.pres-root .pres-slide h3 {
+  font-size: clamp(16px, 1.3cqw, 21px);
+  line-height: 1.32;
+  margin-bottom: clamp(8px, .74cqw, 12px);
+  letter-spacing: -.015em;
+  color: #20483a;
+}
+.pres-root .pres-stack,
+.pres-root .pres-conclusion { gap: clamp(10px, .9cqw, 15px); }
+.pres-root .pres-content-grid { gap: clamp(10px, .88cqw, 14px); }
+.pres-root .pres-panel {
+  border-color: #dde9df;
+  border-radius: 14px;
+  padding: clamp(15px, 1.44cqw, 23px);
+  box-shadow: 0 4px 18px rgba(21, 70, 52, .035);
+  background: #ffffff;
+}
+.pres-root .pres-panel-tint {
+  background: #edf7ef;
+  border-color: #cfe7d8;
+}
+.pres-root .pres-panel p {
+  font-size: clamp(13px, 1.08cqw, 17px);
+  line-height: 1.52;
+  color: #526e61;
+  margin-bottom: clamp(8px, .72cqw, 12px);
+}
+.pres-root .pres-panel p:last-child { margin-bottom: 0; }
+.pres-root .pres-bottom-note {
+  background: #e7f4eb;
+  border-left: 4px solid #29926e;
+  border-radius: 0 9px 9px 0;
+  padding: clamp(10px, .92cqw, 15px) clamp(13px, 1.15cqw, 18px);
+  color: #2e6351;
+  font-size: clamp(12px, 1.02cqw, 16px);
+  line-height: 1.5;
+}
+.pres-root .pres-bottom-note strong { color: #175743; }
+.pres-root .pres-bottom-note small {
+  display: block;
+  margin-top: 3px;
+  color: #648274;
+  font-size: .86em;
+  line-height: 1.35;
+}
+.pres-root .pres-stat-row { gap: clamp(10px, .9cqw, 15px); }
+.pres-root .pres-stat-row > .pres-stat {
+  background: #edf7f0;
+  border-color: #d5e9dc;
+  border-radius: 13px;
+  padding: clamp(12px, 1.2cqw, 19px);
+  min-width: 0;
+}
+.pres-root .pres-stat strong {
+  font-size: clamp(24px, 2.5cqw, 41px);
+  font-weight: 825;
+  color: #167b60;
+  line-height: 1.14;
+}
+.pres-root .pres-stat span {
+  font-size: clamp(12px, 1.03cqw, 16px);
+  font-weight: 740;
+  color: #315e4b;
+  line-height: 1.32;
+  margin-top: 2px;
+}
+.pres-root .pres-stat small { font-size: clamp(10px, .85cqw, 13px); color: #6b8578; }
+.pres-root .pres-attribution-compact .pres-stat strong {
+  font-size: clamp(19px, 1.95cqw, 32px);
+  letter-spacing: -.04em;
+  white-space: nowrap;
+}
+.pres-root .pres-efficiency .pres-stat strong {
+  font-size: clamp(21px, 2.08cqw, 34px);
+}
+.pres-root .pres-example-heading {
+  gap: 12px;
+  font-size: clamp(12px, 1.0cqw, 16px);
+  color: #526d60;
+}
+.pres-root .pres-demo-label {
+  background: #e1f3e9;
+  border: 1px solid #bce4cd;
+  color: #1c7659;
+  font-size: clamp(10px, .81cqw, 13px);
+  letter-spacing: 0;
+  padding: 5px 11px;
+}
+.pres-root .pres-demo-neutral {
+  background: #edf1ea;
+  border-color: #dce4da;
+  color: #60766b;
+}
+.pres-root .pres-example-smallprint {
+  font-size: clamp(10px, .82cqw, 13px);
+  color: #7b8b80;
+  line-height: 1.4;
+}
+.pres-root .pres-code {
+  border-color: #38604f;
+  background: #183a30;
+  border-radius: 10px;
+  padding: clamp(12px, 1.2cqw, 18px);
+  margin: clamp(10px, 1cqw, 16px) 0;
+  gap: clamp(6px, .65cqw, 10px);
+  font-size: clamp(12px, 1.08cqw, 17px);
+}
+.pres-root .pres-code-label { font-size: clamp(10px, .85cqw, 13px); }
+.pres-root .pres-example-answer {
+  background: #e8f6ed;
+  border-color: #c7e6d3;
+  font-size: clamp(12px, 1cqw, 16px);
+  padding: clamp(10px, 1.05cqw, 16px);
+  border-radius: 10px;
+  gap: 12px;
+}
+.pres-root .pres-example-answer > strong { color: #156b50; }
+.pres-root .pres-example-lines { gap: clamp(7px, .62cqw, 10px); margin: 10px 0; }
+.pres-root .pres-example-lines span {
+  background: #f5f9f5;
+  border-color: #d9e9de;
+  font-size: clamp(12px, .97cqw, 15px);
+  padding: clamp(8px, .8cqw, 13px);
+  line-height: 1.35;
+}
+.pres-root .pres-flow {
+  background: #eef5ef;
+  border-color: #d5e7d9;
+  padding: clamp(10px, .9cqw, 15px) 8px;
+  border-radius: 10px;
+}
+.pres-root .pres-flow-item span {
+  font-size: clamp(10px, .91cqw, 14px);
+  font-weight: 720;
+}
+.pres-root .pres-flow-item b { font-size: clamp(14px, 1.45cqw, 22px); }
+.pres-root .pres-big-example {
+  background: #edf7ef;
+  padding: clamp(10px, 1.1cqw, 17px);
+  border-radius: 10px;
+  font-size: clamp(12px, 1.08cqw, 17px);
+}
+.pres-root .pres-big-example strong { font-size: clamp(22px, 2.05cqw, 33px); }
+.pres-root .pres-plain-language {
+  font-size: clamp(12px, 1cqw, 16px);
+  line-height: 1.4;
+  padding-top: 12px;
+  color: #416552;
+}
+.pres-root .pres-small-point { font-size: clamp(11px, .92cqw, 14px); }
+
+/* The representative comparisons have one numeric track + a fixed label column.
+   Bars and labels no longer compete for the same horizontal width. */
+.pres-root .pres-comparison .pres-chart-table {
+  display: grid;
+  grid-template-rows: 38px repeat(5, minmax(0, 1fr));
+  flex: 1 1 auto;
+  min-height: 0;
+  border-radius: 12px;
+  border-color: #dde9df;
+  box-shadow: 0 4px 16px rgba(18, 63, 42, .03);
+}
+.pres-root .pres-comparison .pres-chart-head,
+.pres-root .pres-comparison .pres-chart-row {
+  display: grid;
+  grid-template-columns: .48fr 1.55fr 1.5fr 1.5fr;
+  align-items: center;
+  gap: clamp(18px, 1.55cqw, 25px);
+  padding: 0 clamp(12px, 1.2cqw, 19px);
+}
+.pres-root .pres-comparison .pres-chart-head {
+  height: auto;
+  background: #ecf4ef;
+  color: #597668;
+  font-size: clamp(10px, .92cqw, 14px);
+}
+.pres-root .pres-comparison .pres-chart-row {
+  min-height: 0;
+  font-size: clamp(11px, 1cqw, 16px);
+  border-top-color: #edf2ee;
+}
+.pres-root .pres-comparison .pres-chart-row > strong {
+  font-size: clamp(14px, 1.2cqw, 19px);
+}
+.pres-root .pres-comparison .pres-chart-row.pres-highlight {
+  background: #eaf6ed;
+}
+.pres-root .pres-comparison .pres-chart-row > .pres-metric-cell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 76px;
+  gap: clamp(10px, 1cqw, 16px);
+  align-items: center;
+  min-width: 0;
+  height: auto;
+}
+.pres-root .pres-comparison .pres-chart-row > .pres-metric-cell:last-child {
+  border-left: 1px solid #e0e9e2;
+  padding-left: clamp(10px, 1cqw, 16px);
+}
+.pres-root .pres-comparison .pres-chart-head > span:last-child {
+  border-left: 1px solid #d6e4da;
+  padding-left: clamp(10px, 1cqw, 16px);
+}
+.pres-root .pres-comparison .pres-chart-row .pres-bar {
+  display: block;
+  height: clamp(7px, .68cqw, 10px);
+  min-width: 3px;
+  max-width: 100%;
+  border-radius: 7px;
+}
+.pres-root .pres-comparison .pres-chart-row b {
+  margin: 0;
+  padding: 0;
+  color: #254f3d;
+  background: transparent;
+  font-size: clamp(11px, .95cqw, 15px);
+  line-height: 1;
+  white-space: nowrap;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.pres-root .pres-comparison .pres-chart-row.pres-oracle-row {
+  background: #f2f6f7;
+}
+.pres-root .pres-comparison .pres-chart-row.pres-oracle-row > strong {
+  color: #2b6274;
+}
+.pres-root .pres-legend { font-size: clamp(10px, .86cqw, 13px); gap: 24px; color: #678071; }
+.pres-root .pres-oracle-strip {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: clamp(10px, .9cqw, 14px) clamp(14px, 1.15cqw, 18px);
+  background: #edf1f3;
+  color: #506a73;
+  border: 1px solid #d9e4e8;
+  border-radius: 10px;
+  font-size: clamp(11px, .92cqw, 15px);
+}
+.pres-root .pres-oracle-strip strong { color: #27596a; }
+.pres-root .pres-oracle-strip b {
+  color: #285f6c;
+  font-size: clamp(12px, 1.03cqw, 16px);
+  white-space: nowrap;
+}
+
+/* Failure attribution: show two badcases, then the three formal measurements. */
+.pres-root .pres-badcases .pres-panel h3 { font-size: clamp(17px, 1.34cqw, 22px); }
+.pres-root .pres-evidence-list { margin: 6px 0 11px; gap: clamp(5px, .5cqw, 8px); }
+.pres-root .pres-evidence-list span {
+  font-size: clamp(12px, 1cqw, 16px);
+  padding: clamp(8px, .7cqw, 11px) clamp(10px, .9cqw, 14px);
+}
+.pres-root .pres-evidence-ok { background: #edf8ed; }
+.pres-root .pres-evidence-miss { background: #fcf2e9; }
+
+/* Canonicalization: make experimental controls explicit on screen. */
+.pres-root .pres-control-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: clamp(8px, .76cqw, 12px);
+  flex: 0 0 auto;
+}
+.pres-root .pres-control-strip > span {
+  border-radius: 9px;
+  padding: clamp(8px, .7cqw, 11px) clamp(9px, .9cqw, 14px);
+  background: #eef3ee;
+  border: 1px solid #dae7db;
+  font-size: clamp(11px, .89cqw, 14px);
+  line-height: 1.35;
+  color: #61786a;
+  min-width: 0;
+}
+.pres-root .pres-control-strip b {
+  display: block;
+  color: #26775e;
+  font-size: clamp(10px, .85cqw, 13px);
+  margin-bottom: 4px;
+}
+.pres-root .pres-reference-example .pres-panel h3 { font-size: clamp(16px, 1.3cqw, 21px); }
+.pres-root .pres-small-code { margin: 8px 0 10px; padding: 10px 13px; }
+.pres-root .pres-policy-simple .pres-panel { padding: clamp(14px, 1.25cqw, 20px); }
+.pres-root .pres-policy-simple .pres-flow { padding: clamp(10px, .95cqw, 16px) 9px; }
+.pres-root .pres-policy-simple .pres-flow-item span { font-size: clamp(10px, .82cqw, 13px); }
+.pres-root .pres-parallel-demo { margin-block: 7px 13px; }
+.pres-root .pres-parallel-demo > span,
+.pres-root .pres-parallel-demo b { font-size: clamp(11px, .9cqw, 14px); padding: clamp(7px, .65cqw, 10px); }
+.pres-root .pres-conclusion-lead {
+  font-size: clamp(16px, 1.48cqw, 24px);
+  color: #167d60;
+  letter-spacing: -.02em;
+}
+.pres-root .pres-transfer {
+  background: #e9f5ed;
+  border-color: #d0e8d9;
+  padding: clamp(11px, 1.05cqw, 17px);
+  font-size: clamp(12px, 1.02cqw, 16px);
+  border-radius: 10px;
+  gap: 20px;
+}
+.pres-root .pres-link-row a {
+  font-size: clamp(11px, .95cqw, 15px);
+  color: #23664f;
+  border-color: #c5dbce;
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+.pres-root .pres-footer {
+  padding: 0 3.1cqw;
+  background: #f9fbf8;
+  border-top-color: #e0e9e2;
+  color: #647e71;
+  font-size: clamp(10px, .81cqw, 13px);
+}
+.pres-root .pres-controls { gap: 8px; }
+.pres-root .pres-controls button {
+  min-height: 31px;
+  border: 1px solid #d3e4d6;
+  background: #edf5ef;
+  padding: 5px 11px;
+  border-radius: 7px;
+  color: #256c51;
+  font-size: clamp(10px, .89cqw, 14px);
+}
+.pres-root .pres-controls button:hover:not(:disabled) { background: #dbede2; }
+.pres-root .pres-controls > span { color: #246149; }
+.pres-root .pres-progress { background: #e2ede6; }
+.pres-root .pres-progress span { background: #259270; }
+/* Cover is allowed to bleed to the edges without depending on percent margins. */
+.pres-root .pres-slide-0 { padding: 0; }
+.pres-root .pres-slide-0 .pres-cover {
+  margin: 0;
+  padding: 5.4cqw 6cqw 4.9cqw;
+  background: radial-gradient(ellipse at 78% 5%, rgba(90, 190, 151, .19), transparent 49%),
+              linear-gradient(135deg, #0d3429 0%, #163e37 61%, #18303d 100%);
+}
+.pres-root .pres-cover h1 {
+  font-size: clamp(43px, 4.7cqw, 76px);
+  line-height: 1.24;
+  letter-spacing: -.047em;
+}
+.pres-root .pres-cover h1 em { color: #9ceac0; }
+.pres-root .pres-cover-main > p { font-size: clamp(14px, 1.16cqw, 19px); margin-top: 18px; }
+.pres-root .pres-cover-main .pres-cover-desc {
+  font-size: clamp(18px, 1.72cqw, 28px);
+  color: #dcf2e7;
+  max-width: 880px;
+  margin-top: 22px;
+}
+.pres-root .pres-cover-bottom { gap: 6.5cqw; padding-top: clamp(17px, 2cqw, 32px); }
+.pres-root .pres-cover .pres-stat strong { color: #f9fff9; font-size: clamp(24px, 2.5cqw, 41px); }
+.pres-root .pres-cover .pres-stat span { color: #c3ded3; }
+
+/* Compression only for genuinely constrained stage sizes.
+   A 16:9 projector view should keep default readable type. */
+@container (max-width: 1040px) {
+  .pres-root .pres-slide { padding: 15px 22px 11px; gap: 8px; }
+  .pres-root .pres-slide-intro h1 { font-size: 24px; }
+  .pres-root .pres-slide-intro > p:last-child { font-size: 12px; }
+  .pres-root .pres-panel { padding: 12px; }
+  .pres-root .pres-panel p { font-size: 11px; }
+  .pres-root .pres-panel h3 { font-size: 14px; }
+  .pres-root .pres-bottom-note { font-size: 11px; padding: 8px 11px; }
+  .pres-root .pres-stat strong { font-size: 23px; }
+  .pres-root .pres-attribution-compact .pres-stat strong { font-size: 18px; }
+  .pres-root .pres-demo-label { font-size: 9px; }
+  .pres-root .pres-code { font-size: 11px; margin: 7px 0; }
+  .pres-root .pres-oracle-strip { font-size: 10px; padding: 7px 10px; }
+  .pres-root .pres-oracle-strip b { font-size: 11px; }
+  .pres-root .pres-comparison .pres-chart-row b { font-size: 10px; }
+  .pres-root .pres-comparison .pres-chart-row > .pres-metric-cell { grid-template-columns: minmax(0, 1fr) 60px; gap: 8px; }
+}
+@media (max-width: 750px) {
+  .pres-root .pres-stage {
+    grid-template-rows: 29px minmax(0, 1fr) 27px 3px;
+    border-radius: 5px;
+    width: calc(100vw - 12px);
+  }
+  .pres-root .pres-slide { padding: 7px 10px 5px; gap: 4px; }
+  .pres-root .pres-slide-intro h1 { font-size: 16px; }
+  .pres-root .pres-slide-intro > p:last-child { font-size: 7px; }
+  .pres-root .pres-panel { padding: 6px; border-radius: 5px; }
+  .pres-root .pres-panel p { font-size: 6px; line-height: 1.35; }
+  .pres-root .pres-panel h3 { font-size: 8px; margin-bottom: 3px; }
+  .pres-root .pres-bottom-note { font-size: 6px; padding: 4px 6px; }
+  .pres-root .pres-stat-row > .pres-stat { padding: 5px; }
+  .pres-root .pres-stat strong,
+  .pres-root .pres-attribution-compact .pres-stat strong { font-size: 11px; }
+  .pres-root .pres-stat span, .pres-root .pres-stat small { font-size: 6px; }
+  .pres-root .pres-comparison .pres-chart-table { grid-template-rows: 17px repeat(5, minmax(0,1fr)); }
+  .pres-root .pres-comparison .pres-chart-head,
+  .pres-root .pres-comparison .pres-chart-row { font-size: 6px; padding: 0 4px; gap: 3px; }
+  .pres-root .pres-comparison .pres-chart-row b { font-size: 6px; }
+  .pres-root .pres-comparison .pres-chart-row > .pres-metric-cell { grid-template-columns: minmax(0,1fr) 34px; gap: 3px; }
+  .pres-root .pres-comparison .pres-chart-row > .pres-metric-cell:last-child { padding-left: 3px; }
+  .pres-root .pres-comparison .pres-chart-head > span:last-child { padding-left: 3px; }
+  .pres-root .pres-comparison .pres-chart-row > strong { font-size: 8px; }
+  .pres-root .pres-oracle-strip { gap: 5px; padding: 4px; font-size: 6px; }
+  .pres-root .pres-oracle-strip b { font-size: 7px; }
+  .pres-root .pres-control-strip { gap: 4px; }
+  .pres-root .pres-control-strip > span,
+  .pres-root .pres-control-strip b { font-size: 6px; padding: 3px; }
+  .pres-root .pres-cover h1 { font-size: 30px; }
+  .pres-root .pres-cover-main .pres-cover-desc { font-size: 11px; }
+  .pres-root .pres-cover-main > p { font-size: 8px; }
+  .pres-root .pres-footer { font-size: 7px; }
+  .pres-root .pres-controls button { min-height: 20px; font-size: 7px; padding: 2px 5px; }
+}
