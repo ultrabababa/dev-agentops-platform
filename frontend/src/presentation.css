@@ -220,9 +220,6 @@ main#main.pres-root {
 .pres-progress { background: #dfebe3; overflow: hidden; }
 .pres-progress span { display: block; height: 100%; background: #2b9879; transition: width .2s ease; }
 .pres-help { color: #728a81; font-size: clamp(9px, .75vw, 12px); letter-spacing: .025em; }
-.pres-speaker-notes { position: absolute; z-index: 5; bottom: 49px; left: 3.5%; right: 3.5%; background: rgba(18,45,42,.96); color: #edfdf4; padding: 14px 19px; border-radius: 9px; box-shadow: 0 6px 25px rgba(0,0,0,.2); font-size: clamp(11px, .94vw, 15px); }
-.pres-speaker-notes strong { color: #81e5c0; }
-.pres-speaker-notes p { margin: 7px 0 0; line-height: 1.5; }
 .pres-root button:focus-visible, .pres-root a:focus-visible { outline: 3px solid #4ccba0; outline-offset: 3px; }
 @media (max-aspect-ratio: 4/5) {
   .pres-root { justify-content: flex-start; }
