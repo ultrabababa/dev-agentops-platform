@@ -56,15 +56,6 @@ rather than the browser viewport, so changes to window height cannot accidentall
 inflate text beyond the slide. All selectors are scoped to the presentation.
 Speaker notes (N key) now follow the same explanatory progression as the talk.
 
-## On-screen speaking cues (no presenter display needed)
-
-All nine slides now include concise, natural first-person speaking text **on the projected slide itself**, not in a hidden presenter window. The cover contains an opening paragraph, and slides 2–9 have a permanent `讲述主线` paragraph beneath their example/chart. These sentences can be read directly or used as prompts while expanding on the visible evidence.
-
-- Read the visible paragraph, point to the relevant illustration or numbers, then advance.
-- The `N` speaker-note overlay is optional backup only; the talk does not depend on it.
-- Keep the difference between constructed teaching examples and formal experiment metrics explicit.
-- Test projected legibility at the meeting display's resolution. On dense slides, avoid reducing fonts solely to fit extra words.
-
 ## Provenance and caveats
 
 Figures are transcribed from the project README Formal Evaluation and Four Experiments sections, including:
