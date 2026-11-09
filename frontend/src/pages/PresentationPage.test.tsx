@@ -12,7 +12,7 @@ describe("PresentationPage", () => {
     render(<PresentationPage />);
     expect(screen.getByText("01 / 09")).toBeInTheDocument();
     expect(screen.getByText(/怎么评、怎么归因、怎么用实验证明改进有效/)).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Agent 评测与实验归因实践/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Agent 评测与\s*实验归因实践/ })).toBeInTheDocument();
   });
 
   it("navigates with keyboard arrows and updates the shareable slide number", () => {
@@ -46,7 +46,7 @@ describe("PresentationPage", () => {
     render(<PresentationPage />);
     expect(screen.getByText("Oracle ≠ L5")).toBeInTheDocument();
     expect(screen.getByText(/L3 分类准确率/)).toBeInTheDocument();
-    expect(screen.getByText(/这些|以上为代表性正式运行的观测数据/)).toBeInTheDocument();
+    expect(screen.getByText(/以上为代表性正式运行的观测数据/)).toBeInTheDocument();
   });
 
   it("distinguishes missing acquisition from missing citation", () => {
