@@ -5,6 +5,7 @@ type Slide = {
   title: string;
   lead: string;
   notes: string;
+  talk: string;
 };
 
 const slides: Slide[] = [
@@ -12,54 +13,63 @@ const slides: Slide[] = [
     section: "INTRODUCTION",
     title: "Agent 评测与实验归因实践",
     lead: "以 CI 失败诊断为例，分享评测体系、失败归因与工程优化的实践。",
+    talk: "大家好，今天分享的是之前做的 DevAgentOps。项目面向 CI 测试失败诊断，不过今天重点不是 Agent 怎么实现，而是三件事：评测标准怎么设计、分数不理想时怎么分析原因，以及怎样用实验验证改进是否有效。",
     notes: "大家好，今天分享之前做过的 DevAgentOps。它的场景是 CI / Test Failure Triage，但今天不主要讲 Agent 怎么实现，而是重点讲三个问题：怎么设计一套可信的评测、评测不理想时怎么归因、怎么通过实验验证改进。我会用一个简单的小例子贯穿其中。这个例子只用于解释方法，正式指标来自冻结的 20-Case Suite。",
   },
   {
     section: "01 · SCENARIO",
     title: "一条测试失败日志，Agent 到底要做什么？",
     lead: "先看一个小例子：预期 2 + 3 = 5，测试却得到 6。只说「断言失败」够不够？",
+    talk: "先看这个简单例子：测试希望 2 加 3 等于 5，程序却返回了 6。只看日志，我们知道断言失败了；继续读代码，才发现用了乘法。对 Agent 来说，光说“断言失败”不够，还需要解释根因，并给出可核查的日志和代码证据。",
     notes: "先看一个很简单的 CI 失败：预期 2 + 3 是 5，实际却得到 6。日志只能告诉我们测试断言失败；读到代码后才发现乘法代替了加法。Agent 最少得判断故障类型、定位原因、引用日志和代码并生成结构化报告。真实场景资料更大，Runtime 用只读工具搜索，但本次不展开其内部实现。",
   },
   {
     section: "02 · BENCHMARK",
     title: "怎样把一个例子做成可重复评测的 Case？",
     lead: "核心不是给模型出一道题，而是把题目、标准答案、判分依据和运行条件都固定下来。",
+    talk: "评测的第一步，其实是先把尺子固定下来。一边是 Agent 可以看到的日志、代码和工具，另一边是只有评测器知道的正确类别和必需证据。我们冻结输入和评分规则，正式评测有 20 个 Case、每个重复 3 次，让不同方案具备可比性。",
     notes: "评测的第一步是固定尺子。Case 分成 Agent 可见的日志、代码、工具和报告格式，以及只有 Evaluator 可见的故障类型、Required Evidence 和评分规则。要强调参考答案绝不能给被测 Agent。我们的正式 Suite 有 20 个 Human-reviewed Case，覆盖五类失败；每个重复三次，按 Case 聚合后再看整个 Suite。",
   },
   {
     section: "03 · METRICS",
     title: "诊断对了，不代表证据和报告也合格",
     lead: "同一份 Agent 报告至少可以拆成三道独立的判断题。",
+    talk: "这里我想强调：分类正确，不代表整个任务做好了。比如 Agent 判断出断言失败，但只引用日志、没有引用代码，那么假设的两条必需证据就只命中了一条；如果 Evidence ID 还写错了，报告也可能校验失败。所以要把分类、证据和协议分别评测。",
     notes: "为什么不能只看分类准确率？举例来说，Agent 识别为测试断言失败，分类是对的；但假设此 Case 要求两条证据，最后只引用日志，没有引用代码，Evidence Hit 就只有 1/2；如果证据 ID 格式或内容违反 Schema，Protocol Validity 还可能失败。这里的 1/2 是说明用的算例，不是正式样本评分。三项指标分别回答结论对不对、有没有证据、机器能不能消费报告。",
   },
   {
     section: "04 · CONDITIONS",
     title: "同一道题，换一种「查资料」的方法",
     lead: "L1–L4 的区别，可以理解为让模型用不同方式获得材料、决定下一步动作。",
+    talk: "我们用 L1 到 L4 比较不同的资料获取方式：一次给全、固定流程、程序检索，以及模型自主调用工具。结果很有意思：L3 分类准确率达到 88.33%，但证据命中只有 50.67%。所以下一步不是急着排名，而是追问证据到底丢在哪一步。Oracle 只是诊断干预，不是 L5。",
     notes: "这里不要细讲 Runtime。把 L1–L4 理解为同一道开卷题的四种查资料方式：L1 一次看全，L2 固定两阶段，L3 程序预先检索，L4 让模型使用只读工具自主调查。代表性结果里 L3 类别准确达到 88.33%，但是 Evidence Hit 只有 50.67%，引出后面的问题：是没找到证据，还是拿到了没用？Oracle 单独作为诊断干预，不是 L5。不同 fresh Run 不能直接解释为因果。",
   },
   {
     section: "05 · ATTRIBUTION",
     title: "证据没命中：没找到，还是找到了没用？",
     lead: "这两种 Badcase 看起来都会扣分，但应该采用不同的改进办法。",
+    talk: "同样是证据命中低，可能有两种原因：检索没找到代码，或者代码找到了但最后没有引用。L3 的证据获取召回为 76.56%，已获取证据的利用率为 66.18%，最终 Evidence Hit 为 50.67%。这说明不能只优化检索。Oracle 达到 85.40%，但只能作为寻找瓶颈的线索。",
     notes: "这页是重点。先用刚才的例子对比两种 Badcase：A 只检索到日志，没拿到代码；B 日志和代码都拿到了，最后只引用日志。两个都导致 Evidence Hit 低，却应该优化不同环节。L3 的 Acquisition Recall 为 76.56%，已获取证据被最终引用比例为 66.18%，最终 Case-first Evidence Hit 是 50.67%。注意三项分母与聚合口径不等同，不能机械相乘。Oracle 把关键原始证据提供给模型，代表性 Evidence Hit 为 85.40%，只说明值得继续研究证据发现，不是严格因果或上限。",
   },
   {
     section: "06 · CONTROLLED REPLAY",
     title: "模型答案没变，为什么评分反而提升？",
     lead: "有些 Badcase 不是模型判断错，而是证据引用格式没有被评测基础设施正确识别。",
+    talk: "还有一类 Badcase：模型本来找对证据，却用了无法被识别的引用格式。为了确认问题来自哪里，我没有重跑模型，而是固定历史输出，只改引用规范化，再用同一套规则评分。协议有效率从 81.36% 升到 96.61%，分类准确率却没有变，说明改善来自评测基础设施。",
     notes: "第二个重点实验：有些 Badcase 模型已找到证据，但引用的 raw.log 行号没被按规范识别。怎样确认不是模型本身判断错？把历史模型输出完全固定，不重新生成，只对可确定映射的 Evidence Reference 做 Canonicalization，再用相同 Validator / Scorer 重放。Protocol Validity 81.36% 到 96.61%，Unknown Evidence IDs 12 到 0，但分类 Exact Match 保持 88.33%。所以这里修复的是校验与引用基础设施，而不是模型重新变聪明。",
   },
   {
     section: "07 · OPTIMIZATION",
     title: "改进方案真的有效吗？做一次对照实验",
     lead: "一个容易理解的例子：原来查询日志和代码要反复找模型，现在可在同轮提出独立工具调用、并行执行。",
+    talk: "最后一个实验看效率。过去每轮最多执行一个工具调用，查日志和代码需要多次模型往返；改成 Batch + Parallel 后，独立请求可以同轮并行执行。实验里 Model Decisions 减少约 35%，总耗时降低 17.5%，工具数量变化很小，所以主要收益来自减少模型往返。",
     notes: "最后讲一次效率优化。过去每轮最多执行一个工具调用，查日志再查代码要多次模型往返。现在允许同轮提出多个相互独立的工具请求并行执行。对照实验保持 Suite、模型配置、评分口径、Runtime 家族等主要条件一致，改变 Tool Policy，并做重复实验。Model Decisions 877 到 571，Wall Time 978.27 秒到 806.69 秒，工具调用次数却只下降约 4%。因此主要收益是模型往返变少；质量上小幅差异不宜做强因果解释。",
   },
   {
     section: "08 · TAKEAWAYS",
     title: "评测真正的价值：告诉我们下一步改哪里",
     lead: "不是拿到一张成绩单，而是把发现问题 → 找原因 → 做实验 → 验证改进连成闭环。",
+    talk: "最后总结三点：先把 Case、Ground Truth 和 Scorer 固定；发现 Badcase 后，分析是证据没找到、没用好，还是校验出了问题；最后再通过实验验证改进。评测不只是最后的一张成绩单，而是评测、归因、实验、优化、再评测的持续闭环。谢谢大家。",
     notes: "最后收束为三点。第一，评测先把尺子做对：冻结 Case、Ground Truth、Scorer。第二，不能只看分数，要区分证据未获取、已获取未引用和评测协议本身的问题。第三，找到问题后，要选合适的实验验证改进，并区分观察与因果结论。对其他 Agent、Skill、MCP 的评测也有方法论参考，但必须重新定义业务目标、样本和指标。谢谢大家。",
   },
 ];
@@ -92,6 +102,13 @@ function Panel({ className = "", children }: { className?: string; children: Rea
   return <div className={"pres-panel " + className}>{children}</div>;
 }
 
+function TalkTrack({ text }: { text: string }) {
+  return <aside className="pres-talk-track" aria-label="本页讲述主线">
+    <span className="pres-talk-label">讲述主线</span>
+    <p>{text}</p>
+  </aside>;
+}
+
 function TeachingTag() {
   return <span className="pres-demo-label">简化教学示例 · 非正式评测 Case</span>;
 }
@@ -104,7 +121,7 @@ function SlideBody({ index }: { index: number }) {
           <div className="pres-tag">DEVAGENTOPS · AGENT EVALUATION</div>
           <h1>Agent 评测与<br /><em>实验归因实践</em></h1>
           <p>以 DevAgentOps 的 CI 失败诊断场景为例</p>
-          <p className="pres-cover-desc">怎么评、怎么归因、怎么用实验证明改进有效。</p>
+          <p className="pres-cover-desc">{slides[0].talk}</p>
         </div>
         <div className="pres-cover-bottom">
           <Stat value="20 × 3" label="正式评测 Case × 重复次数" />
@@ -136,7 +153,7 @@ function SlideBody({ index }: { index: number }) {
           </Panel>
         </div>
         <div className="pres-example-answer"><strong>一份可信的诊断报告</strong><span>分类：<b>断言失败</b></span><span>根因：<b>加法写成乘法</b></span><span>引用：<b>日志 + 代码</b></span></div>
-        <div className="pres-bottom-note"><strong>为什么不能只看答案：</strong>说出「断言失败」只完成分类；定位错误代码并引用证据，才有可核查的诊断依据。</div>
+        <TalkTrack text={slides[index].talk} />
       </div>;
     case 2:
       return <div className="pres-stack">
@@ -160,6 +177,7 @@ function SlideBody({ index }: { index: number }) {
           </Panel>
         </div>
         <Flow items={["固定题目", "运行 Agent", "拿到报告", "对照标准答案", "聚合并分析"]} />
+        <TalkTrack text={slides[index].talk} />
         <div className="pres-example-smallprint">示例中的日志与代码是构造材料；20 个 Case × 3 次重复是正式评测规模，覆盖 5 类 CI 失败。</div>
       </div>;
     case 3:
@@ -188,7 +206,7 @@ function SlideBody({ index }: { index: number }) {
             <span className="pres-plain-language">问的是：<b>系统能不能可靠读取？</b></span>
           </Panel>
         </div>
-        <div className="pres-bottom-note"><strong>三个维度，三类问题：</strong>分类正确 ≠ 证据充分 ≠ 输出合法。保留指标向量，才能判断该改模型、检索还是报告协议。</div>
+        <TalkTrack text={slides[index].talk} />
       </div>;
     case 4:
       return <div className="pres-stack pres-comparison">
@@ -202,7 +220,7 @@ function SlideBody({ index }: { index: number }) {
             <div className="pres-metric-cell"><span className="pres-bar pres-bar-strong" style={{ width: String(c.evidence) + "%" }} /><b>{c.evidence.toFixed(2)}%</b></div>
           </div>)}
         </div>
-        <div className="pres-bottom-note"><strong>关键观察：</strong>L3 分类准确率 <b>88.33%</b>，证据命中只有 <b>50.67%</b>。问题究竟出在「没找到」，还是「找到了没用」？<small>Oracle ≠ L5：它是评测侧提供关键原始证据的诊断干预，不是产品 Runtime。跨 fresh Run 的观测差异不能直接当成单变量因果效应。</small></div>
+        <TalkTrack text={slides[index].talk} />
       </div>;
     case 5:
       return <div className="pres-stack">
@@ -225,7 +243,7 @@ function SlideBody({ index }: { index: number }) {
           <Stat value="66.18%" label="已获取证据最终被引用" detail="Utilization（条件分母）" />
           <Stat value="50.67%" label="最终整体证据命中" detail="Case-first Evidence Hit" />
         </div>
-        <div className="pres-bottom-note"><strong>Oracle 诊断干预：</strong>跳过普通证据发现，模型看到关键原始片段后，代表性 Evidence Hit 为 <b>85.40%</b>。这是瓶颈线索，不是理论上限或严格因果估计。</div>
+        <TalkTrack text={slides[index].talk} />
         <div className="pres-example-smallprint">上方 A / B 是教学示例；百分比来自 L3 正式归因实验，三项指标的分母与聚合口径不同。</div>
       </div>;
     case 6:
@@ -250,7 +268,7 @@ function SlideBody({ index }: { index: number }) {
           <Stat value="12 → 0" label="Unknown Evidence IDs" detail="无法识别的引用归零" />
           <Stat value="88.33% 不变" label="Failure Type Exact Match" detail="模型分类没有改善" />
         </div>
-        <div className="pres-bottom-note"><strong>实验支持的结论：</strong>协议有效性改善，但分类判断没有变化。修复的是 Evidence Reference 的规范化与验证环节，不是模型重新推理得更好。</div>
+        <TalkTrack text={slides[index].talk} />
       </div>;
     case 7:
       return <div className="pres-stack">
@@ -273,7 +291,7 @@ function SlideBody({ index }: { index: number }) {
           <Stat value="978 → 807s" label="Run Wall Time" detail="−17.54%" />
           <Stat value="809 → 775" label="Executed ToolCalls" detail="−4.20%" />
         </div>
-        <div className="pres-bottom-note"><strong>实验结论：</strong>效率收益在重复实验中再次出现；主要减少的是模型决策往返，而不是大幅减少取证。fresh generation 的小幅质量差异不等于因果结论。</div>
+        <TalkTrack text={slides[index].talk} />
       </div>;
     default:
       return <div className="pres-conclusion">
@@ -284,6 +302,7 @@ function SlideBody({ index }: { index: number }) {
           <Panel><span className="pres-step-number">03</span><h3>改进靠实验验证</h3><p>固定输出 Replay、诊断干预、控制实验，各自回答不同的问题。</p></Panel>
         </div>
         <div className="pres-transfer"><strong>面向 Agent / Skill / MCP</strong><span>通用的是评测闭环；业务成功标准、Case 和评分指标必须按真实任务重新设计。</span></div>
+        <TalkTrack text={slides[index].talk} />
         <LinkRow links={[{ name: "查看完整评测平台", url: "/" }, { name: "查看实验与归因", url: "/compare" }, { name: "查看真实 Case", url: "/cases" }]} />
       </div>;
   }
