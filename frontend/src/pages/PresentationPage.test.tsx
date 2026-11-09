@@ -41,12 +41,18 @@ describe("PresentationPage", () => {
     expect(screen.getByText(/分类正确 ≠ 证据充分 ≠ 输出合法/)).toBeInTheDocument();
   });
 
-  it("keeps Oracle separate from the L1-L4 conditions", () => {
+  it("shows all five conditions in one comparison table while identifying Oracle as diagnostic", () => {
     window.history.replaceState({}, "", "/presentation?slide=5");
-    render(<PresentationPage />);
-    expect(screen.getByText("Oracle ≠ L5")).toBeInTheDocument();
+    const { container } = render(<PresentationPage />);
+    const rows = container.querySelectorAll(".pres-chart-table .pres-chart-row");
+    expect(rows).toHaveLength(5);
+    expect(Array.from(rows).map((row) => row.querySelector("strong")?.textContent)).toEqual([
+      "L1", "L2", "L3", "L4", "Oracle",
+    ]);
+    expect(container.querySelector(".pres-oracle-row")).toBeInTheDocument();
+    expect(container.querySelectorAll(".pres-metric-cell")).toHaveLength(10);
+    expect(screen.getByText(/Oracle ≠ L5/)).toBeInTheDocument();
     expect(screen.getByText(/L3 分类准确率/)).toBeInTheDocument();
-    expect(screen.getByText(/以上为代表性正式运行的观测数据/)).toBeInTheDocument();
   });
 
   it("distinguishes missing acquisition from missing citation", () => {
