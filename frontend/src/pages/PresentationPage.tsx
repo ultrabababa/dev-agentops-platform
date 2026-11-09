@@ -38,17 +38,12 @@ const slides: Slide[] = [
     lead: "相同的 Evidence Hit 失分，可能来自证据获取与证据利用两个不同环节。",
   },
   {
-    section: "06 · CONTROLLED REPLAY",
-    title: "固定输出重放：区分模型诊断与引用格式问题",
-    lead: "保持模型历史输出不变，仅调整确定性引用规范化逻辑，验证基础设施影响。",
-  },
-  {
-    section: "07 · OPTIMIZATION",
+    section: "06 · OPTIMIZATION",
     title: "工具并行化：用对照实验验证效率收益",
     lead: "将可独立执行的 ToolCalls 合并到同一轮并行执行，减少模型往返开销。",
   },
   {
-    section: "08 · TAKEAWAYS",
+    section: "07 · TAKEAWAYS",
     title: "Evaluation-driven Development：评测驱动迭代",
     lead: "将 Badcase 诊断转化为可验证的工程决策，形成持续评测与改进闭环。",
   },
@@ -99,7 +94,7 @@ function SlideBody({ index }: { index: number }) {
         <div className="pres-cover-bottom">
           <Stat value="20 × 3" label="正式评测 Case × 重复次数" />
           <Stat value="L1–L4" label="不同执行条件" />
-          <Stat value="4" label="代表性实验研究" />
+          <Stat value="3" label="评测与实验主题" />
         </div>
       </div>;
     case 1:
@@ -220,30 +215,6 @@ function SlideBody({ index }: { index: number }) {
       </div>;
     case 6:
       return <div className="pres-stack">
-        <div className="pres-example-heading"><TeachingTag /><span>模型找到了证据，但引用表示方式没有被校验器识别。</span></div>
-        <div className="pres-content-grid pres-two pres-reference-example">
-          <Panel>
-            <Eyebrow>原始输出（保持不变）</Eyebrow>
-            <h3>「证据在 raw.log 的第 42–43 行」</h3>
-            <p>当报告 Schema 要求稳定 Evidence ID 时，单纯的行号引用可能无法通过验证。</p>
-          </Panel>
-          <Panel className="pres-panel-tint">
-            <Eyebrow>确定性 Evidence Reference 规范化</Eyebrow>
-            <h3>映射为可验证的 Evidence ID</h3>
-            <div className="pres-code pres-small-code"><code>log:assertion-mismatch</code></div>
-            <p>模型输出保持不变；仅将可确定映射的位置引用规范化为稳定 ID。</p>
-          </Panel>
-        </div>
-        <div className="pres-control-strip"><span><b>保持不变</b> 历史模型输出</span><span><b>只改一处</b> 引用规范化</span><span><b>重新验证</b> 同一 Validator / Scorer</span></div>
-        <div className="pres-stat-row pres-stat-row-3 pres-attribution-compact">
-          <Stat value="81.36 → 96.61%" label="Protocol Validity" detail="更少引用格式问题" />
-          <Stat value="12 → 0" label="Unknown Evidence IDs" detail="无法识别的引用归零" />
-          <Stat value="88.33% 不变" label="Failure Type Exact Match" detail="模型分类没有改善" />
-        </div>
-        <div className="pres-bottom-note"><strong>实验结论：</strong>Protocol Validity 提升，Failure Type Exact Match 保持不变；改善来自引用规范化与校验环节。<small>本页为历史 L4 fixed-output Replay，和上一页 L4 代表性正式运行不是同一组结果。</small></div>
-      </div>;
-    case 7:
-      return <div className="pres-stack">
         <div className="pres-content-grid pres-two pres-policy pres-policy-simple">
           <Panel>
             <Eyebrow>BEFORE · SINGLE / SEQUENTIAL</Eyebrow>
@@ -271,7 +242,7 @@ function SlideBody({ index }: { index: number }) {
         <div className="pres-content-grid pres-three">
           <Panel><span className="pres-step-number">01</span><h3>统一评测基准</h3><p>冻结输入与 Ground Truth，分别衡量分类、证据和输出协议。</p></Panel>
           <Panel><span className="pres-step-number">02</span><h3>拆解失败环节</h3><p>区分证据获取、证据利用和协议校验的不同失效模式。</p></Panel>
-          <Panel><span className="pres-step-number">03</span><h3>受控验证改进</h3><p>固定输出 Replay、诊断干预与 Tool Policy 对照，各自提供不同强度的证据。</p></Panel>
+          <Panel><span className="pres-step-number">03</span><h3>受控验证改进</h3><p>基于证据归因与 Tool Policy 对照，验证优化方向及效率收益。</p></Panel>
         </div>
         <div className="pres-transfer"><strong>方法论复用</strong><span>评测闭环可扩展到 Agent / Skill / MCP；具体的成功标准、Case 与指标仍需按业务重设。</span></div>
         <LinkRow links={[{ name: "查看完整评测平台", url: "/" }, { name: "查看实验与归因", url: "/compare" }, { name: "查看真实 Case", url: "/cases" }]} />
@@ -327,7 +298,7 @@ export function PresentationPage() {
         <span>{slide.section}</span>
       </header>
       <section className={"pres-slide pres-slide-" + index} aria-label={"第 " + (index + 1) + " 页：" + slide.title} key={index}>
-        {index !== 0 && <div className="pres-slide-intro"><Eyebrow>{String(index).padStart(2, "0")} / 08</Eyebrow><h1>{slide.title}</h1><p>{slide.lead}</p></div>}
+        {index !== 0 && <div className="pres-slide-intro"><Eyebrow>{String(index).padStart(2, "0")} / 07</Eyebrow><h1>{slide.title}</h1><p>{slide.lead}</p></div>}
         <SlideBody index={index} />
       </section>
       <footer className="pres-footer">
