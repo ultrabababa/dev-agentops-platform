@@ -15,6 +15,7 @@ import "./compare-final.css";
 import "./loading-state.css";
 import "./architecture.css";
 import "./presentation.css";
+import "./presentation-polish.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
