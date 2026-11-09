@@ -473,3 +473,75 @@
   .pres-root .pres-controls button { min-height: 20px; font-size: 7px; padding: 2px 5px; }
   .pres-root .pres-speaker-notes { bottom: 30px; font-size: 9px; }
 }
+
+
+/* On-slide read-along cues: short natural sentences rather than hidden speaker notes.
+   They share the audience screen and must never cover the charts or navigation. */
+.pres-root .pres-talk-track {
+  flex: 0 0 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, .38cqw, 6px);
+  padding: clamp(10px, .85cqw, 14px) clamp(14px, 1.2cqw, 19px);
+  border: 1px solid #cbded1;
+  border-left: 4px solid #329176;
+  border-radius: 0 11px 11px 0;
+  background: #f0f7f1;
+}
+.pres-root .pres-talk-label {
+  display: block;
+  color: #24765e;
+  font-size: clamp(10px, .77cqw, 12px);
+  font-weight: 800;
+  letter-spacing: .06em;
+  line-height: 1.2;
+}
+.pres-root .pres-slide .pres-talk-track p {
+  margin: 0;
+  color: #234f40;
+  font-size: clamp(14px, 1.23cqw, 18px);
+  font-weight: 565;
+  line-height: 1.48;
+  letter-spacing: .005em;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+.pres-root .pres-stack > .pres-talk-track,
+.pres-root .pres-conclusion > .pres-talk-track {
+  margin-top: auto;
+}
+/* Dense experiment slides use a little less air, not a smaller chart. */
+.pres-root .pres-slide-5 .pres-talk-track,
+.pres-root .pres-slide-6 .pres-talk-track,
+.pres-root .pres-slide-7 .pres-talk-track {
+  padding-block: clamp(8px, .7cqw, 12px);
+}
+.pres-root .pres-slide-5 .pres-talk-track p,
+.pres-root .pres-slide-6 .pres-talk-track p,
+.pres-root .pres-slide-7 .pres-talk-track p {
+  font-size: clamp(13px, 1.14cqw, 17px);
+  line-height: 1.42;
+}
+@container (max-width: 1040px) {
+  .pres-root .pres-talk-track {
+    gap: 3px;
+    padding: 7px 10px;
+  }
+  .pres-root .pres-slide .pres-talk-track p {
+    font-size: 11px;
+    line-height: 1.37;
+  }
+  .pres-root .pres-talk-label { font-size: 9px; }
+  .pres-root .pres-slide-5 .pres-talk-track p,
+  .pres-root .pres-slide-6 .pres-talk-track p,
+  .pres-root .pres-slide-7 .pres-talk-track p { font-size: 10.5px; }
+}
+@media (max-width: 750px) {
+  .pres-root .pres-talk-track { padding: 3px 5px; gap: 1px; border-left-width: 2px; border-radius: 0 4px 4px 0; }
+  .pres-root .pres-talk-label { font-size: 5px; }
+  .pres-root .pres-slide .pres-talk-track p,
+  .pres-root .pres-slide-5 .pres-talk-track p,
+  .pres-root .pres-slide-6 .pres-talk-track p,
+  .pres-root .pres-slide-7 .pres-talk-track p { font-size: 6px; line-height: 1.22; }
+}
