@@ -38,7 +38,7 @@ describe("PresentationPage", () => {
     render(<PresentationPage />);
     expect(screen.getByText(/简化教学示例 · 非正式评测 Case/)).toBeInTheDocument();
     expect(screen.getByText("1 / 2")).toBeInTheDocument();
-    expect(screen.getByText(/结论正确、证据不全、报告格式有错/)).toBeInTheDocument();
+    expect(screen.getByText(/分类正确 ≠ 证据充分 ≠ 输出合法/)).toBeInTheDocument();
   });
 
   it("keeps Oracle separate from the L1-L4 conditions", () => {
