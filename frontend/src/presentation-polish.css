@@ -380,18 +380,6 @@
 .pres-root .pres-controls > span { color: #246149; }
 .pres-root .pres-progress { background: #e2ede6; }
 .pres-root .pres-progress span { background: #259270; }
-.pres-root .pres-speaker-notes {
-  bottom: 52px;
-  max-height: 44%;
-  overflow-y: auto;
-  padding: 16px 20px;
-  background: rgba(17, 47, 37, .97);
-  border: 1px solid #376551;
-  font-size: clamp(12px, 1.02cqw, 16px);
-  line-height: 1.5;
-}
-.pres-root .pres-speaker-notes p { line-height: 1.65; }
-
 /* Cover is allowed to bleed to the edges without depending on percent margins. */
 .pres-root .pres-slide-0 { padding: 0; }
 .pres-root .pres-slide-0 .pres-cover {
@@ -471,5 +459,4 @@
   .pres-root .pres-cover-main > p { font-size: 8px; }
   .pres-root .pres-footer { font-size: 7px; }
   .pres-root .pres-controls button { min-height: 20px; font-size: 7px; padding: 2px 5px; }
-  .pres-root .pres-speaker-notes { bottom: 30px; font-size: 9px; }
 }
