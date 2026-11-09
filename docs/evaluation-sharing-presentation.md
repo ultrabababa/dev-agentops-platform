@@ -37,6 +37,25 @@ The route combines a **clearly labeled constructed teaching example** (expected 
 
 Leave up to three minutes for questions and optional Case drill-down.
 
+## Presentation narrative and design
+
+The deck follows the talk's nine-part structure, from CI triage context through
+Frozen Case / Ground Truth, scoring, L1–L4 comparison, evidence attribution,
+fixed-output Replay, Runtime efficiency, and a transferable evaluation loop.
+
+A single intentionally simplified arithmetic-test failure appears on several
+slides: expected 5, got 6, because the implementation multiplies instead of adds.
+It is always labeled as a teaching example and is not one of the formal Cases.
+The example helps distinguish a correct failure type from missing evidence or a
+malformed Evidence ID. The numerical experiment results are real published formal
+figures and use their corresponding aggregation and caveats.
+
+Typography and card layouts are defined in `frontend/src/presentation-polish.css`,
+loaded after `presentation.css`. Sizes scale with the 16:9 slide's own width
+rather than the browser viewport, so changes to window height cannot accidentally
+inflate text beyond the slide. All selectors are scoped to the presentation.
+Speaker notes (N key) now follow the same explanatory progression as the talk.
+
 ## Provenance and caveats
 
 Figures are transcribed from the project README Formal Evaluation and Four Experiments sections, including:
@@ -52,7 +71,7 @@ Do not describe ordinary fresh-generation Run differences as causal. Canonicaliz
 ## Review and release
 
 1. Run npm ci, npm run build, and npm test in frontend/.
-2. Check all nine slides on a projector-resolution browser window; test arrows, N, and F.
+2. Check all nine slides at 1280×720 and 1600×900 (or the projector's actual display mode). Confirm no clipped Chinese headings, overlapping graph labels, or slide content outside its 16:9 frame. Test arrows, N, and F.
 3. Test original Explorer links; its API may cold-start while slides must remain usable.
 4. Merge after review. Confirm Render static-site deep-link rewrite to index.html for /presentation.
 5. Open /presentation?slide=1 before the meeting; optionally save a browser print/PDF backup.
