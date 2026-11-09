@@ -8,9 +8,9 @@ describe("PresentationPage", () => {
     window.history.replaceState({}, "", "/presentation");
   });
 
-  it("starts with an evaluation-led cover and a nine-slide counter", () => {
+  it("starts with an evaluation-led cover and a eight-slide counter", () => {
     render(<PresentationPage />);
-    expect(screen.getByText("01 / 09")).toBeInTheDocument();
+    expect(screen.getByText("01 / 08")).toBeInTheDocument();
     expect(screen.getByText(/评测基准 · 失败归因 · 实验验证 · 工程优化/)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Agent 评测与\s*实验归因实践/ })).toBeInTheDocument();
   });
@@ -72,24 +72,18 @@ describe("PresentationPage", () => {
     expect(screen.getByText("50.67%")).toBeInTheDocument();
   });
 
-  it("displays experimental controls before fixed-output replay metrics", () => {
+  it("goes directly from attribution to the tool-parallelism experiment", () => {
     window.history.replaceState({}, "", "/presentation?slide=7");
     render(<PresentationPage />);
-    expect(screen.getByText("只改一处")).toBeInTheDocument();
-    expect(screen.getByText("重新验证")).toBeInTheDocument();
-    expect(screen.getByText("12 → 0")).toBeInTheDocument();
-  });
-
-  it("labels the fixed-output replay as a distinct L4 experiment", () => {
-    window.history.replaceState({}, "", "/presentation?slide=7");
-    render(<PresentationPage />);
-    expect(screen.getByText(/和上一页 L4 代表性正式运行不是同一组结果/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "工具并行化：用对照实验验证效率收益" })).toBeInTheDocument();
+    expect(screen.getByText("877 → 571")).toBeInTheDocument();
+    expect(screen.queryByText(/固定输出重放/)).not.toBeInTheDocument();
   });
 
   it("keeps projected slide text free of presenter-only phrasing", () => {
     const { container } = render(<PresentationPage />);
     const banned = /讲述主线|讲者备注|按 N|说出「断言失败」/;
-    for (let i = 0; i < 9; i += 1) {
+    for (let i = 0; i < 8; i += 1) {
       expect(container.querySelector(".pres-slide")?.textContent).not.toMatch(banned);
       fireEvent.keyDown(window, { key: "ArrowRight" });
     }
@@ -98,7 +92,7 @@ describe("PresentationPage", () => {
   it("clamps navigation at the final slide", () => {
     render(<PresentationPage />);
     fireEvent.keyDown(window, { key: "End" });
-    expect(screen.getByText("09 / 09")).toBeInTheDocument();
+    expect(screen.getByText("08 / 08")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "下一页" })).toBeDisabled();
   });
 });
